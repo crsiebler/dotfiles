@@ -3,7 +3,6 @@ A collection of configuration files for storing user preferences and preserving 
 
 ## Setting Up
 
-1. Add the following line to your `.zshrc` file:
-    `[[ ! -f ~/.zshenv ]] || source ~/.zshenv`
+Run `make install` to copy the configuration files (including .zshrc with aliases sourcing) to your user profile.
 
-2. Run `./reload.sh` to force copy the aliases to your user profile.  This will automatically source the aliases and reload the bash profile.
+After installation, you must restart your shell or manually run `source ~/.zshrc` for the new aliases and configuration changes to take effect. The Makefile's source command runs in a separate process and won't update your current shell session automatically.

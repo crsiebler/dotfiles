@@ -8,20 +8,20 @@ Since this is a configuration repository rather than a compiled application, tra
 
 ### Validation Commands
 ```bash
-# Check shell syntax for scripts
-bash -n reload.sh
+# Check Makefile syntax
+make -n install
 
 # Validate all shell scripts in the repository
 find . -name "*.sh" -exec bash -n {} \;
 
 # Check for common shell scripting issues (if shellcheck is available)
-shellcheck reload.sh
+find . -name "*.sh" -exec shellcheck {} \;
 ```
 
 ### Testing Commands
 ```bash
-# Test the reload script (dry run - check what would be copied)
-./reload.sh --dry-run  # Note: This would need to be implemented
+# Test the install (dry run - check what would be copied)
+make dry-run
 
 # Verify alias files can be sourced without errors
 bash -c "source .aliases"
@@ -156,7 +156,7 @@ This repository assumes:
 ## Environment Setup
 
 After cloning this repository:
-1. Run `./reload.sh` to install configurations
+1. Run `make install` to install configurations (backs up existing .zshrc with timestamp)
 2. Source configurations: `source ~/.zshrc`
 3. Verify setup: `echo $JAVA_HOME`
 
