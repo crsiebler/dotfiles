@@ -1,4 +1,5 @@
 # dotfiles
+
 A collection of configuration files for storing user preferences and preserving the state of a utility. Support for Zsh only.
 
 ## Setting Up
