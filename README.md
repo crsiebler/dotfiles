@@ -20,4 +20,14 @@ A collection of configuration files for storing user preferences and preserving 
    - Open a new terminal, or manually run `source ~/.zshrc` to apply all settings and load environment variables from `$HOME/.env`.
    - Any changes to `$HOME/.env` require you to re-source it (`source ~/.env`) or start a new shell.
 
-`make setup` will automate all these steps, backing up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration is backed up just like `.zshrc`.
+`make install` will back up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration files (`.zshrc`, `.env`, and `opencode.json`) are each backed up with a timestamp-based filename prior to overwrite.
+
+## Removing Backup Files (Cleanup)
+
+If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, and `opencode.json.backup.*`), run the following command:
+
+    make clean
+
+This will delete all backup versions of `.zshrc`, `.env`, and `opencode.json`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
+
+---
