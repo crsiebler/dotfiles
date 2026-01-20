@@ -21,3 +21,10 @@ install:
 	cp opencode.json $$HOME/.config/opencode/opencode.json
 	@echo "Copied opencode.json to $$HOME/.config/opencode/opencode.json."
 	@echo "Installation complete. Dotfile setup, .env, and opencode config are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
+
+clean:
+	@echo "Removing dotfile backups (.zshrc, .env, opencode.json)..."
+	@rm -f $${HOME}/.zshrc.backup.*
+	@rm -f $${HOME}/.env.backup.*
+	@rm -f $${HOME}/.config/opencode/opencode.json.backup.*
+	@echo "Backup removal complete."
