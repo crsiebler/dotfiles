@@ -1,0 +1,2 @@
+.env
+# Exclude generated/copy-only config files in userspace

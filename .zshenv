@@ -13,7 +13,7 @@ if [ -f ~/.node_aliases ]; then
 	. ~/.node_aliases
 fi
 
-# Load thie Symfony aliases
+# Load the Symfony aliases
 if [ -f ~/.symfony_aliases ]; then
 	. ~/.symfony_aliases
 fi
