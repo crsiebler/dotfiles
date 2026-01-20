@@ -172,6 +172,7 @@ unset __conda_setup
 export PATH=$HOME/.opencode/bin:$PATH
 export EDITOR="code --wait"
 
-# Triangulator Environment Variables
-export TRIANGULATOR_ENV=local
-export DATA_DIR=~/Work/cremo-cmtri-credit-triangulator-rules-engine/data
+# Load personal environment variables for opencode and other secrets
+if [ -f "$HOME/.env" ]; then
+    source "$HOME/.env"
+fi
