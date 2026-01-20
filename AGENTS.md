@@ -13,22 +13,22 @@ make -n install
 
 # Optionally, check dotfiles for syntax issues (no standalone *.sh scripts)
 # Example: run shellcheck on a config file (if shellcheck is available)
-shellcheck .aliases
-shellcheck .zshenv
+shellcheck aliases/.aliases
+shellcheck zsh/.zshenv
 # etc.
 ```
 
 ### Testing Manual Sourcing
 ```bash
 # Verify alias files can be sourced without errors (Zsh only recommended)
-zsh -c "source .aliases"
-zsh -c "source .git_aliases"
-zsh -c "source .node_aliases"
-zsh -c "source .docker_aliases"
-zsh -c "source .symfony_aliases"
+zsh -c "source aliases/.aliases"
+zsh -c "source aliases/.git_aliases"
+zsh -c "source aliases/.node_aliases"
+zsh -c "source aliases/.docker_aliases"
+zsh -c "source aliases/.symfony_aliases"
 
 # Test configuration loading
-zsh -c "source .zshenv"
+zsh -c "source zsh/.zshenv"
 ```
 
 ### Single Test Execution
@@ -36,10 +36,10 @@ There are no formal unit tests. For quick manual checks:
 
 ```bash
 # Test a specific alias or function by sourcing and executing
-zsh -c "source .aliases && mkcd /tmp/test_dir && pwd"
+zsh -c "source aliases/.aliases && mkcd /tmp/test_dir && pwd"
 
 # Test environment variable loading
-zsh -c "source .zshenv && echo \$JAVA_HOME"
+zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 ```
 
 ## Code Style Guidelines
@@ -170,8 +170,8 @@ This repository assumes:
 After cloning this repository:
 1. Run `make install` to install configurations (backs up existing `.zshrc` with a timestamp)
 2. Source configurations: `source ~/.zshrc` (or open a new shell)
-3. Copy `.env.example` to `$HOME/.env` and edit as needed for secrets
-4. OpenCode-specific config: `opencode.json` copied to `$HOME/.config/opencode/opencode.json` (Makefile will handle this).
+3. Copy `env/.env.example` to `$HOME/.env` and edit as needed for secrets
+4. AI-specific config: `ai/opencode.json` copied to `$HOME/.config/opencode/opencode.json` (Makefile will handle this).
 5. Verify setup: ensure `$JAVA_HOME` is set (for example, run `echo "$JAVA_HOME"`)
 
 ## Common Patterns
