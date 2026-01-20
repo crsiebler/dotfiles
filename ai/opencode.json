@@ -39,6 +39,14 @@
             },
             "type": "local"
         },
+        "playwright": {
+            "command": [
+                "npx",
+                "@playwright/mcp@latest"
+            ],
+            "enabled": true,
+            "type": "local"
+        },
         "postgresql": {
             "command": [
                 "node",
