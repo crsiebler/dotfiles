@@ -6,9 +6,9 @@
                 "node",
                 "{env:HOME}/Repositories/mcp-suite/servers/github/dist/servers/github/src/index.js"
             ],
-            "enabled": true,
+            "enabled": false,
             "environment": {
-                "GITHUB_TOKEN": "{env:GITHUB_TOKEN}"
+                "GITHUB_TOKEN": "{env:GITHUB_API_TOKEN}"
             },
             "type": "local"
         },
