@@ -1,84 +1,76 @@
 # AGENTS.md - Dotfiles Repository Guidelines
 
-This document provides guidelines for agents working in this dotfiles repository. These dotfiles contain shell configurations, aliases, and scripts primarily for Zsh/bash environments.
+This document provides guidelines for agents working in this dotfiles repository. These dotfiles contain shell configurations, aliases, and scripts primarily for Zsh environments.
 
 ## Build/Lint/Test Commands
 
-Since this is a configuration repository rather than a compiled application, traditional build processes don't apply. However, the following commands are relevant for validation and testing:
+Since this is a configuration repository, traditional build processes do not apply. There are no formal automated validation or testing targets. Manual validation/testing can be performed as follows:
 
-### Validation Commands
+### Manual Validation
 ```bash
-# Check Makefile syntax
+# Check Makefile syntax (dry run of install)
 make -n install
 
-# Validate all shell scripts in the repository
-find . -name "*.sh" -exec bash -n {} \;
-
-# Check for common shell scripting issues (if shellcheck is available)
-find . -name "*.sh" -exec shellcheck {} \;
+# Optionally, check dotfiles for syntax issues (no standalone *.sh scripts)
+# Example: run shellcheck on a config file (if shellcheck is available)
+shellcheck .aliases
+shellcheck .zshenv
+# etc.
 ```
 
-### Testing Commands
+### Testing Manual Sourcing
 ```bash
-# Test the install (dry run - check what would be copied)
-make dry-run
-
-# Verify alias files can be sourced without errors
-bash -c "source .aliases"
-bash -c "source .git_aliases"
-bash -c "source .node_aliases"
-bash -c "source .docker_aliases"
-bash -c "source .symfony_aliases"
+# Verify alias files can be sourced without errors (Zsh only recommended)
+zsh -c "source .aliases"
+zsh -c "source .git_aliases"
+zsh -c "source .node_aliases"
+zsh -c "source .docker_aliases"
+zsh -c "source .symfony_aliases"
 
 # Test configuration loading
 zsh -c "source .zshenv"
 ```
 
 ### Single Test Execution
-There are no formal unit tests in this repository. For testing individual components:
+There are no formal unit tests. For quick manual checks:
 
 ```bash
-# Test a specific alias by sourcing and executing
-bash -c "source .aliases && mkcd /tmp/test_dir && pwd"
+# Test a specific alias or function by sourcing and executing
+zsh -c "source .aliases && mkcd /tmp/test_dir && pwd"
 
 # Test environment variable loading
-bash -c "source .zshenv && echo \$JAVA_HOME"
+zsh -c "source .zshenv && echo \$JAVA_HOME"
 ```
 
 ## Code Style Guidelines
 
-### Shell Scripts
-
+### Zsh Dotfiles
 #### File Structure
-- Always include shebang: `#!/bin/bash`
-- Use descriptive comments at the top explaining the script's purpose
-- Keep scripts simple and focused on a single responsibility
-- Exit with appropriate status codes (0 for success, non-zero for failure)
+- Include meaningful comments explaining each section or alias group
+- Keep files simple and focused on a clear purpose
 
 #### Naming Conventions
-- Use lowercase with underscores for function names: `mkcd()`, `urlencode()`
-- Use lowercase for variable names: `old_lc_collate`, `length`
+- Use lowercase with underscores for function names (`mkcd()`)
+- Use lowercase for variable names (`old_lc_collate`, `length`)
 - Alias names should be short but descriptive: `hs`, `myip`, `gac`, `nis`
-- File names for configuration use dot prefix: `.zshrc`, `.aliases`
+- File names for configuration use dot prefix: `.zshrc`, `.aliases`, etc.
 
 #### Formatting
-- Use consistent indentation (prefer tabs for shell scripts)
+- Use consistent indentation
 - Use spaces around operators: `if [ $# -eq 0 ]`
-- Break long lines for readability (aim for < 80 characters)
+- Break long lines for readability (< 80 characters)
 - Use blank lines to separate logical sections
 
 #### Error Handling
 - Check for file existence before sourcing: `if [ -f ~/.aliases ]; then`
-- Use `set -e` in scripts to exit on first error (if appropriate)
-- Provide meaningful error messages when operations fail
+- Provide meaningful feedback if operations fail
 - Handle edge cases gracefully
 
 #### Best Practices
-- Quote variables to prevent word splitting: `"$1"`, `"${1}"`
+- Quote variables: `"$1"`, `"${1}"`
 - Use `local` for function variables to avoid polluting global scope
 - Prefer `printf` over `echo` for portability
-- Use descriptive variable names that explain their purpose
-- Avoid hardcoded paths; use variables or relative paths
+- Avoid hardcoded paths where possible
 
 ### Configuration Files
 
@@ -90,12 +82,10 @@ bash -c "source .zshenv && echo \$JAVA_HOME"
 
 #### Environment Files (.zshenv)
 - Load aliases conditionally to avoid errors if files don't exist
-- Use clear section headers for different types of configurations
-- Keep environment variables organized by category
+- Organize environment variables clearly by category
+- Sets `JAVA_HOME=/usr/bin/java` by default (customize as needed)
 
 ### Aliases
-
-#### General Aliases (.aliases)
 - Keep aliases simple and focused
 - Use descriptive names that indicate the command's purpose
 - Group related aliases together
@@ -103,26 +93,26 @@ bash -c "source .zshenv && echo \$JAVA_HOME"
 
 #### Specialized Aliases (.git_aliases, .node_aliases, etc.)
 - Prefix with tool name if not obvious: `gac` for git add commit
-- Keep alias definitions to one line when possible
-- Use consistent naming patterns within each category
+- The provided `gac` alias does not include a commit message; users should edit it to add their message
+- Use consistent naming and grouping in each alias file
 
 ### Comments
 - Use `#` for single-line comments
-- Place comments above the code they explain
+- Place comments above the code/alias they explain
 - Keep comments concise but informative
 - Comment complex logic or non-obvious operations
 
 ### File Organization
 - Keep related configurations in separate files
-- Use consistent naming patterns (.tool_aliases)
-- Maintain alphabetical ordering where appropriate
+- Use consistent naming patterns (`.tool_aliases`)
 - Document file purposes in README.md
 
 ### Security Considerations
-- Never store secrets or credentials in dotfiles
+- Never store secrets or credentials directly in dotfiles
 - Be cautious with `sudo` commands in aliases
 - Validate URLs and commands before execution
 - Use safe practices for file operations (check existence, permissions)
+- Secrets should go in `$HOME/.env`, which is never tracked by git
 
 ### Git Workflow
 - Commit related changes together
@@ -134,31 +124,33 @@ bash -c "source .zshenv && echo \$JAVA_HOME"
 - Regularly review and update aliases for relevance
 - Remove unused or outdated configurations
 - Keep dependencies documented
-- Test configurations across different environments when possible
+- Test configurations across different environments where possible
 
 ## Development Workflow
 
 1. Make changes to configuration files
 2. Test changes locally: `source ~/.zshrc`
-3. Run validation: `bash -n script.sh`
-4. Test functionality: `bash -c "source .aliases && test_alias"`
+3. Run validation as appropriate
+4. Test aliases and environment: `zsh -c "source .aliases && test_alias"`
 5. Commit with descriptive message
 6. Update documentation if needed
 
 ## Dependencies
 
 This repository assumes:
-- Zsh as the primary shell
+- Zsh as the required shell
 - Oh My Zsh framework
 - Standard Unix tools (bash, cp, mkdir, etc.)
-- Optional: shellcheck for linting
+- Optional: shellcheck for linting (run manually, not automated)
 
 ## Environment Setup
 
 After cloning this repository:
-1. Run `make install` to install configurations (backs up existing .zshrc with timestamp)
-2. Source configurations: `source ~/.zshrc`
-3. Verify setup: `echo $JAVA_HOME`
+1. Run `make install` to install configurations (backs up existing `.zshrc` with a timestamp)
+2. Source configurations: `source ~/.zshrc` (or open a new shell)
+3. Copy `.env.example` to `$HOME/.env` and edit as needed for secrets
+4. OpenCode-specific config: `opencode.json` copied to `$HOME/.config/opencode/opencode.json` (Makefile will handle this).
+5. Verify setup: ensure `$JAVA_HOME` is set (for example, run `echo "$JAVA_HOME"`)
 
 ## Common Patterns
 
@@ -172,10 +164,9 @@ fi
 
 ### Function Definitions
 ```bash
-function_name() {
-    # Function body
-    local var="$1"
-    # ... logic ...
+mkcd() {
+    mkdir -p "$1"
+    cd "$1"
 }
 ```
 
@@ -188,4 +179,4 @@ else
 fi
 ```
 
-Remember: These dotfiles are personal configurations. Changes should be tested thoroughly before deployment to avoid breaking shell functionality.
+Remember: These dotfiles are personal Zsh configurations. Changes should be tested thoroughly before deployment to avoid breaking shell functionality. Bash users will need to adapt or use at their own risk.
