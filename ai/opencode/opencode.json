@@ -1,5 +1,6 @@
 {
     "$schema": "https://opencode.ai/config.json",
+    "model": "grok-code-fast-1",
     "mcp": {
         "chrome": {
             "command": [

@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Ralph CLI - Autonomous AI coding loop
+# Runs OpenCode with the Ralph prompt for autonomous feature implementation
+
+set -e
+
+# Default values
+MAX_ITERATIONS=10
+
+# Parse command line options
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --max-iterations)
+      MAX_ITERATIONS="$2"
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: ralph [options]"
+      echo ""
+      echo "Options:"
+      echo "  --max-iterations N    Maximum number of iterations to run (default: 10)"
+      echo "  -h, --help           Show this help message"
+      echo ""
+      echo "Ralph is an autonomous AI coding agent that iteratively processes"
+      echo "user stories from a PRD until completion."
+      echo ""
+      echo "Requirements:"
+      echo "  - prd.json file in current directory"
+      echo "  - OpenCode installed and configured"
+      echo "  - Git repository with proper setup"
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1"
+      echo "Use --help for usage information"
+      exit 1
+      ;;
+  esac
+done
+
+# Check if prd.json exists
+if [ ! -f "prd.json" ]; then
+  echo "Error: prd.json not found in current directory"
+  echo "Use the /ralph command in OpenCode to create prd.json from a PRD"
+  exit 1
+fi
+
+# Check if opencode is available
+if ! command -v opencode &> /dev/null; then
+  echo "Error: opencode command not found"
+  echo "Please install OpenCode first: https://opencode.ai/install"
+  exit 1
+fi
+
+# Set environment variable for max iterations
+export RALPH_MAX_ITERATIONS="$MAX_ITERATIONS"
+
+# Check if ralph.md exists in the installed location
+RALPH_PROMPT_FILE="$HOME/.config/opencode/ralph.md"
+if [ ! -f "$RALPH_PROMPT_FILE" ]; then
+  echo "Error: $RALPH_PROMPT_FILE not found"
+  echo "Please run 'make install' to set up the Ralph configuration"
+  exit 1
+fi
+
+# Create a temporary file with MAX_ITERATIONS substituted
+TEMP_PROMPT_FILE=$(mktemp)
+sed "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" "$RALPH_PROMPT_FILE" > "$TEMP_PROMPT_FILE"
+
+echo "Starting Ralph autonomous AI loop..."
+echo "Using prompt from $RALPH_PROMPT_FILE"
+echo ""
+
+# Run OpenCode with the processed prompt file
+opencode run --file "$TEMP_PROMPT_FILE"
+
+# Clean up temporary file
+rm -f "$TEMP_PROMPT_FILE"
