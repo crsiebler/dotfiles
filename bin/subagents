@@ -1,0 +1,631 @@
+#!/bin/bash
+
+# Subagents CLI - List, search, and fetch agent definitions from ~/.config/opencode/agents/
+# Pure bash implementation - no Python dependency
+# Version: 2.0 - Production ready with bash best practices
+
+# Exit on error, treat unset variables as error, pipe failures (compatibility check)
+if bash -c 'set -euo pipefail; exit 0' 2>/dev/null; then
+    set -euo pipefail
+else
+    # Fallback for older bash versions
+    set -e
+    set -u
+    set -o pipefail 2>/dev/null || true
+fi
+
+# Global configuration
+readonly AGENTS_DIR="${HOME}/.config/opencode/agents"
+readonly SCRIPT_NAME="$(basename "${0}")"
+
+# Terminal capability detection
+if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then
+    readonly COLORS_AVAILABLE=true
+    readonly RED="$(tput setaf 1 2>/dev/null || echo '')"
+    readonly GREEN="$(tput setaf 2 2>/dev/null || echo '')"
+    readonly YELLOW="$(tput setaf 3 2>/dev/null || echo '')"
+    readonly BLUE="$(tput setaf 4 2>/dev/null || echo '')"
+    readonly BOLD="$(tput bold 2>/dev/null || echo '')"
+    readonly RESET="$(tput sgr0 2>/dev/null || echo '')"
+else
+    readonly COLORS_AVAILABLE=false
+    readonly RED="" GREEN="" YELLOW="" BLUE="" BOLD="" RESET=""
+fi
+
+# Simple cache using temporary files for compatibility
+readonly CACHE_DIR="/tmp/.subagents_cache_$$"
+mkdir -p "${CACHE_DIR}"
+
+# Cleanup function
+cleanup_cache() {
+    if [[ -d "${CACHE_DIR}" ]]; then
+        rm -rf "${CACHE_DIR}"
+    fi
+}
+
+# Set up cleanup on exit
+trap cleanup_cache EXIT INT TERM
+
+# Utility functions
+is_color_enabled() {
+    [[ "${COLORS_AVAILABLE}" == "true" ]]
+}
+
+colorize() {
+    local color="${1}"
+    local text="${2}"
+    if is_color_enabled && [[ -n "${!color:-}" ]]; then
+        printf '%s%s%s' "${!color}" "${text}" "${RESET}"
+    else
+        printf '%s' "${text}"
+    fi
+}
+
+print_error() {
+    printf '%s %s\n' "$(colorize RED '❌')" "${1}" >&2
+}
+
+print_success() {
+    printf '%s %s\n' "$(colorize GREEN '✅')" "${1}"
+}
+
+print_info() {
+    printf '%s %s\n' "$(colorize BLUE 'ℹ️')" "${1}"
+}
+
+print_warning() {
+    printf '%s %s\n' "$(colorize YELLOW '⚠️')" "${1}"
+}
+
+print_header() {
+    printf '%s%s%s\n' "$(colorize BOLD '##')" "${1}" "$(colorize BOLD '')"
+}
+
+# Safe input validation
+validate_input() {
+    local input="${1}"
+    local pattern="${2:-}"
+    
+    if [[ -z "${input}" ]]; then
+        return 1
+    fi
+    
+    if [[ -n "${pattern}" ]] && ! [[ "${input}" =~ ${pattern} ]]; then
+        return 1
+    fi
+    
+    return 0
+}
+
+# Safe file operations
+safe_file_exists() {
+    local file="${1}"
+    [[ -n "${file}" && -f "${file}" && -r "${file}" ]]
+}
+
+safe_dir_exists() {
+    local dir="${1}"
+    [[ -n "${dir}" && -d "${dir}" && -r "${dir}" ]]
+}
+
+# Get category from filename prefix
+get_category_from_filename() {
+    local filename="${1}"
+    
+    validate_input "${filename}" '^[a-zA-Z0-9_-]+$' || {
+        printf '%s' "General"
+        return
+    }
+    
+    case "${filename}" in
+        backend-*) printf '%s' "Backend Development" ;;
+        frontend-*) printf '%s' "Frontend Development" ;;
+        devops-*) printf '%s' "DevOps & Infrastructure" ;;
+        qa-*) printf '%s' "Quality & Testing" ;;
+        security-*) printf '%s' "Security" ;;
+        data-*) printf '%s' "Data & Analytics" ;;
+        ui-*) printf '%s' "UI/UX Design" ;;
+        mobile-*) printf '%s' "Mobile Development" ;;
+        cloud-*) printf '%s' "Cloud & Platform" ;;
+        docs-*) printf '%s' "Documentation" ;;
+        *) printf '%s' "General" ;;
+    esac
+}
+
+# Optimized YAML parsing
+parse_yaml_field() {
+    local content="${1}"
+    local field="${2}"
+    
+    # Extract field value more efficiently with sed
+    # Handle both quoted and unquoted values
+    printf '%s' "${content}" | sed -n "
+        /^${field}:/{
+            s/^${field}:[[:space:]]*//
+            s/^[\"']\([^\"']*\)[\"']$/\1/
+            p
+            q
+        }
+    " 2>/dev/null || printf ''
+}
+
+# Enhanced agent info parsing with file-based caching
+parse_agent_info() {
+    local file="${1}"
+    local cache_file="${CACHE_DIR}/$(printf '%s' "${file}" | tr '/' '_')"
+    
+    if ! safe_file_exists "${file}"; then
+        local filename
+        filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+        printf '%s|%s|%s' "${filename}" "No description available" ""
+        return
+    fi
+    
+    # Check cache first
+    if safe_file_exists "${cache_file}"; then
+        cat "${cache_file}"
+        return
+    fi
+    
+    # Read file once for efficiency
+    local content
+    if ! content="$(cat "${file}" 2>/dev/null)"; then
+        local filename
+        filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+        printf '%s|%s|%s' "${filename}" "Error reading file" ""
+        return
+    fi
+    
+    local filename
+    filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+    
+    # Parse YAML frontmatter
+    local name="${filename}"
+    local description="No description available"
+    local tools=""
+    
+    name="$(parse_yaml_field "${content}" "name" || printf '%s' "${filename}")"
+    description="$(parse_yaml_field "${content}" "description" || printf '%s' "No description available")"
+    tools="$(parse_yaml_field "${content}" "tools" || printf '%s' "")"
+    
+    # Sanitize output
+    name="${name//[$'\t\r\n']/}"
+    description="${description//[$'\t\r\n']/}"
+    tools="${tools//[$'\t\r\n']/}"
+    
+    local result="${name}|${description}|${tools}"
+    printf '%s' "${result}" > "${cache_file}"
+    
+    printf '%s' "${result}"
+}
+
+# Initialize file cache with safe globbing
+get_agent_files() {
+    local cache_file="${CACHE_DIR}/agent_files_list"
+    
+    if safe_file_exists "${cache_file}"; then
+        cat "${cache_file}"
+        return
+    fi
+    
+    if ! safe_dir_exists "${AGENTS_DIR}"; then
+        return 1
+    fi
+    
+    # Use find with proper handling of special filenames
+    local files
+    if files="$(find "${AGENTS_DIR}" -name "*.md" -type f 2>/dev/null | sort)"; then
+        printf '%s' "${files}" > "${cache_file}"
+        printf '%s' "${files}"
+    else
+        return 1
+    fi
+}
+
+# Check if agents directory is available and accessible
+check_agents_directory() {
+    if ! safe_dir_exists "${AGENTS_DIR}"; then
+        print_error "Agents directory not found or not accessible: ${AGENTS_DIR}"
+        printf '\n'
+        print_info "To set up subagents:"
+        printf '  1. Create the directory: %s\n' "mkdir -p \"${AGENTS_DIR}\""
+        printf '  2. Add agent definition files as .md files with YAML frontmatter\n'
+        printf '  3. Run: make install\n'
+        return 1
+    fi
+}
+
+# Helper function to group files by category
+group_files_by_category() {
+    local files_list="${1}"
+    local temp_groups="${CACHE_DIR}/temp_groups"
+    rm -f "${temp_groups}"
+    
+    while IFS= read -r file; do
+        if [[ -n "${file}" ]]; then
+            local filename
+            filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+            local category
+            category="$(get_category_from_filename "${filename}")"
+            printf '%s|%s\n' "${category}" "${file}" >> "${temp_groups}"
+        fi
+    done <<< "${files_list}"
+    
+    cat "${temp_groups}"
+}
+
+# Optimized list function with caching
+list_agents() {
+    print_info "Scanning agents directory: ${AGENTS_DIR}"
+    
+    if ! check_agents_directory; then
+        return 1
+    fi
+    
+    local files_list
+    if ! files_list="$(get_agent_files)"; then
+        print_error "Failed to read agent files"
+        return 1
+    fi
+    
+    if [[ -z "${files_list}" ]]; then
+        print_warning "No agent files found in ${AGENTS_DIR}"
+        return 0
+    fi
+    
+    local file_count
+    file_count="$(printf '%s\n' "${files_list}" | grep -c . || printf '0')"
+    
+    printf '\n'
+    print_success "Found ${file_count} agents:"
+    printf '\n'
+    
+    # Group files by category
+    local grouped_files
+    grouped_files="$(group_files_by_category "${files_list}")"
+    
+    # Extract unique categories and sort them
+    local categories
+    categories="$(printf '%s\n' "${grouped_files}" | cut -d'|' -f1 | sort -u)"
+    
+    # Display by category
+    while IFS= read -r category; do
+        if [[ -n "${category}" ]]; then
+            print_header " ${category}"
+            printf '\n'
+            
+            # Get files for this category
+            local category_files
+            category_files="$(printf '%s\n' "${grouped_files}" | grep "^${category}|" | cut -d'|' -f2- | sort)"
+            
+            # Process files for this category
+            while IFS= read -r file; do
+                if [[ -n "${file}" ]]; then
+                    local agent_info
+                    agent_info="$(parse_agent_info "${file}")"
+                    
+                    local name description tools
+                    IFS='|' read -r name description tools <<< "${agent_info}"
+                    
+                    # If name is empty or just the filename with .md, use filename without extension
+                    if [[ -z "${name}" || "${name}" == *".md" ]]; then
+                        name="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+                        # Convert filename to more readable format
+                        name="$(printf '%s' "${name}" | sed 's/-/ /g' | sed 's/\b\([a-z]\)/\U\1/g')"
+                    fi
+                    
+                    printf '  • %s' "$(colorize BOLD "${name}")"
+                    printf ': %s\n' "${description}"
+                    
+                    if [[ -n "${tools}" ]]; then
+                        printf '    %s %s\n' "$(colorize BLUE "Tools:")" "${tools}"
+                    fi
+                fi
+            done <<< "${category_files}"
+            printf '\n'
+        fi
+    done <<< "${categories}"
+}
+
+# Enhanced search function
+search_agents() {
+    local query="${1:-}"
+    
+    if ! validate_input "${query}"; then
+        print_error "Please provide a valid search query"
+        printf '\n'
+        printf 'Usage: %s search <query>\n' "${SCRIPT_NAME}"
+        return 1
+    fi
+    
+    print_info "Searching for agents matching: ${query}"
+    
+    if ! check_agents_directory; then
+        return 1
+    fi
+    
+    local files_list
+    if ! files_list="$(get_agent_files)"; then
+        print_error "Failed to read agent files"
+        return 1
+    fi
+    
+    if [[ -z "${files_list}" ]]; then
+        print_warning "No agent files found in ${AGENTS_DIR}"
+        return 0
+    fi
+    
+    local -a matches=()
+    local query_lower
+    query_lower="$(printf '%s' "${query}" | tr '[:upper:]' '[:lower:]')"
+    
+    # Search in all files
+    while IFS= read -r file; do
+        if [[ -n "${file}" ]]; then
+            local agent_info
+            agent_info="$(parse_agent_info "${file}")"
+            
+            local name description tools
+            IFS='|' read -r name description tools <<< "${agent_info}"
+            
+            local filename
+            filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+            local category
+            category="$(get_category_from_filename "${filename}")"
+            
+            # Case-insensitive search
+            local search_text
+            search_text="$(printf '%s %s %s %s' "${name}" "${description}" "${tools}" "${filename}" | tr '[:upper:]' '[:lower:]')"
+            
+            if [[ "${search_text}" == *"${query_lower}"* ]]; then
+                matches+=("${file}|${name}|${description}|${category}")
+            fi
+        fi
+    done <<< "${files_list}"
+    
+    if [[ ${#matches[@]} -eq 0 ]]; then
+        print_warning "No agents found matching '${query}'"
+        printf '\n'
+        print_info "Try these alternatives:"
+        printf '  - Search for different keywords\n'
+        printf '  - Use \"%s list\" to see all available agents\n' "${SCRIPT_NAME}"
+        printf '  - Check for typos in your search query\n'
+        return 0
+    fi
+    
+    printf '\n'
+    print_success "Found ${#matches[@]} matching agents:"
+    printf '\n'
+    
+    # Group matches by category for better organization
+    local temp_matches="${CACHE_DIR}/search_matches"
+    rm -f "${temp_matches}"
+    
+    for match in "${matches[@]}"; do
+        if [[ -n "${match}" ]]; then
+            local category
+            category="$(printf '%s' "${match}" | cut -d'|' -f4)"
+            printf '%s|%s\n' "${category}" "${match}" >> "${temp_matches}"
+        fi
+    done
+    
+    # Extract unique categories and sort them
+    local search_categories
+    search_categories="$(cut -d'|' -f1 "${temp_matches}" | sort -u)"
+    
+    # Display results by category
+    while IFS= read -r category; do
+        if [[ -n "${category}" ]]; then
+            print_header " ${category}"
+            printf '\n'
+            
+            # Get matches for this category
+            local category_matches
+            category_matches="$(grep "^${category}|" "${temp_matches}" | cut -d'|' -f2- | sort)"
+            
+            while IFS= read -r match; do
+                if [[ -n "${match}" ]]; then
+                    local file name description
+                    IFS='|' read -r file name description _ <<< "${match}"
+                    local filename
+                    filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+                    
+                    # If name is empty or just the filename with .md, use filename without extension
+                    if [[ -z "${name}" || "${name}" == *".md" ]]; then
+                        name="${filename}"
+                        # Convert filename to more readable format
+                        name="$(printf '%s' "${name}" | sed 's/-/ /g' | sed 's/\b\([a-z]\)/\U\1/g')"
+                    fi
+                    
+                    printf '  • %s' "$(colorize BOLD "${name}")"
+                    printf ': %s\n' "${description}"
+                    printf '    %s %s\n' "$(colorize BLUE "File:")" "${filename}.md"
+                fi
+            done <<< "${category_matches}"
+            printf '\n'
+        fi
+    done <<< "${search_categories}"
+}
+
+# Enhanced fetch function with better error handling
+fetch_agent() {
+    local agent_name="${1:-}"
+    
+    if ! validate_input "${agent_name}" '^[a-zA-Z0-9_-]+$'; then
+        print_error "Please provide a valid agent name (alphanumeric, underscore, hyphen only)"
+        printf '\n'
+        printf 'Usage: %s fetch <name>\n' "${SCRIPT_NAME}"
+        return 1
+    fi
+    
+    print_info "Fetching agent: ${agent_name}"
+    
+    if ! check_agents_directory; then
+        return 1
+    fi
+    
+    local files_list
+    if ! files_list="$(get_agent_files)"; then
+        print_error "Failed to read agent files"
+        return 1
+    fi
+    
+    if [[ -z "${files_list}" ]]; then
+        print_warning "No agent files found in ${AGENTS_DIR}"
+        return 0
+    fi
+    
+    local exact_match=""
+    local -a partial_matches=()
+    
+    # Search for matches
+    while IFS= read -r file; do
+        if [[ -n "${file}" ]]; then
+            local agent_info
+            agent_info="$(parse_agent_info "${file}")"
+            
+            local name description tools
+            IFS='|' read -r name description tools <<< "${agent_info}"
+            
+            local filename
+            filename="$(basename "${file}" ".md" 2>/dev/null || printf '%s' "unknown")"
+            
+            # Check for exact matches (filename or name field)
+            if [[ "${name}" == "${agent_name}" ]] || [[ "${filename}" == "${agent_name}" ]]; then
+                exact_match="${file}"
+                break
+            fi
+            
+            # Check for partial matches (case-insensitive)
+            local name_lower filename_lower query_lower
+            name_lower="$(printf '%s' "${name}" | tr '[:upper:]' '[:lower:]')"
+            filename_lower="$(printf '%s' "${filename}" | tr '[:upper:]' '[:lower:]')"
+            query_lower="$(printf '%s' "${agent_name}" | tr '[:upper:]' '[:lower:]')"
+            
+            if [[ "${name_lower}" == *"${query_lower}"* ]] || [[ "${filename_lower}" == *"${query_lower}"* ]]; then
+                local category
+                category="$(get_category_from_filename "${filename}")"
+                partial_matches+=("${name}|${filename}|${category}")
+            fi
+        fi
+    done <<< "${files_list}"
+    
+    if [[ -n "${exact_match}" ]]; then
+        if safe_file_exists "${exact_match}"; then
+            print_success "Found agent: $(basename "${exact_match}" ".md")"
+            printf '\n'
+            
+            # Display with syntax highlighting if available
+            if command -v bat >/dev/null 2>&1; then
+                bat --language=markdown --style=grid --line-range=:50 "${exact_match}" 2>/dev/null || cat "${exact_match}"
+            elif command -v less >/dev/null 2>&1 && [[ -t 1 ]]; then
+                cat "${exact_match}" | less -R -F -X -K
+            else
+                cat "${exact_match}"
+            fi
+            return 0
+        else
+            print_error "Agent file found but not accessible: ${exact_match}"
+            return 1
+        fi
+    fi
+    
+    if [[ ${#partial_matches[@]} -gt 0 ]]; then
+        print_warning "Agent '${agent_name}' not found exactly. Did you mean:"
+        printf '\n'
+        
+        # Sort and limit suggestions
+        local suggestion_count=0
+        local max_suggestions=10
+        
+        printf '%s\n' "${partial_matches[@]}" | sort | while IFS='|' read -r name filename category; do
+            if [[ ${suggestion_count} -lt ${max_suggestions} ]]; then
+                printf '  • %s (%s)\n' "$(colorize BOLD "${name}")" "${category}"
+                suggestion_count=$((suggestion_count + 1))
+            fi
+        done
+        
+        if [[ ${#partial_matches[@]} -gt 10 ]]; then
+            printf '  ... and %d more matches\n' $((${#partial_matches[@]} - 10))
+        fi
+        
+        printf '\n'
+        print_info "Use \"%s list\" to see all available agents" "${SCRIPT_NAME}"
+        return 1
+    fi
+    
+    print_error "Agent '${agent_name}' not found"
+    printf '\n'
+    print_info "Use \"%s list\" to see all available agents" "${SCRIPT_NAME}"
+    return 1
+}
+
+# Enhanced help with better formatting
+show_help() {
+    printf '%s - Manage OpenCode subagents\n' "$(colorize BOLD "${SCRIPT_NAME}")"
+    printf '\n'
+    printf '%s\n' "$(colorize BOLD "Usage:")"
+    printf '  %s <command> [arguments]\n' "${SCRIPT_NAME}"
+    printf '\n'
+    printf '%s\n' "$(colorize BOLD "Commands:")"
+    printf '  %s                    Show all configured subagents organized by category\n' "$(colorize GREEN "list")"
+    printf '  %s <query>          Find subagents by keyword in name, description, or tools\n' "$(colorize GREEN "search")"
+    printf '  %s <name>           Get full definition for a specific subagent\n' "$(colorize GREEN "fetch")"
+    printf '  %s                    Show this help message\n' "$(colorize GREEN "help")"
+    printf '\n'
+    printf '%s\n' "$(colorize BOLD "Examples:")"
+    printf '  %s list\n' "${SCRIPT_NAME}"
+    printf '  %s search security\n' "${SCRIPT_NAME}"
+    printf '  %s fetch frontend-developer\n' "${SCRIPT_NAME}"
+    printf '\n'
+    printf '%s\n' "$(colorize BOLD "Agent files location:")"
+    printf '  %s\n' "${AGENTS_DIR}"
+    printf '\n'
+    printf '%s\n' "$(colorize BLUE "Note:")"
+    printf '  This tool works with agent definition files in Markdown format\n'
+    printf '  containing YAML frontmatter with name, description, and tools fields.\n'
+}
+
+# Enhanced main function with better error handling
+main() {
+    # Validate environment
+    if [[ -z "${HOME:-}" ]]; then
+        print_error "HOME environment variable not set"
+        exit 1
+    fi
+    
+    # Handle signals gracefully
+    trap 'print_warning "Operation interrupted"; cleanup_cache; exit 130' INT TERM
+    
+    local command="${1:-}"
+    
+    case "${command}" in
+        list)
+            list_agents
+            ;;
+        search)
+            search_agents "${2:-}"
+            ;;
+        fetch)
+            fetch_agent "${2:-}"
+            ;;
+        help|--help|-h)
+            show_help
+            ;;
+        "")
+            print_error "No command provided"
+            printf '\n'
+            show_help
+            exit 1
+            ;;
+        *)
+            print_error "Unknown command: ${command}"
+            printf '\n'
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+# Execute main function with all arguments
+main "$@"

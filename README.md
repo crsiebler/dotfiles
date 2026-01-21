@@ -36,11 +36,11 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 
 ### Setup
 
-After running `make install`, the Ralph configuration is automatically set up:
+After running `make install`, Ralph configuration is automatically set up:
 
 - OpenCode skills and commands are installed to `~/.config/opencode/`
 - The Ralph prompt is installed to `~/.config/opencode/ralph.md` (customizable)
-- The `ralph` CLI tool is installed to `/usr/bin/ralph`
+- The `ralph` CLI tool is installed to `/usr/local/bin/ralph`
 
 ### Usage
 
@@ -55,12 +55,61 @@ After running `make install`, the Ralph configuration is automatically set up:
 - Projects must be git repositories
 - `grok-code-fast-1` model should be available for optimal performance
 
+## Subagents CLI Tool
+
+This dotfiles repository includes a CLI tool for managing OpenCode subagents, providing access to 130+ specialized agents organized by category.
+
+### Features
+
+- **List**: View all configured subagents organized by category (Backend, Frontend, DevOps, Security, etc.)
+- **Search**: Find subagents by keyword in names, descriptions, and tools
+- **Fetch**: Retrieve complete agent definitions with capabilities and tool descriptions
+- **Global Access**: Works from any directory - no path context issues
+- **Pure Bash**: No Python dependency required for operation
+
+### Available Agent Categories
+
+- **Backend Development**: API design, database architecture, performance optimization
+- **Frontend Development**: React, Vue, Angular, UI/UX implementation
+- **DevOps & Infrastructure**: CI/CD, containerization, cloud deployment
+- **Security**: Security auditing, vulnerability assessment, compliance
+- **Data & Analytics**: Data engineering, machine learning, business intelligence
+- **Mobile Development**: iOS, Android, cross-platform development
+- And 6+ additional specialized categories
+
+### Setup
+
+After running `make install`, the subagents CLI is automatically installed to `/usr/local/bin/subagents` and can access agent files from `~/.config/opencode/agents/`.
+
+### Usage
+
+```bash
+# List all agents by category
+subagents list
+
+# Search for specific agents
+subagents search security
+subagents search react
+subagents search database
+
+# Fetch complete agent definition
+subagents fetch frontend-developer
+subagents fetch cli-developer
+
+# Get help
+subagents help
+```
+
+### Integration with OpenCode
+
+The subagents CLI integrates with OpenCode's `/subagents` command. When you use `/subagents list`, `/subagents search <query>`, or `/subagents fetch <name>` in OpenCode, it internally calls the global `subagents` command to access agent definitions regardless of your current working directory.
+
 ## Removing Backup Files (Cleanup)
 
-If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, and `ralph.backup.*`), run the following command:
+If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, `ralph.backup.*`, and `subagents.backup.*`), run the following command:
 
     make clean
 
-This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, and `ralph`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
+This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, `ralph`, and `subagents`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
 
 ---

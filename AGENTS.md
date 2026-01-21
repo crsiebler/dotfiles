@@ -6,6 +6,59 @@ This document provides guidelines for agents working in this dotfiles repository
 
 This repository includes configuration for Ralph, an autonomous AI coding agent that iteratively processes user stories from Product Requirements Documents (PRDs) until completion.
 
+## Subagents CLI Tool
+
+This repository includes a CLI tool for managing OpenCode subagents that resolves the path context issue with the original subagents skill.
+
+### Problem Solved
+
+The original `@ai/opencode/commands/subagents.md` skill had a CLI tool/path context issue where it could only access agent files from the current working directory, but agents are stored in `$HOME/.config/opencode/agents/` regardless of where the command is invoked.
+
+### Solution
+
+**CLI Tool Location**: `bin/subagents` (pure bash implementation) 
+**Installation**: Installed globally to `/usr/local/bin/subagents` via `make install`
+
+### Usage
+
+```bash
+# Works from ANY directory - globally available command
+subagents list                    # Show all agents by category
+subagents search security         # Find security-related agents
+subagents fetch cli-developer     # Get full agent definition
+subagents help                    # Show usage help
+```
+
+### Features
+
+- **Global Access**: Works from any directory after `make install`
+- **Pure Bash**: No Python dependency required - lightweight and fast
+- **Categories agents**: Automatically groups 130+ agents by filename prefixes (backend-, frontend-, etc.)
+- **Search functionality**: Searches in names, descriptions, and tools with case-insensitive matching
+- **Full content fetch**: Retrieves complete agent definitions with YAML frontmatter
+- **Error handling**: Provides helpful guidance and suggestions when agents are not found
+
+### Agent Categories
+
+- **Backend Development**: backend-* files
+- **Frontend Development**: frontend-* files  
+- **DevOps & Infrastructure**: devops-* files
+- **Quality & Testing**: qa-* files
+- **Security**: security-* files
+- **Data & Analytics**: data-* files
+- **UI/UX Design**: ui-* files
+- **Mobile Development**: mobile-* files
+- **Cloud & Platform**: cloud-* files
+- **Documentation**: docs-* files
+- **General**: All other agents
+
+### Skill Updates
+
+The subagents skill has been updated to call the global `subagents` command:
+- **Command**: Uses globally installed `/usr/local/bin/subagents` command
+- **Path Resolution**: Bash script handles `$HOME/.config/opencode/agents/` access from any directory
+- **Integration**: OpenCode skill internally calls `subagents list`, `subagents search`, and `subagents fetch`
+
 ### Ralph Setup
 
 - **Skills**: PRD generation (`ai/opencode/skills/prd/SKILL.md`) and PRD-to-JSON conversion (`ai/opencode/skills/ralph/SKILL.md`)
