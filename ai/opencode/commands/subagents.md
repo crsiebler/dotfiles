@@ -5,7 +5,7 @@ description: "Search, list, and fetch configured subagents"
 
 # Subagents Command
 
-This command triggers the subagents tool to manage configured agents.
+This command triggers the global `subagents` CLI tool to manage configured agents from `$HOME/.config/opencode/agents/`.
 
 ## Usage
 
@@ -16,9 +16,14 @@ Run this command to access the configured subagents:
 
 ## What it does
 
-1. Reads the local agent configuration
-2. Processes your request (list/search/fetch)
-3. Returns information about available subagents
+1. Calls global `subagents` command installed to `/usr/local/bin/subagents`
+2. The CLI tool scans `$HOME/.config/opencode/agents/` for agent definitions
+3. Processes your request (list/search/fetch)
+4. Returns information about available subagents
+
+## Important
+
+The subagents skill calls globally installed `subagents` CLI tool, which provides access to agent files from `$HOME/.config/opencode/agents/` regardless of the current working directory where the command is invoked.
 
 ## Examples
 

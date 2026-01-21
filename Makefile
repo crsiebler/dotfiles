@@ -29,11 +29,23 @@ install:
 	cp bin/ralph /usr/local/bin/ralph
 	chmod +x /usr/local/bin/ralph
 	@echo "Installed ralph CLI to /usr/local/bin/ralph."
-	@echo "Installation complete. Dotfile setup, .env, opencode config, and ralph CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
+	@if [ -f /usr/local/bin/subagents ]; then \
+	  if cp /usr/local/bin/subagents /usr/local/bin/subagents.backup.$$(date +%Y%m%d_%H%M%S); then \
+	    echo "Backed up existing subagents to /usr/local/bin/subagents.backup.*"; \
+	  else \
+	    echo "Error: Failed to back up existing /usr/local/bin/subagents. Aborting installation to avoid data loss."; \
+	    exit 1; \
+	  fi; \
+	fi
+	cp bin/subagents /usr/local/bin/subagents
+	chmod +x /usr/local/bin/subagents
+	@echo "Installed subagents CLI to /usr/local/bin/subagents."
+	@echo "Installation complete. Dotfile setup, .env, opencode config, ralph CLI, and subagents CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
 
 clean:
 	@echo "Removing dotfile backups (.zshrc, .env, ralph)..."
 	@rm -f $${HOME}/.zshrc.backup.*
 	@rm -f $${HOME}/.env.backup.*
 	@rm -f /usr/local/bin/ralph.backup.*
+	@rm -f /usr/local/bin/subagents.backup.*
 	@echo "Backup removal complete."
