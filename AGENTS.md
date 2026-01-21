@@ -2,6 +2,40 @@
 
 This document provides guidelines for agents working in this dotfiles repository. These dotfiles contain shell configurations, aliases, and scripts primarily for Zsh environments.
 
+## Ralph Autonomous AI Loop
+
+This repository includes configuration for Ralph, an autonomous AI coding agent that iteratively processes user stories from Product Requirements Documents (PRDs) until completion.
+
+### Ralph Setup
+
+- **Skills**: PRD generation (`ai/opencode/skills/prd/SKILL.md`) and PRD-to-JSON conversion (`ai/opencode/skills/ralph/SKILL.md`)
+- **Commands**: `/prd` for creating PRDs, `/ralph` for converting PRDs to JSON format
+- **CLI Tool**: `ralph` command installed to `/usr/bin/ralph` with `--max-iterations` option
+- **Configuration**: OpenCode skills and commands installed to `~/.opencode/`
+
+### Using Ralph
+
+1. **Create a PRD**: Use `/prd` command in OpenCode to generate requirements
+2. **Convert to JSON**: Use `/ralph` command to create `prd.json` from the PRD
+3. **Run Autonomous Loop**: Execute `ralph --max-iterations 10` in your project directory
+4. **Monitor Progress**: Check `progress.txt` for iteration logs and `prd.json` for completion status
+
+### Ralph Workflow
+
+- Reads `prd.json` for user stories
+- Implements highest-priority incomplete story
+- Runs quality checks (lint, typecheck, test)
+- Commits with format: `feat: [Story ID] - [Story Title]`
+- Uses `/share` to create OpenCode conversation links for progress tracking
+- Updates progress and repeats until completion
+
+### Quality Requirements for Ralph
+
+- Each story must be completable in one iteration
+- Include "Typecheck passes" in all acceptance criteria
+- UI stories require "Verify in browser using dev-browser skill"
+- Follow existing code patterns and project conventions
+
 ## Build/Lint/Test Commands
 
 Since this is a configuration repository, traditional build processes do not apply. There are no formal automated validation or testing targets. Manual validation/testing can be performed as follows:
