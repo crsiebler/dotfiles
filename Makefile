@@ -20,13 +20,17 @@ install:
 	fi
 	cp ai/opencode/opencode.json $$HOME/.config/opencode/opencode.json
 	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
-	cp -r ai/opencode/* $$HOME/.config/opencode/ 2>/dev/null || true
+	cp -r ai/opencode/* $$HOME/.config/opencode/
 	@echo "Copied OpenCode skills and commands to $$HOME/.config/opencode/."
 	cp ai/ralph.md $$HOME/.config/opencode/ralph.md
 	@echo "Copied ai/ralph.md to $$HOME/.config/opencode/ralph.md."
 	@if [ -f /usr/bin/ralph ]; then \
-	  sudo cp /usr/bin/ralph /usr/bin/ralph.backup.$$(date +%Y%m%d_%H%M%S) 2>/dev/null || true; \
-	  echo "Backed up existing ralph to /usr/bin/ralph.backup.*"; \
+	  if sudo cp /usr/bin/ralph /usr/bin/ralph.backup.$$(date +%Y%m%d_%H%M%S); then \
+	    echo "Backed up existing ralph to /usr/bin/ralph.backup.*"; \
+	  else \
+	    echo "Error: Failed to back up existing /usr/bin/ralph. Aborting installation to avoid data loss."; \
+	    exit 1; \
+	  fi; \
 	fi
 	sudo cp bin/ralph /usr/bin/ralph
 	sudo chmod +x /usr/bin/ralph
@@ -34,8 +38,9 @@ install:
 	@echo "Installation complete. Dotfile setup, .env, opencode config, and ralph CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
 
 clean:
-	@echo "Removing dotfile backups (.zshrc, .env, ralph)..."
+	@echo "Removing dotfile backups (.zshrc, .env, opencode.json, ralph)..."
 	@rm -f $${HOME}/.zshrc.backup.*
 	@rm -f $${HOME}/.env.backup.*
+	@rm -f $${HOME}/.config/opencode/opencode.json.backup.*
 	@sudo rm -f /usr/bin/ralph.backup.*
 	@echo "Backup removal complete."

@@ -11,7 +11,7 @@ This repository includes configuration for Ralph, an autonomous AI coding agent 
 - **Skills**: PRD generation (`ai/opencode/skills/prd/SKILL.md`) and PRD-to-JSON conversion (`ai/opencode/skills/ralph/SKILL.md`)
 - **Commands**: `/prd` for creating PRDs, `/ralph` for converting PRDs to JSON format
 - **CLI Tool**: `ralph` command installed to `/usr/bin/ralph` with `--max-iterations` option
-- **Configuration**: OpenCode skills and commands installed to `~/.opencode/`
+- **Configuration**: OpenCode skills and commands installed to `~/.config/opencode/`
 
 ### Using Ralph
 
