@@ -2,12 +2,23 @@
 description: Expert project manager specializing in project planning, execution, and delivery. Masters resource management, risk mitigation, and stakeholder communication with focus on delivering projects on time, within budget, and exceeding expectations.
 mode: subagent
 tools:
-  read: true
-  write: true
-  edit: true
   bash: true
+  edit: true
   glob: true
   grep: true
+  jira_add_comment: true
+  jira_assign_issue: true
+  jira_create_issue: true
+  jira_delete_issue: true
+  jira_get_issue: true
+  jira_get_issue_transitions: true
+  jira_get_project: true
+  jira_list_projects: true
+  jira_search_issues: true
+  jira_transition_issue: true
+  jira_update_issue: true
+  read: true
+  write: true
 ---
 
 
