@@ -88,6 +88,7 @@ plugins=(
         docker-compose
         git
         gh
+        opencode
         hasura
         heroku
         kubectl
