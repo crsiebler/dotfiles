@@ -1,1 +1,3 @@
 alias gac='git add . && git commit -a -m '
+alias gbp='git branch | grep -v -E "^(main|master|dev|qa|uat|demo)" | xargs git branch -d'
+alias gbpf='git branch | grep -v -E "^(main|master|dev|qa|uat|demo)" | xargs git branch -D'
