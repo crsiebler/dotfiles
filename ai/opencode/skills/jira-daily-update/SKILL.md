@@ -1,13 +1,13 @@
 ---
 name: jira-daily-update
-description: "Generate daily progress update comment for Jira tasks with structured status tracking. Use when providing daily updates on Jira task progress. Triggers on: jira daily, jira-update, daily update, progress update."
+description: "Generate daily progress update string for Jira tasks with structured status tracking. Use when providing daily updates on Jira task progress. Triggers on: jira daily, jira-update, daily update, progress update."
 agent: project-manager
-tools: read, glob, grep, bash, jira_search_issues, jira_get_issue, jira_add_comment, jira_list_projects, jira_get_project, task
+tools: read, glob, grep, bash, jira_search_issues, jira_get_issue, jira_list_projects, jira_get_project, task
 ---
 
 # Jira Daily Progress Update Generator
 
-Generates comprehensive daily progress update comments for Jira tasks with structured status tracking and timeline estimates. Provides consistent reporting of daily accomplishments and next steps.
+Generates daily progress update strings for Jira tasks with structured status tracking and timeline estimates. Provides consistent reporting of daily accomplishments and next steps in a clean format ready to copy to Jira.
 
 ---
 
@@ -18,51 +18,24 @@ validation_schema:
   required_fields: [Date, What_I_completed, What_s_next, Blockers, ETA]
   format_requirements:
     format_pattern: "Field: Content"
-    no_markdown: true
     date_format: "YYYY-MM-DD"
   field_validations:
     Date:
       required: true
       format: "YYYY-MM-DD"
       auto_populate: true
-      validation_rules:
-        - Must be current date or reasonable business day context
-        - Cannot be future date unless specified
-        - Must follow YYYY-MM-DD format strictly
     What_I_completed:
       required: true
-      min_length: 30
-      validation_rules:
-        - Must include specific accomplishments from today
-        - Should reference commits, PRs, or tickets where possible
-        - Must be actionable and measurable items
-        - Avoid vague statements like "worked on stuff"
+      allow_empty: false
     What_s_next:
       required: true
-      min_length: 30
-      validation_rules:
-        - Must include clear next tasks and TODOs
-        - Should be prioritized and actionable
-        - Include immediate tasks (today/tomorrow) and upcoming milestones
-        - Avoid generic statements like "continue work"
+      allow_empty: false
     Blockers:
       required: true
-      min_length: 0
       allow_empty: true
-      validation_rules:
-        - Can be empty (0 characters minimum)
-        - Must be specific about what's preventing progress if present
-        - Should include impact assessment and resolution timeline
-        - Categorize: technical, resource, dependency, decision, external
     ETA:
       required: true
-      min_length: 20
-      validation_rules:
-        - Must include realistic and justifiable timeline
-        - Should include protective language: "contingent on", "assuming", "pending"
-        - Include confidence level and influencing factors
-        - Must mention key milestones with individual ETAs
-        - Avoid overly optimistic estimates without justification
+      allow_empty: false
 ```
 
 ---
@@ -74,35 +47,20 @@ validation_schema:
 3. **Auto-detect current date in YYYY-MM-DD format**
 4. **Gather data from multiple sources**:
    - JIRA MCP server for ticket details, recent activity, and context
-   - Coordinate with fullstack-developer subagent for technical code analysis
-   - Fullstack-developer analysis includes:
-     - Actual code changes made and their complexity
-     - Technical implementation quality assessment
-     - Integration points and dependencies affected
-     - Remaining work estimation based on code state
-     - Technical blockers discovered during implementation
    - Git commit history for today's work and current branch status
    - GitHub CLI for related PR status and activity
    - Previous comments for context and continuity
-5. **Generate structured daily update with 5 required fields**
+5. **Generate structured daily update string with 5 required fields**
 6. **Ensure all content follows exact format: `Field: Content`**
-7. **Enhanced Validation**: Applies enhanced validation rules for content quality and compliance
-8. **Preview**: Shows formatted output ready for Jira
-9. **User Confirmation**: Requires explicit approval
-10. **Posting**: Uses `jira_add_comment` to add comment if confirmed
+7. **Return formatted update string ready to copy to Jira**
 
 ---
 
-## Technical Error Handling
+## Error Handling
 
 ### Jira Server Errors
-- **Ticket not found**: "Jira ticket $1 does not exist. Please create the ticket first before generating comments."
+- **Ticket not found**: "Jira ticket $1 does not exist. Please create the ticket first before generating updates."
 - **Access denied**: "Unable to access Jira ticket $1. Check your Jira permissions and ensure the ticket exists."
-
-### Enhanced Validation Errors
-- **Date too far in future**: "Date is more than 2 days ahead. Consider splitting deliverables into separate tasks for better timeline management."
-- **ETA unrealistic**: "ETA should include protective language (approximately, estimated, contingent on) to protect against deadline uncertainties."
-- **Insufficient content**: "Field content below minimum character requirements. Please provide more specific details and measurable outcomes."
 
 ### System Errors
 - **MCP server unavailable**: "Jira MCP server is currently unavailable. Please try again later."
@@ -116,23 +74,10 @@ validation_schema:
 - Run this command at the end of each workday for consistent updates
 - Ensure git repository is clean and commits are properly pushed
 - Have related PRs created and linked to Jira ticket
-- Review the generated content for accuracy before approval
+- Review the generated content for accuracy before copying to Jira
 - Use specific commit hashes and PR numbers when possible
 - Maintain consistency with previous daily updates
 - Keep ETA realistic based on actual progress and remaining complexity
-
-1. Receive Jira task ID from user
-2. Validate Jira task ID format (PROJECT-123)
-3. Auto-detect current date in YYYY-MM-DD format
-4. Gather data from multiple sources:
-   - JIRA MCP server for ticket details and recent activity
-   - Git commit history for today's work
-   - GitHub CLI for related PR status and activity
-   - Previous comments for context and continuity
-5. Generate structured daily update with 5 required fields
-6. Ensure all content follows exact format: `Field: Content`
-7. Validate content quality and completeness
-8. Return formatted comment ready for posting to Jira
 
 ---
 
@@ -169,121 +114,77 @@ Review previous daily updates to:
 
 ---
 
-## Enhanced Validation Rules
-
-### **Date Threshold Validation:**
-- ✅ Date must be within reasonable business day context (not too far in past)
-- ✅ Current date auto-detected with timezone awareness
-- ✅ Future dates only allowed with explicit justification
-- ❌ Validation fails if date is invalid or unreasonable
-
-### **ETA Realism Validation:**
-- ✅ Must include protective language: "contingent on", "assuming", "pending"
-- ✅ Estimates should be justified based on remaining complexity
-- ✅ Include confidence level and potential blockers
-- ✅ Reference key milestones with individual ETAs
-- ❌ Validation fails if ETA is overly optimistic without justification
-
-### **Cross-field Validation:**
-- ✅ "What's next" should align with ETA timeline
-- ✅ Blockers should be reflected in ETA estimates if present
-- ✅ Completed work should align with previous updates when applicable
-- ❌ Validation fails if fields conflict or are inconsistent
-
-### **Quality Validation:**
-- ✅ Content should avoid generic statements ("worked on stuff", "continue work")
-- ✅ Include specific references (commit hashes, PR numbers, ticket IDs)
-- ✅ Maintain consistency with previous daily updates
-- ✅ Technical details should be accurate and relevant
-- ❌ Validation fails if content is too vague or irrelevant
-
----
-
 ## Output Format
 
-The generated daily update comment must follow this exact format:
+The generated daily update string must follow this structured format using the provided template:
 
-```
-Date: Current Date
-What I completed: What was completed today
-What's next: What is next on TODOs
-Blockers: What blockers exist from continuing work
-ETA: Time to complete remaining tasks
+## Output Template
+
+```markdown
+Date: YYYY-MM-DD
+
+## What I completed:
+- **Task description**  
+  [PR #1234](link) - Brief outcome
+  - Specific subtask completed
+  - Another specific achievement
+
+## What's next:
+- **Next task** - Priority: High
+- Another task - Priority: Medium
+
+## Blockers:
+- *No blockers* OR **Blocker description** with potential impact
+
+## ETA: X hours/days
 ```
 
 ### **Key Requirements:**
-- Each line follows the exact pattern: `Field: Content`
+- Each section follows the pattern: `Field: Content`
 - Date must be in YYYY-MM-DD format
-- Content should be specific and actionable
-- No additional markdown formatting or bullet points
-- All five fields must be present
+- Use Markdown formatting for better readability
+- Include blank lines between sections
+- All five fields must be present: Date, What I completed, What's next, Blockers, ETA
+
+### **Markdown Formatting Support:**
+- Headers: `##` for section titles
+- Bold text: `**text**` for emphasis
+- Italic text: `*text*` for "No blockers"
+- Links: `[PR #1234](url)` format
+- Bullet points: `-` for list items
+- Optional emojis: 📋 📝 ✅ ⏱️
 
 ### **Field-Specific Requirements:**
 
 **Date:**
 - Auto-populated with current date (YYYY-MM-DD format)
-- Cannot be future date unless specified
-- Must be valid business day context
 
 **What I completed:**
-   - Minimum 30 characters
-   - Enhanced with technical analysis from fullstack-developer
-   - Specific accomplishments from today with technical details
-   - Include commit hashes, PR numbers, or ticket references where possible
-   - Actionable and measurable items with code quality assessment
-   - Clear completion status verified through code analysis
+- Use bullet points with bold task names
+- Include PR links when available: `[PR #1234](url)`
+- Add sub-bullets for specific achievements
+- Keep descriptions concise but informative
 
 **What's next:**
-   - Minimum 30 characters
-   - Enhanced with technical roadmap from fullstack-developer analysis
-   - Clear next tasks and TODOs based on remaining technical work
-   - Prioritized and actionable with implementation complexity considered
-   - Include immediate tasks (today/tomorrow) and upcoming milestones
-   - Specific timelines and deliverables grounded in code analysis
+- Use bullet points with bold task names
+- Add priority indicators: `- Priority: High/Medium/Low`
+- Focus on immediate and upcoming tasks
+- Include reference links when helpful
 
 **Blockers:**
-- Can be empty (minimum 0 characters)
-- Clear description of blockers if present
-- Categorized (technical, resource, dependency, decision, external)
-- Include impact assessment and resolution timeline
-- Specific about what's preventing progress
+- Use italic for no blockers: `- *No blockers*`
+- Use bold for actual blockers: `- **Blocker description**`
+- Explain potential impact when applicable
+- Be specific about what's preventing progress
 
 **ETA:**
-   - Minimum 20 characters
-   - Enhanced with technical estimation from fullstack-developer
-   - Specific time estimate based on actual code complexity analysis
-   - Realistic and justifiable timeline with technical backing
-   - Include confidence level and technical risk factors
-   - Key milestones with individual ETAs grounded in implementation reality
-
----
-
-## Auto-Detection Features
-
-- **Current Date**: Automatically uses today's date in YYYY-MM-DD format
-- **Git Context**: Analyzes current branch status and recent commits
-- **PR Activity**: Checks GitHub for related pull requests and their status
-- **Previous Updates**: Reviews existing comments to avoid repetition
-- **Timeline Calculation**: Adjusts ETA based on daily progress
-
----
-
-## Validation Rules
-
-### **Format Validation:**
-- ✅ Field name exactly as specified
-- ✅ Colon followed by space
-- ✅ No additional formatting or bullet points
-- ✅ Date in YYYY-MM-DD format
-- ❌ Validation fails if format deviates
-
-### **Content Validation:**
-- ✅ All fields meet minimum character requirements
-- ✅ Completed work includes specific references (commits, PRs, tickets)
-- ✅ Next steps are clear and prioritized
-- ✅ Blockers are specific when present
-- ✅ ETA includes specific time estimates
-- ❌ Validation fails if content is vague or incomplete
+- Use only `hours` or `days` (NEVER weeks)
+- Example: `2 hours`, `1 day`, `3 days`
+- **Important**: If ETA is 2+ days, include task splitting recommendation:
+  ```
+  ## ETA: 3 days
+  *Recommendation: Consider splitting into smaller tasks*
+  ```
 
 ---
 
@@ -302,7 +203,6 @@ If JIRA task ID format is invalid:
 If ticket existence verification fails:
 - Clearly indicate ticket not found or access denied
 - Suggest verifying ticket ID and permissions
-- Provide option to proceed with manual input if appropriate
 
 If git history is limited:
 - Provide template for manual completed work input
@@ -314,28 +214,6 @@ If date detection fails:
 - Auto-populate with reasonable default
 - Validate format correctness before proceeding
 
-### **Enhanced Validation Error Handling:**
-
-**Date Validation Errors:**
-- Invalid format: Provide correct YYYY-MM-DD format with examples
-- Future date: Require justification or suggest current date
-- Unreasonable date: Suggest verifying date context
-
-**ETA Validation Errors:**
-- Overly optimistic: Suggest including protective language and contingencies
-- Missing justification: Request breakdown of remaining work and timeline
-- Unrealistic timeline: Provide guidance on realistic time estimates
-
-**Content Quality Errors:**
-- Vague statements: Provide specific examples of detailed content
-- Missing references: Suggest including commit hashes, PR numbers, or ticket IDs
-- Generic language: Offer field-specific templates with concrete examples
-
-**Cross-field Validation Errors:**
-- ETA and blockers conflict: Suggest adjusting timeline based on blockers
-- Next steps misaligned with ETA: Recommend timeline adjustment or task reordering
-- Inconsistent with previous updates: Request clarification on changes
-
 ---
 
 ## Best Practices
@@ -343,7 +221,7 @@ If date detection fails:
 - Run this command at the end of each workday for consistent updates
 - Ensure git repository is clean and commits are properly pushed
 - Have related PRs created and linked to Jira ticket
-- Review the generated content for accuracy before approval
+- Review the generated content for accuracy before copying to Jira
 - Use specific commit hashes and PR numbers when possible
 - Maintain consistency with previous daily updates
 - Keep ETA realistic based on actual progress and remaining complexity

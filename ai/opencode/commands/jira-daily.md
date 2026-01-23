@@ -1,13 +1,13 @@
 ---
 name: jira-daily
-description: "Generate daily Jira comment"
+description: "Generate daily Jira update string"
 agent: project-manager
 subtask: true
 ---
 
 # Jira Daily Command
 
-This command triggers the project-manager agent to generate daily comment for Jira task $1 using the jira-daily-update skill.
+This command triggers the project-manager agent to generate daily update string for Jira task $1 using the jira-daily-update skill.
 
 ## Usage
 
@@ -17,14 +17,8 @@ Run this command when providing daily progress updates for Jira tasks.
 
 1. Invokes project-manager agent with jira-daily-update skill
 2. Processes Jira task ID: $1
-3. **Enhanced code analysis**: Automatically coordinates with fullstack-developer subagent for:
-   - Actual code changes made and their complexity assessment
-   - Technical implementation quality and best practices compliance
-   - Integration points and dependencies affected by changes
-   - Remaining work estimation based on current code state
-   - Technical blockers discovered during implementation
-4. Generates structured daily comment with enhanced technical insights
-5. Returns technically accurate progress comment ready for posting to Jira
+3. Generates structured daily update string with 5 required fields
+4. Returns formatted update string ready to copy to Jira
 
 ## Trigger phrases
 
