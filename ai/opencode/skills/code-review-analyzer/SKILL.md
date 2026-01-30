@@ -1,5 +1,5 @@
 ---
-name: github-review-analyzer
+name: code-review-analyzer
 description: Analyze GitHub PR code reviews and provide structured breakdowns of recommendations, impact assessment, and change descriptions
 metadata:
   audience: developers, reviewers
@@ -70,6 +70,68 @@ Returns all PR review comments with details like body, author, timestamps, file 
 - **High**: Significant code changes, multiple files affected
 - **Medium**: Moderate changes, single file or focused area
 - **Low**: Minor tweaks, naming, or documentation
+
+## Comment Quality & Feasibility Assessment
+
+### What Constitutes a Good Code Review Comment
+A good code review comment is:
+- **Technically sound**: Correct for the specific codebase, stack, and constraints
+- **Context-aware**: Considers existing functionality, backward compatibility, and architectural decisions
+- **Actionable**: Clear enough to implement without additional clarification
+- **Necessary**: Avoids YAGNI (You Aren't Gonna Need It) - doesn't suggest unused features
+- **Non-breaking**: Doesn't introduce regressions or break existing functionality
+- **Scoped appropriately**: Addresses real issues rather than theoretical "professional" improvements
+
+### Bad Comment Characteristics to Watch For
+- Vague or unclear requirements that need clarification before assessment
+- Performative suggestions without technical justification
+- Suggestions that conflict with established architectural decisions
+- Features suggested for "professional" reasons but not actually used (YAGNI)
+
+### Feasibility Analysis Framework
+Before implementation planning, assess each comment's feasibility using these checks:
+
+1. **Codebase verification**: Check if suggestion works with current implementation
+2. **Impact assessment**: Evaluate if it breaks existing functionality or compatibility
+3. **Usage validation**: Verify if suggested features are actually needed/used
+4. **Context completeness**: Ensure reviewer understands full system context
+5. **Technical correctness**: Validate against platform/version requirements
+6. **Architectural alignment**: Check against established patterns and decisions
+
+### Real-World Examples
+
+**Example: Technical Verification**
+```
+Reviewer: "Remove legacy code"
+❌ Bad: "You're absolutely right! Let me remove that..."
+✅ Good: "Checking... build target is 10.15+, this API needs 13+. Need legacy for backward compat. Current impl has wrong bundle ID - fix it or drop pre-13 support?"
+```
+
+**Example: YAGNI Check**
+```
+Reviewer: "Implement proper metrics tracking with database, date filters, CSV export"
+✅ Analysis: "Grepped codebase - nothing calls this endpoint. Remove it (YAGNI)? Or is there usage I'm missing?"
+```
+
+**Example: Unclear Feedback Handling**
+```
+Reviewer: "Fix items 1-6"
+✅ Analysis: "Understand 1,2,3,6. Need clarification on 4 and 5 before assessing feasibility."
+```
+
+### Flagging Guidelines
+Comments should be flagged for human review if they:
+- Have unclear technical requirements or scope
+- Suggest changes that would break existing functionality
+- Propose features that aren't used in the current codebase
+- Lack sufficient context about system constraints
+- Conflict with documented architectural decisions
+
+### Integration with Impact Assessment
+Feasibility analysis directly affects priority levels:
+- Comments passing all checks receive appropriate High/Medium/Low impact ratings
+- Comments failing feasibility get flagged as "Requires Human Review" with specific reasoning
+- Unclear comments are categorized separately until clarified
 
 ## Error Handling
 - **API Errors**: Handle rate limits and permission issues

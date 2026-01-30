@@ -1,5 +1,5 @@
 ---
-name: github-review-resolver
+name: code-review-resolver
 description: Mark GitHub PR code review comments as resolved based on commit history or agent context
 metadata:
   audience: developers, reviewers
@@ -50,9 +50,10 @@ Error handling:
 3. **Data Fetching**: Query PR review comments via REST API
 4. **Thread Mapping**: Use GraphQL to map comments to thread IDs
 5. **Resolution Analysis**: Apply heuristics to identify addressed comments
-6. **Confirmation**: Show proposed resolutions (unless auto-resolve enabled)
-7. **Resolution**: Execute GraphQL mutations to resolve approved threads
-8. **Reporting**: Generate summary of actions and recommendations
+6. **Confirmation**: Show proposed resolutions and replies (unless auto-resolve enabled)
+7. **Response Generation**: Post technical replies for approved comments
+8. **Resolution**: Execute GraphQL mutations to resolve approved threads
+9. **Reporting**: Generate summary of actions and recommendations
 
 ## GitHub API Integration
 ### Fetch Review Comments (REST API)
@@ -88,6 +89,13 @@ query GetPRReviewThreads($owner: String!, $repo: String!, $number: Int!) {
 gh api graphql -f query='mutation ResolveThread($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { id isResolved } } }' -f threadId="$THREAD_ID"
 ```
 
+### Post Reply to Comment (REST API)
+```bash
+gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments/$comment_id/replies -f body="$REPLY_TEXT"
+```
+
+Posts a reply to a specific PR review comment thread with the resolution status and description.
+
 ## Resolution Logic
 ### Commit-History Method
 1. File containing comment modified after comment creation
@@ -102,10 +110,35 @@ gh api graphql -f query='mutation ResolveThread($threadId: ID!) { resolveReviewT
 - Apply both heuristics for higher accuracy
 - Require consensus for automatic resolution
 
+## Response Generation
+For each comment approved for resolution, generate and post a technical reply before marking the thread as resolved. This step only executes when:
+
+- `auto_resolve: true` (automatic execution)
+- OR user explicitly approves the proposed actions in dry-run mode
+- Skipped entirely when `dry_run: true` without approval
+
+### Reply Format
+"[Status]: [Brief description of change made]"
+- Examples:
+  - "Fixed: Added null check in error handler to prevent crashes"
+  - "Implemented: Refactored function to use async/await pattern"
+  - "Declined: Breaks backward compatibility with existing API consumers"
+  - "Addressed: Updated documentation to clarify parameter usage"
+
+### Status Options
+- "Fixed" - Bug or issue resolved
+- "Implemented" - Feature or improvement added
+- "Addressed" - Documentation or style issue resolved
+- "Declined" - Suggestion not implemented (with technical reasoning)
+
+### Posting Replies
+Use GitHub API to reply in comment threads (not top-level PR comments). Replies are posted only after user confirmation to ensure transparency and control.
+
 ## Error Handling & Safety
 - **API Limits**: Respect GitHub's 5,000 queries/hour with backoff
 - **Permissions**: Verify write access to PR reviews
-- **Dry-Run**: Preview-only mode prevents accidental changes
+- **Dry-Run**: Preview-only mode prevents accidental changes (replies only posted after explicit approval)
+- **Auto-Resolve**: When enabled, skips confirmations and posts replies automatically
 - **Audit Trail**: Log actions with timestamps and rollback info
 - **Thread Mapping**: Handle cases where comments don't map to threads
 
@@ -141,8 +174,8 @@ Threads Resolved: 18
 Threads Skipped: 7
 
 Resolved Threads:
-- Thread PRRT_xxx (file.js:42): Comment about error handling - addressed by commit abc123
-- Thread PRRT_yyy (config.py:15): Documentation update - addressed by commit def456
+- Thread PRRT_xxx (file.js:42): Comment about error handling - addressed by commit abc123 (reply posted after confirmation: "Fixed: Added null check in error handler")
+- Thread PRRT_yyy (config.py:15): Documentation update - addressed by commit def456 (reply posted after confirmation: "Addressed: Updated docstring with parameter details")
 
 Unresolved Threads (requiring manual review):
 - Thread PRRT_zzz (utils.js:78): Performance concern - no changes detected
