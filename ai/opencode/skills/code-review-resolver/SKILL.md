@@ -44,6 +44,55 @@ Error handling:
 - No origin remote: Prompt for manual input
 - Invalid URL format: Fallback to user input
 
+## Temporary File Management
+All temporary files MUST be created in the current working directory to avoid OpenCode permission prompts.
+
+### File Naming Convention
+- Pattern: `./.code-review-temp-{timestamp}-{pr_number}-{descriptor}.json`
+- Example: `./.code-review-temp-20260130153045-2202-comments.json`
+
+### Directory Structure
+```bash
+# Create temp directory at skill start
+TEMP_DIR="./.code-review-temp-$(date +%s)-${pr_number}"
+mkdir -p "$TEMP_DIR"
+
+# Use for all temporary files
+COMMENTS_FILE="$TEMP_DIR/comments.json"
+THREADS_FILE="$TEMP_DIR/threads.json"
+VALIDATION_FILE="$TEMP_DIR/validation.json"
+```
+
+### Cleanup Requirements
+CRITICAL: Always cleanup temporary files as the FINAL action of the skill, even if errors occur:
+
+```bash
+# Cleanup function (call at script exit)
+cleanup_temp_files() {
+  if [ -d "$TEMP_DIR" ]; then
+    echo "Cleaning up temporary files..."
+    rm -rf "$TEMP_DIR"
+    echo "✓ Cleanup complete"
+  fi
+}
+
+# Register cleanup on exit
+trap cleanup_temp_files EXIT
+```
+
+### Why Current Working Directory?
+- ✅ No OpenCode permission prompts (working directory always accessible)
+- ✅ Context-aware location (files stored where PR work happens)
+- ✅ Easy debugging (visible in file tree during execution)
+- ✅ Automatic isolation (timestamp prevents conflicts)
+- ✅ Clean audit trail (can review temp files if skill fails)
+
+### Anti-Patterns to Avoid
+- ❌ NEVER use `/tmp/` - triggers OpenCode permission prompts
+- ❌ NEVER use `/var/tmp/` - same issue
+- ❌ NEVER use absolute paths outside working directory
+- ❌ NEVER skip cleanup - leaves orphaned temp files
+
 ## Step-by-Step Execution Flow
 1. **Repository Detection**: Auto-detect repo owner/name from git remote
 2. **Validation**: Check PR accessibility and GitHub API permissions
@@ -68,8 +117,11 @@ Error handling:
 ## GitHub API Integration
 ### Fetch Review Comments (REST API)
 ```bash
-gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments
+# Store in working directory (not /tmp/) to avoid permission prompts
+gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments > "$COMMENTS_FILE"
 ```
+
+**CRITICAL:** Always use working directory variables like `$COMMENTS_FILE` defined in the temp directory structure above. Never hardcode paths or use `/tmp/`.
 
 Returns all PR review comments with IDs, timestamps, and file context.
 
@@ -287,6 +339,9 @@ Replies are posted after user confirmation (unless `auto_resolve: true`) to ensu
 - **Incorrect Posting Detection**: Automatically detect `in_reply_to_id: null` as error
 - **Session Isolation**: Only attempt to correct comments created in current session
 - **Correction Retry**: If repost still fails validation, report to user for manual intervention
+- **Temp File Cleanup**: Always remove temporary files via `trap cleanup EXIT`
+- **Working Directory Only**: Never use `/tmp/` or absolute paths outside working directory
+- **Permission Safety**: Using working directory prevents OpenCode permission prompts
 
 ## Validation & Auto-Correction
 
@@ -499,6 +554,45 @@ done
 # Now rerun the skill to post correctly
 ```
 
+#### Issue 4: OpenCode Permission Prompts for /tmp/ Access
+
+**Cause**: Skill or subagent attempting to write to `/tmp/` or other external directories
+
+**Symptoms**:
+- "Permission Required: Access External Directory" prompt appears
+- Subagent cannot continue without user intervention
+- Autonomous workflow breaks
+
+**Solutions**:
+1. Verify all temp file paths use working directory:
+   ```bash
+   # ❌ WRONG - triggers permission prompt
+   gh api ... > /tmp/pr_data.json
+   
+   # ✅ CORRECT - no permission prompt
+   gh api ... > "$TEMP_DIR/pr_data.json"
+   ```
+
+2. Ensure temp directory is created in working directory:
+   ```bash
+   TEMP_DIR="./.code-review-temp-$(date +%s)-${PR_NUMBER}"
+   mkdir -p "$TEMP_DIR"
+   ```
+
+3. Verify cleanup is registered:
+   ```bash
+   trap cleanup_temp_files EXIT
+   ```
+
+**Diagnostic**:
+```bash
+# Check where temp files are being created
+ps aux | grep "gh api" | grep -o "/[^ ]*\.json"
+
+# Expected: paths starting with ./
+# Problem: paths starting with /tmp/ or /var/
+```
+
 ## Dependencies & Permissions
 ### Required
 - GitHub CLI for API operations
@@ -532,13 +626,39 @@ PR_NUMBER=123
 SESSION_START=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 BOT_USERNAME=$(gh api user --jq '.login')
 
+# ===== TEMPORARY FILE SETUP (REQUIRED) =====
+# Create unique temp directory in current working directory
+TIMESTAMP=$(date +%s)
+TEMP_DIR="./.code-review-temp-${TIMESTAMP}-${PR_NUMBER}"
+mkdir -p "$TEMP_DIR"
+
+# Define all temp file paths
+COMMENTS_FILE="$TEMP_DIR/comments.json"
+THREADS_FILE="$TEMP_DIR/threads.json"
+VALIDATION_FILE="$TEMP_DIR/validation.json"
+SESSION_FILE="$TEMP_DIR/session.json"
+
+# Register cleanup handler
+cleanup_temp_files() {
+  if [ -d "$TEMP_DIR" ]; then
+    echo ""
+    echo "Cleaning up temporary files..."
+    rm -rf "$TEMP_DIR"
+    echo "✓ Temporary files removed: $TEMP_DIR"
+  fi
+}
+trap cleanup_temp_files EXIT
+echo "✓ Temp directory created: $TEMP_DIR"
+echo ""
+# ===== END TEMPORARY FILE SETUP =====
+
 # Track session comments
 declare -a SESSION_COMMENT_IDS
 declare -a VALIDATION_FAILURES
 
-# Step 1: Fetch review comments
+# Step 1: Fetch review comments (store in working directory)
 echo "Fetching review comments..."
-COMMENTS=$(gh api repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/comments)
+COMMENTS=$(gh api repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/comments | tee "$COMMENTS_FILE")
 
 # Step 2: Analyze which comments have been addressed
 # (Application of resolution logic here - commit history, agent context, etc.)

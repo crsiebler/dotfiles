@@ -18,6 +18,12 @@ install:
 	@echo "Copied ai/opencode/ directory contents to $$HOME/.config/opencode/."
 	cp ai/ralph.md $$HOME/.config/opencode/ralph.md
 	@echo "Copied ai/ralph.md to $$HOME/.config/opencode/ralph.md."
+	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
+	  cp $$HOME/.config/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md.backup.$$(date +%Y%m%d_%H%M%S); \
+	  echo "Backed up existing AGENTS.md to .config/opencode/AGENTS.md.backup.*"; \
+	fi
+	cp ai/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md
+	@echo "Copied ai/opencode/AGENTS.md to $$HOME/.config/opencode/AGENTS.md."
 	@if [ -f /usr/local/bin/ralph ]; then \
 	  if cp /usr/local/bin/ralph /usr/local/bin/ralph.backup.$$(date +%Y%m%d_%H%M%S); then \
 	    echo "Backed up existing ralph to /usr/local/bin/ralph.backup.*"; \
@@ -43,9 +49,10 @@ install:
 	@echo "Installation complete. Dotfile setup, .env, opencode config, ralph CLI, and subagents CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
 
 clean:
-	@echo "Removing dotfile backups (.zshrc, .env, ralph)..."
+	@echo "Removing dotfile backups (.zshrc, .env, ralph, subagents, AGENTS.md)..."
 	@rm -f $${HOME}/.zshrc.backup.*
 	@rm -f $${HOME}/.env.backup.*
 	@rm -f /usr/local/bin/ralph.backup.*
 	@rm -f /usr/local/bin/subagents.backup.*
+	@rm -f $${HOME}/.config/opencode/AGENTS.md.backup.*
 	@echo "Backup removal complete."
