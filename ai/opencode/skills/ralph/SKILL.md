@@ -7,6 +7,8 @@ description: "Convert PRDs to prd.json format for the Ralph autonomous agent sys
 
 Converts existing PRDs to the prd.json format that Ralph uses for autonomous execution.
 
+**IMPORTANT: This skill ONLY converts PRDs to JSON format. It does NOT implement code, start the autonomous loop, or work on tasks. Implementation is done separately by running the `ralph` command from the command line.**
+
 ---
 
 ## The Job
