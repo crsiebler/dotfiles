@@ -26,8 +26,8 @@ install:
 	    exit 1; \
 	  fi; \
 	fi
-	cp bin/ralph /usr/local/bin/ralph
-	chmod +x /usr/local/bin/ralph
+	sudo cp bin/ralph /usr/local/bin/ralph
+	sudo chmod +x /usr/local/bin/ralph
 	@echo "Installed ralph CLI to /usr/local/bin/ralph."
 	@if [ -f /usr/local/bin/subagents ]; then \
 	  if cp /usr/local/bin/subagents /usr/local/bin/subagents.backup.$$(date +%Y%m%d_%H%M%S); then \
@@ -37,8 +37,8 @@ install:
 	    exit 1; \
 	  fi; \
 	fi
-	cp bin/subagents /usr/local/bin/subagents
-	chmod +x /usr/local/bin/subagents
+	sudo cp bin/subagents /usr/local/bin/subagents
+	sudo chmod +x /usr/local/bin/subagents
 	@echo "Installed subagents CLI to /usr/local/bin/subagents."
 	@echo "Installation complete. Dotfile setup, .env, opencode config, ralph CLI, and subagents CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
 
