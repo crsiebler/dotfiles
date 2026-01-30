@@ -24,3 +24,4 @@ if [ -f ~/.aliases ]; then
 fi
 
 export JAVA_HOME=/usr/bin/java
+export LC_ALL=C.UTF-8
