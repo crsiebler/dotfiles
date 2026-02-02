@@ -7,8 +7,6 @@ description: "Convert PRDs to prd.json format for the Ralph autonomous agent sys
 
 Converts existing PRDs to the prd.json format that Ralph uses for autonomous execution.
 
-**IMPORTANT: This skill ONLY converts PRDs to JSON format. It does NOT implement code, start the autonomous loop, or work on tasks. Implementation is done separately by running the `ralph` command from the command line.**
-
 ---
 
 ## The Job
@@ -48,7 +46,7 @@ Take a PRD (markdown file or text) and convert it to `prd.json` in your ralph di
 
 **Each story must be completable in ONE Ralph iteration (one context window).**
 
-Ralph spawns a fresh OpenCode instance per iteration with no memory of previous work. If a story is too big, the LLM runs out of context before finishing and produces broken code.
+Ralph spawns a fresh Amp instance per iteration with no memory of previous work. If a story is too big, the LLM runs out of context before finishing and produces broken code.
 
 ### Right-sized stories:
 - Add a database column and migration
@@ -256,3 +254,4 @@ Before writing prd.json, verify:
 - [ ] Every story has "Typecheck passes" as criterion
 - [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
 - [ ] Acceptance criteria are verifiable (not vague)
+- [ ] No story depends on a later story

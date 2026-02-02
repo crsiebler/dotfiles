@@ -1,6 +1,6 @@
 ---
 name: subagents
-description: "Search, list, and fetch configured subagents"
+description: Search, list, and fetch configured subagents
 ---
 
 # Subagents Command

@@ -10,34 +10,10 @@
             "enabled": true,
             "type": "local"
         },
-        "github": {
-            "command": [
-                "node",
-                "{env:HOME}/Repositories/mcp-suite/servers/github/dist/servers/github/src/index.js"
-            ],
-            "enabled": false,
-            "environment": {
-                "GITHUB_TOKEN": "{env:GITHUB_API_TOKEN}"
-            },
-            "type": "local"
-        },
         "jam": {
             "enabled": true,
             "type": "remote",
             "url": "https://mcp.jam.dev/mcp"
-        },
-        "jira": {
-            "command": [
-                "node",
-                "{env:HOME}/Repositories/mcp-suite/servers/jira/dist/servers/jira/src/index.js"
-            ],
-            "enabled": true,
-            "environment": {
-                "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}",
-                "JIRA_BASE_URL": "{env:JIRA_BASE_URL}",
-                "JIRA_EMAIL": "{env:JIRA_EMAIL}"
-            },
-            "type": "local"
         },
         "playwright": {
             "command": [
@@ -47,23 +23,11 @@
             "enabled": true,
             "type": "local"
         },
-        "postgresql": {
-            "command": [
-                "node",
-                "{env:HOME}/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js"
-            ],
-            "enabled": true,
-            "environment": {
-                "POSTGRESQL_CONNECTION_STRING": "{env:POSTGRESQL_CONNECTION_STRING}"
-            },
-            "type": "local"
-        }
     },
-    "model": "grok-code-fast-1",
     "permission": {
         "skill": {
-            "github-review-analyzer": "allow",
-            "github-review-resolver": "ask"
+            "code-review-analyzer": "allow",
+            "code-review-resolver": "ask"
         }
     },
     "plugin": [

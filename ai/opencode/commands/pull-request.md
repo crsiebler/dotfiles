@@ -1,7 +1,6 @@
 ---
+name: pull-request
 description: Create a pull request for the current branch with formatted description including Jira ticket
-agent: build
-model: grok-code-fast-1
 ---
 
 Create a pull request for the current branch.
