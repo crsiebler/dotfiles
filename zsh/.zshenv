@@ -25,3 +25,4 @@ fi
 
 export JAVA_HOME=/usr/bin/java
 export LC_ALL=C.UTF-8
+export PATH="$HOME/.local/bin:$PATH"
