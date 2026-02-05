@@ -1,0 +1,21 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: Qwen 32B (The Brain)
+    provider: ollama
+    model: qwen2.5-coder:32b
+    roles:
+      - chat
+      - edit
+      - apply
+  - name: Qwen 1.5B (The Speed)
+    provider: ollama
+    model: qwen2.5-coder:1.5b-base
+    roles:
+      - autocomplete
+  - name: Nomic Embed
+    provider: ollama
+    model: nomic-embed-text:latest
+    roles:
+      - embed

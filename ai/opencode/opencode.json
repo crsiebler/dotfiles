@@ -32,5 +32,26 @@
     },
     "plugin": [
         "@mohak34/opencode-notifier@0.1.15"
-    ]
+    ],
+    "provider": {
+        "ollama": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "Ollama",
+            "options": {
+                "baseURL": "http://localhost:11434/v1",
+                "apiKey": "ollama"
+            },
+            "models": {
+                "qwen32b-12k": {
+                    "name": "Qwen 2.5 coder 32B",
+                },
+                "qwen14b-32k": {
+                    "name": "Qwen 2.5 coder 14B",
+                },
+                "qwen7b-128k": {
+                    "name": "Qwen 2.5 coder 7B",
+                },
+            }
+        }
+    }
 }
