@@ -42,7 +42,7 @@
                 "apiKey": "ollama"
             },
             "models": {
-                "qwen32b-12k": {
+                "qwen32b-6k": {
                     "name": "Qwen 2.5 coder 32B",
                 },
                 "qwen14b-32k": {
