@@ -1,5 +1,0 @@
-FROM qwen2.5-coder:32b-instruct-q4_K_M
-
-# This is where the magic happens for local models
-PARAMETER num_ctx 6144
-PARAMETER temperature 0.0
