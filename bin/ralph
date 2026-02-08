@@ -72,8 +72,25 @@ echo "Starting Ralph autonomous AI loop..."
 echo "Using prompt from $RALPH_PROMPT_FILE"
 echo ""
 
-# Run OpenCode with the processed prompt file
-opencode run --file "$TEMP_PROMPT_FILE"
+ITERATION=0
+while [ $ITERATION -lt $MAX_ITERATIONS ]; do
+  echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
+
+  # Run OpenCode with the processed prompt file
+  opencode run -m github-copilot/grok-code-fast-1 "$(cat "$TEMP_PROMPT_FILE")"
+
+  ITERATION=$((ITERATION + 1))
+
+  # Check if all user stories pass
+  if [ $(grep -c '"passes": false' prd.json) -eq 0 ]; then
+    echo "All user stories completed."
+    break
+  fi
+done
+
+if [ $ITERATION -ge $MAX_ITERATIONS ]; then
+  echo "Reached maximum iterations ($MAX_ITERATIONS) without completing all stories."
+fi
 
 # Clean up temporary file
 rm -f "$TEMP_PROMPT_FILE"
