@@ -1,0 +1,20 @@
+# OS generated files
+# macOS
+.DS_Store
+.AppleDouble/
+.LSOverride
+.Icon?
+.Spotlight-V99
+.Trashes
+.DocumentRevisions-V99
+.fseventsd
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux/Generic
+*~
+.Trash-*

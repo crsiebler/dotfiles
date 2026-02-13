@@ -13,9 +13,9 @@ install:
 	else \
 	  echo "$$HOME/.env already exists."; \
 	fi
-	@mkdir -p $$HOME/.config/opencode
-	cp -r ai/opencode/* $$HOME/.config/opencode/
-	@echo "Copied ai/opencode/ directory contents to $$HOME/.config/opencode/."
+	# Install global gitignore for git configuration
+	cp git/.gitignore_global $${HOME}/.gitignore_global
+	git config --global core.excludesfile $${HOME}/.gitignore_global
 	cp ai/ralph.md $$HOME/.config/opencode/ralph.md
 	@echo "Copied ai/ralph.md to $$HOME/.config/opencode/ralph.md."
 	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
