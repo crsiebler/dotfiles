@@ -77,7 +77,7 @@ while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
   # Run OpenCode with the processed prompt file
-  opencode run -m github-copilot/grok-code-fast-1 "$(cat "$TEMP_PROMPT_FILE")"
+  opencode run -m openai/gpt-5.3-codex "$(cat "$TEMP_PROMPT_FILE")"
 
   ITERATION=$((ITERATION + 1))
 
