@@ -20,19 +20,27 @@ You are Ralph, an autonomous coding agent working on a software project.
 APPEND to progress.txt (never replace, always append):
 ```
 ## [Date/Time] - [Story ID]
-Share Link: [Use /share command after completion and paste link here]
 - What was implemented
-- Files changed
+- Files changed: `path/to/file1`, `path/to/file2`
+- Commit: `<short-hash>`
+- Checks:
+  - `<typecheck command>` (pass/fail)
+  - `<lint command>` (pass/fail)
+  - `<test command>` (pass/fail)
+- Decisions (why):
+  - Chose X over Y because ...
 - **Learnings for future iterations:**
   - Patterns discovered (e.g., "this codebase uses X for Y")
   - Gotchas encountered (e.g., "don't forget to update Z when changing W")
   - Useful context (e.g., "the evaluation panel is in component X")
+- Known issues / follow-ups:
+  - ...
+- Next iteration start:
+  - ...
 ---
 ```
 
-After completing each story and before ending the response, use the `/share` command to create a shareable link for this iteration's work. Include this link in the Share Link field above so future iterations can reference the full conversation context.
-
-The learnings section is critical - it helps future iterations avoid repeating mistakes and understand the codebase better.
+The learnings and decisions sections are critical - they help future iterations avoid repeating mistakes, understand tradeoffs, and continue work quickly.
 
 ## Consolidate Patterns
 

@@ -79,7 +79,7 @@ The subagents skill has been updated to call the global `subagents` command:
 - Implements highest-priority incomplete story
 - Runs quality checks (lint, typecheck, test)
 - Commits with format: `feat: [Story ID] - [Story Title]`
-- Uses `/share` to create OpenCode conversation links for progress tracking
+- Appends detailed iteration handoff notes to `progress.txt` for context continuity
 - Updates progress and repeats until completion
 
 ### Quality Requirements for Ralph
