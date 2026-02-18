@@ -1,7 +1,6 @@
 ---
 name: subagents
 description: Tool for searching, listing, and fetching subagents from the local filesystem. Allows browsing available subagents, searching by keywords, and retrieving full definitions from $HOME/.config/opencode/agents/.
-tools: read, glob, grep
 ---
 
 # Subagents Local Catalog Tool
