@@ -10,6 +10,11 @@
             "enabled": true,
             "type": "local"
         },
+        "context7": {
+            "command": ["npx", "-y", "@upstash/context7-mcp@latest"],
+            "enabled": true,
+            "type": "local"
+        },
         "jam": {
             "enabled": true,
             "type": "remote",
@@ -43,7 +48,7 @@
             },
             "models": {
                 "qwen2.5-coder:7b": {
-                    "name": "Qwen 2.5 coder 7B",
+                    "name": "Qwen 2.5 coder 7B"
                 }
             }
         }
