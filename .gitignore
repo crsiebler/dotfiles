@@ -1,2 +1,7 @@
 .env
 # Exclude generated/copy-only config files in userspace
+
+# Operating System files
+.DS_Store
+Thumbs.db
+.Thumbs.db

@@ -3,6 +3,7 @@ FILES = aliases/.aliases aliases/.docker_aliases aliases/.git_aliases aliases/.n
 install:
 	@if [ -f ~/.zshrc ]; then cp ~/.zshrc ~/.zshrc.backup.$$(date +%Y%m%d_%H%M%S); fi
 	for file in $(FILES); do cp -f $$file ~/; done
+	@mkdir -p $$HOME/.config/opencode/skills
 	@if [ -f $$HOME/.env ]; then \
 	  cp -f $$HOME/.env $$HOME/.env.backup.$$(date +%Y%m%d_%H%M%S); \
 	  echo "Backed up existing .env to .env.backup.*"; \
@@ -16,6 +17,12 @@ install:
 	# Install global gitignore for git configuration
 	cp git/.gitignore_global $${HOME}/.gitignore_global
 	git config --global core.excludesfile $${HOME}/.gitignore_global
+	@if [ -f $$HOME/.config/opencode/opencode.json ]; then \
+	  cp $$HOME/.config/opencode/opencode.json $$HOME/.config/opencode/opencode.json.backup.$$(date +%Y%m%d_%H%M%S); \
+	  echo "Backed up existing opencode.json to .config/opencode/opencode.json.backup.*"; \
+	fi
+	cp ai/opencode/opencode.json $$HOME/.config/opencode/opencode.json
+	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
 	cp ai/ralph.md $$HOME/.config/opencode/ralph.md
 	@echo "Copied ai/ralph.md to $$HOME/.config/opencode/ralph.md."
 	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
@@ -24,6 +31,12 @@ install:
 	fi
 	cp ai/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md
 	@echo "Copied ai/opencode/AGENTS.md to $$HOME/.config/opencode/AGENTS.md."
+	@if [ -d $$HOME/.config/opencode/skills ] && [ "$$(ls -A $$HOME/.config/opencode/skills 2>/dev/null)" ]; then \
+	  cp -R $$HOME/.config/opencode/skills $$HOME/.config/opencode/skills.backup.$$(date +%Y%m%d_%H%M%S); \
+	  echo "Backed up existing skills to .config/opencode/skills.backup.*"; \
+	fi
+	cp -R ai/opencode/skills/. $$HOME/.config/opencode/skills/
+	@echo "Copied ai/opencode/skills to $$HOME/.config/opencode/skills/."
 	@if [ -f /usr/local/bin/ralph ]; then \
 	  if cp /usr/local/bin/ralph /usr/local/bin/ralph.backup.$$(date +%Y%m%d_%H%M%S); then \
 	    echo "Backed up existing ralph to /usr/local/bin/ralph.backup.*"; \
@@ -49,10 +62,12 @@ install:
 	@echo "Installation complete. Dotfile setup, .env, opencode config, ralph CLI, and subagents CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
 
 clean:
-	@echo "Removing dotfile backups (.zshrc, .env, ralph, subagents, AGENTS.md)..."
+	@echo "Removing dotfile backups (.zshrc, .env, opencode.json, ralph, subagents, AGENTS.md, skills)..."
 	@rm -f $${HOME}/.zshrc.backup.*
 	@rm -f $${HOME}/.env.backup.*
+	@rm -f $${HOME}/.config/opencode/opencode.json.backup.*
 	@rm -f /usr/local/bin/ralph.backup.*
 	@rm -f /usr/local/bin/subagents.backup.*
 	@rm -f $${HOME}/.config/opencode/AGENTS.md.backup.*
+	@rm -rf $${HOME}/.config/opencode/skills.backup.*
 	@echo "Backup removal complete."

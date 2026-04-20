@@ -9,10 +9,12 @@ A collection of configuration files for storing user preferences and preserving 
    cp env/.env.example $HOME/.env
    # then edit $HOME/.env to add your secrets
 
-2. The global opencode configuration, `ai/opencode/opencode.json`, should be copied to `$HOME/.config/opencode/opencode.json`:
+2. The OpenCode user configuration and bundled skills should be copied into `$HOME/.config/opencode/`:
 
-    mkdir -p $HOME/.config/opencode/
-    cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
+     mkdir -p $HOME/.config/opencode/
+     cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
+     mkdir -p $HOME/.config/opencode/skills/
+     cp -R ai/opencode/skills/. $HOME/.config/opencode/skills/
 
 3. Run `make install` to copy all supported dotfiles to your home directory as usual.
 
@@ -20,7 +22,7 @@ A collection of configuration files for storing user preferences and preserving 
    - Open a new terminal, or manually run `source ~/.zshrc` to apply all settings and load environment variables from `$HOME/.env`.
    - Any changes to `$HOME/.env` require you to re-source it (`source ~/.env`) or start a new shell.
 
- `make install` will back up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration files (`.zshrc`, `.env`, and `opencode.json`) are each backed up with a timestamp-based filename prior to overwrite.
+ `make install` will back up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration files (`.zshrc`, `.env`, `opencode.json`, and OpenCode skills) are backed up with timestamp-based names prior to overwrite.
 
 ## Ralph Autonomous AI Loop
 
@@ -39,6 +41,8 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 After running `make install`, Ralph configuration is automatically set up:
 
 - OpenCode skills and commands are installed to `~/.config/opencode/`
+- `ai/opencode/opencode.json` is installed to `~/.config/opencode/opencode.json`
+- `ai/opencode/skills/*/SKILL.md` files are installed under `~/.config/opencode/skills/`
 - The Ralph prompt is installed to `~/.config/opencode/ralph.md` (customizable)
 - The `ralph` CLI tool is installed to `/usr/local/bin/ralph`
 
@@ -106,10 +110,10 @@ The subagents CLI integrates with OpenCode's `/subagents` command. When you use 
 
 ## Removing Backup Files (Cleanup)
 
-If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, `ralph.backup.*`, and `subagents.backup.*`), run the following command:
+If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, `skills.backup.*`, `ralph.backup.*`, and `subagents.backup.*`), run the following command:
 
     make clean
 
-This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, `ralph`, and `subagents`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
+This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, OpenCode skills, `ralph`, and `subagents`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
 
 ---

@@ -11,9 +11,12 @@
             "type": "local"
         },
         "context7": {
-            "command": ["npx", "-y", "@upstash/context7-mcp@latest"],
             "enabled": true,
-            "type": "local"
+            "headers": {
+                "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+            },
+            "type": "remote",
+            "url": "https://mcp.context7.com/mcp"
         },
         "jam": {
             "enabled": true,
@@ -32,7 +35,7 @@
     "permission": {
         "skill": {
             "code-review-analyzer": "allow",
-            "code-review-resolver": "ask"
+            "code-review-resolver": "allow"
         }
     },
     "plugin": [
