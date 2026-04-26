@@ -30,8 +30,8 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 
 ### Features
 
-- **PRD Generation**: Use `/prd` command in OpenCode to create detailed requirements documents
-- **PRD Conversion**: Use `/ralph` command to convert PRDs to JSON format for autonomous execution
+- **PRD Generation**: Use the PRD skill in OpenCode to create detailed requirements documents
+- **PRD Conversion**: Use the Ralph skill in OpenCode to convert PRDs to JSON format for autonomous execution
 - **Autonomous Implementation**: Run `ralph --max-iterations 10` to automatically implement user stories
 - **Quality Assurance**: Each iteration includes type checking, linting, and testing
 - **Progress Tracking**: Automatic commits and progress logging
@@ -40,7 +40,7 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 
 After running `make install`, Ralph configuration is automatically set up:
 
-- OpenCode skills and commands are installed to `~/.config/opencode/`
+- OpenCode skills are installed to `~/.config/opencode/skills/`
 - `ai/opencode/opencode.json` is installed to `~/.config/opencode/opencode.json`
 - `ai/opencode/skills/*/SKILL.md` files are installed under `~/.config/opencode/skills/`
 - The Ralph prompt is installed to `~/.config/opencode/ralph.md` (customizable)
@@ -48,8 +48,8 @@ After running `make install`, Ralph configuration is automatically set up:
 
 ### Usage
 
-1. **Create a PRD**: In any project directory, run OpenCode and use `/prd` to generate requirements
-2. **Convert to JSON**: Use `/ralph` to create `prd.json` from your PRD
+1. **Create a PRD**: In any project directory, open OpenCode and use the PRD skill to generate requirements
+2. **Convert to JSON**: Use the Ralph skill to create `prd.json` from your PRD
 3. **Run Autonomous Loop**: Execute `ralph --max-iterations 10` to start implementation
 4. **Monitor Progress**: Check `progress.txt` for detailed logs and `prd.json` for completion status
 
@@ -106,7 +106,7 @@ subagents help
 
 ### Integration with OpenCode
 
-The subagents CLI integrates with OpenCode's `/subagents` command. When you use `/subagents list`, `/subagents search <query>`, or `/subagents fetch <name>` in OpenCode, it internally calls the global `subagents` command to access agent definitions regardless of your current working directory.
+The subagents CLI integrates with the OpenCode subagents skill. When you use that skill to list, search, or fetch agents in OpenCode, it internally calls the global `subagents` command to access agent definitions regardless of your current working directory.
 
 ## Removing Backup Files (Cleanup)
 
