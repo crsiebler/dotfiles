@@ -104,6 +104,47 @@ Merge specialist results before writing the final report:
 - Discard generic, praise-only, speculative, or unchanged-code findings that do
   not satisfy the reusable prompt's noise-reduction rules.
 
+## Inline Comment Mapping
+
+Before deciding whether findings are inline comments or summary-only findings,
+parse the PR diff and build a map of commentable lines for each changed file:
+
+- For every `diff --git` file section, track the relative path from the `+++`
+  and `---` headers. Use `+++ b/<path>` for added or modified lines and
+  `--- a/<path>` for deleted lines. Treat `/dev/null` as absent.
+- For every hunk header, track old and new line numbers from the
+  `@@ -old_start,old_count +new_start,new_count @@` ranges.
+- Lines beginning with `+` but not `+++` are commentable on side `RIGHT` at the
+  current new-file line number.
+- Lines beginning with `-` but not `---` are commentable on side `LEFT` at the
+  current old-file line number.
+- Context lines advance both old and new counters but are not valid inline
+  comment targets unless GitHub marks them as changed in the PR diff.
+- Record each valid target as `{ path, line, side }` and use only those records
+  when preparing inline comments.
+
+When converting merged findings into inline comments:
+
+- Inline findings must include `path`, `line`, `side`, and `body` fields that
+  are compatible with GitHub's pull request review API.
+- Use `side: "RIGHT"` for added or modified lines from the new side of the diff.
+- Use `side: "LEFT"` for deleted lines from the old side of the diff.
+- Include `start_line`, `start_side`, `line`, and `side` for multiline comments
+  only when every referenced line maps to a valid diff-visible line in the same
+  file and on the intended side.
+- If a finding lacks a valid `{ path, line, side }` mapping, or if any multiline
+  range endpoint is invalid, move it to the consolidated summary instead of the
+  inline comments list.
+- Do not invent line numbers, target unchanged context, or post comments for
+  files and lines that are not visible in the diff.
+
+Preview the local inline review payload before any posting workflow is used.
+Include the PR URL, intended review event, consolidated review body, inline
+comment count, and a JSON-compatible comments array with the exact fields that
+would be sent to GitHub. If any proposed inline comment is malformed or
+unmappable, remove it from the inline payload and include the finding in the
+summary preview instead.
+
 ## Review Instructions
 
 Use the reusable prompt as the source of truth for review objectives, severity
@@ -115,6 +156,7 @@ Produce a consolidated local review report containing:
 - Specialist passes used and why.
 - Findings ordered by severity, with file and line references when they map to
   valid diff-visible lines.
+- Inline comment payload preview with only valid GitHub review comment fields.
 - Summary-only findings for issues that cannot be safely mapped inline.
 - Residual risks and checks not run.
 
