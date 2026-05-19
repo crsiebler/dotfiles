@@ -117,3 +117,25 @@
 - Next iteration start:
   - Pick US-006 and wire `ai/opencode/pr-review.md` into `make install`, backup/cleanup handling, and README documentation.
 ---
+
+## 2026-05-19 15:17:09 MST - US-006
+- Implemented installation and documentation for the PR review command assets, including `pr-review.md` install wiring, timestamped backup handling, cleanup support, README usage docs, and AGENTS.md backup documentation.
+- Files changed: `Makefile`, `README.md`, `AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `335a9d8`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+  - `make -n clean` (pass)
+- Decisions (why):
+  - Installed `ai/opencode/pr-review.md` directly under `$HOME/.config/opencode/` to match the standalone reusable prompt pattern already used by `ai/ralph.md`.
+  - Added a file-specific timestamped backup for `pr-review.md` because installing it overwrites a user-level OpenCode prompt asset.
+  - Documented `/review-pr` in README instead of only AGENTS.md because users need command arguments, requirements, and posting behavior outside agent instructions.
+- **Learnings for future iterations:**
+  - `make clean` should be updated whenever `make install` introduces a new timestamped backup path.
+  - README and AGENTS.md both need backup documentation updates when install or cleanup behavior changes.
+- Known issues / follow-ups:
+  - None.
+- Next iteration start:
+  - All PRD stories are complete; no further story remains.
+---
