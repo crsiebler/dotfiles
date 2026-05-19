@@ -1,0 +1,117 @@
+{
+  "project": "Dotfiles OpenCode PR Review Command",
+  "branchName": "ralph/opencode-pr-review-command",
+  "description": "OpenCode PR Review Command - Add a manual /review-pr command that replicates GitHub Copilot automated PR reviews using OpenCode infrastructure, tiered specialist subagents, inline GitHub comments, and confirmed posting.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Add reusable PR review prompt",
+      "description": "As an OpenCode user, I want a reusable PR review prompt file so that the review behavior is consistent across repositories and command invocations.",
+      "acceptanceCriteria": [
+        "Add a reusable markdown prompt file for PR review behavior",
+        "Prompt defines review objectives, severity levels, finding schema, noise-reduction rules, and posting safety requirements",
+        "Prompt explicitly states that OpenCode's provider/model layer handles AI execution and no direct OpenAI API calls are made by the command",
+        "Prompt includes rules for summary findings versus inline comments",
+        "Prompt includes specialist subagent instructions for code-reviewer, qa-expert, security-engineer, security-auditor, documentation-engineer, and compliance-auditor",
+        "Typecheck passes",
+        "make -n install succeeds"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Add review-pr OpenCode command",
+      "description": "As an OpenCode user, I want to run /review-pr from a PR branch so that OpenCode reviews the pull request without requiring me to paste the PR URL.",
+      "acceptanceCriteria": [
+        "Add an OpenCode command file for /review-pr",
+        "With no argument, the command detects the PR for the current branch using gh pr view",
+        "The command accepts a PR number argument such as /review-pr 123",
+        "The command accepts a PR URL argument such as /review-pr https://github.com/owner/repo/pull/123",
+        "If no PR can be detected, the command asks the user to provide a PR number or URL instead of guessing",
+        "The command gathers PR title, body, URL, base branch, head branch, changed files, commits, and diff",
+        "The command reads the reusable PR review prompt",
+        "Typecheck passes",
+        "make -n install succeeds"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Add tiered specialist subagent workflow",
+      "description": "As an OpenCode user, I want the command to use multiple specialist subagents so that the review catches correctness, test, security, documentation, and compliance issues without unnecessary noise.",
+      "acceptanceCriteria": [
+        "The default review always includes code-reviewer, qa-expert, and security-engineer review passes",
+        "The command conditionally includes security-auditor when changed files or diff content touch authentication, authorization, secrets, dependencies, inputs, networking, file access, logging, or trust boundaries",
+        "The command conditionally includes documentation-engineer when changed files or diff content touch user-facing behavior, commands, APIs, environment variables, configuration, installation, or operational behavior",
+        "The command conditionally includes compliance-auditor when changed files or diff content touch PII, PHI, financial data, retention, consent, audit trails, licensing, accessibility, or regulated workflows",
+        "Each subagent returns findings using the shared finding schema",
+        "The orchestrator deduplicates findings with the same root cause and keeps the highest severity when merging duplicates",
+        "Typecheck passes",
+        "make -n install succeeds"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Add inline comment mapping instructions",
+      "description": "As an OpenCode user, I want review findings to appear as GitHub inline line comments when possible so that authors can see actionable feedback directly on the changed code.",
+      "acceptanceCriteria": [
+        "The command prompt instructs the reviewer to parse the PR diff and build a map of valid commentable lines per changed file",
+        "Findings intended for inline comments include path, line, side, and body fields compatible with GitHub's pull request review API",
+        "Added or modified lines map to side RIGHT",
+        "Deleted lines map to side LEFT",
+        "Findings that do not map to valid diff-visible lines are moved to the consolidated summary instead of being posted inline",
+        "The command supports multi-line comment fields only when both start and end lines map to valid diff-visible lines",
+        "The command previews the inline review payload before posting",
+        "The command does not post malformed or unmappable inline comments",
+        "Typecheck passes",
+        "make -n install succeeds"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Add confirmed GitHub posting workflow",
+      "description": "As an OpenCode user, I want to review exactly what will be posted to GitHub before anything is submitted so that accidental comments or incorrect reviews are avoided.",
+      "acceptanceCriteria": [
+        "By default, /review-pr generates a local review report and does not post to GitHub",
+        "When run with --post, the command prepares a GitHub review but does not submit it immediately",
+        "Before posting, the command shows the PR URL, review event, consolidated review body, inline comment count, and exact gh command or API payload",
+        "The command asks for explicit confirmation before posting",
+        "Accepted confirmation values include yes, y, confirm, post it, or go ahead",
+        "Ambiguous or negative responses do not post anything",
+        "The command uses gh pr review or gh api only after confirmation",
+        "Typecheck passes",
+        "make -n install succeeds"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Install and document review command assets",
+      "description": "As a dotfiles maintainer, I want the review command assets installed with the rest of the OpenCode configuration so that the command is available after running make install.",
+      "acceptanceCriteria": [
+        "make install installs the reusable PR review prompt to $HOME/.config/opencode/",
+        "Existing command installation copies /review-pr into $HOME/.config/opencode/commands/",
+        "Installation backs up any overwritten prompt file with a timestamped backup when applicable",
+        "README documents the /review-pr command, arguments, required tools, and posting behavior",
+        "AGENTS.md documents the install and cleanup behavior if backup or cleanup targets change",
+        "Typecheck passes",
+        "make -n install succeeds"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

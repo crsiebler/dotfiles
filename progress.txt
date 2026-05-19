@@ -1,0 +1,27 @@
+## Codebase Patterns
+- Dotfiles OpenCode assets are installed by `make install` from `ai/opencode/` into `$HOME/.config/opencode/`.
+- OpenCode commands live under `ai/opencode/commands/` and are copied to `$HOME/.config/opencode/commands/`.
+- OpenCode skills live under `ai/opencode/skills/` and are copied to `$HOME/.config/opencode/skills/`.
+- Reusable standalone OpenCode prompt files can be installed directly under `$HOME/.config/opencode/`, following the existing `ai/ralph.md` pattern.
+- Backup and cleanup behavior must stay documented in both README.md and AGENTS.md when `make install` or `make clean` changes.
+
+## 2026-05-19 15:01:55 MST - US-001
+- Implemented a reusable OpenCode PR review prompt defining objectives, severity levels, finding schema, inline versus summary rules, posting safety requirements, and specialist subagent guidance.
+- Files changed: `ai/opencode/pr-review.md`, `ai/opencode/AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `218cdbd`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Chose a standalone prompt file at `ai/opencode/pr-review.md` because `progress.txt` documents standalone reusable OpenCode prompt assets under `ai/opencode/` as the existing pattern.
+  - Kept installation wiring out of this story because US-006 explicitly owns install and documentation changes for review command assets.
+  - Added a concise `ai/opencode/AGENTS.md` convention because future iterations will need to know where reusable prompt assets live before wiring installation.
+- **Learnings for future iterations:**
+  - `make -n install` is the required validation target for this dotfiles repo; there is no formal typecheck command.
+  - `ai/opencode/AGENTS.md` applies to command, agent, skill, and reusable prompt assets under `ai/opencode/`.
+- Known issues / follow-ups:
+  - The prompt is not installed by `make install` yet; US-006 covers that acceptance criterion.
+- Next iteration start:
+  - Pick US-002 and add `ai/opencode/commands/review-pr.md` that gathers PR context and reads `ai/opencode/pr-review.md`.
+---
