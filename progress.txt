@@ -4,6 +4,7 @@
 - OpenCode skills live under `ai/opencode/skills/` and are copied to `$HOME/.config/opencode/skills/`.
 - Reusable standalone OpenCode prompt files can be installed directly under `$HOME/.config/opencode/`, following the existing `ai/ralph.md` pattern.
 - OpenCode command files use markdown with frontmatter and can gather context through inline shell expansions using the same `$1` argument pattern as existing commands.
+- Keep PR review objectives and shared schemas in `ai/opencode/pr-review.md`; keep command-specific orchestration and context-gathering in `ai/opencode/commands/review-pr.md`.
 - Backup and cleanup behavior must stay documented in both README.md and AGENTS.md when `make install` or `make clean` changes.
 
 ## 2026-05-19 15:01:55 MST - US-001
@@ -46,4 +47,26 @@
   - The reusable prompt fallback expects `$HOME/.config/opencode/pr-review.md`, but installation of that prompt is still owned by US-006.
 - Next iteration start:
   - Pick US-003 and extend `/review-pr` with explicit default and conditional specialist subagent orchestration plus deduplication instructions.
+---
+
+## 2026-05-19 15:06:28 MST - US-003
+- Implemented a tiered specialist subagent workflow in `/review-pr`, including default `code-reviewer`, `qa-expert`, and `security-engineer` passes, conditional specialist triggers, shared finding schema requirements, and deduplication rules that keep the highest severity.
+- Files changed: `ai/opencode/commands/review-pr.md`, `ai/opencode/AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `28b92bb`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Kept specialist orchestration in `ai/opencode/commands/review-pr.md` because it is command-specific behavior, while the reusable prompt remains the shared source for objectives and schema.
+  - Added conditional triggers as explicit command instructions so OpenCode can decide which specialists to invoke from the changed files and diff without introducing a separate script.
+  - Added deduplication rules in the command because merging subagent outputs is orchestrator behavior, not a specialist responsibility.
+- **Learnings for future iterations:**
+  - `/review-pr` now separates reusable review policy from command-specific orchestration; update both only when the changed behavior crosses that boundary.
+  - There is still no formal typecheck target in this dotfiles repo; use `git diff --check` and `make -n install` for these markdown/config changes.
+- Known issues / follow-ups:
+  - Inline comment mapping and payload preview remain incomplete; US-004 covers those requirements.
+  - Confirmed GitHub posting remains incomplete; US-005 covers that workflow.
+- Next iteration start:
+  - Pick US-004 and add explicit diff line mapping, `RIGHT`/`LEFT` side handling, multiline validation, and inline payload preview instructions to `/review-pr`.
 ---
