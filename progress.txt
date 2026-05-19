@@ -6,6 +6,7 @@
 - OpenCode command files use markdown with frontmatter and can gather context through inline shell expansions using the same `$1` argument pattern as existing commands.
 - Keep PR review objectives and shared schemas in `ai/opencode/pr-review.md`; keep command-specific orchestration and context-gathering in `ai/opencode/commands/review-pr.md`.
 - Backup and cleanup behavior must stay documented in both README.md and AGENTS.md when `make install` or `make clean` changes.
+- Keep diff line mapping and inline review payload preview rules in `ai/opencode/commands/review-pr.md` because they are command-specific orchestration.
 
 ## 2026-05-19 15:01:55 MST - US-001
 - Implemented a reusable OpenCode PR review prompt defining objectives, severity levels, finding schema, inline versus summary rules, posting safety requirements, and specialist subagent guidance.
@@ -69,4 +70,25 @@
   - Confirmed GitHub posting remains incomplete; US-005 covers that workflow.
 - Next iteration start:
   - Pick US-004 and add explicit diff line mapping, `RIGHT`/`LEFT` side handling, multiline validation, and inline payload preview instructions to `/review-pr`.
+---
+
+## 2026-05-19 15:09:26 MST - US-004
+- Implemented explicit inline comment mapping instructions for `/review-pr`, including diff-visible line maps, `RIGHT` and `LEFT` side handling, valid GitHub review comment fields, multiline validation, summary fallback for unmappable findings, and local inline payload previews.
+- Files changed: `ai/opencode/commands/review-pr.md`, `prd.json`, `progress.txt`
+- Commit: `1edefad`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Kept inline mapping instructions in `ai/opencode/commands/review-pr.md` because mapping diff lines to GitHub payload fields is command orchestration, while `ai/opencode/pr-review.md` remains the shared review policy and schema source.
+  - Required unmappable or malformed inline findings to fall back to the consolidated summary to satisfy posting safety and avoid invalid GitHub review payloads.
+  - Added payload preview language now, even though posting is still disabled, so US-005 can layer confirmation and submission on top of an already-defined payload shape.
+- **Learnings for future iterations:**
+  - `/review-pr` should preview GitHub-compatible inline comment payloads before any posting workflow, but it still must not post until US-005 adds explicit confirmation.
+  - Deleted lines must use `side: "LEFT"`; added or modified lines must use `side: "RIGHT"`.
+- Known issues / follow-ups:
+  - Confirmed GitHub posting remains incomplete; US-005 covers `--post`, confirmation values, and actual `gh` submission.
+- Next iteration start:
+  - Pick US-005 and add the confirmed posting workflow around the existing local payload preview.
 ---
