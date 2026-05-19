@@ -12,6 +12,9 @@
 - Edit existing files over creating new ones
 - Standalone reusable OpenCode prompt assets live directly under `ai/opencode/`
   and are installed under `$HOME/.config/opencode/` when wired into `make install`
+- Keep PR review objectives and schemas in `ai/opencode/pr-review.md`; keep
+  command-specific orchestration and context-gathering in
+  `ai/opencode/commands/review-pr.md`.
 
 ## Git Workflow
 **Mandatory Format**: `<type>(<scope>): <description>`
