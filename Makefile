@@ -23,8 +23,14 @@ install:
 	fi
 	cp ai/opencode/opencode.json $$HOME/.config/opencode/opencode.json
 	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
-	cp ai/ralph.md $$HOME/.config/opencode/ralph.md
-	@echo "Copied ai/ralph.md to $$HOME/.config/opencode/ralph.md."
+	cp ai/opencode/ralph.md $$HOME/.config/opencode/ralph.md
+	@echo "Copied ai/opencode/ralph.md to $$HOME/.config/opencode/ralph.md."
+	@if [ -f $$HOME/.config/opencode/pr-review.md ]; then \
+	  cp $$HOME/.config/opencode/pr-review.md $$HOME/.config/opencode/pr-review.md.backup.$$(date +%Y%m%d_%H%M%S); \
+	  echo "Backed up existing pr-review.md to .config/opencode/pr-review.md.backup.*"; \
+	fi
+	cp ai/opencode/pr-review.md $$HOME/.config/opencode/pr-review.md
+	@echo "Copied ai/opencode/pr-review.md to $$HOME/.config/opencode/pr-review.md."
 	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
 	  cp $$HOME/.config/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md.backup.$$(date +%Y%m%d_%H%M%S); \
 	  echo "Backed up existing AGENTS.md to .config/opencode/AGENTS.md.backup.*"; \
@@ -74,10 +80,11 @@ install:
 	@echo "Installation complete. Dotfile setup, .env, opencode config, agents, commands, ralph CLI, and subagents CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
 
 clean:
-	@echo "Removing dotfile backups (.zshrc, .env, opencode.json, ralph, subagents, AGENTS.md, skills, agents, commands)..."
+	@echo "Removing dotfile backups (.zshrc, .env, opencode.json, pr-review.md, ralph, subagents, AGENTS.md, skills, agents, commands)..."
 	@rm -f $${HOME}/.zshrc.backup.*
 	@rm -f $${HOME}/.env.backup.*
 	@rm -f $${HOME}/.config/opencode/opencode.json.backup.*
+	@rm -f $${HOME}/.config/opencode/pr-review.md.backup.*
 	@rm -f /usr/local/bin/ralph.backup.*
 	@rm -f /usr/local/bin/subagents.backup.*
 	@rm -f $${HOME}/.config/opencode/AGENTS.md.backup.*

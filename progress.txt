@@ -1,0 +1,141 @@
+## Codebase Patterns
+- Dotfiles OpenCode assets are installed by `make install` from `ai/opencode/` into `$HOME/.config/opencode/`.
+- OpenCode commands live under `ai/opencode/commands/` and are copied to `$HOME/.config/opencode/commands/`.
+- OpenCode skills live under `ai/opencode/skills/` and are copied to `$HOME/.config/opencode/skills/`.
+- Reusable standalone OpenCode prompt files can be installed directly under `$HOME/.config/opencode/`, following the existing `ai/ralph.md` pattern.
+- OpenCode command files use markdown with frontmatter and can gather context through inline shell expansions using the same `$1` argument pattern as existing commands.
+- Keep PR review objectives and shared schemas in `ai/opencode/pr-review.md`; keep command-specific orchestration and context-gathering in `ai/opencode/commands/review-pr.md`.
+- Backup and cleanup behavior must stay documented in both README.md and AGENTS.md when `make install` or `make clean` changes.
+- Keep diff line mapping and inline review payload preview rules in `ai/opencode/commands/review-pr.md` because they are command-specific orchestration.
+- `/review-pr --post` must preview the exact GitHub review command or API payload and require explicit confirmation before any `gh` write command is run.
+
+## 2026-05-19 15:01:55 MST - US-001
+- Implemented a reusable OpenCode PR review prompt defining objectives, severity levels, finding schema, inline versus summary rules, posting safety requirements, and specialist subagent guidance.
+- Files changed: `ai/opencode/pr-review.md`, `ai/opencode/AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `218cdbd`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Chose a standalone prompt file at `ai/opencode/pr-review.md` because `progress.txt` documents standalone reusable OpenCode prompt assets under `ai/opencode/` as the existing pattern.
+  - Kept installation wiring out of this story because US-006 explicitly owns install and documentation changes for review command assets.
+  - Added a concise `ai/opencode/AGENTS.md` convention because future iterations will need to know where reusable prompt assets live before wiring installation.
+- **Learnings for future iterations:**
+  - `make -n install` is the required validation target for this dotfiles repo; there is no formal typecheck command.
+  - `ai/opencode/AGENTS.md` applies to command, agent, skill, and reusable prompt assets under `ai/opencode/`.
+- Known issues / follow-ups:
+  - The prompt is not installed by `make install` yet; US-006 covers that acceptance criterion.
+- Next iteration start:
+  - Pick US-002 and add `ai/opencode/commands/review-pr.md` that gathers PR context and reads `ai/opencode/pr-review.md`.
+---
+
+## 2026-05-19 15:04:22 MST - US-002
+- Implemented `/review-pr` as an OpenCode command that resolves a PR from `$1` or the current branch, gathers PR metadata, files, commits, and diff through `gh`, reads the reusable PR review prompt, and produces a local-only review report.
+- Files changed: `ai/opencode/commands/review-pr.md`, `prd.json`, `progress.txt`
+- Commit: `797ee4a`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Chose a markdown OpenCode command asset instead of a new script because existing commands in this repo use frontmatter plus inline shell expansions.
+  - Used `gh pr view` with `$1` for both PR numbers and URLs because GitHub CLI supports either selector form and keeps parsing logic minimal.
+  - Kept the command local-report-only because US-005 owns the confirmed posting workflow.
+- **Learnings for future iterations:**
+  - Existing OpenCode commands use `$1` for command arguments and inline shell expansion blocks for contextual data gathering.
+  - `gh pr view <selector>` accepts both PR numbers and PR URLs, so separate URL parsing is unnecessary for this command.
+- Known issues / follow-ups:
+  - The reusable prompt fallback expects `$HOME/.config/opencode/pr-review.md`, but installation of that prompt is still owned by US-006.
+- Next iteration start:
+  - Pick US-003 and extend `/review-pr` with explicit default and conditional specialist subagent orchestration plus deduplication instructions.
+---
+
+## 2026-05-19 15:06:28 MST - US-003
+- Implemented a tiered specialist subagent workflow in `/review-pr`, including default `code-reviewer`, `qa-expert`, and `security-engineer` passes, conditional specialist triggers, shared finding schema requirements, and deduplication rules that keep the highest severity.
+- Files changed: `ai/opencode/commands/review-pr.md`, `ai/opencode/AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `28b92bb`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Kept specialist orchestration in `ai/opencode/commands/review-pr.md` because it is command-specific behavior, while the reusable prompt remains the shared source for objectives and schema.
+  - Added conditional triggers as explicit command instructions so OpenCode can decide which specialists to invoke from the changed files and diff without introducing a separate script.
+  - Added deduplication rules in the command because merging subagent outputs is orchestrator behavior, not a specialist responsibility.
+- **Learnings for future iterations:**
+  - `/review-pr` now separates reusable review policy from command-specific orchestration; update both only when the changed behavior crosses that boundary.
+  - There is still no formal typecheck target in this dotfiles repo; use `git diff --check` and `make -n install` for these markdown/config changes.
+- Known issues / follow-ups:
+  - Inline comment mapping and payload preview remain incomplete; US-004 covers those requirements.
+  - Confirmed GitHub posting remains incomplete; US-005 covers that workflow.
+- Next iteration start:
+  - Pick US-004 and add explicit diff line mapping, `RIGHT`/`LEFT` side handling, multiline validation, and inline payload preview instructions to `/review-pr`.
+---
+
+## 2026-05-19 15:09:26 MST - US-004
+- Implemented explicit inline comment mapping instructions for `/review-pr`, including diff-visible line maps, `RIGHT` and `LEFT` side handling, valid GitHub review comment fields, multiline validation, summary fallback for unmappable findings, and local inline payload previews.
+- Files changed: `ai/opencode/commands/review-pr.md`, `prd.json`, `progress.txt`
+- Commit: `1edefad`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Kept inline mapping instructions in `ai/opencode/commands/review-pr.md` because mapping diff lines to GitHub payload fields is command orchestration, while `ai/opencode/pr-review.md` remains the shared review policy and schema source.
+  - Required unmappable or malformed inline findings to fall back to the consolidated summary to satisfy posting safety and avoid invalid GitHub review payloads.
+  - Added payload preview language now, even though posting is still disabled, so US-005 can layer confirmation and submission on top of an already-defined payload shape.
+- **Learnings for future iterations:**
+  - `/review-pr` should preview GitHub-compatible inline comment payloads before any posting workflow, but it still must not post until US-005 adds explicit confirmation.
+  - Deleted lines must use `side: "LEFT"`; added or modified lines must use `side: "RIGHT"`.
+- Known issues / follow-ups:
+  - Confirmed GitHub posting remains incomplete; US-005 covers `--post`, confirmation values, and actual `gh` submission.
+- Next iteration start:
+  - Pick US-005 and add the confirmed posting workflow around the existing local payload preview.
+---
+
+## 2026-05-19 15:14:08 MST - US-005
+- Implemented confirmed GitHub posting workflow instructions for `/review-pr`, including local-only default behavior, `--post` handling, posting previews, confirmation values, cancellation behavior, and guarded `gh pr review`/`gh api` usage.
+- Files changed: `ai/opencode/commands/review-pr.md`, `ai/opencode/AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `5437707`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `grep --post/confirmation workflow` (pass)
+  - `zsh -n` inline parsing check (pass)
+  - `bash -n` inline parsing check (pass)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Kept posting behavior as command orchestration in `ai/opencode/commands/review-pr.md` because the reusable prompt already owns shared review policy and safety requirements.
+  - Chose `gh pr review` for summary-only reviews and `gh api` for inline comment reviews because GitHub's inline review comments require a pull request review API payload.
+  - Required a new preview if the payload changes after confirmation so the user only confirms the exact command or payload that will be posted.
+- **Learnings for future iterations:**
+  - `/review-pr --post` is still safe-by-default: absent `--post`, it must stop after the local report and must not run GitHub write commands.
+  - OpenCode command shell snippets should avoid non-portable regex parsing; simple shell token loops work for filtering command flags like `--post`.
+- Known issues / follow-ups:
+  - The review command assets are not fully documented or prompt-installed yet; US-006 covers installation and README updates.
+- Next iteration start:
+  - Pick US-006 and wire `ai/opencode/pr-review.md` into `make install`, backup/cleanup handling, and README documentation.
+---
+
+## 2026-05-19 15:17:09 MST - US-006
+- Implemented installation and documentation for the PR review command assets, including `pr-review.md` install wiring, timestamped backup handling, cleanup support, README usage docs, and AGENTS.md backup documentation.
+- Files changed: `Makefile`, `README.md`, `AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `335a9d8`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+  - `make -n clean` (pass)
+- Decisions (why):
+  - Installed `ai/opencode/pr-review.md` directly under `$HOME/.config/opencode/` to match the standalone reusable prompt pattern already used by `ai/ralph.md`.
+  - Added a file-specific timestamped backup for `pr-review.md` because installing it overwrites a user-level OpenCode prompt asset.
+  - Documented `/review-pr` in README instead of only AGENTS.md because users need command arguments, requirements, and posting behavior outside agent instructions.
+- **Learnings for future iterations:**
+  - `make clean` should be updated whenever `make install` introduces a new timestamped backup path.
+  - README and AGENTS.md both need backup documentation updates when install or cleanup behavior changes.
+- Known issues / follow-ups:
+  - None.
+- Next iteration start:
+  - All PRD stories are complete; no further story remains.
+---

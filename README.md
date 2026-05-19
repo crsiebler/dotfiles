@@ -9,12 +9,17 @@ A collection of configuration files for storing user preferences and preserving 
    cp env/.env.example $HOME/.env
    # then edit $HOME/.env to add your secrets
 
-2. The OpenCode user configuration and bundled skills should be copied into `$HOME/.config/opencode/`:
+2. The OpenCode user configuration, bundled skills, commands, and reusable prompts should be copied into `$HOME/.config/opencode/`:
 
-     mkdir -p $HOME/.config/opencode/
-     cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
-     mkdir -p $HOME/.config/opencode/skills/
-     cp -R ai/opencode/skills/. $HOME/.config/opencode/skills/
+   ```bash
+   mkdir -p $HOME/.config/opencode/
+   cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
+   mkdir -p $HOME/.config/opencode/skills/
+   cp -R ai/opencode/skills/. $HOME/.config/opencode/skills/
+   mkdir -p $HOME/.config/opencode/commands/
+   cp -R ai/opencode/commands/. $HOME/.config/opencode/commands/
+   cp ai/opencode/pr-review.md $HOME/.config/opencode/pr-review.md
+   ```
 
 3. Run `make install` to copy all supported dotfiles to your home directory as usual.
 
@@ -22,7 +27,44 @@ A collection of configuration files for storing user preferences and preserving 
    - Open a new terminal, or manually run `source ~/.zshrc` to apply all settings and load environment variables from `$HOME/.env`.
    - Any changes to `$HOME/.env` require you to re-source it (`source ~/.env`) or start a new shell.
 
- `make install` will back up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration files (`.zshrc`, `.env`, `opencode.json`, and OpenCode skills) are backed up with timestamp-based names prior to overwrite.
+`make install` will back up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration files (`.zshrc`, `.env`, `opencode.json`, `pr-review.md`, OpenCode skills, agents, and commands) are backed up with timestamp-based names prior to overwrite.
+
+## OpenCode PR Review Command
+
+This repository includes a manual `/review-pr` OpenCode command that reviews GitHub pull requests using OpenCode's configured provider/model layer. It does not make direct OpenAI API calls.
+
+### Setup
+
+After running `make install`, the PR review assets are installed automatically:
+
+- `/review-pr` command: `~/.config/opencode/commands/review-pr.md`
+- Reusable review prompt: `~/.config/opencode/pr-review.md`
+
+If an existing `~/.config/opencode/pr-review.md` file is present, `make install` backs it up to `~/.config/opencode/pr-review.md.backup.*` before replacing it.
+
+### Requirements
+
+- OpenCode configured with a working provider/model
+- GitHub CLI (`gh`) authenticated for the target repository
+- A git branch with an associated GitHub pull request, or an explicit PR selector
+
+### Usage
+
+```bash
+# Detect the PR for the current branch
+/review-pr
+
+# Review a specific PR number
+/review-pr 123
+
+# Review a specific PR URL
+/review-pr https://github.com/owner/repo/pull/123
+
+# Prepare a review for posting after explicit confirmation
+/review-pr --post
+```
+
+By default, `/review-pr` generates a local review report only. When `--post` is provided, it previews the PR URL, review event, consolidated body, inline comment count, and exact `gh` command or API payload, then requires explicit confirmation before posting anything to GitHub.
 
 ## Ralph Autonomous AI Loop
 
@@ -110,10 +152,10 @@ The subagents CLI integrates with the OpenCode subagents skill. When you use tha
 
 ## Removing Backup Files (Cleanup)
 
-If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, `skills.backup.*`, `ralph.backup.*`, and `subagents.backup.*`), run the following command:
+If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, `pr-review.md.backup.*`, `skills.backup.*`, `agents.backup.*`, `commands.backup.*`, `ralph.backup.*`, and `subagents.backup.*`), run the following command:
 
     make clean
 
-This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, OpenCode skills, `ralph`, and `subagents`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
+This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, `pr-review.md`, OpenCode skills, agents, commands, `ralph`, and `subagents`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
 
 ---
