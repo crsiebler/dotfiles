@@ -3,6 +3,7 @@
 - OpenCode commands live under `ai/opencode/commands/` and are copied to `$HOME/.config/opencode/commands/`.
 - OpenCode skills live under `ai/opencode/skills/` and are copied to `$HOME/.config/opencode/skills/`.
 - Reusable standalone OpenCode prompt files can be installed directly under `$HOME/.config/opencode/`, following the existing `ai/ralph.md` pattern.
+- OpenCode command files use markdown with frontmatter and can gather context through inline shell expansions using the same `$1` argument pattern as existing commands.
 - Backup and cleanup behavior must stay documented in both README.md and AGENTS.md when `make install` or `make clean` changes.
 
 ## 2026-05-19 15:01:55 MST - US-001
@@ -24,4 +25,25 @@
   - The prompt is not installed by `make install` yet; US-006 covers that acceptance criterion.
 - Next iteration start:
   - Pick US-002 and add `ai/opencode/commands/review-pr.md` that gathers PR context and reads `ai/opencode/pr-review.md`.
+---
+
+## 2026-05-19 15:04:22 MST - US-002
+- Implemented `/review-pr` as an OpenCode command that resolves a PR from `$1` or the current branch, gathers PR metadata, files, commits, and diff through `gh`, reads the reusable PR review prompt, and produces a local-only review report.
+- Files changed: `ai/opencode/commands/review-pr.md`, `prd.json`, `progress.txt`
+- Commit: `797ee4a`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Chose a markdown OpenCode command asset instead of a new script because existing commands in this repo use frontmatter plus inline shell expansions.
+  - Used `gh pr view` with `$1` for both PR numbers and URLs because GitHub CLI supports either selector form and keeps parsing logic minimal.
+  - Kept the command local-report-only because US-005 owns the confirmed posting workflow.
+- **Learnings for future iterations:**
+  - Existing OpenCode commands use `$1` for command arguments and inline shell expansion blocks for contextual data gathering.
+  - `gh pr view <selector>` accepts both PR numbers and PR URLs, so separate URL parsing is unnecessary for this command.
+- Known issues / follow-ups:
+  - The reusable prompt fallback expects `$HOME/.config/opencode/pr-review.md`, but installation of that prompt is still owned by US-006.
+- Next iteration start:
+  - Pick US-003 and extend `/review-pr` with explicit default and conditional specialist subagent orchestration plus deduplication instructions.
 ---
