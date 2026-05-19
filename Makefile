@@ -23,8 +23,8 @@ install:
 	fi
 	cp ai/opencode/opencode.json $$HOME/.config/opencode/opencode.json
 	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
-	cp ai/ralph.md $$HOME/.config/opencode/ralph.md
-	@echo "Copied ai/ralph.md to $$HOME/.config/opencode/ralph.md."
+	cp ai/opencode/ralph.md $$HOME/.config/opencode/ralph.md
+	@echo "Copied ai/opencode/ralph.md to $$HOME/.config/opencode/ralph.md."
 	@if [ -f $$HOME/.config/opencode/pr-review.md ]; then \
 	  cp $$HOME/.config/opencode/pr-review.md $$HOME/.config/opencode/pr-review.md.backup.$$(date +%Y%m%d_%H%M%S); \
 	  echo "Backed up existing pr-review.md to .config/opencode/pr-review.md.backup.*"; \
