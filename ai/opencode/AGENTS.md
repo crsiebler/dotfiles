@@ -10,6 +10,8 @@
 - Always run typecheck before committing
 - Follow existing code patterns in project
 - Edit existing files over creating new ones
+- Standalone reusable OpenCode prompt assets live directly under `ai/opencode/`
+  and are installed under `$HOME/.config/opencode/` when wired into `make install`
 
 ## Git Workflow
 **Mandatory Format**: `<type>(<scope>): <description>`
