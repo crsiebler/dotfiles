@@ -7,6 +7,7 @@
 - Keep PR review objectives and shared schemas in `ai/opencode/pr-review.md`; keep command-specific orchestration and context-gathering in `ai/opencode/commands/review-pr.md`.
 - Backup and cleanup behavior must stay documented in both README.md and AGENTS.md when `make install` or `make clean` changes.
 - Keep diff line mapping and inline review payload preview rules in `ai/opencode/commands/review-pr.md` because they are command-specific orchestration.
+- `/review-pr --post` must preview the exact GitHub review command or API payload and require explicit confirmation before any `gh` write command is run.
 
 ## 2026-05-19 15:01:55 MST - US-001
 - Implemented a reusable OpenCode PR review prompt defining objectives, severity levels, finding schema, inline versus summary rules, posting safety requirements, and specialist subagent guidance.
@@ -91,4 +92,28 @@
   - Confirmed GitHub posting remains incomplete; US-005 covers `--post`, confirmation values, and actual `gh` submission.
 - Next iteration start:
   - Pick US-005 and add the confirmed posting workflow around the existing local payload preview.
+---
+
+## 2026-05-19 15:14:08 MST - US-005
+- Implemented confirmed GitHub posting workflow instructions for `/review-pr`, including local-only default behavior, `--post` handling, posting previews, confirmation values, cancellation behavior, and guarded `gh pr review`/`gh api` usage.
+- Files changed: `ai/opencode/commands/review-pr.md`, `ai/opencode/AGENTS.md`, `prd.json`, `progress.txt`
+- Commit: `5437707`
+- Checks:
+  - `typecheck` (pass: not applicable; this dotfiles repo has no formal typecheck target)
+  - `grep --post/confirmation workflow` (pass)
+  - `zsh -n` inline parsing check (pass)
+  - `bash -n` inline parsing check (pass)
+  - `git diff --check` (pass)
+  - `make -n install` (pass)
+- Decisions (why):
+  - Kept posting behavior as command orchestration in `ai/opencode/commands/review-pr.md` because the reusable prompt already owns shared review policy and safety requirements.
+  - Chose `gh pr review` for summary-only reviews and `gh api` for inline comment reviews because GitHub's inline review comments require a pull request review API payload.
+  - Required a new preview if the payload changes after confirmation so the user only confirms the exact command or payload that will be posted.
+- **Learnings for future iterations:**
+  - `/review-pr --post` is still safe-by-default: absent `--post`, it must stop after the local report and must not run GitHub write commands.
+  - OpenCode command shell snippets should avoid non-portable regex parsing; simple shell token loops work for filtering command flags like `--post`.
+- Known issues / follow-ups:
+  - The review command assets are not fully documented or prompt-installed yet; US-006 covers installation and README updates.
+- Next iteration start:
+  - Pick US-006 and wire `ai/opencode/pr-review.md` into `make install`, backup/cleanup handling, and README documentation.
 ---
