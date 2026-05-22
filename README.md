@@ -75,7 +75,9 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 - **PRD Generation**: Use the PRD skill in OpenCode to create detailed requirements documents
 - **PRD Conversion**: Use the Ralph skill in OpenCode to convert PRDs to JSON format for autonomous execution
 - **Autonomous Implementation**: Run `ralph --max-iterations 10` to automatically implement user stories
+- **Recommended Agents**: Story `notes` can list `@agent-name` recommendations that Ralph invokes before implementation
 - **Quality Assurance**: Each iteration includes type checking, linting, and testing
+- **Specialist Review Gate**: Each staged story is reviewed by dedicated OpenCode subagents before commit
 - **Progress Tracking**: Automatic commits and progress logging
 
 ### Setup
