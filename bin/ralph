@@ -84,15 +84,9 @@ if [[ ! -f "$RALPH_PROMPT_FILE" ]]; then
   exit 1
 fi
 
-# Create prompt material in the current project so OpenCode does not need
-# external-directory access during autonomous target-repository runs.
-TEMP_PROMPT_FILE="$(mktemp "./.ralph-prompt.XXXXXX.md")"
-cleanup_prompt_file() {
-  rm -f "$TEMP_PROMPT_FILE"
-}
-trap cleanup_prompt_file EXIT
-
-sed "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" "$RALPH_PROMPT_FILE" > "$TEMP_PROMPT_FILE"
+# Build the prompt in memory so Ralph does not see prompt material as an
+# untracked project file during autonomous runs.
+RALPH_PROMPT=$(sed "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" "$RALPH_PROMPT_FILE")
 
 echo "Starting Ralph autonomous AI loop..."
 echo "Using Ralph prompt from $RALPH_PROMPT_FILE"
@@ -102,8 +96,8 @@ ITERATION=0
 while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
-  # Run OpenCode with the processed prompt file
-  opencode run -m openai/gpt-5.5 "$(cat "$TEMP_PROMPT_FILE")"
+  # Run OpenCode with the processed prompt
+  opencode run -m openai/gpt-5.5 "$RALPH_PROMPT"
 
   ITERATION=$((ITERATION + 1))
 
