@@ -12,9 +12,8 @@
 - Edit existing files over creating new ones
 - Standalone reusable OpenCode prompt assets live directly under `ai/opencode/`
   and are installed under `$HOME/.config/opencode/` when wired into `make install`
-- Keep PR review objectives and schemas in `ai/opencode/pr-review.md`; keep
-  command-specific orchestration and context-gathering in
-  `ai/opencode/commands/review-pr.md`.
+- Keep GitHub PR review objectives, schemas, orchestration, and context-gathering
+  in `ai/opencode/commands/review-pr.md`.
 - `/review-pr --post` workflows must preview the exact GitHub review command or
   API payload and require explicit confirmation before running any `gh` command
   that writes review comments.

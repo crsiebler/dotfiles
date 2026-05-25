@@ -5,7 +5,7 @@ description: Review a GitHub pull request with OpenCode specialist reviewers
 
 # Review Pull Request
 
-Review a GitHub pull request using the reusable PR review prompt and local
+Review a GitHub pull request using OpenCode specialist reviewers and local
 repository context. By default, generate a local review report only. Do not post
 comments or submit a GitHub review unless the user passes `--post` and then
 explicitly confirms the exact payload.
@@ -66,8 +66,129 @@ PR diff:
 Commits on the PR branch compared with the base branch:
 !`selector=""; for arg in $1; do [ "$arg" = "--post" ] && continue; selector="${selector:+$selector }$arg"; done; selector="${selector:-$(gh pr view --json url --jq .url 2>/dev/null)}"; if [ -n "$selector" ]; then base=$(gh pr view "$selector" --json baseRefName --jq .baseRefName); head=$(gh pr view "$selector" --json headRefName --jq .headRefName); git log --oneline "origin/$base..origin/$head" 2>/dev/null || git log --oneline "$base..HEAD" 2>/dev/null || true; fi`
 
-Reusable PR review prompt:
-!`if [ -f ai/opencode/pr-review.md ]; then cat ai/opencode/pr-review.md; elif [ -f "$HOME/.config/opencode/pr-review.md" ]; then cat "$HOME/.config/opencode/pr-review.md"; else printf 'Missing reusable PR review prompt. Expected ai/opencode/pr-review.md or $HOME/.config/opencode/pr-review.md.\n'; fi`
+## PR Review Standards
+
+Use these standards for all specialist PR review passes and for the consolidated
+report. These standards are self-contained in this command; do not read external
+review standards files.
+
+### Review Objectives
+
+Find issues that materially affect correctness, maintainability, security, test
+reliability, documentation accuracy, or compliance risk. Prioritize actionable
+findings over broad commentary. Avoid repeating obvious details from the diff
+unless they support a concrete recommendation.
+
+Review the PR title, body, commits, changed files, and diff before producing
+findings. Treat the diff as the source of truth for inline comment placement.
+Use repository instructions and local conventions when they are available.
+
+### Severity Levels
+
+- `critical`: A confirmed vulnerability, data loss risk, broken production
+  path, or compliance failure that should block merge.
+- `high`: A likely runtime failure, security weakness, test gap for critical
+  behavior, or user-visible regression that should be fixed before merge.
+- `medium`: A correctness, maintainability, documentation, or operational issue
+  that is worth fixing but does not obviously block safe merge.
+- `low`: A small improvement with clear value and low risk, such as a minor
+  clarity issue or local consistency problem.
+
+Do not report `low` findings unless they are clearly actionable and specific to
+the changed code.
+
+### Finding Schema
+
+Return findings as structured items with these fields:
+
+```json
+{
+  "severity": "critical|high|medium|low",
+  "title": "Short imperative summary",
+  "body": "Explain the issue, impact, and suggested fix.",
+  "path": "relative/path.ext or null",
+  "line": 123,
+  "side": "RIGHT|LEFT|null",
+  "start_line": 120,
+  "start_side": "RIGHT|LEFT|null",
+  "end_line": 123,
+  "end_side": "RIGHT|LEFT|null",
+  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|summary"
+}
+```
+
+Use `path`, `line`, and `side` only when the finding maps to a valid
+diff-visible line. Use `RIGHT` for added or modified lines and `LEFT` for
+deleted lines. Use multiline fields only when every referenced line is valid and
+visible in the PR diff. If a finding cannot be safely mapped to a diff-visible
+line, set line fields to `null` and include it in the consolidated summary.
+
+### Noise-Reduction Rules
+
+- Report only issues introduced or exposed by the PR.
+- Do not flag unchanged legacy code unless the PR depends on it in a way that
+  creates a new risk.
+- Do not request stylistic changes unless they affect readability,
+  maintainability, or consistency with existing project conventions.
+- Do not duplicate findings with the same root cause. Keep the clearest finding
+  and highest severity.
+- Do not speculate. State assumptions explicitly when evidence is incomplete.
+- Prefer one precise finding over several adjacent comments for the same issue.
+- Avoid praise-only comments and generic summaries.
+
+### Summary Findings vs Inline Comments
+
+Use inline comments for findings that can be attached to a specific changed line
+and where local context helps the author act. Inline comment bodies should be
+concise and include the concrete impact and fix.
+
+Use the consolidated summary for findings that apply across files, depend on
+missing tests or documentation, describe architectural concerns, or cannot be
+mapped to a valid diff-visible line. The summary should include:
+
+- Overall review result.
+- Blocking findings by severity.
+- Non-blocking findings when actionable.
+- Residual risks and testing gaps.
+- A short note when no findings were discovered.
+
+### Posting Safety Requirements
+
+- Default to generating a local review report only.
+- Do not post comments or submit a GitHub review unless the user explicitly
+  requests posting and confirms the exact payload.
+- Before posting, show the PR URL, review event, consolidated review body, inline
+  comment count, and the exact `gh` command or API payload.
+- Never post malformed inline comments. Move unmappable comments to the summary.
+- Never include secrets, tokens, credentials, or sensitive environment values in
+  review output.
+- If GitHub context is missing or ambiguous, ask for the PR number or URL rather
+  than guessing.
+
+### Specialist Reviewer Guidance
+
+- `code-reviewer`: Focus on correctness, maintainability, error handling, API
+  contracts, concurrency, data flow, and project conventions. Prioritize defects
+  that can be shown from the diff and local code context.
+- `qa-expert`: Focus on missing or weak tests, brittle assertions, fixture gaps,
+  regression risk, and validation coverage. Only report missing tests when the
+  behavior is important enough to justify a required change.
+- `security-engineer`: Focus on secure coding risks in the changed code,
+  including injection, authentication and authorization mistakes, secret
+  exposure, unsafe file access, network trust boundaries, dependency risk,
+  logging leaks, and input validation.
+- `security-auditor`: Use when the diff touches authentication, authorization,
+  secrets, dependencies, inputs, networking, file access, logging, or trust
+  boundaries. Focus on deeper threat modeling, exploitability, security
+  controls, and auditability.
+- `documentation-engineer`: Use when the diff changes user-facing behavior,
+  commands, APIs, environment variables, configuration, installation, or
+  operational behavior. Focus on stale, missing, or misleading docs that would
+  affect users or operators.
+- `compliance-auditor`: Use when the diff touches PII, PHI, financial data,
+  retention, consent, audit trails, licensing, accessibility, or regulated
+  workflows. Focus on compliance obligations, evidence, policy alignment, and
+  merge-blocking gaps.
 
 ## Specialist Subagent Workflow
 
@@ -97,9 +218,9 @@ content indicates their domain is relevant:
   or regulated workflows.
 
 For each specialist pass, provide the PR metadata, changed file summary, diff,
-commits, repository instructions, and reusable PR review prompt. Require every
-specialist to return findings using the shared finding schema from the reusable
-prompt. If a specialist has no actionable findings, it should explicitly return
+commits, repository instructions, and PR review standards. Require every
+specialist to return findings using the shared finding schema from the standards.
+If a specialist has no actionable findings, it should explicitly return
 an empty findings list and note residual risks or checks not run.
 
 Merge specialist results before writing the final report:
@@ -111,7 +232,7 @@ Merge specialist results before writing the final report:
 - Preserve the `source` field for the primary specialist finding, or list
   multiple sources in the body when that context is important.
 - Discard generic, praise-only, speculative, or unchanged-code findings that do
-  not satisfy the reusable prompt's noise-reduction rules.
+  not satisfy the PR review standards' noise-reduction rules.
 
 ## Inline Comment Mapping
 
@@ -209,9 +330,10 @@ again.
 
 ## Review Instructions
 
-Use the reusable prompt as the source of truth for review objectives, severity
-levels, finding schema, noise-reduction rules, summary versus inline comment
-rules, posting safety requirements, and specialist reviewer guidance.
+Use the PR review standards in this command as the source of truth for review
+objectives, severity levels, finding schema, noise-reduction rules, summary
+versus inline comment rules, posting safety requirements, and specialist
+reviewer guidance.
 
 Produce a consolidated local review report containing:
 - PR metadata: title, URL, base branch, and head branch.

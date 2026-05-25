@@ -74,10 +74,7 @@ When `notes` includes `Recommended agents:` or `@agent-name` references:
 6. If a recommended agent is unavailable, inappropriate, redundant with another already-invoked agent, or conflicts with higher-priority instructions, skip it only after recording the reason in `progress.txt`.
 
 Recommended implementation agents do not replace your own codebase inspection,
-quality checks, user-confirmation requirements, or the mandatory staged-change
-review gate. For example, if a story requires package-management confirmation,
-recommended dependency agents may advise, but you still must ask for explicit
-approval before editing dependencies, lockfiles, or running install commands.
+quality checks, or the mandatory staged-change review gate.
 
 ## Consolidate Patterns
 
@@ -136,7 +133,73 @@ Prepare the candidate final state before review:
 6. Stage all intended story files, including implementation, tests, `prd.json`, `progress.txt`, and any AGENTS/docs updates.
 7. Confirm `git status --short` contains only intended files for this story, or clearly separate unrelated user changes from your staged changes.
 
-For each review pass, gather `git diff --cached --name-only`, `git diff --cached --stat`, and `git diff --cached --patch`. Also gather the story ID, title, acceptance criteria, implementation notes, quality check results, repository instructions, and relevant Codebase Patterns from `progress.txt`. Read the reusable PR review prompt from `ai/opencode/pr-review.md` when present, otherwise from `$HOME/.config/opencode/pr-review.md` when present. Use it as the source of truth for severity levels, finding schema, review objectives, and noise-reduction rules.
+For each review pass, gather `git diff --cached --name-only`, `git diff --cached --stat`, and `git diff --cached --patch`. Also gather the story ID, title, acceptance criteria, implementation notes, quality check results, repository instructions, and relevant Codebase Patterns from `progress.txt`. Use the local review standards below as the source of truth for severity levels, finding schema, review objectives, and noise-reduction rules.
+
+### Ralph Local Review Standards
+
+This review is for local staged story work, not a GitHub pull request. Treat
+`git diff --cached` as the complete review target. Treat the selected Ralph
+story metadata and quality-check results as the review context.
+
+Review objectives:
+
+- Find issues that materially affect correctness, maintainability, security,
+  test reliability, documentation accuracy, or acceptance-criteria completion.
+- Prioritize actionable findings over broad commentary.
+- Convert valid findings into local remediation tasks that Ralph fixes before
+  commit.
+- Do not post comments, submit GitHub reviews, call GitHub APIs, or require PR
+  metadata during Ralph's local staged review.
+
+Severity levels:
+
+- `critical`: A confirmed vulnerability, data loss risk, broken production
+  path, or compliance failure that must block the commit.
+- `high`: A likely runtime failure, security weakness, critical test gap, or
+  user-visible regression that must be fixed before commit.
+- `medium`: A correctness, maintainability, documentation, operational, or
+  acceptance-criteria issue that is clearly actionable and should be fixed when
+  within story scope.
+- `low`: A small improvement with clear value and low risk. Do not interrupt the
+  autonomous loop for low findings unless they are specific, cheap, and directly
+  tied to the changed code.
+
+Finding schema for specialist results:
+
+```json
+{
+  "severity": "critical|high|medium|low",
+  "title": "Short imperative summary",
+  "body": "Explain the issue, impact, and suggested fix.",
+  "path": "relative/path.ext or null",
+  "line": 123,
+  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|summary"
+}
+```
+
+Use `path` and `line` only when the finding maps to the staged diff or a nearby
+changed-code location. Set them to `null` for cross-cutting findings.
+
+Noise-reduction rules:
+
+- Report only issues introduced, exposed, or left incomplete by the staged story
+  work.
+- Do not flag unchanged legacy code unless the staged change depends on it in a
+  way that creates a new risk.
+- Do not request stylistic changes unless they affect readability,
+  maintainability, or consistency with established project conventions.
+- Do not duplicate findings with the same root cause. Keep the clearest finding
+  and highest severity.
+- Do not speculate. State assumptions explicitly when evidence is incomplete.
+- Avoid praise-only comments, generic summaries, and low-value churn.
+
+Specialist output discipline:
+
+- Each specialist must return a structured findings list using the schema above.
+- If no actionable findings are discovered, return an empty findings list and
+  note residual risks or checks not run.
+- Findings should explain what Ralph should fix before committing, not what a
+  GitHub reviewer would post.
 
 Run these default specialist passes against the staged diff before committing:
 
@@ -150,13 +213,13 @@ Conditionally add these specialist passes when the staged file list or diff cont
 - `documentation-engineer`: include when files or diff content touch user-facing behavior, commands, APIs, environment variables, configuration, installation, or operational behavior.
 - `compliance-auditor`: include when files or diff content touch PII, PHI, financial data, retention, consent, audit trails, licensing, accessibility, or regulated workflows.
 
-For each specialist pass, provide the staged file summary, staged patch, story context, quality check results, repository instructions, and reusable PR review prompt. Require every specialist to return findings using the shared finding schema from the reusable prompt. If a specialist has no actionable findings, it must explicitly return an empty findings list and note residual risks or checks not run.
+For each specialist pass, provide the staged file summary, staged patch, story context, quality check results, repository instructions, and Ralph local review standards. Require every specialist to return findings using the shared finding schema from the local review standards. If a specialist has no actionable findings, it must explicitly return an empty findings list and note residual risks or checks not run.
 
 Merge specialist results before deciding whether to commit:
 
 - Deduplicate findings that describe the same root cause.
 - Keep the highest severity among duplicates and preserve the clearest remediation.
-- Discard generic, praise-only, speculative, or unchanged-code findings that do not satisfy the reusable prompt's noise-reduction rules.
+- Discard generic, praise-only, speculative, or unchanged-code findings that do not satisfy the local review standards' noise-reduction rules.
 - Fix all actionable `critical`, `high`, and `medium` findings before committing unless the story requirements make them explicitly out of scope; document any out-of-scope decision in `progress.txt`.
 - Re-run affected quality checks after fixes.
 - Update `progress.txt` if the review changed the final implementation, decisions, checks, or findings.

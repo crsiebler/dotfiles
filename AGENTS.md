@@ -222,7 +222,6 @@ After running `make install`, backup files are created for existing configuratio
 - `~/.zshrc.backup.*`
 - `~/.env.backup.*`
 - `~/.config/opencode/opencode.json.backup.*`
-- `~/.config/opencode/pr-review.md.backup.*`
 - `~/.config/opencode/AGENTS.md.backup.*`
 - `~/.config/opencode/skills.backup.*`
 - `~/.config/opencode/agents.backup.*`
@@ -265,7 +264,7 @@ After cloning this repository:
 1. Run `make install` to install configurations (backs up existing `.zshrc` with a timestamp)
 2. Source configurations: `source ~/.zshrc` (or open a new shell)
 3. Copy `env/.env.example` to `$HOME/.env` and edit as needed for secrets
-4. AI-specific config: `ai/opencode/opencode.json` copied to `$HOME/.config/opencode/opencode.json`, `ai/opencode/pr-review.md` copied to `$HOME/.config/opencode/pr-review.md`, `ai/opencode/commands/` copied to `$HOME/.config/opencode/commands/`, and `ai/opencode/skills/` copied to `$HOME/.config/opencode/skills/` (Makefile will handle this).
+4. AI-specific config: `ai/opencode/opencode.json` copied to `$HOME/.config/opencode/opencode.json`, `ai/opencode/commands/` copied to `$HOME/.config/opencode/commands/`, and `ai/opencode/skills/` copied to `$HOME/.config/opencode/skills/` (Makefile will handle this).
 5. Verify setup: ensure `$JAVA_HOME` is set (for example, run `echo "$JAVA_HOME"`)
 
 ## Common Patterns
