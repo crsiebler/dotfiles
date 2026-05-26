@@ -25,7 +25,7 @@ This feature replaces the user's soon-to-be unavailable GitHub Copilot automated
 - [ ] Prompt defines review objectives, severity levels, finding schema, noise-reduction rules, and posting safety requirements.
 - [ ] Prompt explicitly states that OpenCode's provider/model layer handles AI execution and no direct OpenAI API calls are made by the command.
 - [ ] Prompt includes rules for summary findings versus inline comments.
-- [ ] Prompt includes specialist subagent instructions for `code-reviewer`, `qa-expert`, `security-engineer`, `security-auditor`, `documentation-engineer`, and `compliance-auditor`.
+- [ ] Prompt includes specialist subagent instructions for `code-reviewer`, `qa-expert`, `security-engineer`, `security-auditor`, `documentation-engineer`, `compliance-auditor`, `ui-designer`, and `ux-researcher`.
 - [ ] `make -n install` succeeds.
 
 ### US-002: Add `/review-pr` Command
@@ -45,10 +45,12 @@ This feature replaces the user's soon-to-be unavailable GitHub Copilot automated
 **Description:** As an OpenCode user, I want the command to use multiple specialist subagents so that the review catches correctness, test, security, documentation, and compliance issues without unnecessary noise.
 
 **Acceptance Criteria:**
-- [ ] The default review always includes `code-reviewer`, `qa-expert`, and `security-engineer` review passes.
-- [ ] The command conditionally includes `security-auditor` when changed files or diff content touch authentication, authorization, secrets, dependencies, inputs, networking, file access, logging, or trust boundaries.
+- [ ] The default review always includes only `code-reviewer` and `qa-expert` review passes.
+- [ ] The command conditionally includes `security-engineer` when changed files or diff content touch secure coding risk, subprocess execution, filesystem mutation, network calls, secrets, auth, permissions, encryption, dependency changes, untrusted input, logging sensitive values, or deployment/configuration surfaces.
+- [ ] The command conditionally includes `security-auditor` only for deeper security, compliance, or policy review when changed files or diff content are explicitly security-sensitive or high-risk.
 - [ ] The command conditionally includes `documentation-engineer` when changed files or diff content touch user-facing behavior, commands, APIs, environment variables, configuration, installation, or operational behavior.
 - [ ] The command conditionally includes `compliance-auditor` when changed files or diff content touch PII, PHI, financial data, retention, consent, audit trails, licensing, accessibility, or regulated workflows.
+- [ ] The command conditionally includes `ui-designer` or `ux-researcher` for frontend/UI-impacting changes, and that reviewer uses the `dev-browser` skill to verify UX standards, accessibility, consistency, and industry best practices.
 - [ ] Each subagent returns findings using the shared finding schema.
 - [ ] The orchestrator deduplicates findings with the same root cause.
 - [ ] The orchestrator keeps the highest severity when merging duplicate findings.
@@ -102,8 +104,8 @@ This feature replaces the user's soon-to-be unavailable GitHub Copilot automated
 - FR-6: The command must accept a PR URL argument.
 - FR-7: The command must gather PR metadata, changed files, commits, and diff before reviewing.
 - FR-8: The command must use a reusable markdown prompt file for review standards and output requirements.
-- FR-9: The default specialist review set must include `code-reviewer`, `qa-expert`, and `security-engineer`.
-- FR-10: The command must conditionally run `security-auditor`, `documentation-engineer`, and `compliance-auditor` based on changed files and diff content.
+- FR-9: The default specialist review set must include only `code-reviewer` and `qa-expert`.
+- FR-10: The command must conditionally run `security-engineer`, `security-auditor`, `documentation-engineer`, `compliance-auditor`, `ui-designer`, and `ux-researcher` based on changed files and diff content.
 - FR-11: All subagent findings must use a shared schema with severity, confidence, category, file, line, title, evidence, recommendation, and inline comment fields.
 - FR-12: The orchestrator must deduplicate findings before generating final output.
 - FR-13: The orchestrator must suppress low-value findings such as style-only preferences, formatter issues, speculative rewrites, and duplicate comments.

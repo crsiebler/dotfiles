@@ -113,7 +113,7 @@ Return findings as structured items with these fields:
   "start_side": "RIGHT|LEFT|null",
   "end_line": 123,
   "end_side": "RIGHT|LEFT|null",
-  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|summary"
+  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|ui-designer|ux-researcher|summary"
 }
 ```
 
@@ -173,14 +173,19 @@ mapped to a valid diff-visible line. The summary should include:
 - `qa-expert`: Focus on missing or weak tests, brittle assertions, fixture gaps,
   regression risk, and validation coverage. Only report missing tests when the
   behavior is important enough to justify a required change.
-- `security-engineer`: Focus on secure coding risks in the changed code,
-  including injection, authentication and authorization mistakes, secret
-  exposure, unsafe file access, network trust boundaries, dependency risk,
-  logging leaks, and input validation.
-- `security-auditor`: Use when the diff touches authentication, authorization,
-  secrets, dependencies, inputs, networking, file access, logging, or trust
-  boundaries. Focus on deeper threat modeling, exploitability, security
-  controls, and auditability.
+- `security-engineer`: Use when the diff touches secure coding risk, subprocess
+  or shell execution, filesystem mutation, network calls, secrets or environment
+  variables, authentication, authorization, permissions, encryption, dependency
+  changes, deserialization, parsing untrusted input, logging sensitive values,
+  or deployment/configuration surfaces. Focus on implementation-level security
+  defects. Do not use for local-only scripts, tests, docs, formatting, or
+  refactors unless one of these risk surfaces is present.
+- `security-auditor`: Use only for deeper security, compliance, or policy review
+  when the diff touches authentication, authorization, secrets, credential
+  handling, dependency or supply-chain risk, deployment, regulated data,
+  auditability, trust boundaries, or externally reachable behavior. Do not run
+  both security reviewers unless the change is explicitly security-sensitive or
+  high-risk.
 - `documentation-engineer`: Use when the diff changes user-facing behavior,
   commands, APIs, environment variables, configuration, installation, or
   operational behavior. Focus on stale, missing, or misleading docs that would
@@ -189,6 +194,22 @@ mapped to a valid diff-visible line. The summary should include:
   retention, consent, audit trails, licensing, accessibility, or regulated
   workflows. Focus on compliance obligations, evidence, policy alignment, and
   merge-blocking gaps.
+- `ui-designer`: Use when frontend components, pages, layouts, routes,
+  templates, styles, design tokens, icons, images, animations, interaction
+  behavior, accessibility-relevant markup, responsive behavior, or
+  rendering-related frontend dependencies/configuration changed. It must load and
+  use the `dev-browser` skill to verify affected flows for UX quality,
+  accessibility, visual consistency, responsive behavior, interaction clarity,
+  and industry best practices. Do not use for backend-only code, local-only
+  scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
+  rendered UI impact.
+- `ux-researcher`: Use when user flows, task completion paths, navigation,
+  forms, modals, onboarding, dashboards, validation messages, empty/error/loading
+  states, accessibility-affecting behavior, responsive behavior, or user-facing
+  copy changed. It must load and use the `dev-browser` skill to verify the
+  changed frontend experience for UX standards, accessibility, flow consistency,
+  usability heuristics, and industry best practices. Do not use for internal
+  implementation changes that do not alter visible behavior or interaction flow.
 
 ## Specialist Subagent Workflow
 
@@ -201,21 +222,48 @@ Always run these default specialist passes:
   data flow, and project conventions.
 - `qa-expert`: missing or weak tests, brittle assertions, fixture gaps,
   regression risk, and validation coverage.
-- `security-engineer`: secure coding risks, injection, authentication and
-  authorization mistakes, secret exposure, unsafe file access, network trust
-  boundaries, dependency risk, logging leaks, and input validation.
 
 Conditionally add these specialist passes when the changed file list or diff
 content indicates their domain is relevant:
-- `security-auditor`: include when files or diff content touch authentication,
-  authorization, secrets, dependencies, inputs, networking, file access,
-  logging, or trust boundaries.
+- `security-engineer`: include when files or diff content touch secure coding
+  risk, subprocess or shell execution, filesystem mutation, network calls,
+  secrets or environment variables, authentication, authorization, permissions,
+  encryption, dependency changes, deserialization, parsing untrusted input,
+  logging sensitive values, or deployment/configuration surfaces. Do not run for
+  local-only scripts, tests, docs, formatting, or refactors unless one of these
+  risk surfaces is present.
+- `security-auditor`: include only for deeper security, compliance, or policy
+  review when files or diff content touch authentication, authorization, secrets,
+  credential handling, dependency or supply-chain risk, deployment, regulated
+  data, auditability, trust boundaries, or externally reachable behavior. Do not
+  run both `security-engineer` and `security-auditor` unless the change is
+  explicitly security-sensitive or high-risk.
 - `documentation-engineer`: include when files or diff content touch
   user-facing behavior, commands, APIs, environment variables, configuration,
   installation, or operational behavior.
 - `compliance-auditor`: include when files or diff content touch PII, PHI,
   financial data, retention, consent, audit trails, licensing, accessibility,
   or regulated workflows.
+- `ui-designer`: include when frontend components, pages, layouts, routes,
+  templates, styles, design tokens, icons, images, animations, interaction
+  behavior, accessibility-relevant markup, responsive behavior, or
+  rendering-related frontend dependencies/configuration changed. It must load and
+  use the `dev-browser` skill to verify affected flows for UX quality,
+  accessibility, visual consistency, responsive behavior, interaction clarity,
+  and industry best practices. Do not run for backend-only code, local-only
+  scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
+  rendered UI impact.
+- `ux-researcher`: include when user flows, task completion paths, navigation,
+  forms, modals, onboarding, dashboards, validation messages, empty/error/loading
+  states, accessibility-affecting behavior, responsive behavior, or user-facing
+  copy changed. It must load and use the `dev-browser` skill to verify the
+  changed frontend experience for UX standards, accessibility, flow consistency,
+  usability heuristics, and industry best practices. Do not run for internal
+  implementation changes that do not alter visible behavior or interaction flow.
+
+Specialist selection must be strict. For low-risk local code changes, run only
+`code-reviewer` and `qa-expert`. Optional specialists should be added only when
+their trigger conditions are clearly present in the changed files or diff.
 
 For each specialist pass, provide the PR metadata, changed file summary, diff,
 commits, repository instructions, and PR review standards. Require every

@@ -33,7 +33,7 @@ APPEND to progress.txt (never replace, always append):
   - Recommended: `agent-a`, `agent-b`
   - Used: `agent-a`, `agent-b` / skipped with reason
 - Specialist review:
-  - Agents used: `code-reviewer`, `qa-expert`, `security-engineer`, ...
+  - Agents used: `code-reviewer`, `qa-expert`, optional specialists with reasons
   - Findings: fixed before commit / none / deferred with reason
 - Decisions (why):
   - Chose X over Y because ...
@@ -173,7 +173,7 @@ Finding schema for specialist results:
   "body": "Explain the issue, impact, and suggested fix.",
   "path": "relative/path.ext or null",
   "line": 123,
-  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|summary"
+  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|ui-designer|ux-researcher|summary"
 }
 ```
 
@@ -203,17 +203,61 @@ Specialist output discipline:
 
 Run these default specialist passes against the staged diff before committing:
 
-- `code-reviewer`: correctness, maintainability, error handling, API contracts, data flow, and project conventions.
-- `qa-expert`: missing or weak tests, brittle assertions, fixture gaps, regression risk, and validation coverage.
-- `security-engineer`: secure coding risks, injection, authentication and authorization mistakes, secret exposure, unsafe file access, network trust boundaries, dependency risk, logging leaks, and input validation.
+- `code-reviewer`: correctness, maintainability, error handling, API contracts,
+  data flow, and project conventions.
+- `qa-expert`: missing or weak tests, brittle assertions, fixture gaps,
+  regression risk, and validation coverage.
 
-Conditionally add these specialist passes when the staged file list or diff content indicates their domain is relevant:
+Conditionally add these specialist passes when the staged file list or diff
+content indicates their domain is relevant:
 
-- `security-auditor`: include when files or diff content touch authentication, authorization, secrets, dependencies, inputs, networking, file access, logging, or trust boundaries.
-- `documentation-engineer`: include when files or diff content touch user-facing behavior, commands, APIs, environment variables, configuration, installation, or operational behavior.
-- `compliance-auditor`: include when files or diff content touch PII, PHI, financial data, retention, consent, audit trails, licensing, accessibility, or regulated workflows.
+- `security-engineer`: include when files or diff content touch secure coding
+  risk, subprocess or shell execution, filesystem mutation, network calls,
+  secrets or environment variables, authentication, authorization, permissions,
+  encryption, dependency changes, deserialization, parsing untrusted input,
+  logging sensitive values, or deployment/configuration surfaces. Do not run for
+  local-only scripts, tests, docs, formatting, or refactors unless one of these
+  risk surfaces is present.
+- `security-auditor`: include only for deeper security, compliance, or policy
+  review when files or diff content touch authentication, authorization, secrets,
+  credential handling, dependency or supply-chain risk, deployment, regulated
+  data, auditability, trust boundaries, or externally reachable behavior. Do not
+  run both `security-engineer` and `security-auditor` unless the change is
+  explicitly security-sensitive or high-risk.
+- `documentation-engineer`: include when files or diff content touch user-facing
+  behavior, commands, APIs, environment variables, configuration, installation,
+  or operational behavior.
+- `compliance-auditor`: include when files or diff content touch PII, PHI,
+  financial data, retention, consent, audit trails, licensing, accessibility, or
+  regulated workflows.
+- `ui-designer`: include when frontend components, pages, layouts, routes,
+  templates, styles, design tokens, icons, images, animations, interaction
+  behavior, accessibility-relevant markup, responsive behavior, or
+  rendering-related frontend dependencies/configuration changed. It must load and
+  use the `dev-browser` skill to verify affected flows for UX quality,
+  accessibility, visual consistency, responsive behavior, interaction clarity,
+  and industry best practices. Do not run for backend-only code, local-only
+  scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
+  rendered UI impact.
+- `ux-researcher`: include when user flows, task completion paths, navigation,
+  forms, modals, onboarding, dashboards, validation messages,
+  empty/error/loading states, accessibility-affecting behavior, responsive
+  behavior, or user-facing copy changed. It must load and use the `dev-browser`
+  skill to verify the changed frontend experience for UX standards,
+  accessibility, flow consistency, usability heuristics, and industry best
+  practices. Do not run for internal implementation changes that do not alter
+  visible behavior or interaction flow.
 
-For each specialist pass, provide the staged file summary, staged patch, story context, quality check results, repository instructions, and Ralph local review standards. Require every specialist to return findings using the shared finding schema from the local review standards. If a specialist has no actionable findings, it must explicitly return an empty findings list and note residual risks or checks not run.
+Specialist selection must be strict. For low-risk local code changes, run only
+`code-reviewer` and `qa-expert`. Optional specialists should be added only when
+their trigger conditions are clearly present in the staged files or diff.
+
+For each specialist pass, provide the staged file summary, staged patch, story
+context, quality check results, repository instructions, and Ralph local review
+standards. Require every specialist to return findings using the shared finding
+schema from the local review standards. If a specialist has no actionable
+findings, it must explicitly return an empty findings list and note residual
+risks or checks not run.
 
 Merge specialist results before deciding whether to commit:
 
