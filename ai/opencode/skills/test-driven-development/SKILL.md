@@ -1,40 +1,77 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Use when implementing behavior changes, new features, bug fixes, or refactors before writing production code
 ---
 
 # Test-Driven Development (TDD)
 
 ## Overview
 
-Write the test first. Watch it fail. Write minimal code to pass.
+Write the test first for behavior changes. Watch it fail. Write minimal code to pass.
 
 **Core principle:** If you didn't watch the test fail, you don't know if it tests the right thing.
 
-**Violating the letter of the rules is violating the spirit of the rules.**
+**Do not invent low-value tests just to satisfy process.** If a change is not behavioral, use the right validation instead.
 
 ## When to Use
 
-**Always:**
+**Always use TDD for behavior:**
 - New features
 - Bug fixes
 - Refactoring
 - Behavior changes
+- Business rules
+- Data transformations
+- Error handling
+- Public APIs or user-visible flows
 
-**Exceptions (ask your human partner):**
-- Throwaway prototypes
+**TDD is usually not required for non-behavioral changes:**
+- Infrastructure declarations, such as Terraform resources, queues, buckets, IAM bindings, DNS records, or Kubernetes manifests
+- Dependency additions, removals, or version changes
+- Configuration files and framework wiring
 - Generated code
-- Configuration files
+- Build, packaging, or metadata-only changes
+- Documentation-only changes
 
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+For these changes, do not create unit tests that only assert file text, resource names, or configuration structure. Run the appropriate validation instead, such as schema validation, formatter checks, lint, typecheck, `terraform validate`, or a safe plan/build command.
+
+**Exceptions that still need tests:**
+- Infrastructure or config generation logic
+- Code that chooses configuration at runtime
+- Code that maps environment variables to behavior
+- Wrappers around cloud services, APIs, datastores, queues, or SDK clients
+
+**Ask your human partner when:**
+- Throwaway prototypes
+- CI cannot access a required external dependency and no meaningful local test double exists
+- The only possible test would assert implementation text rather than behavior
+- You are unsure whether the change is behavioral
+
+Thinking "skip TDD just this once" for a behavior change? Stop. That's rationalization.
+
+## Testing Decision Gate
+
+Before writing or skipping tests, classify the change:
+
+| Change type | What to do |
+| ----------- | ---------- |
+| Behavior change | Use Red-Green-Refactor. Watch the test fail first. |
+| Bug fix | Write a failing regression test first. |
+| Refactor preserving behavior | Prefer existing tests. Add characterization tests first if coverage is missing. |
+| Infrastructure/config/dependency-only | Do not force unit tests. Run validation appropriate to the tool. |
+| External API/datastore/queue integration | Use dependency injection plus fakes or integration tests if CI access exists. |
+| Test requires monkey patching | Redesign for dependency injection, interfaces, factories, or adapters. |
+| Test only checks file text | Do not write it unless parsing/rendering that text is the behavior under test. |
+
+If tests are skipped, state why and list the validation performed.
 
 ## The Iron Law
 
 ```
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+NO BEHAVIORAL PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 ```
 
-Write code before the test? Delete it. Start over.
+Write behavioral code before the test? Delete it. Start over.
 
 **No exceptions:**
 - Don't keep it as "reference"
@@ -42,7 +79,9 @@ Write code before the test? Delete it. Start over.
 - Don't look at it
 - Delete means delete
 
-Implement fresh from tests. Period.
+Implement behavioral changes fresh from tests. Period.
+
+Non-behavioral infrastructure, dependency, configuration, or generated-code changes are outside the Iron Law when validation is more meaningful than unit tests.
 
 ## Red-Green-Refactor
 
@@ -108,7 +147,65 @@ Vague name, tests mock not code
 **Requirements:**
 - One behavior
 - Clear name
-- Real code (no mocks unless unavoidable)
+- Real code and real assertions
+- No monkey patching or module patching
+- No mocks unless the dependency is external, slow, nondeterministic, or impossible to run locally
+
+## Testable Design Requirements
+
+If a test requires monkey patching, import patching, global state mutation, or complex mock setup, stop and improve the design first.
+
+Prefer these seams:
+
+| Seam | Use when |
+| ---- | -------- |
+| Dependency injection | A function/class needs an external client, clock, filesystem, queue, datastore, or API. |
+| Interface/protocol/strategy | Production and test implementations must share a contract. |
+| Factory | Runtime environment chooses the concrete implementation. |
+| Adapter | Third-party SDK calls need a thin boundary around them. |
+| Fake implementation | Tests need deterministic behavior without patching globals. |
+
+<Good>
+```python
+class UserClient:
+    def fetch_user(self, user_id: int) -> dict: ...
+
+def get_user_profile(user_id: int, client: UserClient) -> dict:
+    return client.fetch_user(user_id)
+
+class FakeUserClient:
+    def fetch_user(self, user_id: int) -> dict:
+        return {"id": user_id, "name": "Ada"}
+
+def test_get_user_profile_returns_user():
+    result = get_user_profile(42, FakeUserClient())
+
+    assert result["name"] == "Ada"
+```
+Dependency passed explicitly; no monkey patching
+</Good>
+
+<Bad>
+```python
+@patch("app.api_client.fetch_user")
+def test_get_user_profile(mock_fetch_user):
+    mock_fetch_user.return_value = {"id": 42, "name": "Ada"}
+
+    result = get_user_profile(42)
+
+    assert result["name"] == "Ada"
+```
+Hardcoded dependency forced a patch
+</Bad>
+
+Factories are acceptable when production object creation must vary by environment:
+
+```python
+def notification_service_factory(env: str, client=None):
+    if env == "test":
+        return InMemoryNotificationService()
+    return SqsNotificationService(client)
+```
 
 ### Verify RED - Watch It Fail
 
@@ -203,6 +300,28 @@ Next failing test for next feature.
 | **Clear**        | Name describes behavior             | `test('test1')`                                     |
 | **Shows intent** | Demonstrates desired API            | Obscures what code should do                        |
 
+## Tests Not To Write
+
+Do not add tests that only prove source text exists:
+
+<Bad>
+```typescript
+test('creates queue', () => {
+  const terraform = readFileSync('queue.tf', 'utf8');
+
+  expect(terraform).toContain('aws_sqs_queue');
+  expect(terraform).toContain('orders_queue');
+});
+```
+This tests text, not behavior. Use Terraform validation or plan review instead.
+</Bad>
+
+Appropriate alternatives:
+- Run the infrastructure tool's validator or formatter
+- Run a safe plan/diff command when credentials and environment allow it
+- Add tests only for code that renders, transforms, or selects infrastructure/configuration
+- Add integration tests only when CI can access the dependency safely
+
 ## Why Order Matters
 
 **"I'll write tests after to verify it works"**
@@ -271,21 +390,23 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 
 ## Red Flags - STOP and Start Over
 
-- Code before test
-- Test after implementation
-- Test passes immediately
+- Behavioral code before test
+- Behavioral test after implementation
+- Behavioral test passes immediately
 - Can't explain why test failed
-- Tests added "later"
-- Rationalizing "just this once"
+- Behavioral tests added "later"
+- Rationalizing "just this once" for behavior
 - "I already manually tested it"
 - "Tests after achieve the same purpose"
 - "It's about spirit not ritual"
 - "Keep as reference" or "adapt existing code"
 - "Already spent X hours, deleting is wasteful"
 - "TDD is dogmatic, I'm being pragmatic"
-- "This is different because..."
+- "This is different because..." when the change is behavioral
 
-**All of these mean: Delete code. Start over with TDD.**
+**For behavioral changes, all of these mean: Delete code. Start over with TDD.**
+
+Skipping unit tests for non-behavioral infrastructure, dependency, configuration, generated-code, or documentation changes is not a red flag when appropriate validation is performed and documented.
 
 ## Example: Bug Fix
 
@@ -328,16 +449,21 @@ Extract validation for multiple fields if needed.
 
 Before marking work complete:
 
-- [ ] Every new function/method has a test
-- [ ] Watched each test fail before implementing
-- [ ] Each test failed for expected reason (feature missing, not typo)
-- [ ] Wrote minimal code to pass each test
+- [ ] Classified the change as behavioral or non-behavioral
+- [ ] For behavioral changes, every new behavior has a test
+- [ ] For behavioral changes, watched each test fail before implementing
+- [ ] For behavioral changes, each test failed for expected reason
+- [ ] For behavioral changes, wrote minimal code to pass each test
 - [ ] All tests pass
 - [ ] Output pristine (no errors, warnings)
-- [ ] Tests use real code (mocks only if unavoidable)
-- [ ] Edge cases and errors covered
+- [ ] Tests use real code and explicit dependencies when tests are present
+- [ ] No monkey patching, module patching, or global import patching when tests are present
+- [ ] Mocks are avoided; fakes/test doubles use interfaces or dependency injection when tests are present
+- [ ] Behavioral edge cases and errors covered
+- [ ] Non-behavioral changes use appropriate validation instead of forced unit tests
+- [ ] If tests were skipped, the reason and validation command are documented
 
-Can't check all boxes? You skipped TDD. Start over.
+Can't check the behavioral boxes for a behavior change? You skipped TDD. Start over.
 
 ## When Stuck
 
@@ -345,8 +471,10 @@ Can't check all boxes? You skipped TDD. Start over.
 | ---------------------- | -------------------------------------------------------------------- |
 | Don't know how to test | Write wished-for API. Write assertion first. Ask your human partner. |
 | Test too complicated   | Design too complicated. Simplify interface.                          |
-| Must mock everything   | Code too coupled. Use dependency injection.                          |
+| Must mock everything   | Code too coupled. Use dependency injection, interfaces, or factories. |
+| Must monkey patch      | Dependency creation is in the wrong place. Move it behind a seam.    |
 | Test setup huge        | Extract helpers. Still complex? Simplify design.                     |
+| Infra test asserts text | Delete it. Run tool validation or test the generator instead.        |
 
 ## Debugging Integration
 
@@ -356,16 +484,21 @@ Never fix bugs without a test.
 
 ## Testing Anti-Patterns
 
-When adding mocks or test utilities, read @testing-anti-patterns.md to avoid common pitfalls:
+When writing tests, adding test utilities, or considering mocks, read @testing-anti-patterns.md for examples. The decisive rules are:
 - Testing mock behavior instead of real behavior
 - Adding test-only methods to production classes
 - Mocking without understanding dependencies
+- Monkey patching or module patching instead of using dependency injection
+- Testing declarative infrastructure/configuration by asserting source text
+
+Do not rely on this companion file being automatically loaded. Apply these rules from this skill even when the reference is not in context.
 
 ## Final Rule
 
 ```
-Production code → test exists and failed first
-Otherwise → not TDD
+Behavioral production code → test exists and failed first
+Non-behavioral change → appropriate validation exists
+Otherwise → not complete
 ```
 
-No exceptions without your human partner's permission.
+No behavior exceptions without your human partner's permission.
