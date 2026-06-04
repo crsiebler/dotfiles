@@ -11,7 +11,12 @@ Converts existing PRDs to the prd.json format that Ralph uses for autonomous exe
 
 ## The Job
 
-Take a PRD (markdown file or text) and convert it to `prd.json` in your ralph directory.
+Take a PRD (markdown file or text) and convert it to `prd.json` in the Ralph
+working directory where `ralph.md` expects to read it.
+
+If `prd.json` already exists, preview the replacement and require confirmation
+before overwriting it. If the existing file belongs to a different feature,
+archive the previous run before writing the new one.
 
 ---
 
@@ -252,6 +257,12 @@ Before writing prd.json, verify:
 - [ ] Each story is completable in one iteration (small enough)
 - [ ] Stories are ordered by dependency (schema to backend to UI)
 - [ ] Every story has "Typecheck passes" as criterion
+- [ ] Stories with testable logic have "Tests pass" as criterion
 - [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
 - [ ] Acceptance criteria are verifiable (not vague)
 - [ ] No story depends on a later story
+- [ ] Story IDs are unique
+- [ ] Priorities are ordered by dependency and execution sequence
+- [ ] Every story starts with `passes: false`
+- [ ] Generated output is valid JSON
+- [ ] Existing `prd.json` overwrite or archive behavior was confirmed when needed

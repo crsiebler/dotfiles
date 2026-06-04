@@ -10,7 +10,7 @@ metadata:
 - Fetch all review comments from a GitHub PR using REST API
 - Map comments to review threads using GraphQL API
 - Analyze commit history and agent context to identify resolved comments
-- Automatically resolve identified threads via GraphQL mutation
+- Automatically post resolution replies and resolve identified threads via GitHub APIs
 - Provide detailed feedback on resolutions and manual follow-ups
 
 ## When to use me
@@ -30,7 +30,7 @@ Use this skill when:
 - `commit_sha`: Specific commit to analyze (defaults to PR branch head)
 - `resolution_method`: commit-history/agent-context/both (default: both)
 - `dry_run`: Preview mode without changes (default: true)
-- `auto_resolve`: Skip confirmations (default: false)
+- `auto_resolve`: Automatically post approved resolution replies and resolve threads (default: false)
 - `max_threads`: Max threads to process (default: 50)
 
 ## Repository Detection
@@ -72,7 +72,7 @@ cleanup_temp_files() {
   if [ -d "$TEMP_DIR" ]; then
     echo "Cleaning up temporary files..."
     rm -rf "$TEMP_DIR"
-    echo "✓ Cleanup complete"
+    echo "Cleanup complete"
   fi
 }
 
@@ -81,17 +81,17 @@ trap cleanup_temp_files EXIT
 ```
 
 ### Why Current Working Directory?
-- ✅ No OpenCode permission prompts (working directory always accessible)
-- ✅ Context-aware location (files stored where PR work happens)
-- ✅ Easy debugging (visible in file tree during execution)
-- ✅ Automatic isolation (timestamp prevents conflicts)
-- ✅ Clean audit trail (can review temp files if skill fails)
+- No OpenCode permission prompts (working directory always accessible)
+- Context-aware location (files stored where PR work happens)
+- Easy debugging (visible in file tree during execution)
+- Automatic isolation (timestamp prevents conflicts)
+- Clean audit trail (can review temp files if skill fails)
 
 ### Anti-Patterns to Avoid
-- ❌ NEVER use `/tmp/` - triggers OpenCode permission prompts
-- ❌ NEVER use `/var/tmp/` - same issue
-- ❌ NEVER use absolute paths outside working directory
-- ❌ NEVER skip cleanup - leaves orphaned temp files
+- NEVER use `/tmp/` - triggers OpenCode permission prompts
+- NEVER use `/var/tmp/` - same issue
+- NEVER use absolute paths outside working directory
+- NEVER skip cleanup - leaves orphaned temp files
 
 ## Step-by-Step Execution Flow
 1. **Repository Detection**: Auto-detect repo owner/name from git remote
@@ -99,7 +99,7 @@ trap cleanup_temp_files EXIT
 3. **Data Fetching**: Query PR review comments via REST API
 4. **Thread Mapping**: Use GraphQL to map comments to thread IDs
 5. **Resolution Analysis**: Apply heuristics to identify addressed comments
-6. **Confirmation**: Show proposed resolutions and replies (unless auto-resolve enabled)
+6. **Confirmation**: Show proposed resolutions and replies unless `auto_resolve` is enabled
 7. **Response Generation**: Post technical replies using correct endpoint
    - Extract comment_id from each review comment's `id` field
    - Use endpoint: `/pulls/{pr_number}/comments/{comment_id}/replies`
@@ -107,10 +107,10 @@ trap cleanup_temp_files EXIT
 8. **Validation**: Verify each posted reply has `in_reply_to_id` populated
    - If null, reply was posted as top-level comment (error)
    - Track all validation failures for correction
-9. **Auto-Correction**: Delete and repost any incorrectly posted comments
-   - Only correct comments posted in current session
-   - Use DELETE endpoint, then repost with correct endpoint
-   - Validate corrections succeeded
+9. **Correction Preview**: If a reply is posted incorrectly, report the exact corrective action needed
+   - Never delete, edit, or repost comments without explicit user confirmation
+   - Only propose corrections for comments posted in the current session
+   - Validate corrections after the user approves them
 10. **Resolution**: Execute GraphQL mutations to resolve approved threads
 11. **Reporting**: Generate summary of actions, validation, and recommendations
 
@@ -175,7 +175,7 @@ gh api graphql -f query='mutation ResolveThread($threadId: ID!) { resolveReviewT
 **CRITICAL: Use the correct endpoint to create threaded replies**
 
 ```bash
-# ✅ CORRECT: Creates a reply in the review comment thread
+# CORRECT: Creates a reply in the review comment thread
 gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments/$comment_id/replies \
   -X POST \
   -f body="$REPLY_TEXT"
@@ -195,16 +195,16 @@ COMMENTS=$(gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments)
 COMMENT_ID=$(echo "$COMMENTS" | jq -r '.[] | select(.path == "file.js" and .line == 42) | .id')
 ```
 
-**⚠️ COMMON MISTAKES - DO NOT USE THESE ENDPOINTS:**
+**COMMON MISTAKES - DO NOT USE THESE ENDPOINTS:**
 ```bash
-# ❌ WRONG: Creates top-level PR conversation comment
+# WRONG: Creates top-level PR conversation comment
 gh api repos/$repo_owner/$repo_name/issues/$pr_number/comments -f body="text"
 gh pr comment $pr_number --body "text"
 
-# ❌ WRONG: Creates new review comment (not a reply)
+# WRONG: Creates new review comment (not a reply)
 gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments -f body="text" -f commit_id="..." -f path="..." -f line=1
 
-# ✅ CORRECT: Creates threaded reply to review comment
+# CORRECT: Creates threaded reply to review comment
 gh api repos/$repo_owner/$repo_name/pulls/$pr_number/comments/$comment_id/replies -f body="text"
 ```
 
@@ -267,7 +267,7 @@ Track all comments posted in the current session for validation and potential co
 - Record timestamp when skill execution begins
 - Store comment IDs returned by POST operations
 - Filter validation to only comments created after session start
-- Only auto-delete comments created by the current skill execution
+- Only propose correction for comments created by the current skill execution
 
 ```bash
 # Record session start time
@@ -289,7 +289,7 @@ After each reply is posted:
 1. **Immediate Validation**: Check `in_reply_to_id` field
 2. **Track Result**: Record success/failure with comment details
 3. **Continue Processing**: Don't stop on validation failure
-4. **Batch Correction**: After all replies posted, correct any failures
+4. **Batch Correction Preview**: After all replies post, preview any corrective delete/repost actions that require explicit confirmation
 
 ```bash
 # Validate a posted reply
@@ -323,7 +323,7 @@ Use GitHub API to reply in comment threads using the `/replies` endpoint. Proces
 3. Immediately validate `in_reply_to_id` field
 4. Track validation result
 5. Continue to next comment
-6. After all posts complete, auto-correct failures
+6. After all posts complete, preview corrective actions for failures
 
 Replies are posted after user confirmation (unless `auto_resolve: true`) to ensure transparency and control.
 
@@ -331,19 +331,20 @@ Replies are posted after user confirmation (unless `auto_resolve: true`) to ensu
 - **API Limits**: Respect GitHub's 5,000 queries/hour with backoff
 - **Permissions**: Verify write access to PR reviews
 - **Dry-Run**: Preview-only mode prevents accidental changes (replies only posted after explicit approval)
-- **Auto-Resolve**: When enabled, skips confirmations and posts replies automatically
+- **Auto-Resolve**: When enabled, automatically posts resolution replies and resolves threads that pass analysis
 - **Audit Trail**: Log actions with timestamps and rollback info
 - **Thread Mapping**: Handle cases where comments don't map to threads
 - **Validation Failures**: Track all validation failures; don't fail immediately
-- **Auto-Correction Errors**: Log correction attempts and failures for end report
+- **Correction Safety**: Deleting, editing, or reposting comments always requires explicit confirmation
+- **Correction Errors**: Log correction attempts and failures for end report
 - **Incorrect Posting Detection**: Automatically detect `in_reply_to_id: null` as error
 - **Session Isolation**: Only attempt to correct comments created in current session
-- **Correction Retry**: If repost still fails validation, report to user for manual intervention
+- **Correction Retry**: If repost still fails validation after confirmed correction, report to user for manual intervention
 - **Temp File Cleanup**: Always remove temporary files via `trap cleanup EXIT`
 - **Working Directory Only**: Never use `/tmp/` or absolute paths outside working directory
 - **Permission Safety**: Using working directory prevents OpenCode permission prompts
 
-## Validation & Auto-Correction
+## Validation & Correction Preview
 
 ### Validation Process
 Every reply posted by the skill MUST be validated immediately:
@@ -370,10 +371,10 @@ validate_posted_replies() {
     
     if [ "$IN_REPLY_TO" = "null" ]; then
       VALIDATION_FAILURES+=("$COMMENT_ID|$BODY")
-      echo "❌ FAILED: Comment $COMMENT_ID posted as top-level (in_reply_to_id is null)"
+      echo "FAILED: Comment $COMMENT_ID posted as top-level (in_reply_to_id is null)"
     else
       VALIDATION_SUCCESSES+=("$COMMENT_ID|$IN_REPLY_TO")
-      echo "✓ SUCCESS: Comment $COMMENT_ID correctly replied to $IN_REPLY_TO"
+      echo "SUCCESS: Comment $COMMENT_ID correctly replied to $IN_REPLY_TO"
     fi
   done
   
@@ -381,12 +382,14 @@ validate_posted_replies() {
 }
 ```
 
-### Auto-Correction Process
-When validation detects incorrectly posted comments, automatically fix them:
+### Correction Process
+When validation detects incorrectly posted comments, preview the fix and require
+explicit confirmation before deleting, editing, or reposting anything:
 
 ```bash
-# Auto-correct incorrectly posted comments
-auto_correct_replies() {
+# Preview incorrectly posted comments. Run the delete/repost commands only after
+# explicit confirmation using the accepted confirmation values below.
+preview_reply_corrections() {
   local failures=("$@")
   
   CORRECTED_COUNT=0
@@ -397,48 +400,22 @@ auto_correct_replies() {
     ORIGINAL_BODY=$(echo "$failure" | cut -d'|' -f2)
     TARGET_COMMENT_ID=$(echo "$failure" | cut -d'|' -f3)  # Original comment to reply to
     
-    echo "Correcting comment $INCORRECT_ID..."
-    
-    # Step 1: Delete the incorrectly posted comment
-    DELETE_RESULT=$(gh api repos/$owner/$repo/pulls/comments/$INCORRECT_ID -X DELETE 2>&1)
-    
-    if [ $? -eq 0 ]; then
-      echo "  ✓ Deleted incorrect comment $INCORRECT_ID"
-      
-      # Step 2: Repost using correct endpoint
-      NEW_COMMENT=$(gh api repos/$owner/$repo/pulls/$pr_number/comments/$TARGET_COMMENT_ID/replies \
-        -X POST \
-        -f body="$ORIGINAL_BODY" 2>&1)
-      
-      if [ $? -eq 0 ]; then
-        NEW_ID=$(echo "$NEW_COMMENT" | jq -r '.id')
-        NEW_PARENT=$(echo "$NEW_COMMENT" | jq -r '.in_reply_to_id')
-        
-        if [ "$NEW_PARENT" != "null" ]; then
-          echo "  ✓ Reposted correctly as comment $NEW_ID (reply to $NEW_PARENT)"
-          CORRECTED_COUNT=$((CORRECTED_COUNT + 1))
-        else
-          CORRECTION_ERRORS+=("$NEW_ID: Repost still has null in_reply_to_id")
-          echo "  ❌ Repost failed validation (still null in_reply_to_id)"
-        fi
-      else
-        CORRECTION_ERRORS+=("Failed to repost: $NEW_COMMENT")
-        echo "  ❌ Repost failed: $NEW_COMMENT"
-      fi
-    else
-      CORRECTION_ERRORS+=("$INCORRECT_ID: Failed to delete - $DELETE_RESULT")
-      echo "  ❌ Delete failed: $DELETE_RESULT"
-    fi
+    echo "Correction requires confirmation for comment $INCORRECT_ID."
+    echo "Would delete: gh api repos/$owner/$repo/pulls/comments/$INCORRECT_ID -X DELETE"
+    echo "Would repost: gh api repos/$owner/$repo/pulls/$pr_number/comments/$TARGET_COMMENT_ID/replies -X POST -f body='<original body>'"
   done
-  
-  echo "Auto-correction complete: $CORRECTED_COUNT successfully corrected"
-  
-  if [ ${#CORRECTION_ERRORS[@]} -gt 0 ]; then
-    echo "Correction errors:"
-    printf '%s\n' "${CORRECTION_ERRORS[@]}"
-  fi
 }
 ```
+
+Before running any correction, show:
+
+- Comment ID to delete or edit
+- Original comment body
+- Target review comment ID
+- Exact GitHub API delete/repost command or payload
+
+Accepted confirmation values are exactly `yes`, `y`, `confirm`, `fix it`, or
+`go ahead`. Treat all other responses as cancellation.
 
 ### Validation Report
 Generate detailed validation report for user transparency:
@@ -447,13 +424,13 @@ Generate detailed validation report for user transparency:
 Validation Summary:
 ==================
 Total Replies Posted: 18
-Successfully Validated: 15 ✓
-Validation Failures: 3 ❌
+Successfully Validated: 15
+Validation Failures: 3
 
-Auto-Correction Results:
+Correction Results:
 ========================
-Corrections Attempted: 3
-Successfully Corrected: 3 ✓
+Corrections Confirmed: 3
+Successfully Corrected: 3
 Correction Failures: 0
 
 Corrected Comments:
@@ -461,7 +438,7 @@ Corrected Comments:
 - Comment 2747500112: Deleted top-level, reposted as reply to 1234567891
 - Comment 2747500113: Deleted top-level, reposted as reply to 1234567892
 
-Final Status: All replies correctly posted as threaded responses ✓
+Final Status: All replies correctly posted as threaded responses
 ```
 
 ## Troubleshooting
@@ -476,8 +453,8 @@ gh api repos/$owner/$repo/pulls/$pr_number/comments \
 ```
 
 **What to look for:**
-- ✅ `in_reply_to_id` has a number → Correctly posted as reply
-- ❌ `in_reply_to_id` is `null` → Incorrectly posted as top-level comment
+- `in_reply_to_id` has a number: correctly posted as reply
+- `in_reply_to_id` is `null`: incorrectly posted as top-level comment
 
 ### Common Issues
 
@@ -518,7 +495,7 @@ gh api repos/$owner/$repo/pulls/comments/$comment_id \
 # If 404, comment doesn't exist or wrong ID type
 ```
 
-#### Issue 3: Auto-correction fails
+#### Issue 3: Confirmed correction fails
 
 **Cause**: Permission issues or rate limiting
 
@@ -538,20 +515,21 @@ gh api user --jq '.login' && gh auth status
 
 ### Manual Cleanup
 
-If auto-correction fails, manually clean up incorrect comments:
+If confirmed correction fails, manually clean up incorrect comments only after
+explicit confirmation:
 
 ```bash
 # Find all top-level comments that should be replies
 INCORRECT_COMMENTS=$(gh api repos/$owner/$repo/pulls/$pr_number/comments \
   --jq '[.[] | select(.user.login == "YOUR_BOT" and .in_reply_to_id == null and .created_at > "2026-01-30T00:00:00Z") | .id]')
 
-# Delete each one
+# Delete each one only after explicit confirmation
 echo "$INCORRECT_COMMENTS" | jq -r '.[]' | while read cid; do
   echo "Deleting comment $cid..."
   gh api repos/$owner/$repo/pulls/comments/$cid -X DELETE
 done
 
-# Now rerun the skill to post correctly
+# Now rerun the skill to post correctly or explicitly approve correction
 ```
 
 #### Issue 4: OpenCode Permission Prompts for /tmp/ Access
@@ -566,10 +544,10 @@ done
 **Solutions**:
 1. Verify all temp file paths use working directory:
    ```bash
-   # ❌ WRONG - triggers permission prompt
+   # WRONG - triggers permission prompt
    gh api ... > /tmp/pr_data.json
    
-   # ✅ CORRECT - no permission prompt
+   # CORRECT - no permission prompt
    gh api ... > "$TEMP_DIR/pr_data.json"
    ```
 
@@ -644,11 +622,11 @@ cleanup_temp_files() {
     echo ""
     echo "Cleaning up temporary files..."
     rm -rf "$TEMP_DIR"
-    echo "✓ Temporary files removed: $TEMP_DIR"
+    echo "Temporary files removed: $TEMP_DIR"
   fi
 }
 trap cleanup_temp_files EXIT
-echo "✓ Temp directory created: $TEMP_DIR"
+echo "Temp directory created: $TEMP_DIR"
 echo ""
 # ===== END TEMPORARY FILE SETUP =====
 
@@ -688,40 +666,29 @@ VALIDATION=$(gh api repos/$REPO_OWNER/$REPO_NAME/pulls/comments/$NEW_COMMENT_ID 
 IN_REPLY_TO=$(echo "$VALIDATION" | jq -r '.in_reply_to_id')
 
 if [ "$IN_REPLY_TO" = "null" ]; then
-  echo "  ❌ VALIDATION FAILED: in_reply_to_id is null"
+  echo "  VALIDATION FAILED: in_reply_to_id is null"
   VALIDATION_FAILURES+=("$NEW_COMMENT_ID|$REPLY_BODY|$COMMENT_ID")
 else
-  echo "  ✓ VALIDATION PASSED: Correctly replied to $IN_REPLY_TO"
+  echo "  VALIDATION PASSED: Correctly replied to $IN_REPLY_TO"
 fi
 
 # Step 5: Continue with remaining comments...
 # (Repeat steps 3-4 for each comment)
 
-# Step 6: Auto-correct any failures
+# Step 6: Preview correction for any failures
 if [ ${#VALIDATION_FAILURES[@]} -gt 0 ]; then
   echo ""
-  echo "Auto-correcting ${#VALIDATION_FAILURES[@]} failed replies..."
+  echo "Correction required for ${#VALIDATION_FAILURES[@]} failed replies."
+  echo "Preview the delete/repost actions and require explicit confirmation before continuing."
   
   for failure in "${VALIDATION_FAILURES[@]}"; do
     INCORRECT_ID=$(echo "$failure" | cut -d'|' -f1)
     ORIGINAL_BODY=$(echo "$failure" | cut -d'|' -f2)
     TARGET_ID=$(echo "$failure" | cut -d'|' -f3)
     
-    echo "Correcting comment $INCORRECT_ID..."
-    
-    # Delete incorrect comment
-    gh api repos/$REPO_OWNER/$REPO_NAME/pulls/comments/$INCORRECT_ID -X DELETE
-    echo "  Deleted incorrect comment"
-    
-    # Repost correctly
-    REPOSTED=$(gh api repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/comments/$TARGET_ID/replies \
-      -X POST \
-      -f body="$ORIGINAL_BODY")
-    
-    NEW_ID=$(echo "$REPOSTED" | jq -r '.id')
-    NEW_PARENT=$(echo "$REPOSTED" | jq -r '.in_reply_to_id')
-    
-    echo "  ✓ Reposted as comment $NEW_ID (reply to $NEW_PARENT)"
+    echo "Correction preview for comment $INCORRECT_ID:"
+    echo "  Delete command: gh api repos/$REPO_OWNER/$REPO_NAME/pulls/comments/$INCORRECT_ID -X DELETE"
+    echo "  Repost command: gh api repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/comments/$TARGET_ID/replies -X POST -f body='<original body>'"
   done
 fi
 
@@ -735,8 +702,8 @@ echo "PR Review Resolution Complete"
 echo "========================================"
 echo "Replies Posted: ${#SESSION_COMMENT_IDS[@]}"
 echo "Validation Failures: ${#VALIDATION_FAILURES[@]}"
-echo "Corrections Applied: ${#VALIDATION_FAILURES[@]}"
-echo "Final Status: All replies correctly posted ✓"
+echo "Corrections Required: ${#VALIDATION_FAILURES[@]}"
+echo "Final Status: All replies correctly posted"
 ```
 
 ## Output Format
@@ -765,28 +732,28 @@ Post Failures: 0
 Validation Results:
 -------------------
 Replies Validated: 18
-Validation Passed: 15 ✓
-Validation Failed: 3 ❌
+Validation Passed: 15
+Validation Failed: 3
   - Comment 2747500111: in_reply_to_id was null (posted as top-level)
   - Comment 2747500112: in_reply_to_id was null (posted as top-level)
   - Comment 2747500113: in_reply_to_id was null (posted as top-level)
 
-Auto-Correction:
+Correction:
 ----------------
-Corrections Attempted: 3
-Successfully Corrected: 3 ✓
+Corrections Confirmed: 3
+Successfully Corrected: 3
 Correction Failures: 0
 
-Final Status: ✓ All replies correctly posted as threaded responses
+Final Status: All replies correctly posted as threaded responses
 
 Resolved Threads:
 -----------------
-✓ Thread PRRT_xxx (ActionDecisionPendingButtons.vue:42)
+Thread PRRT_xxx (ActionDecisionPendingButtons.vue:42)
   - Original: "Group voting passes `decision: 'Yes'`..."
   - Reply: "Fixed: Normalized decision casing to lowercase"
   - Resolution: Addressed by commit abc123
   
-✓ Thread PRRT_yyy (ActionDecisionPendingButtons.vue:58)
+Thread PRRT_yyy (ActionDecisionPendingButtons.vue:58)
   - Original: "`isAcceptButtonLoading`/`isRejectButtonLoading`..."
   - Reply: "Fixed: Loading indicators now work with grouped voting"
   - Resolution: Addressed by commit abc123
@@ -805,8 +772,8 @@ Unresolved Threads (requiring manual review):
 
 Recommendations:
 ----------------
-✓ All review comments successfully addressed
-✓ All replies correctly posted as threaded responses
+- All review comments successfully addressed
+- All replies correctly posted as threaded responses
 - Consider adding performance benchmarks for future PRs
 - Schedule security review meeting for open questions
 

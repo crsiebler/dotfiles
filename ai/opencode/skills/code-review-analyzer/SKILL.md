@@ -103,20 +103,20 @@ Before implementation planning, assess each comment's feasibility using these ch
 **Example: Technical Verification**
 ```
 Reviewer: "Remove legacy code"
-❌ Bad: "You're absolutely right! Let me remove that..."
-✅ Good: "Checking... build target is 10.15+, this API needs 13+. Need legacy for backward compat. Current impl has wrong bundle ID - fix it or drop pre-13 support?"
+Bad: "You're absolutely right! Let me remove that..."
+Good: "Checking... build target is 10.15+, this API needs 13+. Need legacy for backward compat. Current impl has wrong bundle ID - fix it or drop pre-13 support?"
 ```
 
 **Example: YAGNI Check**
 ```
 Reviewer: "Implement proper metrics tracking with database, date filters, CSV export"
-✅ Analysis: "Grepped codebase - nothing calls this endpoint. Remove it (YAGNI)? Or is there usage I'm missing?"
+Analysis: "Grepped codebase - nothing calls this endpoint. Remove it (YAGNI)? Or is there usage I'm missing?"
 ```
 
 **Example: Unclear Feedback Handling**
 ```
 Reviewer: "Fix items 1-6"
-✅ Analysis: "Understand 1,2,3,6. Need clarification on 4 and 5 before assessing feasibility."
+Analysis: "Understand 1,2,3,6. Need clarification on 4 and 5 before assessing feasibility."
 ```
 
 ### Flagging Guidelines
