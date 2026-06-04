@@ -14,9 +14,13 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 1. Receive a feature description from the user
 2. Ask 3-5 essential clarifying questions (with lettered options)
 3. Generate a structured PRD based on answers
-4. Save to `tasks/prd-[feature-name].md`
+4. Save to `tasks/prd-[feature-name].md` when file creation was requested or confirmed
 
 **Important:** Do NOT start implementing. Just create the PRD.
+
+If the user did not explicitly ask to save a file, preview the target filename
+and ask before writing. Do not overwrite an existing PRD without explicit
+confirmation.
 
 ---
 
@@ -81,12 +85,15 @@ Each story should be small enough to implement in one focused session.
 **Acceptance Criteria:**
 - [ ] Specific verifiable criterion
 - [ ] Another criterion
-- [ ] Typecheck/lint passes
+- [ ] Typecheck passes
+- [ ] Tests pass, if behavior is testable
 - [ ] **[UI stories only]** Verify in browser using dev-browser skill
 ```
 
 **Important:** 
 - Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
+- For implementation stories, include "Typecheck passes" as acceptance criteria.
+- For testable behavior, include "Tests pass" as acceptance criteria.
 - **For any story with UI changes:** Always include "Verify in browser using dev-browser skill" as acceptance criteria. This ensures visual verification of frontend work.
 
 ### 4. Functional Requirements
@@ -136,6 +143,7 @@ The PRD reader may be a junior developer or AI agent. Therefore:
 - **Format:** Markdown (`.md`)
 - **Location:** `tasks/`
 - **Filename:** `prd-[feature-name].md` (kebab-case)
+- **Safety:** Preview the filename before saving when file creation was not explicit; never overwrite an existing PRD without confirmation.
 
 ---
 

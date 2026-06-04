@@ -1,23 +1,23 @@
 ---
 name: subagents
-description: Tool for searching, listing, and fetching subagents from the local filesystem. Allows browsing available subagents, searching by keywords, and retrieving full definitions from $HOME/.config/opencode/agents/.
+description: Tool for listing, searching, and fetching subagents through the global subagents CLI. Use when browsing configured OpenCode agents.
 ---
 
-# Subagents Local Catalog Tool
+# Subagents CLI Catalog Tool
 
-Manage and access subagents from the local filesystem. Scans $HOME/.config/opencode/agents/ for agent definitions and provides browsing, searching, and fetching capabilities.
+Manage and access subagents through the globally installed `subagents` CLI. The
+CLI handles `$HOME/.config/opencode/agents/` path resolution from any working
+directory.
 
 ---
 
 ## The Job
 
-1. Receive user request for subagent operations (list, search, fetch)
-2. Scan local filesystem for agent definitions
-3. Parse YAML frontmatter and extract metadata
-4. Filter and format results as requested
-5. Return formatted results to the user
+1. Receive user request for subagent operations (`list`, `search`, `fetch`)
+2. Run the matching global `subagents` CLI command
+3. Return the CLI output faithfully, with concise explanation only when useful
 
-**Important:** All operations use local filesystem access - no network requests required.
+**Important:** All operations are local. Do not make network requests.
 
 ---
 
@@ -30,13 +30,23 @@ Identify the operation type:
 
 ---
 
-## Step 2: Scan Local Agent Directory
+## Step 2: Run the CLI
 
-1. **Check for agents directory**: Use glob with absolute path: `glob` with `path="$HOME/.config/opencode/agents"` and `pattern="*.md"`
-2. **Handle missing directory**: If no agents found, provide helpful setup instructions
-3. **Parse agent files**: For each .md file found, use read to extract:
-   - YAML frontmatter (name, description, tools, category)
-   - Filename for categorization (backend-, frontend-, devops- prefixes)
+Use the global CLI as the source of truth:
+
+- `subagents list`
+- `subagents search <query>`
+- `subagents fetch <name>`
+
+If the CLI is unavailable, report that `subagents` must be installed through
+the dotfiles `make install` workflow and stop. Manual filesystem scanning is a
+fallback only when the user explicitly asks for debugging the CLI itself.
+
+When fallback scanning is explicitly requested:
+
+1. Use glob with absolute path: `glob` with `path="$HOME/.config/opencode/agents"` and `pattern="*.md"`
+2. Handle missing directory with setup instructions
+3. Parse YAML frontmatter and filenames for metadata
 
 ### Frontmatter Extraction Pattern
 Use read to get file contents, then parse YAML between `---` markers:
@@ -67,9 +77,10 @@ Extract category from filename prefixes:
 ## Step 3: Process Request
 
 ### For List Operation
-1. Collect all agent files using glob
-2. Group by category using filename prefix logic
-3. Format organized list by categories:
+Run `subagents list`. The CLI handles collection, categorization, and
+formatting.
+
+Expected shape:
 ```
 ## Backend Development
 - backend-developer: Senior backend engineer for scalable APIs
@@ -82,11 +93,10 @@ Extract category from filename prefixes:
 ```
 
 ### For Search Operation
-1. Use grep to search agent files for keywords in:
-   - Names (filename and frontmatter name field)
-   - Descriptions (frontmatter description field)
-   - Tools (frontmatter tools field)
-2. Return matches with category context:
+Run `subagents search <query>`. The CLI searches names, descriptions, tools,
+and available metadata.
+
+Expected shape:
 ```
 Found 3 matching subagents:
 
@@ -97,9 +107,8 @@ Found 3 matching subagents:
 ```
 
 ### For Fetch Operation
-1. Find exact match for requested name using glob pattern `*{name}*.md`
-2. Use read to return full file content including frontmatter and body
-3. If not found, suggest similar names using partial matches
+Run `subagents fetch <name>`. The CLI returns the full definition or suggestions
+for similar names.
 
 ---
 
@@ -117,7 +126,7 @@ Found 3 matching subagents:
 
 ### No Agents Directory Found
 ```
-❌ No subagents found in $HOME/.config/opencode/agents/
+No subagents found in $HOME/.config/opencode/agents/
 
 To set up subagents:
 1. Create the directory: mkdir -p $HOME/.config/opencode/agents
@@ -136,9 +145,9 @@ To set up subagents:
 
 ### No Search Results
 ```
-❌ No subagents found matching "keyword"
+No subagents found matching "keyword"
 
-💡 Try these alternatives:
+Try these alternatives:
 - Search for different keywords
 - Use `/subagents list` to see all available agents
 - Check for typos in your search query
@@ -146,9 +155,9 @@ To set up subagents:
 
 ### Agent Not Found for Fetch
 ```
-❌ Subagent "agent-name" not found
+Subagent "agent-name" not found
 
-💡 Did you mean:
+Did you mean:
 - similar-agent-name (Backend Development)
 - agent-name-alt (Infrastructure)
 

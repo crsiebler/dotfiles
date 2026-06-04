@@ -217,6 +217,16 @@ Run specialist review passes against the gathered PR context before producing
 the consolidated report. OpenCode's subagent system handles the specialist work;
 do not call model provider APIs directly.
 
+Delegation contract:
+
+- The primary agent gathers PR context, selects specialists, and consolidates
+  findings.
+- Specialist passes must be invoked through OpenCode's Task/subagent mechanism
+  when available.
+- If a required specialist is unavailable, disclose that the pass was skipped or
+  simulated and lower confidence in the residual risks.
+- Do not silently replace specialist review with generic primary-agent analysis.
+
 Always run these default specialist passes:
 - `code-reviewer`: correctness, maintainability, error handling, API contracts,
   data flow, and project conventions.
@@ -383,16 +393,19 @@ objectives, severity levels, finding schema, noise-reduction rules, summary
 versus inline comment rules, posting safety requirements, and specialist
 reviewer guidance.
 
-Produce a consolidated local review report containing:
-- PR metadata: title, URL, base branch, and head branch.
-- Specialist passes used and why.
-- Findings ordered by severity, with file and line references when they map to
-  valid diff-visible lines.
-- Inline comment payload preview with only valid GitHub review comment fields.
-- Summary-only findings for issues that cannot be safely mapped inline.
-- Residual risks and checks not run.
-- Posting status: local-only when `--post` is absent; pending confirmation,
-  posted, or cancelled when `--post` is present.
+Produce a consolidated local review report using this schema:
+
+```markdown
+## PR Review Report
+- PR: <title> - <url>
+- Branches: <base> <- <head>
+- Specialist passes: <agents used and why>
+- Findings: <ordered by severity, with file/line when valid>
+- Summary-only findings: <findings not safely mappable inline>
+- Inline payload preview: <valid GitHub review comment fields only>
+- Residual risks: <checks not run or confidence limits>
+- Posting status: local-only | pending confirmation | posted | cancelled
+```
 
 Do not post the review to GitHub unless `--post` is present and the user gives
 one of the accepted confirmation values after seeing the exact payload.

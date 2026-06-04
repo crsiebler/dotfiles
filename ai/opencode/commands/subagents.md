@@ -5,7 +5,9 @@ description: Search, list, and fetch configured subagents
 
 # Subagents Command
 
-This command triggers the global `subagents` CLI tool to manage configured agents from `$HOME/.config/opencode/agents/`.
+This command is a thin wrapper around the global `subagents` CLI tool. The CLI
+manages configured agents from `$HOME/.config/opencode/agents/` regardless of
+the current working directory.
 
 ## Usage
 
@@ -16,14 +18,16 @@ Run this command to access the configured subagents:
 
 ## What it does
 
-1. Calls global `subagents` command installed to `/usr/local/bin/subagents`
-2. The CLI tool scans `$HOME/.config/opencode/agents/` for agent definitions
-3. Processes your request (list/search/fetch)
-4. Returns information about available subagents
+1. Parse the command arguments after `/subagents`.
+2. If no arguments are provided, run `subagents list`.
+3. Otherwise run `subagents <arguments>` exactly.
+4. Return stdout and stderr faithfully.
 
 ## Important
 
-The subagents skill calls globally installed `subagents` CLI tool, which provides access to agent files from `$HOME/.config/opencode/agents/` regardless of the current working directory where the command is invoked.
+If the `subagents` command is unavailable, report that it must be installed via
+this dotfiles repository's `make install` workflow and stop. Do not fall back to
+manual path assumptions in this command.
 
 ## Examples
 

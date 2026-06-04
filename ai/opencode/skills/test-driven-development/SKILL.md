@@ -18,7 +18,7 @@ Write the test first for behavior changes. Watch it fail. Write minimal code to 
 **Always use TDD for behavior:**
 - New features
 - Bug fixes
-- Refactoring
+- Refactoring that changes or exposes behavior
 - Behavior changes
 - Business rules
 - Data transformations
@@ -71,13 +71,14 @@ If tests are skipped, state why and list the validation performed.
 NO BEHAVIORAL PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 ```
 
-Write behavioral code before the test? Delete it. Start over.
+Write behavioral code before the test? Stop, preserve work only if needed for
+reference outside the implementation path, and re-establish a failing test
+before continuing.
 
 **No exceptions:**
-- Don't keep it as "reference"
-- Don't "adapt" it while writing tests
-- Don't look at it
-- Delete means delete
+- Don't adapt already-written behavioral code while writing tests
+- Don't continue implementation until the failing test exists
+- Keep any exploratory code separate from the final implementation path
 
 Implement behavioral changes fresh from tests. Period.
 
@@ -381,7 +382,7 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 | "Tests after achieve same goals"       | Tests-after = "what does this do?" Tests-first = "what should this do?" |
 | "Already manually tested"              | Ad-hoc ≠ systematic. No record, can't re-run.                           |
 | "Deleting X hours is wasteful"         | Sunk cost fallacy. Keeping unverified code is technical debt.           |
-| "Keep as reference, write tests first" | You'll adapt it. That's testing after. Delete means delete.             |
+| "Keep as reference, write tests first" | You'll adapt it. Separate exploration from the final implementation.    |
 | "Need to explore first"                | Fine. Throw away exploration, start with TDD.                           |
 | "Test hard = design unclear"           | Listen to test. Hard to test = hard to use.                             |
 | "TDD will slow me down"                | TDD faster than debugging. Pragmatic = test-first.                      |
@@ -404,7 +405,8 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 - "TDD is dogmatic, I'm being pragmatic"
 - "This is different because..." when the change is behavioral
 
-**For behavioral changes, all of these mean: Delete code. Start over with TDD.**
+**For behavioral changes, all of these mean: stop, re-establish a failing test,
+and continue from the test rather than from already-written production code.**
 
 Skipping unit tests for non-behavioral infrastructure, dependency, configuration, generated-code, or documentation changes is not a red flag when appropriate validation is performed and documented.
 
@@ -463,7 +465,21 @@ Before marking work complete:
 - [ ] Non-behavioral changes use appropriate validation instead of forced unit tests
 - [ ] If tests were skipped, the reason and validation command are documented
 
-Can't check the behavioral boxes for a behavior change? You skipped TDD. Start over.
+Can't check the behavioral boxes for a behavior change? You skipped TDD. Stop
+and re-establish the failing test before continuing.
+
+## Required Output
+
+When this skill guides implementation, report the testing decision concisely:
+
+```markdown
+Testing decision:
+- Change type: behavior | bug fix | refactor | non-behavioral
+- Test-first required: yes | no, with reason
+- Red test command/result: `<command>` - pass/fail/not applicable
+- Green command/result: `<command>` - pass/fail/not applicable
+- Validation if tests skipped: `<command>` - pass/fail/not applicable
+```
 
 ## When Stuck
 
