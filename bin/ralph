@@ -22,6 +22,7 @@ user stories from prd.json until completion.
 Requirements:
   - prd.json file in the current directory
   - OpenCode installed and configured
+  - jq installed for prd.json parsing
   - Ralph prompt installed at ~/.config/opencode/ralph.md
   - Git repository with proper setup
 EOF
@@ -29,6 +30,10 @@ EOF
 
 error() {
   printf 'Error: %s\n' "$1" >&2
+}
+
+prd_complete() {
+  jq -e '(.userStories | type == "array") and all(.userStories[]; .passes == true)' prd.json >/dev/null
 }
 
 # Parse command line options
@@ -73,6 +78,13 @@ if ! command -v opencode >/dev/null 2>&1; then
   exit 1
 fi
 
+# Check if jq is available for reliable prd.json completion checks
+if ! command -v jq >/dev/null 2>&1; then
+  error "jq command not found"
+  printf 'Please install jq so Ralph can parse prd.json reliably.\n' >&2
+  exit 1
+fi
+
 # Set environment variable for max iterations
 export RALPH_MAX_ITERATIONS="$MAX_ITERATIONS"
 
@@ -92,6 +104,11 @@ echo "Starting Ralph autonomous AI loop..."
 echo "Using Ralph prompt from $RALPH_PROMPT_FILE"
 echo ""
 
+if prd_complete; then
+  echo "All user stories completed."
+  exit 0
+fi
+
 ITERATION=0
 while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
@@ -102,12 +119,11 @@ while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   ITERATION=$((ITERATION + 1))
 
   # Check if all user stories pass
-  if ! grep -q '"passes": false' prd.json; then
+  if prd_complete; then
     echo "All user stories completed."
-    break
+    exit 0
   fi
 done
 
-if [ $ITERATION -ge $MAX_ITERATIONS ]; then
-  echo "Reached maximum iterations ($MAX_ITERATIONS) without completing all stories."
-fi
+echo "Reached maximum iterations ($MAX_ITERATIONS) without completing all stories."
+exit 1

@@ -256,6 +256,7 @@ This repository assumes:
 - Zsh as the required shell
 - Oh My Zsh framework
 - Standard Unix tools (bash, cp, mkdir, etc.)
+- jq for Ralph `prd.json` completion checks
 - Optional: shellcheck for linting (run manually, not automated)
 
 ## Environment Setup

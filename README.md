@@ -98,6 +98,7 @@ After running `make install`, Ralph configuration is automatically set up:
 ### Requirements
 
 - OpenCode must be installed and configured with API keys
+- `jq` must be installed for reliable `prd.json` completion checks
 - Projects must be git repositories
 - `grok-code-fast-1` model should be available for optimal performance
 
