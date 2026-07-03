@@ -173,6 +173,9 @@ unset __conda_setup
 export PATH=$HOME/.opencode/bin:$PATH
 export EDITOR="code --wait"
 
+# BasicTex
+export PATH="/Library/TeX/texbin:$PATH"
+
 # Load personal environment variables for opencode and other secrets
 if [ -f "$HOME/.env" ]; then
     source "$HOME/.env"
