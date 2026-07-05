@@ -74,8 +74,8 @@ Each story needs:
 - **Title:** Short descriptive name
 - **Description:** "As a [user], I want [feature] so that [benefit]"
 - **Acceptance Criteria:** Verifiable checklist of what "done" means
-- **Recommended Agents:** Development specialists Ralph should consult before
-  implementation
+- **Recommended Agents:** Optional development specialists Ralph may consult
+  before implementation
 
 Each story should be small enough to implement in one focused session.
 
@@ -102,10 +102,11 @@ Each story should be small enough to implement in one focused session.
 
 ### Recommended Development Agents
 
-For each implementation story, add a short `Recommended Agents` line with the
-configured specialists Ralph should consult before editing code. Keep the list
-focused: usually 1-3 agents per story, selected from the trigger matrix below.
-Do not recommend business, planning, sales, legal, marketing, or orchestration
+For each implementation story, add a short `Recommended Agents` line only when
+specialist guidance is likely to improve quality or reduce risk. Keep the list
+focused: 0-2 agents per story, selected from the trigger matrix below. Omit
+recommended agents for trivial, mechanical, docs-only, or low-risk stories. Do
+not recommend business, planning, sales, legal, marketing, or orchestration
 agents for Ralph implementation stories.
 
 Use exact configured agent names with `@` prefixes:
@@ -300,7 +301,7 @@ Before saving the PRD:
 - [ ] Asked clarifying questions with lettered options
 - [ ] Incorporated user's answers
 - [ ] User stories are small and specific
-- [ ] Each implementation story recommends 1-3 relevant development agents
+- [ ] Each implementation story recommends 0-2 relevant development agents
 - [ ] Functional requirements are numbered and unambiguous
 - [ ] Non-goals section defines clear boundaries
 - [ ] Saved to `tasks/prd-[feature-name].md`

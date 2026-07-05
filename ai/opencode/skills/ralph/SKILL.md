@@ -129,15 +129,15 @@ Frontend stories are NOT complete until visually verified. Ralph will use the de
 5. **branchName**: Derive from feature name, kebab-case, prefixed with `ralph/`
 6. **Always add**: "Typecheck passes" to every story's acceptance criteria
 7. **Recommended agents**: Preserve PRD `Recommended Agents` lines in each
-   story's `notes` field so Ralph can invoke the right implementation
-   specialists before editing code
+   story's `notes` field so Ralph can optionally invoke the right
+   implementation specialists before editing code
 
 ---
 
 ## Recommended Agent Notes
 
 Ralph reads each selected story's `notes` before implementation and treats
-`Recommended agents:` entries as actionable guidance. Convert each PRD story's
+`Recommended agents:` entries as optional guidance. Convert each PRD story's
 recommended agents into the JSON `notes` field using exact configured agent
 names with `@` prefixes.
 
@@ -147,10 +147,11 @@ Use this format:
 "notes": "Recommended agents: @agent-a, @agent-b. Implementation notes: concise context Ralph should preserve."
 ```
 
-If the PRD does not include recommended agents, infer 1-3 relevant development
-specialists from the story scope. Keep recommendations focused and avoid
-business, planning, sales, legal, marketing, research-only, and orchestration
-agents.
+If the PRD does not include recommended agents, infer 0-2 relevant development
+specialists from the story scope. Omit recommended agents for trivial,
+mechanical, docs-only, or low-risk stories. Keep recommendations focused and
+avoid business, planning, sales, legal, marketing, research-only, and
+orchestration agents.
 
 Use this trigger matrix:
 
@@ -319,7 +320,7 @@ Before writing prd.json, verify:
 - [ ] Every story has "Typecheck passes" as criterion
 - [ ] Stories with testable logic have "Tests pass" as criterion
 - [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
-- [ ] Each story's `notes` includes 1-3 relevant recommended development agents
+- [ ] Each story's `notes` includes 0-2 relevant recommended development agents
 - [ ] Acceptance criteria are verifiable (not vague)
 - [ ] No story depends on a later story
 - [ ] Story IDs are unique

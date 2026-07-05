@@ -7,6 +7,7 @@ set -e
 
 # Default values
 MAX_ITERATIONS=10
+RALPH_MODE="standard"
 
 usage() {
   cat <<EOF
@@ -14,6 +15,7 @@ Usage: ralph [options]
 
 Options:
   --max-iterations N   Maximum number of iterations to run (default: 10)
+  --mode MODE          Execution mode: fast, standard, deep (default: standard)
   -h, --help           Show this help message
 
 Ralph is an autonomous AI coding agent that iteratively processes
@@ -52,6 +54,23 @@ while [[ $# -gt 0 ]]; do
       MAX_ITERATIONS="$2"
       shift 2
       ;;
+    --mode)
+      if [[ -z "$2" ]]; then
+        error "--mode requires a value"
+        printf "Use 'ralph --help' for usage information.\n" >&2
+        exit 1
+      fi
+      case "$2" in
+        fast|standard|deep)
+          RALPH_MODE="$2"
+          ;;
+        *)
+          error "--mode must be one of: fast, standard, deep"
+          exit 1
+          ;;
+      esac
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -87,6 +106,7 @@ fi
 
 # Set environment variable for max iterations
 export RALPH_MAX_ITERATIONS="$MAX_ITERATIONS"
+export RALPH_MODE="$RALPH_MODE"
 
 # Check if ralph.md exists in the installed location
 RALPH_PROMPT_FILE="$HOME/.config/opencode/ralph.md"
@@ -98,10 +118,14 @@ fi
 
 # Build the prompt in memory so Ralph does not see prompt material as an
 # untracked project file during autonomous runs.
-RALPH_PROMPT=$(sed "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" "$RALPH_PROMPT_FILE")
+RALPH_PROMPT=$(sed \
+  -e "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" \
+  -e "s/\$RALPH_MODE/$RALPH_MODE/g" \
+  "$RALPH_PROMPT_FILE")
 
 echo "Starting Ralph autonomous AI loop..."
 echo "Using Ralph prompt from $RALPH_PROMPT_FILE"
+echo "Execution mode: $RALPH_MODE"
 echo ""
 
 if prd_complete; then

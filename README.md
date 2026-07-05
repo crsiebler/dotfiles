@@ -72,9 +72,10 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 - **PRD Generation**: Use the PRD skill in OpenCode to create detailed requirements documents
 - **PRD Conversion**: Use the Ralph skill in OpenCode to convert PRDs to JSON format for autonomous execution
 - **Autonomous Implementation**: Run `ralph --max-iterations 10` to automatically implement user stories
-- **Recommended Agents**: Story `notes` can list `@agent-name` recommendations that Ralph invokes before implementation
+- **Execution Modes**: Use `ralph --mode fast|standard|deep` to control Ralph's agent budget and review depth
+- **Recommended Agents**: Story `notes` can list optional `@agent-name` recommendations that Ralph may invoke before implementation based on story risk and mode
 - **Quality Assurance**: Each iteration includes type checking, linting, and testing
-- **Specialist Review Gate**: Each staged story is reviewed by dedicated OpenCode subagents before commit
+- **Mode-Aware Review Gate**: Each staged story gets self-review or specialist review based on mode and risk before commit
 - **Self-Contained Review Standards**: Ralph includes local staged-change review standards directly in its prompt so target-project agents do not need access to `~/.config/opencode/`
 - **Progress Tracking**: Automatic commits and progress logging
 
@@ -92,8 +93,14 @@ After running `make install`, Ralph configuration is automatically set up:
 
 1. **Create a PRD**: In any project directory, open OpenCode and use the PRD skill to generate requirements
 2. **Convert to JSON**: Use the Ralph skill to create `prd.json` from your PRD
-3. **Run Autonomous Loop**: Execute `ralph --max-iterations 10` to start implementation
+3. **Run Autonomous Loop**: Execute `ralph --mode standard --max-iterations 10` to start implementation
 4. **Monitor Progress**: Check `progress.txt` for detailed logs and `prd.json` for completion status
+
+Ralph modes:
+
+- `fast`: minimizes implementation agents and specialist reviews; best for low-risk stories
+- `standard`: default risk-based agent and review budget
+- `deep`: broader specialist help for complex or high-risk stories
 
 ### Requirements
 
