@@ -39,7 +39,7 @@ archive the previous run before writing the new one.
       ],
       "priority": 1,
       "passes": false,
-      "notes": ""
+      "notes": "Recommended agents: @agent-name, @agent-name. Implementation notes: ..."
     }
   ]
 }
@@ -125,9 +125,69 @@ Frontend stories are NOT complete until visually verified. Ralph will use the de
 1. **Each user story becomes one JSON entry**
 2. **IDs**: Sequential (US-001, US-002, etc.)
 3. **Priority**: Based on dependency order, then document order
-4. **All stories**: `passes: false` and empty `notes`
+4. **All stories**: `passes: false`
 5. **branchName**: Derive from feature name, kebab-case, prefixed with `ralph/`
 6. **Always add**: "Typecheck passes" to every story's acceptance criteria
+7. **Recommended agents**: Preserve PRD `Recommended Agents` lines in each
+   story's `notes` field so Ralph can invoke the right implementation
+   specialists before editing code
+
+---
+
+## Recommended Agent Notes
+
+Ralph reads each selected story's `notes` before implementation and treats
+`Recommended agents:` entries as actionable guidance. Convert each PRD story's
+recommended agents into the JSON `notes` field using exact configured agent
+names with `@` prefixes.
+
+Use this format:
+
+```json
+"notes": "Recommended agents: @agent-a, @agent-b. Implementation notes: concise context Ralph should preserve."
+```
+
+If the PRD does not include recommended agents, infer 1-3 relevant development
+specialists from the story scope. Keep recommendations focused and avoid
+business, planning, sales, legal, marketing, research-only, and orchestration
+agents.
+
+Use this trigger matrix:
+
+- General implementation: `@backend-developer`, `@frontend-developer`,
+  `@fullstack-developer`, `@cli-developer`, `@tooling-engineer`
+- Debugging and quality: `@debugger`, `@test-automator`,
+  `@refactoring-specialist`, `@architect-reviewer`, `@performance-engineer`
+- Build and dependencies: `@build-engineer`, `@dependency-manager`
+- Security and compliance: `@security-engineer`, `@security-auditor`,
+  `@compliance-auditor`
+- Documentation: `@documentation-engineer`, `@technical-writer`
+- UI, UX, and accessibility: `@react-specialist`, `@nextjs-developer`,
+  `@vue-expert`, `@angular-architect`, `@ui-designer`, `@ux-researcher`,
+  `@accessibility-tester`
+- API and backend architecture: `@api-designer`, `@graphql-architect`,
+  `@websocket-engineer`, `@microservices-architect`
+- Databases and data: `@sql-pro`, `@postgres-pro`, `@database-optimizer`,
+  `@database-administrator`, `@data-engineer`
+- DevOps and infrastructure: `@devops-engineer`, `@deployment-engineer`,
+  `@kubernetes-specialist`, `@terraform-engineer`, `@cloud-architect`,
+  `@platform-engineer`, `@sre-engineer`
+- Language and framework specialists: `@typescript-pro`, `@javascript-pro`,
+  `@python-pro`, `@golang-pro`, `@rust-engineer`, `@java-architect`,
+  `@spring-boot-engineer`, `@csharp-developer`, `@dotnet-core-expert`,
+  `@php-pro`, `@laravel-specialist`, `@rails-expert`, `@django-developer`
+- Mobile and native: `@mobile-developer`, `@flutter-expert`,
+  `@swift-expert`, `@kotlin-specialist`, `@electron-pro`
+- AI and integrations: `@ai-engineer`, `@ml-engineer`, `@llm-architect`,
+  `@nlp-engineer`, `@mcp-developer`, `@payment-integration`,
+  `@slack-expert`, `@wordpress-master`
+
+Examples:
+
+- Schema or query story: `Recommended agents: @database-optimizer, @sql-pro.`
+- React UI story: `Recommended agents: @react-specialist, @accessibility-tester.`
+- CLI tool story: `Recommended agents: @cli-developer, @test-automator.`
+- Dependency story: `Recommended agents: @dependency-manager, @build-engineer.`
 
 ---
 
@@ -183,7 +243,7 @@ Add ability to mark tasks with different statuses.
       ],
       "priority": 1,
       "passes": false,
-      "notes": ""
+      "notes": "Recommended agents: @database-optimizer, @sql-pro. Implementation notes: preserve the status enum values and default from the PRD."
     },
     {
       "id": "US-002",
@@ -197,7 +257,7 @@ Add ability to mark tasks with different statuses.
       ],
       "priority": 2,
       "passes": false,
-      "notes": ""
+      "notes": "Recommended agents: @react-specialist, @accessibility-tester. Implementation notes: reuse existing badge patterns if present."
     },
     {
       "id": "US-003",
@@ -212,7 +272,7 @@ Add ability to mark tasks with different statuses.
       ],
       "priority": 3,
       "passes": false,
-      "notes": ""
+      "notes": "Recommended agents: @frontend-developer, @accessibility-tester. Implementation notes: keep status updates immediate and visible."
     },
     {
       "id": "US-004",
@@ -226,7 +286,7 @@ Add ability to mark tasks with different statuses.
       ],
       "priority": 4,
       "passes": false,
-      "notes": ""
+      "notes": "Recommended agents: @frontend-developer, @ux-researcher. Implementation notes: preserve filter state in URL params."
     }
   ]
 }
@@ -259,6 +319,7 @@ Before writing prd.json, verify:
 - [ ] Every story has "Typecheck passes" as criterion
 - [ ] Stories with testable logic have "Tests pass" as criterion
 - [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
+- [ ] Each story's `notes` includes 1-3 relevant recommended development agents
 - [ ] Acceptance criteria are verifiable (not vague)
 - [ ] No story depends on a later story
 - [ ] Story IDs are unique

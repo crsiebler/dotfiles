@@ -272,19 +272,42 @@ schema from the local review standards. If a specialist has no actionable
 findings, it must explicitly return an empty findings list and note residual
 risks or checks not run.
 
-Merge specialist results before deciding whether to commit:
+Merge specialist results and bounded re-review before deciding whether to commit:
 
-- Deduplicate findings that describe the same root cause.
-- Keep the highest severity among duplicates and preserve the clearest remediation.
-- Discard generic, praise-only, speculative, or unchanged-code findings that do not satisfy the local review standards' noise-reduction rules.
-- Fix all actionable `critical`, `high`, and `medium` findings before committing unless the story requirements make them explicitly out of scope; document any out-of-scope decision in `progress.txt`.
-- Re-run affected quality checks after fixes.
+- Run exactly one initial specialist review pass against the complete staged diff
+  using `code-reviewer`, `qa-expert`, and any domain specialists that are clearly
+  relevant to the story.
+- Treat in-scope `critical`, `high`, and `medium` findings as blocking
+  actionable findings; `low` severity findings are non-blocking unless they
+  directly violate the story requirements or acceptance criteria.
+- Merge specialist results before deciding whether to fix or commit:
+  - Deduplicate findings that describe the same root cause.
+  - Keep the highest severity among duplicates and preserve the clearest remediation.
+  - Discard generic, praise-only, speculative, or unchanged-code findings that do
+    not satisfy the local review standards' noise-reduction rules.
+- If the merged blocking actionable findings list is empty, stop the specialist
+  review loop immediately and do not run any additional specialist review.
+- Fix all merged blocking actionable findings before committing unless the story
+  requirements make them explicitly out of scope; document any out-of-scope
+  decision in `progress.txt`.
+- Re-run affected quality checks after in-scope fixes.
 - Update `progress.txt` if the review changed the final implementation, decisions, checks, or findings.
-- Re-stage all intended story files after every fix or progress update.
-- Re-run the specialist review against the new complete staged diff after substantive code, behavior, test, or documentation changes.
-- Repeat until no actionable findings remain, up to 3 specialist review passes.
-- If the same class of actionable finding remains after 3 passes, stop without committing, leave or set the story `passes: false`, record the blocker in `progress.txt`, and end the iteration.
-- Do not commit while actionable specialist findings remain unresolved.
+- Re-stage all intended story files after every fix, `progress.txt` update, or `prd.json` update.
+- If substantive in-scope code, behavior, test, or documentation fixes were made
+  for blocking actionable findings, run at most one targeted specialist
+  re-review against the new complete staged diff.
+- The targeted re-review must include only the specialists relevant to the fixed
+  findings; do not re-run the full specialist set unless every original
+  specialist area was affected by the fixes.
+- Do not run a specialist re-review for progress-only metadata edits,
+  `progress.txt` bookkeeping, or `prd.json` status updates when no substantive
+  implementation, test, or documentation files changed.
+- Merge targeted re-review results using the same deduplication and noise-reduction rules.
+- If any in-scope `critical`, `high`, or `medium` finding remains after the
+  targeted re-review, stop without committing, leave or set the story
+  `passes: false`, record the blocker in `progress.txt`, and end the iteration.
+- Do not commit while unresolved in-scope `critical`, `high`, or `medium`
+  specialist findings remain.
 
 After the final passing review, set the selected story to `passes: true` in
 `prd.json`, update `progress.txt` if needed, and stage those metadata changes.

@@ -74,6 +74,8 @@ Each story needs:
 - **Title:** Short descriptive name
 - **Description:** "As a [user], I want [feature] so that [benefit]"
 - **Acceptance Criteria:** Verifiable checklist of what "done" means
+- **Recommended Agents:** Development specialists Ralph should consult before
+  implementation
 
 Each story should be small enough to implement in one focused session.
 
@@ -88,6 +90,8 @@ Each story should be small enough to implement in one focused session.
 - [ ] Typecheck passes
 - [ ] Tests pass, if behavior is testable
 - [ ] **[UI stories only]** Verify in browser using dev-browser skill
+
+**Recommended Agents:** @agent-name, @agent-name
 ```
 
 **Important:** 
@@ -95,6 +99,51 @@ Each story should be small enough to implement in one focused session.
 - For implementation stories, include "Typecheck passes" as acceptance criteria.
 - For testable behavior, include "Tests pass" as acceptance criteria.
 - **For any story with UI changes:** Always include "Verify in browser using dev-browser skill" as acceptance criteria. This ensures visual verification of frontend work.
+
+### Recommended Development Agents
+
+For each implementation story, add a short `Recommended Agents` line with the
+configured specialists Ralph should consult before editing code. Keep the list
+focused: usually 1-3 agents per story, selected from the trigger matrix below.
+Do not recommend business, planning, sales, legal, marketing, or orchestration
+agents for Ralph implementation stories.
+
+Use exact configured agent names with `@` prefixes:
+
+- General implementation: `@backend-developer`, `@frontend-developer`,
+  `@fullstack-developer`, `@cli-developer`, `@tooling-engineer`
+- Debugging and quality: `@debugger`, `@test-automator`,
+  `@refactoring-specialist`, `@architect-reviewer`, `@performance-engineer`
+- Build and dependencies: `@build-engineer`, `@dependency-manager`
+- Security and compliance: `@security-engineer`, `@security-auditor`,
+  `@compliance-auditor`
+- Documentation: `@documentation-engineer`, `@technical-writer`
+- UI, UX, and accessibility: `@react-specialist`, `@nextjs-developer`,
+  `@vue-expert`, `@angular-architect`, `@ui-designer`, `@ux-researcher`,
+  `@accessibility-tester`
+- API and backend architecture: `@api-designer`, `@graphql-architect`,
+  `@websocket-engineer`, `@microservices-architect`
+- Databases and data: `@sql-pro`, `@postgres-pro`, `@database-optimizer`,
+  `@database-administrator`, `@data-engineer`
+- DevOps and infrastructure: `@devops-engineer`, `@deployment-engineer`,
+  `@kubernetes-specialist`, `@terraform-engineer`, `@cloud-architect`,
+  `@platform-engineer`, `@sre-engineer`
+- Language and framework specialists: `@typescript-pro`, `@javascript-pro`,
+  `@python-pro`, `@golang-pro`, `@rust-engineer`, `@java-architect`,
+  `@spring-boot-engineer`, `@csharp-developer`, `@dotnet-core-expert`,
+  `@php-pro`, `@laravel-specialist`, `@rails-expert`, `@django-developer`
+- Mobile and native: `@mobile-developer`, `@flutter-expert`,
+  `@swift-expert`, `@kotlin-specialist`, `@electron-pro`
+- AI and integrations: `@ai-engineer`, `@ml-engineer`, `@llm-architect`,
+  `@nlp-engineer`, `@mcp-developer`, `@payment-integration`,
+  `@slack-expert`, `@wordpress-master`
+
+Examples:
+
+- Database migration story: `Recommended Agents: @database-optimizer, @sql-pro`
+- React UI story: `Recommended Agents: @react-specialist, @accessibility-tester`
+- CLI script story: `Recommended Agents: @cli-developer, @test-automator`
+- Dependency upgrade story: `Recommended Agents: @dependency-manager, @build-engineer`
 
 ### 4. Functional Requirements
 Numbered list of specific functionalities:
@@ -173,6 +222,8 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Generate and run migration successfully
 - [ ] Typecheck passes
 
+**Recommended Agents:** @database-optimizer, @sql-pro
+
 ### US-002: Display priority indicator on task cards
 **Description:** As a user, I want to see task priority at a glance so I know what needs attention first.
 
@@ -181,6 +232,8 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Priority visible without hovering or clicking
 - [ ] Typecheck passes
 - [ ] Verify in browser using dev-browser skill
+
+**Recommended Agents:** @react-specialist, @accessibility-tester
 
 ### US-003: Add priority selector to task edit
 **Description:** As a user, I want to change a task's priority when editing it.
@@ -192,6 +245,8 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Typecheck passes
 - [ ] Verify in browser using dev-browser skill
 
+**Recommended Agents:** @frontend-developer, @accessibility-tester
+
 ### US-004: Filter tasks by priority
 **Description:** As a user, I want to filter the task list to see only high-priority items when I'm focused.
 
@@ -201,6 +256,8 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Empty state message when no tasks match filter
 - [ ] Typecheck passes
 - [ ] Verify in browser using dev-browser skill
+
+**Recommended Agents:** @frontend-developer, @ux-researcher
 
 ## Functional Requirements
 
@@ -243,6 +300,7 @@ Before saving the PRD:
 - [ ] Asked clarifying questions with lettered options
 - [ ] Incorporated user's answers
 - [ ] User stories are small and specific
+- [ ] Each implementation story recommends 1-3 relevant development agents
 - [ ] Functional requirements are numbered and unambiguous
 - [ ] Non-goals section defines clear boundaries
 - [ ] Saved to `tasks/prd-[feature-name].md`
