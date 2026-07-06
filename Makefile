@@ -49,25 +49,9 @@ install:
 	fi
 	cp -R ai/opencode/commands/. $$HOME/.config/opencode/commands/
 	@echo "Copied ai/opencode/commands to $$HOME/.config/opencode/commands/."
-	@if [ -f /usr/local/bin/ralph ]; then \
-	  if cp /usr/local/bin/ralph /usr/local/bin/ralph.backup.$$(date +%Y%m%d_%H%M%S); then \
-	    echo "Backed up existing ralph to /usr/local/bin/ralph.backup.*"; \
-	  else \
-	    echo "Error: Failed to back up existing /usr/local/bin/ralph. Aborting installation to avoid data loss."; \
-	    exit 1; \
-	  fi; \
-	fi
 	sudo cp bin/ralph /usr/local/bin/ralph
 	sudo chmod +x /usr/local/bin/ralph
 	@echo "Installed ralph CLI to /usr/local/bin/ralph."
-	@if [ -f /usr/local/bin/subagents ]; then \
-	  if cp /usr/local/bin/subagents /usr/local/bin/subagents.backup.$$(date +%Y%m%d_%H%M%S); then \
-	    echo "Backed up existing subagents to /usr/local/bin/subagents.backup.*"; \
-	  else \
-	    echo "Error: Failed to back up existing /usr/local/bin/subagents. Aborting installation to avoid data loss."; \
-	    exit 1; \
-	  fi; \
-	fi
 	sudo cp bin/subagents /usr/local/bin/subagents
 	sudo chmod +x /usr/local/bin/subagents
 	@echo "Installed subagents CLI to /usr/local/bin/subagents."
