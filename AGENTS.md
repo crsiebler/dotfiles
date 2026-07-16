@@ -63,20 +63,27 @@ The subagents skill has been updated to call the global `subagents` command:
 
 - **Skills**: PRD generation (`ai/opencode/skills/prd/SKILL.md`) and PRD-to-JSON conversion (`ai/opencode/skills/ralph/SKILL.md`)
 - **Commands**: `/prd` for creating PRDs, `/ralph` for converting PRDs to JSON format
-- **CLI Tool**: `ralph` command installed to `/usr/local/bin/ralph` with `--max-iterations` and `--mode fast|standard|deep` options
+- **CLI Tool**: `ralph` command installed to `/usr/local/bin/ralph` with `--auto`, `--max-iterations`, and `--mode fast|standard|deep` options
 - **Configuration**: OpenCode config, skills, and commands installed to `~/.config/opencode/`
 
 ### Using Ralph
 
 1. **Create a PRD**: Use `/prd` command in OpenCode to generate requirements
 2. **Convert to JSON**: Use `/ralph` command to create `prd.json` from the PRD
-3. **Run Autonomous Loop**: Execute `ralph --mode standard --max-iterations 10` in your project directory
+3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` in your project directory
 4. **Monitor Progress**: Check `progress.txt` for iteration logs and `prd.json` for completion status
 
 Ralph modes:
 - `fast`: minimizes implementation agents and specialist reviews for low-risk stories
 - `standard`: default risk-based agent and review budget
 - `deep`: broader specialist help for complex or high-risk stories
+
+`--auto` is opt-in. It forwards OpenCode's auto-approval flag to every Ralph
+iteration and pre-authorizes non-destructive project-local operations required
+by the active story, including local Docker container creation and lifecycle
+operations. Explicit permission denials and Ralph's production, secrets,
+destructive-operation, protected-branch, security, and task-scope boundaries
+remain in force. Each progress entry records whether auto approval was enabled.
 
 ### Ralph Workflow
 
@@ -96,7 +103,12 @@ Ralph modes:
 
 ## Build/Lint/Test Commands
 
-Since this is a configuration repository, traditional build processes do not apply. There are no formal automated validation or testing targets. Manual validation/testing can be performed as follows:
+Since this is a configuration repository, traditional build processes do not
+apply. Run the Ralph CLI regression test and the relevant manual validation:
+
+```bash
+tests/ralph_auto_test.sh
+```
 
 ### Manual Validation
 ```bash

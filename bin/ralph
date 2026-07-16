@@ -8,6 +8,7 @@ set -e
 # Default values
 MAX_ITERATIONS=10
 RALPH_MODE="standard"
+RALPH_AUTO_APPROVAL="disabled"
 
 usage() {
   cat <<EOF
@@ -16,6 +17,7 @@ Usage: ralph [options]
 Options:
   --max-iterations N   Maximum number of iterations to run (default: 10)
   --mode MODE          Execution mode: fast, standard, deep (default: standard)
+  --auto               Enable automatic approval for OpenCode operations
   -h, --help           Show this help message
 
 Ralph is an autonomous AI coding agent that iteratively processes
@@ -71,6 +73,10 @@ while [[ $# -gt 0 ]]; do
       esac
       shift 2
       ;;
+    --auto)
+      RALPH_AUTO_APPROVAL="enabled"
+      shift
+      ;;
     -h|--help)
       usage
       exit 0
@@ -107,6 +113,12 @@ fi
 # Set environment variable for max iterations
 export RALPH_MAX_ITERATIONS="$MAX_ITERATIONS"
 export RALPH_MODE="$RALPH_MODE"
+export RALPH_AUTO_APPROVAL
+
+OPENCODE_ARGS=()
+if [[ "$RALPH_AUTO_APPROVAL" == "enabled" ]]; then
+  OPENCODE_ARGS+=(--auto)
+fi
 
 # Check if ralph.md exists in the installed location
 RALPH_PROMPT_FILE="$HOME/.config/opencode/ralph.md"
@@ -121,11 +133,13 @@ fi
 RALPH_PROMPT=$(sed \
   -e "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" \
   -e "s/\$RALPH_MODE/$RALPH_MODE/g" \
+  -e "s/\$RALPH_AUTO_APPROVAL/$RALPH_AUTO_APPROVAL/g" \
   "$RALPH_PROMPT_FILE")
 
 echo "Starting Ralph autonomous AI loop..."
 echo "Using Ralph prompt from $RALPH_PROMPT_FILE"
 echo "Execution mode: $RALPH_MODE"
+echo "Auto approval: $RALPH_AUTO_APPROVAL"
 echo ""
 
 if prd_complete; then
@@ -138,7 +152,7 @@ while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
   # Run OpenCode with the processed prompt
-  opencode run -m openai/gpt-5.6-sol --variant high "$RALPH_PROMPT"
+  opencode run "${OPENCODE_ARGS[@]}" -m openai/gpt-5.6-sol --variant high "$RALPH_PROMPT"
 
   ITERATION=$((ITERATION + 1))
 

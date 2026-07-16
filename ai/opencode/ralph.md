@@ -43,6 +43,23 @@ Current mode: `$RALPH_MODE`
 If `$RALPH_MODE` is not one of `fast`, `standard`, or `deep`, treat it as
 `standard` and record that fallback in `progress.txt`.
 
+## Scoped Auto Approval
+
+Status: `$RALPH_AUTO_APPROVAL`
+
+If enabled, the user's `ralph --auto` invocation constitutes advance
+confirmation for non-destructive operations required by the selected story
+within the current worktree. This includes dependency and package-manager
+changes, project configuration, local/test migrations, local development
+process operations, and creating, starting, or stopping local Docker containers.
+Do not ask again for these operations; this approval also applies to delegated
+agents working within the same scope.
+
+Production or secret access, destructive operations, work outside the worktree
+or selected story, history rewriting or protected-branch pushes, and disabling
+safeguards remain prohibited. Explicit OpenCode permission denials still apply.
+If disabled, follow the normal confirmation requirements.
+
 ## Progress Report Format
 
 APPEND to progress.txt (never replace, always append):
@@ -51,6 +68,7 @@ APPEND to progress.txt (never replace, always append):
 - What was implemented
 - Files changed: `path/to/file1`, `path/to/file2`
 - Commit message: `feat: <story-id> - <story-title>`
+- Auto approval: `$RALPH_AUTO_APPROVAL`
 - Checks:
   - `<typecheck command>` (pass/fail)
   - `<lint command>` (pass/fail)
