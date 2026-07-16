@@ -138,7 +138,7 @@ while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
   # Run OpenCode with the processed prompt
-  opencode run -m openai/gpt-5.5 "$RALPH_PROMPT"
+  opencode run -m openai/gpt-5.6-sol --variant high "$RALPH_PROMPT"
 
   ITERATION=$((ITERATION + 1))
 
