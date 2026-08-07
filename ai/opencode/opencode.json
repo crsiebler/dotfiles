@@ -19,6 +19,18 @@
             "type": "remote",
             "url": "https://mcp.context7.com/mcp"
         },
+        "elevenlabs": {
+            "command": [
+                "uvx",
+                "elevenlabs-mcp"
+            ],
+            "enabled": true,
+            "environment": {
+                "ELEVENLABS_API_KEY": "{env:ELEVENLABS_API_KEY}",
+                "ELEVENLABS_MCP_OUTPUT_MODE": "files"
+            },
+            "type": "local"
+        },
         "jam": {
             "enabled": true,
             "type": "remote",
@@ -41,7 +53,8 @@
     },
     "plugin": [
         "@mohak34/opencode-notifier@0.1.15",
-        "opencode-dir"
+        "opencode-dir",
+        "opencode-gpt-imagegen@0.1.9"
     ],
     "provider": {
         "ollama": {

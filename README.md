@@ -63,6 +63,49 @@ After running `make install`, the PR review assets are installed automatically:
 
 By default, `/review-pr` generates a local review report only. When `--post` is provided, it previews the PR URL, review event, consolidated body, inline comment count, and exact `gh` command or API payload, then requires explicit confirmation before posting anything to GitHub.
 
+## Godot Sprite Generation
+
+This repository includes a `/godot-sprite` OpenCode command for generating
+pixel-art sprite sheets through a ChatGPT subscription and integrating approved
+assets into Godot 4 projects.
+
+The workflow installs:
+
+- `opencode-gpt-imagegen@0.1.9`, an unofficial OpenCode plugin that exposes the
+  `gpt_imagegen` tool through the existing ChatGPT OAuth session
+- `godot-sprite-artist`, the specialized generation and integration agent
+- `godot-sprite-forge`, the reusable asset planning and prompt skill
+- `/godot-sprite`, the command entry point
+
+### Requirements
+
+- OpenCode authenticated with OpenAI ChatGPT OAuth through `opencode auth login`
+- A ChatGPT plan that permits image generation
+- Godot 4 available as `godot` for project integration and headless validation
+- An active Godot project with `project.godot` when scene integration is requested
+
+No `OPENAI_API_KEY` is required for the plugin's subscription-backed generation
+path. Image calls consume ChatGPT subscription capacity. The plugin is unofficial
+and reads OpenCode's OAuth data from its standard authentication store.
+
+After running `make install`, quit and restart OpenCode so it installs and loads
+the configured plugin and prompt assets.
+
+### Usage
+
+```text
+/godot-sprite create a four-direction forest ranger with idle and walk animations
+
+/godot-sprite create a side-view lightning knight with idle, run, attack, hurt, and death animations
+
+/godot-sprite --plan-only create a six-frame fire elemental boss idle
+```
+
+The agent previews its asset contract and planned image calls before invoking
+`gpt_imagegen`. Generated images and references must remain inside the active
+workspace. The `--plan-only` option produces prompts and an integration plan
+without generating images or changing project files.
+
 ## Ralph Autonomous AI Loop
 
 This dotfiles repository includes configuration for Ralph, an autonomous AI coding agent that can iteratively implement features from Product Requirements Documents (PRDs).
