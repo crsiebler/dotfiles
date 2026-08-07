@@ -40,7 +40,8 @@
         }
     },
     "plugin": [
-        "@mohak34/opencode-notifier@0.1.15"
+        "@mohak34/opencode-notifier@0.1.15",
+        "opencode-dir"
     ],
     "provider": {
         "ollama": {
