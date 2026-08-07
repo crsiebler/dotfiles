@@ -1,8 +1,8 @@
 ---
 description: Generates consistent pixel-art sprites with ChatGPT image generation and integrates approved assets into Godot 4 projects.
-mode: all
+mode: subagent
 permission:
-  gpt_imagegen: ask
+  gpt_imagegen: allow
   bash: ask
   external_directory:
     "*": ask
