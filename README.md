@@ -16,9 +16,11 @@ A collection of configuration files for storing user preferences and preserving 
    cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
    mkdir -p $HOME/.config/opencode/skills/
    cp -R ai/opencode/skills/. $HOME/.config/opencode/skills/
-    mkdir -p $HOME/.config/opencode/commands/
-    cp -R ai/opencode/commands/. $HOME/.config/opencode/commands/
-    ```
+   mkdir -p $HOME/.config/opencode/agents/
+   cp -R ai/opencode/agents/. $HOME/.config/opencode/agents/
+   mkdir -p $HOME/.config/opencode/commands/
+   cp -R ai/opencode/commands/. $HOME/.config/opencode/commands/
+   ```
 
 3. Run `make install` to copy all supported dotfiles to your home directory as usual.
 
@@ -119,7 +121,10 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 - **Execution Modes**: Use `ralph --mode fast|standard|deep` to control Ralph's agent budget and review depth
 - **Recommended Agents**: Story `notes` can list optional `@agent-name` recommendations that Ralph may invoke before implementation based on story risk and mode
 - **Quality Assurance**: Each iteration includes type checking, linting, and testing
-- **Mode-Aware Review Gate**: Each staged story gets self-review or specialist review based on mode and risk before commit
+- **Mode-Aware Review Gate**: Each staged story gets self-review or one bounded `ralph-reviewer` pass based on mode and risk before commit
+- **Bounded Read-Only Review**: The Ralph reviewer receives compact story context and uses at most two read-only inspection turns before its final holistic review; all mutation, browser, web, MCP, external-directory, and delegation tools remain denied
+- **Iterative Feedback**: One targeted re-review can resume the initial reviewer session after Ralph fixes blocking findings
+- **Bounded Review Memory**: Validated review patterns and false-positive suppressions are stored project-locally in `memory.json`
 - **Self-Contained Review Standards**: Ralph includes local staged-change review standards directly in its prompt so target-project agents do not need access to `~/.config/opencode/`
 - **Progress Tracking**: Automatic commits and progress logging
 
@@ -130,6 +135,7 @@ After running `make install`, Ralph configuration is automatically set up:
 - OpenCode skills are installed to `~/.config/opencode/skills/`
 - `ai/opencode/opencode.json` is installed to `~/.config/opencode/opencode.json`
 - `ai/opencode/skills/*/SKILL.md` files are installed under `~/.config/opencode/skills/`
+- `ralph-reviewer` is installed to `~/.config/opencode/agents/ralph-reviewer.md`
 - The Ralph prompt is installed to `~/.config/opencode/ralph.md` (customizable)
 - The `ralph` CLI tool is installed to `/usr/local/bin/ralph`
 
@@ -138,13 +144,22 @@ After running `make install`, Ralph configuration is automatically set up:
 1. **Create a PRD**: In any project directory, open OpenCode and use the PRD skill to generate requirements
 2. **Convert to JSON**: Use the Ralph skill to create `prd.json` from your PRD
 3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` to start implementation with scoped project-local approval
-4. **Monitor Progress**: Check `progress.txt` for detailed logs and `prd.json` for completion status
+4. **Monitor Progress**: Check `progress.txt` for detailed logs, `memory.json` for bounded validated review knowledge, and `prd.json` for completion status
 
 Ralph modes:
 
 - `fast`: minimizes implementation agents and specialist reviews; best for low-risk stories
 - `standard`: default risk-based agent and review budget
 - `deep`: broader specialist help for complex or high-risk stories
+
+Ralph keeps review data in three layers. `progress.txt` is the append-only audit
+trail of findings and dispositions. `memory.json` retains at most 20
+validated patterns and 20 false-positive suppressions for later iterations.
+Its absence before the first passing review is normal; Ralph uses empty memory
+in process and creates the file only after review succeeds.
+Durable repository conventions may be promoted to the nearest `AGENTS.md`, but
+temporary findings, counters, and story-specific review details must remain out
+of agent instruction files.
 
 `ralph --auto` passes OpenCode's `--auto` option to every fresh iteration and
 pre-authorizes operations required by the active story, including dependency

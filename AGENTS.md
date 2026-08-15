@@ -65,13 +65,14 @@ The subagents skill has been updated to call the global `subagents` command:
 - **Commands**: `/prd` for creating PRDs, `/ralph` for converting PRDs to JSON format
 - **CLI Tool**: `ralph` command installed to `/usr/local/bin/ralph` with `--auto`, `--max-iterations`, and `--mode fast|standard|deep` options
 - **Configuration**: OpenCode config, skills, and commands installed to `~/.config/opencode/`
+- **Local Reviewer**: `ai/opencode/agents/ralph-reviewer.md` provides the bounded, read-only staged-story review used by Ralph
 
 ### Using Ralph
 
 1. **Create a PRD**: Use `/prd` command in OpenCode to generate requirements
 2. **Convert to JSON**: Use `/ralph` command to create `prd.json` from the PRD
 3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` in your project directory
-4. **Monitor Progress**: Check `progress.txt` for iteration logs and `prd.json` for completion status
+4. **Monitor Progress**: Check `progress.txt` for iteration logs, `memory.json` for bounded review knowledge, and `prd.json` for completion status
 
 Ralph modes:
 - `fast`: minimizes implementation agents and specialist reviews for low-risk stories
@@ -90,6 +91,9 @@ remain in force. Each progress entry records whether auto approval was enabled.
 - Reads `prd.json` for user stories
 - Implements highest-priority incomplete story
 - Runs quality checks (lint, typecheck, test)
+- Uses self-review or one three-step `ralph-reviewer` pass based on mode and risk
+- Resumes the same reviewer session at most once to verify substantive review fixes
+- Stores validated review patterns and false-positive suppressions in project-local `memory.json`
 - Commits with format: `feat: [Story ID] - [Story Title]`
 - Appends detailed iteration handoff notes to `progress.txt` for context continuity
 - Updates progress and repeats until completion
@@ -104,10 +108,10 @@ remain in force. Each progress entry records whether auto approval was enabled.
 ## Build/Lint/Test Commands
 
 Since this is a configuration repository, traditional build processes do not
-apply. Run the Ralph CLI regression test and the relevant manual validation:
+apply. Run the Ralph review contract regression test and the relevant manual validation:
 
 ```bash
-tests/ralph_auto_test.sh
+tests/ralph_review_test.sh
 ```
 
 ### Manual Validation
