@@ -17,6 +17,12 @@
 - `/review-pr --post` workflows must preview the exact GitHub review command or
   API payload and require explicit confirmation before running any `gh` command
   that writes review comments.
+- Ralph local staged reviews use only `ai/opencode/agents/ralph-reviewer.md`.
+  Keep it bounded to project-local reads and non-mutating staged Git inspection;
+  do not reuse the general-purpose review agents.
+- Ralph review history belongs in `progress.txt`, bounded operational memory in
+  project-local `memory.json`, and only durable repository instructions
+  in the nearest `AGENTS.md`.
 
 ## Git Workflow
 **Mandatory Format**: `<type>(<scope>): <description>`
