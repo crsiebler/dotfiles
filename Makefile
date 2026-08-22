@@ -1,4 +1,4 @@
-FILES = aliases/.aliases aliases/.docker_aliases aliases/.git_aliases aliases/.node_aliases aliases/.symfony_aliases zsh/.zshenv zsh/.zshrc
+FILES = aliases/.aliases aliases/.docker_aliases aliases/.git_aliases aliases/.node_aliases aliases/.symfony_aliases zsh/.zshenv zsh/.zshrc ai/opencode/tui.json
 
 install:
 	@if [ -f ~/.zshrc ]; then cp ~/.zshrc ~/.zshrc.backup.$$(date +%Y%m%d_%H%M%S); fi
@@ -23,6 +23,8 @@ install:
 	fi
 	cp ai/opencode/opencode.json $$HOME/.config/opencode/opencode.json
 	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
+	cp ai/opencode/tui.json $$HOME/.config/opencode/tui.json
+	@echo "Copied ai/opencode/tui.json to $$HOME/.config/opencode/tui.json."
 	cp ai/opencode/ralph.md $$HOME/.config/opencode/ralph.md
 	@echo "Copied ai/opencode/ralph.md to $$HOME/.config/opencode/ralph.md."
 	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
