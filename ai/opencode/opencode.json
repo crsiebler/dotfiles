@@ -8,7 +8,7 @@
                 "-y",
                 "chrome-devtools-mcp@latest"
             ],
-            "enabled": true,
+            "enabled": false,
             "type": "local"
         },
         "context7": {
@@ -24,7 +24,7 @@
                 "uvx",
                 "elevenlabs-mcp"
             ],
-            "enabled": true,
+            "enabled": false,
             "environment": {
                 "ELEVENLABS_API_KEY": "{env:ELEVENLABS_API_KEY}",
                 "ELEVENLABS_MCP_OUTPUT_MODE": "files"
@@ -32,16 +32,40 @@
             "type": "local"
         },
         "jam": {
-            "enabled": true,
+            "enabled": false,
             "type": "remote",
             "url": "https://mcp.jam.dev/mcp"
+        },
+        "jira": {
+            "command": [
+                "node",
+                "{env:HOME}/Repositories/mcp-suite/servers/jira/dist/servers/jira/src/index.js"
+            ],
+            "enabled": false,
+            "environment": {
+                "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}",
+                "JIRA_BASE_URL": "{env:JIRA_BASE_URL}",
+                "JIRA_EMAIL": "{env:JIRA_EMAIL}"
+            },
+            "type": "local"
         },
         "playwright": {
             "command": [
                 "npx",
                 "@playwright/mcp@latest"
             ],
-            "enabled": true,
+            "enabled": false,
+            "type": "local"
+        },
+        "postgresql": {
+            "command": [
+                "node",
+                "{env:HOME}/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js"
+            ],
+            "enabled": false,
+            "environment": {
+                "POSTGRESQL_CONNECTION_STRING": "{env:POSTGRESQL_CONNECTION_STRING}"
+            },
             "type": "local"
         }
     },
@@ -57,21 +81,35 @@
         "opencode-gpt-imagegen@0.1.9"
     ],
     "provider": {
-        "ollama": {
-            "npm": "@ai-sdk/openai-compatible",
-            "name": "Ollama",
-            "options": {
-                "baseURL": "http://localhost:11434/v1",
-                "apiKey": "ollama"
-            },
+        "mlx": {
             "models": {
-                "qwen3-coder-49k": {
-                    "name": "Qwen3 Coder",
+                "mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit": {
                     "limit": {
-                        "context": 49152,
+                        "context": 65536,
                         "output": 8192
-                    }
+                    },
+                    "modalities": {
+                        "input": [
+                            "text"
+                        ],
+                        "output": [
+                            "text"
+                        ]
+                    },
+                    "name": "Qwen3 Coder 30B A3B MLX",
+                    "reasoning": false,
+                    "temperature": true,
+                    "tool_call": true
                 }
+            },
+            "name": "MLX Local",
+            "npm": "@ai-sdk/openai-compatible",
+            "options": {
+                "apiKey": "none",
+                "baseURL": "http://127.0.0.1:8080/v1",
+                "chunkTimeout": 120000,
+                "headerTimeout": 600000,
+                "timeout": false
             }
         }
     }

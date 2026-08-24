@@ -3,6 +3,23 @@ mkcd() {
     cd $1
 }
 
+mlx-qwen() {
+  mlx_lm.server \
+    --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit \
+    --host 127.0.0.1 \
+    --port 8080 \
+    --prompt-cache-size 2 \
+    --prompt-cache-bytes 6GB \
+    --prompt-concurrency 1 \
+    --decode-concurrency 1 \
+    --prefill-step-size 512 \
+    --max-tokens 8192 \
+    --temp 0.7 \
+    --top-p 0.8 \
+    --top-k 20 \
+    "$@"
+}
+
 alias hs='history | grep'
 alias myip='curl http://ipecho.net/plain; echo'
 alias svim='sudo vim'
