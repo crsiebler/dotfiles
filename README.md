@@ -14,6 +14,7 @@ A collection of configuration files for storing user preferences and preserving 
    ```bash
    mkdir -p $HOME/.config/opencode/
    cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
+   cp ai/opencode/tui.json $HOME/.config/opencode/tui.json
    mkdir -p $HOME/.config/opencode/skills/
    cp -R ai/opencode/skills/. $HOME/.config/opencode/skills/
    mkdir -p $HOME/.config/opencode/agents/
@@ -134,6 +135,7 @@ After running `make install`, Ralph configuration is automatically set up:
 
 - OpenCode skills are installed to `~/.config/opencode/skills/`
 - `ai/opencode/opencode.json` is installed to `~/.config/opencode/opencode.json`
+- `ai/opencode/tui.json` is installed to `~/.config/opencode/tui.json`
 - `ai/opencode/skills/*/SKILL.md` files are installed under `~/.config/opencode/skills/`
 - `ralph-reviewer` is installed to `~/.config/opencode/agents/ralph-reviewer.md`
 - The Ralph prompt is installed to `~/.config/opencode/ralph.md` (customizable)
