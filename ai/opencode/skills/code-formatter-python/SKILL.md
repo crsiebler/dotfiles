@@ -1,6 +1,6 @@
 ---
-name: code-formatter-python-ruff
-description: Formats Python code with Ruff, applies lint fixes, and runs pre-commit hooks for quality checks
+name: code-formatter-python
+description: Formats Python code, applies lint fixes, and runs pre-commit hooks for quality checks
 ---
 
 ## What I do
