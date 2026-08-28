@@ -1,6 +1,10 @@
 mkcd() {
-    mkdir -p $1
-    cd $1
+  if (( $# != 1 )); then
+    print -u2 "Usage: mkcd <directory>"
+    return 2
+  fi
+
+  mkdir -p -- "$1" && cd -- "$1"
 }
 
 mlx-qwen() {
@@ -21,6 +25,9 @@ mlx-qwen() {
 }
 
 alias hs='history | grep'
-alias myip='curl http://ipecho.net/plain; echo'
+
+myip() {
+  curl -fsS https://api.ipify.org && printf '\n'
+}
+
 alias svim='sudo vim'
-alias update='sudo apt update && sudo apt upgrade'

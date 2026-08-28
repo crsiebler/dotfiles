@@ -1,28 +1,11 @@
-# Load the Docker aliases
-if [ -f ~/.docker_aliases ]; then
-	. ~/.docker_aliases
+# Environment shared by interactive and non-interactive Zsh processes.
+if [[ -z ${JAVA_HOME:-} && -x /usr/libexec/java_home ]]; then
+  java_home="$(/usr/libexec/java_home 2>/dev/null)"
+  [[ -n $java_home ]] && export JAVA_HOME="$java_home"
+  unset java_home
 fi
 
-# Load the Git aliases
-if [ -f ~/.git_aliases ]; then
-	. ~/.git_aliases
-fi
+export LANG="${LANG:-en_US.UTF-8}"
 
-# Load the Node aliases
-if [ -f ~/.node_aliases ]; then
-	. ~/.node_aliases
-fi
-
-# Load the Symfony aliases
-if [ -f ~/.symfony_aliases ]; then
-	. ~/.symfony_aliases
-fi
-
-# Load common aliases
-if [ -f ~/.aliases ]; then
-	. ~/.aliases
-fi
-
-export JAVA_HOME=/usr/bin/java
-export LC_ALL=C.UTF-8
-export PATH="$HOME/.local/bin:$PATH"
+typeset -U path PATH
+[[ -d "$HOME/.local/bin" ]] && path=("$HOME/.local/bin" $path)

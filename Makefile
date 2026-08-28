@@ -57,7 +57,7 @@ install:
 	sudo cp bin/subagents /usr/local/bin/subagents
 	sudo chmod +x /usr/local/bin/subagents
 	@echo "Installed subagents CLI to /usr/local/bin/subagents."
-	@echo "Installation complete. Dotfile setup, .env, opencode config, agents, commands, ralph CLI, and subagents CLI are in place. Please run 'source ~/.zshenv' or restart your shell to apply changes."
+	@echo "Installation complete. Dotfile setup, .env, opencode config, agents, commands, ralph CLI, and subagents CLI are in place. Restart your shell to apply changes."
 
 clean:
 	@echo "Removing dotfile backups (.zshrc, .env, opencode.json, ralph, subagents, AGENTS.md, skills, agents, commands)..."
