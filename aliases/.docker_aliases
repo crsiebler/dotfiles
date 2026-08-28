@@ -1,35 +1,72 @@
 # Docker aliases (shortcuts)
 dkclean() {
-  docker rm $(docker ps --all -q -f status=exited)
+  local output
+  local -a containers
+
+  output="$(docker ps --all --quiet --filter status=exited)" || return
+  [[ -n $output ]] || return 0
+  containers=("${(@f)output}")
+  docker rm -- "${containers[@]}"
 }
+
 dke() {
-  docker exec -it $1 /bin/sh
+  if (( $# != 1 )); then
+    print -u2 "Usage: dke <container>"
+    return 2
+  fi
+
+  docker exec -it "$1" /bin/sh
 }
+
 dkexe() {
-  docker exec $1 $2
+  if (( $# < 2 )); then
+    print -u2 "Usage: dkexe <container> <command> [args...]"
+    return 2
+  fi
+
+  local container="$1"
+  shift
+  docker exec "$container" "$@"
 }
+
 dkln() {
-  docker logs -f `docker ps | grep $1 | awk '{print $1}'`
+  if (( $# != 1 )); then
+    print -u2 "Usage: dkln <container>"
+    return 2
+  fi
+
+  docker logs -f "$1"
 }
+
 dkprune() {
-  docker system prune -af
+  local reply
+
+  read -r "reply?Delete all unused Docker data? [y/N] " || return 1
+  print
+  [[ $reply == [yY] ]] && docker system prune -af
 }
+
 dkrun() {
-  docker run it $1 $2
+  if (( $# == 0 )); then
+    print -u2 "Usage: dkrun <image> [args...]"
+    return 2
+  fi
+
+  docker run -it "$@"
 }
+
 dkstats() {
-  if [ $# -eq 0 ]; then
-    docker stats --no-stream;
+  if (( $# == 0 )); then
+    docker stats --no-stream
   else
-    docker stats --no-stream | grep $1;
+    docker stats --no-stream "$@"
   fi
 }
+
 dktop() {
   docker stats --format "table {{.Container}}\t{{.Name}}\t{{.CPUPerc}}  {{.MemPerc}}\t{{.NetIO}}\t{{.BlockIO}}"
 }
-alias dcu="docker-compose up -d"
-alias dcd="docker-compose down"
-alias dcr="docker-compose run"
+
 alias dk='docker'
 alias dki='docker images'
 alias dkif='docker image ls --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}"'
@@ -47,5 +84,7 @@ alias dkstp='docker stop'
 alias dkstpall='docker stop $(docker ps -a -q)'
 alias dkv='docker volume'
 alias dkvls='docker volume ls'
-alias dm='docker-machine'
-alias dmx='docker-machine ssh' 
+if (( $+commands[docker-machine] )); then
+  alias dm='docker-machine'
+  alias dmx='docker-machine ssh'
+fi

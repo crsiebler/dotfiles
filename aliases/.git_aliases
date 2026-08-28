@@ -1,3 +1,42 @@
 alias gac='git add . && git commit -a -m '
-alias gbp='git branch --format="%(refname:short)" | grep -v -E "^(main|master|dev|qa|uat|demo)" | xargs git branch -d'
-alias gbpf='git branch --format="%(refname:short)" | grep -v -E "^(main|master|dev|qa|uat|demo)" | xargs git branch -D'
+
+_git_delete_local_branches() {
+  local delete_flag="$1"
+  local current_branch branch reply
+  local -a branches candidates
+
+  branches=("${(@f)$(git for-each-ref \
+    --format='%(refname:short)' refs/heads)}") || return
+  current_branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null)"
+
+  for branch in "${branches[@]}"; do
+    case "$branch" in
+      ""|main|master|dev|qa|uat|demo|"$current_branch") ;;
+      *) candidates+=("$branch") ;;
+    esac
+  done
+
+  if (( ${#candidates} == 0 )); then
+    print "No local branches to delete."
+    return 0
+  fi
+
+  print "Branches to delete:"
+  printf '  %s\n' "${candidates[@]}"
+  read -r "reply?Delete these local branches? [y/N] " || return 1
+  print
+  [[ $reply == [yY] ]] || {
+    print "Cancelled."
+    return 0
+  }
+
+  git branch "$delete_flag" -- "${candidates[@]}"
+}
+
+gbp() {
+  _git_delete_local_branches -d
+}
+
+gbpf() {
+  _git_delete_local_branches -D
+}

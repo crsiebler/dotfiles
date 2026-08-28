@@ -98,11 +98,21 @@ plugins=(
     wd
     yarn
     you-should-use
-    zsh-syntax-highlighting
     zsh-autosuggestions
+    zsh-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+# Docker Desktop installs completions outside the standard Oh My Zsh paths.
+[[ -d "$HOME/.docker/completions" ]] && \
+  fpath=("$HOME/.docker/completions" $fpath)
+
+if [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
+  source "$ZSH/oh-my-zsh.sh"
+else
+  print -u2 "Warning: Oh My Zsh is not installed at $ZSH"
+  autoload -Uz compinit
+  compinit
+fi
 
 # User configuration
 
@@ -111,12 +121,15 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
+# Preferred editor for local and remote sessions.
+if [[ -z ${SSH_CONNECTION:-} ]] && (( $+commands[code] )); then
+  export EDITOR="code --wait"
+elif (( $+commands[nvim] )); then
+  export EDITOR="nvim"
 else
-  export EDITOR='vim'
+  export EDITOR="vim"
 fi
+export VISUAL="$EDITOR"
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -132,51 +145,46 @@ fi
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-[[ ! -f ~/.zshenv ]] || source ~/.zshenv
+for alias_file in \
+  "$HOME/.docker_aliases" \
+  "$HOME/.git_aliases" \
+  "$HOME/.node_aliases" \
+  "$HOME/.symfony_aliases" \
+  "$HOME/.aliases"; do
+  [[ -r $alias_file ]] && source "$alias_file"
+done
+unset alias_file
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=($HOME/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
-
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+typeset -U path PATH
+[[ -d "$BUN_INSTALL/bin" ]] && path=("$BUN_INSTALL/bin" $path)
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
+if [[ -x /opt/anaconda3/bin/conda ]]; then
+  __conda_setup="$(/opt/anaconda3/bin/conda shell.zsh hook 2>/dev/null)"
+  if [[ $? -eq 0 ]]; then
     eval "$__conda_setup"
-else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/anaconda3/bin:$PATH"
-    fi
+  elif [[ -r /opt/anaconda3/etc/profile.d/conda.sh ]]; then
+    source /opt/anaconda3/etc/profile.d/conda.sh
+  fi
+  unset __conda_setup
 fi
-unset __conda_setup
 # <<< conda initialize <<<
 
 # opencode
-export PATH=$HOME/.opencode/bin:$PATH
-export EDITOR="code --wait"
+[[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
 
 # BasicTex
-export PATH="/Library/TeX/texbin:$PATH"
+[[ -d /Library/TeX/texbin ]] && path=(/Library/TeX/texbin $path)
 
 # Load personal environment variables for opencode and other secrets
-if [ -f "$HOME/.env" ]; then
-    source "$HOME/.env"
+if [[ -r "$HOME/.env" ]]; then
+  source "$HOME/.env"
 fi
