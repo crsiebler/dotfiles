@@ -4,7 +4,8 @@ A collection of configuration files for storing user preferences and preserving 
 
 ## Requirements
 
-- `python3` (required by `make install` to synchronize `~/.env` with missing keys from `env/.env.example`)
+- Python 3.8+ (required by `make install` to synchronize `~/.env` with
+  missing keys from `env/.env.example`)
 
 ## Setting Up
 
@@ -49,7 +50,9 @@ After running `make install`, the PR review assets are installed automatically:
 ### Requirements
 
 - OpenCode configured with a working provider/model
-- GitHub CLI (`gh`) authenticated for the target repository
+- GitHub CLI (`gh`) authenticated via `gh auth login`; verify keyring
+  authentication with `gh auth status`. No GitHub token environment variable
+  is required.
 - A git branch with an associated GitHub pull request, or an explicit PR selector
 
 ### Usage
