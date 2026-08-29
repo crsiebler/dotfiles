@@ -12,7 +12,8 @@ install:
 	  cp env/.env.example $$HOME/.env; \
 	  echo "Copied env/.env.example to $$HOME/.env. Please edit this file to add your secrets."; \
 	else \
-	  echo "$$HOME/.env already exists."; \
+	  echo "$$HOME/.env already exists. Synchronizing environment keys..."; \
+	  python3 $(CURDIR)/scripts/sync-env.py; \
 	fi
 	# Install global gitignore for git configuration
 	cp git/.gitignore_global $${HOME}/.gitignore_global
@@ -71,3 +72,6 @@ clean:
 	@rm -rf $${HOME}/.config/opencode/agents.backup.*
 	@rm -rf $${HOME}/.config/opencode/commands.backup.*
 	@echo "Backup removal complete."
+
+sync-env:
+	@python3 $(CURDIR)/scripts/sync-env.py

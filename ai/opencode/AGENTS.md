@@ -105,5 +105,5 @@
 
 ## Environment
 - Secrets location: `$HOME/.env`
-- MCP servers: Jira, PostgreSQL, Playwright, Chrome DevTools, Jam
+- MCP servers: Exa, Jira, PostgreSQL, Playwright, Chrome DevTools, Jam
 - Global commands: `ralph`, `subagents`
