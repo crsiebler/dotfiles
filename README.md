@@ -2,6 +2,10 @@
 
 A collection of configuration files for storing user preferences and preserving the state of a utility. Support for Zsh only.
 
+## Requirements
+
+- `python3` (required by `make install` to synchronize `~/.env` with missing keys from `env/.env.example`)
+
 ## Setting Up
 
 1. Copy the provided `env/.env.example` from this repository to your `$HOME` directory as `.env`, and fill in your own values:
