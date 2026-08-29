@@ -13,7 +13,7 @@ install:
 	  echo "Copied env/.env.example to $$HOME/.env. Please edit this file to add your secrets."; \
 	else \
 	  echo "$$HOME/.env already exists. Synchronizing environment keys..."; \
-	  $(MAKE) --no-print-directory sync-env; \
+	  python3 $(CURDIR)/scripts/sync-env.py; \
 	fi
 	# Install global gitignore for git configuration
 	cp git/.gitignore_global $${HOME}/.gitignore_global

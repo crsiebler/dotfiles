@@ -5,18 +5,28 @@ import re
 
 
 def extract_keys(path: Path, exported_only: bool = False) -> list[str]:
-    export_prefix = r"export\s+" if exported_only else r"(?:export\s+)?"
-    pattern = re.compile(
-        rf"^\s*{export_prefix}([A-Za-z_][A-Za-z0-9_]*)\s*="
+    assignment_pattern = re.compile(
+        r"^\s*(?:(export)\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*="
+    )
+    bare_export_pattern = re.compile(
+        r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:#.*)?$"
     )
     keys: list[str] = []
 
     for line in path.read_text(encoding="utf-8").splitlines():
-        match = pattern.match(line)
-        if match:
-            key = match.group(1)
-            if key not in keys:
-                keys.append(key)
+        assignment = assignment_pattern.match(line)
+        bare_export = bare_export_pattern.match(line)
+        if assignment:
+            is_exported = assignment.group(1) is not None
+            key = assignment.group(2)
+        elif bare_export:
+            is_exported = True
+            key = bare_export.group(1)
+        else:
+            continue
+
+        if (not exported_only or is_exported) and key not in keys:
+            keys.append(key)
 
     return keys
 

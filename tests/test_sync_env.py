@@ -102,6 +102,29 @@ class SyncEnvTest(unittest.TestCase):
 
         self.assertEqual(self.env_path.read_text(encoding="utf-8"), original)
 
+    def test_preserves_bare_export_declaration(self) -> None:
+        original = self.complete_env({"EXA_API_KEY"}) + "export EXA_API_KEY\n"
+        self.env_path.write_text(original, encoding="utf-8")
+
+        self.run_sync()
+
+        self.assertEqual(self.env_path.read_text(encoding="utf-8"), original)
+
+    def test_install_dry_run_does_not_create_env_file(self) -> None:
+        env = os.environ.copy()
+        env["HOME"] = str(self.home)
+
+        subprocess.run(
+            ["make", "-n", "install"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            env=env,
+            text=True,
+        )
+
+        self.assertFalse(self.env_path.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
