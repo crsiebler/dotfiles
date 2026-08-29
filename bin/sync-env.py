@@ -4,8 +4,11 @@ from pathlib import Path
 import re
 
 
-def extract_keys(path: Path) -> list[str]:
-    pattern = re.compile(r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)\s*=")
+def extract_keys(path: Path, exported_only: bool = False) -> list[str]:
+    export_prefix = r"export\s+" if exported_only else r"(?:export\s+)?"
+    pattern = re.compile(
+        rf"^\s*{export_prefix}([A-Za-z_][A-Za-z0-9_]*)\s*="
+    )
     keys: list[str] = []
 
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -32,10 +35,16 @@ def main() -> None:
         return
 
     env_keys = set(extract_keys(env_path))
+    exported_env_keys = set(extract_keys(env_path, exported_only=True))
     example_keys = extract_keys(example_path)
     missing = [key for key in example_keys if key not in env_keys]
+    unexported = [
+        key
+        for key in example_keys
+        if key in env_keys and key not in exported_env_keys
+    ]
 
-    if not missing:
+    if not missing and not unexported:
         print("No new environment keys to add.")
         return
 
@@ -44,10 +53,13 @@ def main() -> None:
         if current and not current.endswith("\n"):
             fp.write("\n")
         fp.write("# Added by make install (synchronized from env/.env.example)\n")
+        for key in unexported:
+            fp.write(f"export {key}\n")
         for key in missing:
             fp.write(f"export {key}=\n")
 
-    print("Appended environment keys: " + ", ".join(missing))
+    synchronized = unexported + missing
+    print("Synchronized environment keys: " + ", ".join(synchronized))
 
 
 if __name__ == "__main__":
