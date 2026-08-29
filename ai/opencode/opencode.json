@@ -37,7 +37,7 @@
                 "x-api-key": "{env:EXA_API_KEY}"
             },
             "type": "remote",
-            "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_fetch_exa,agent_run"
+            "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_fetch_exa,agent_run,web_search_advanced_exa"
         },
         "jam": {
             "enabled": false,
