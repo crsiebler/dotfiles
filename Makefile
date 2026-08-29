@@ -74,4 +74,4 @@ clean:
 	@echo "Backup removal complete."
 
 sync-env:
-	@python3 $(CURDIR)/bin/sync-env.py
+	@python3 $(CURDIR)/scripts/sync-env.py

@@ -8,7 +8,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SCRIPT = ROOT / "bin" / "sync-env.py"
+SCRIPT = ROOT / "scripts" / "sync-env.py"
 EXAMPLE = ROOT / "env" / ".env.example"
 
 
