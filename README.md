@@ -127,6 +127,7 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 - **Autonomous Implementation**: Run `ralph --max-iterations 10` to automatically implement user stories
 - **Scoped Auto Approval**: Add `--auto` to pre-authorize required project-local development operations in every iteration
 - **Execution Modes**: Use `ralph --mode fast|standard|deep` to control Ralph's agent budget and review depth
+- **Model Selection**: Use `ralph --model provider/model` to select an available OpenCode model
 - **Recommended Agents**: Story `notes` can list optional `@agent-name` recommendations that Ralph may invoke before implementation based on story risk and mode
 - **Quality Assurance**: Each iteration includes type checking, linting, and testing
 - **Mode-Aware Review Gate**: Each staged story gets self-review or one bounded `ralph-reviewer` pass based on mode and risk before commit
@@ -153,7 +154,31 @@ After running `make install`, Ralph configuration is automatically set up:
 1. **Create a PRD**: In any project directory, open OpenCode and use the PRD skill to generate requirements
 2. **Convert to JSON**: Use the Ralph skill to create `prd.json` from your PRD
 3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` to start implementation with scoped project-local approval
-4. **Monitor Progress**: Check `progress.txt` for detailed logs, `memory.json` for bounded validated review knowledge, and `prd.json` for completion status
+4. **Select a Model (optional)**: Add `--model openai/gpt-5.4` or another supported model
+5. **Monitor Progress**: Check `progress.txt` for detailed logs, `memory.json` for bounded validated review knowledge, and `prd.json` for completion status
+
+Supported Ralph models:
+
+- `opencode/big-pickle`
+- `opencode/ling-3.0-flash-fin-free`
+- `opencode/mimo-v2.5-free`
+- `opencode/muse-spark-1.2-contributor-free`
+- `opencode/nemotron-3-ultra-free`
+- `opencode/nemotron-3.5-lightning-free`
+- `mlx/mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit`
+- `openai/gpt-5.3-codex-spark`
+- `openai/gpt-5.4`
+- `openai/gpt-5.4-fast`
+- `openai/gpt-5.4-mini`
+- `openai/gpt-5.4-mini-fast`
+- `openai/gpt-5.5`
+- `openai/gpt-5.5-fast`
+- `openai/gpt-5.6-luna`
+- `openai/gpt-5.6-luna-fast`
+- `openai/gpt-5.6-sol`
+- `openai/gpt-5.6-sol-fast`
+- `openai/gpt-5.6-terra`
+- `openai/gpt-5.6-terra-fast`
 
 Ralph modes:
 
@@ -185,7 +210,7 @@ was enabled in each `progress.txt` entry.
 - OpenCode must be installed and configured with API keys
 - `jq` must be installed for reliable `prd.json` completion checks
 - Projects must be git repositories
-- `grok-code-fast-1` model should be available for optimal performance
+- The default `openai/gpt-5.6-sol-fast` model, or another supported model, should be available
 
 ## Subagents CLI Tool
 

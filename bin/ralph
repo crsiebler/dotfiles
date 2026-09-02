@@ -9,6 +9,37 @@ set -e
 MAX_ITERATIONS=10
 RALPH_MODE="standard"
 RALPH_AUTO_APPROVAL="disabled"
+MODEL="openai/gpt-5.6-sol-fast"
+
+valid_model() {
+  case "$1" in
+    opencode/big-pickle|\
+    opencode/ling-3.0-flash-fin-free|\
+    opencode/mimo-v2.5-free|\
+    opencode/muse-spark-1.2-contributor-free|\
+    opencode/nemotron-3-ultra-free|\
+    opencode/nemotron-3.5-lightning-free|\
+    mlx/mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit|\
+    openai/gpt-5.3-codex-spark|\
+    openai/gpt-5.4|\
+    openai/gpt-5.4-fast|\
+    openai/gpt-5.4-mini|\
+    openai/gpt-5.4-mini-fast|\
+    openai/gpt-5.5|\
+    openai/gpt-5.5-fast|\
+    openai/gpt-5.6-luna|\
+    openai/gpt-5.6-luna-fast|\
+    openai/gpt-5.6-sol|\
+    openai/gpt-5.6-sol-fast|\
+    openai/gpt-5.6-terra|\
+    openai/gpt-5.6-terra-fast)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
 
 usage() {
   cat <<EOF
@@ -17,6 +48,7 @@ Usage: ralph [options]
 Options:
   --max-iterations N   Maximum number of iterations to run (default: 10)
   --mode MODE          Execution mode: fast, standard, deep (default: standard)
+  --model MODEL        Model to use (default: openai/gpt-5.6-sol-fast)
   --auto               Enable automatic approval for OpenCode operations
   -h, --help           Show this help message
 
@@ -71,6 +103,20 @@ while [[ $# -gt 0 ]]; do
           exit 1
           ;;
       esac
+      shift 2
+      ;;
+    --model)
+      if [[ -z "$2" ]]; then
+        error "--model requires a value"
+        printf "Use 'ralph --help' for usage information.\n" >&2
+        exit 1
+      fi
+      if ! valid_model "$2"; then
+        error "unsupported model: $2"
+        printf "Use 'opencode models' to view available models.\n" >&2
+        exit 1
+      fi
+      MODEL="$2"
       shift 2
       ;;
     --auto)
@@ -139,6 +185,7 @@ RALPH_PROMPT=$(sed \
 echo "Starting Ralph autonomous AI loop..."
 echo "Using Ralph prompt from $RALPH_PROMPT_FILE"
 echo "Execution mode: $RALPH_MODE"
+echo "Model: $MODEL"
 echo "Auto approval: $RALPH_AUTO_APPROVAL"
 echo ""
 
@@ -152,7 +199,7 @@ while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
   # Run OpenCode with the processed prompt
-  opencode run "${OPENCODE_ARGS[@]}" -m openai/gpt-5.6-sol-fast --variant high "$RALPH_PROMPT"
+  opencode run "${OPENCODE_ARGS[@]}" -m "$MODEL" --variant high "$RALPH_PROMPT"
 
   ITERATION=$((ITERATION + 1))
 
