@@ -71,7 +71,7 @@ The subagents skill has been updated to call the global `subagents` command:
 
 1. **Create a PRD**: Use `/prd` command in OpenCode to generate requirements
 2. **Convert to JSON**: Use `/ralph` command to create `prd.json` from the PRD
-3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` in your project directory
+3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` in your project directory. Add `--model provider/model` to select a supported model.
 4. **Monitor Progress**: Check `progress.txt` for iteration logs, `memory.json` for bounded review knowledge, and `prd.json` for completion status
 
 Ralph modes:
