@@ -4,7 +4,7 @@ set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 AGENT_FILE="$ROOT_DIR/ai/opencode/agents/ralph-reviewer.md"
-RALPH_FILE="$ROOT_DIR/ai/opencode/ralph.md"
+RALPH_FILE="$ROOT_DIR/ai/opencode/agents/ralph.md"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
@@ -12,6 +12,19 @@ fail() {
 }
 
 [[ -f "$AGENT_FILE" ]] || fail "missing ralph-reviewer agent"
+[[ -f "$RALPH_FILE" ]] || fail "missing Ralph primary agent"
+
+ruby -e '
+  require "yaml"
+
+  path = ARGV.fetch(0)
+  content = File.read(path)
+  match = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  abort "missing YAML frontmatter" unless match
+
+  config = YAML.safe_load(match[1], permitted_classes: [], aliases: false)
+  abort "Ralph agent must use primary mode" unless config["mode"] == "primary"
+' "$RALPH_FILE"
 
 ruby -e '
   require "yaml"

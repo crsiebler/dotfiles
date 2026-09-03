@@ -7,9 +7,9 @@ RALPH_FILE="$ROOT_DIR/bin/ralph"
 TEST_DIR=$(mktemp -d)
 trap 'rm -rf "$TEST_DIR"' EXIT
 
-mkdir -p "$TEST_DIR/bin" "$TEST_DIR/home/.config/opencode"
+mkdir -p "$TEST_DIR/bin" "$TEST_DIR/home/.config/opencode/agents"
 printf '{"userStories":[{"passes":false}]}\n' > "$TEST_DIR/prd.json"
-printf 'test prompt\n' > "$TEST_DIR/home/.config/opencode/ralph.md"
+printf '%s\n' '---' 'description: test Ralph agent' 'mode: primary' '---' 'test prompt' > "$TEST_DIR/home/.config/opencode/agents/ralph.md"
 
 cat > "$TEST_DIR/bin/opencode" <<'EOF'
 #!/bin/bash
@@ -29,6 +29,7 @@ chmod +x "$TEST_DIR/bin/jq"
 run_ralph() {
   (
     cd "$TEST_DIR"
+    rm -f "$TEST_DIR/opencode.args"
     HOME="$TEST_DIR/home" \
       PATH="$TEST_DIR/bin:$PATH" \
       RALPH_TEST_DIR="$TEST_DIR" \
@@ -37,8 +38,33 @@ run_ralph() {
 }
 
 run_ralph --model openai/gpt-5.4 --max-iterations 1 >/dev/null
+grep -q -- '--agent ralph' "$TEST_DIR/opencode.args" || {
+  printf 'FAIL: Ralph agent was not selected\n' >&2
+  exit 1
+}
+
 grep -q -- '-m openai/gpt-5.4' "$TEST_DIR/opencode.args" || {
   printf 'FAIL: selected model was not passed to OpenCode\n' >&2
+  exit 1
+}
+
+grep -q -- '--variant high' "$TEST_DIR/opencode.args" || {
+  printf 'FAIL: selected variant was not passed to OpenCode\n' >&2
+  exit 1
+}
+
+grep -q -- 'Execution mode: standard' "$TEST_DIR/opencode.args" || {
+  printf 'FAIL: execution mode was not passed as runtime context\n' >&2
+  exit 1
+}
+
+grep -q -- 'Auto approval: disabled' "$TEST_DIR/opencode.args" || {
+  printf 'FAIL: auto approval state was not passed as runtime context\n' >&2
+  exit 1
+}
+
+grep -q -- 'Maximum iterations: 1' "$TEST_DIR/opencode.args" || {
+  printf 'FAIL: iteration limit was not passed as runtime context\n' >&2
   exit 1
 }
 
@@ -46,5 +72,11 @@ if run_ralph --model unsupported/model >/dev/null 2>&1; then
   printf 'FAIL: unsupported model was accepted\n' >&2
   exit 1
 fi
+
+run_ralph --model openai/gpt-5.4 --max-iterations 1 --auto >/dev/null
+grep -q -- '--auto' "$TEST_DIR/opencode.args" || {
+  printf 'FAIL: auto approval was not passed to OpenCode\n' >&2
+  exit 1
+}
 
 printf 'Ralph model option validation passed.\n'

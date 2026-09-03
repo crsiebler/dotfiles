@@ -134,7 +134,7 @@ This dotfiles repository includes configuration for Ralph, an autonomous AI codi
 - **Bounded Read-Only Review**: The Ralph reviewer receives compact story context and uses at most two read-only inspection turns before its final holistic review; all mutation, browser, web, MCP, external-directory, and delegation tools remain denied
 - **Iterative Feedback**: One targeted re-review can resume the initial reviewer session after Ralph fixes blocking findings
 - **Bounded Review Memory**: Validated review patterns and false-positive suppressions are stored project-locally in `memory.json`
-- **Self-Contained Review Standards**: Ralph includes local staged-change review standards directly in its prompt so target-project agents do not need access to `~/.config/opencode/`
+- **Self-Contained Review Standards**: Ralph includes local staged-change review standards directly in its agent so target-project agents do not need access to `~/.config/opencode/`
 - **Progress Tracking**: Automatic commits and progress logging
 
 ### Setup
@@ -146,7 +146,7 @@ After running `make install`, Ralph configuration is automatically set up:
 - `ai/opencode/tui.json` is installed to `~/.config/opencode/tui.json`
 - `ai/opencode/skills/*/SKILL.md` files are installed under `~/.config/opencode/skills/`
 - `ralph-reviewer` is installed to `~/.config/opencode/agents/ralph-reviewer.md`
-- The Ralph prompt is installed to `~/.config/opencode/ralph.md` (customizable)
+- The Ralph primary agent is installed to `~/.config/opencode/agents/ralph.md` (customizable)
 - The `ralph` CLI tool is installed to `/usr/local/bin/ralph`
 
 ### Usage
@@ -156,6 +156,10 @@ After running `make install`, Ralph configuration is automatically set up:
 3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` to start implementation with scoped project-local approval
 4. **Select a Model (optional)**: Add `--model openai/gpt-5.4` or another supported model
 5. **Monitor Progress**: Check `progress.txt` for detailed logs, `memory.json` for bounded validated review knowledge, and `prd.json` for completion status
+
+For a single direct OpenCode invocation, select the same primary agent with
+`opencode run --agent ralph "your task"`. The `/ralph` command is separate and
+converts PRDs to `prd.json`; it does not run the autonomous implementation loop.
 
 Supported Ralph models:
 
