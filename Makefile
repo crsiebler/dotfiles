@@ -26,8 +26,6 @@ install:
 	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
 	cp ai/opencode/tui.json $$HOME/.config/opencode/tui.json
 	@echo "Copied ai/opencode/tui.json to $$HOME/.config/opencode/tui.json."
-	cp ai/opencode/ralph.md $$HOME/.config/opencode/ralph.md
-	@echo "Copied ai/opencode/ralph.md to $$HOME/.config/opencode/ralph.md."
 	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
 	  cp $$HOME/.config/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md.backup.$$(date +%Y%m%d_%H%M%S); \
 	  echo "Backed up existing AGENTS.md to .config/opencode/AGENTS.md.backup.*"; \

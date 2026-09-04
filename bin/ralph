@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ralph CLI - Autonomous AI coding loop
-# Runs OpenCode with the Ralph prompt for autonomous feature implementation
+# Runs OpenCode with the Ralph primary agent for autonomous implementation
 
 set -e
 
@@ -59,7 +59,7 @@ Requirements:
   - prd.json file in the current directory
   - OpenCode installed and configured
   - jq installed for prd.json parsing
-  - Ralph prompt installed at ~/.config/opencode/ralph.md
+  - Ralph agent installed at ~/.config/opencode/agents/ralph.md
   - Git repository with proper setup
 EOF
 }
@@ -156,8 +156,6 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
-# Set environment variable for max iterations
-export RALPH_MAX_ITERATIONS="$MAX_ITERATIONS"
 export RALPH_MODE="$RALPH_MODE"
 export RALPH_AUTO_APPROVAL
 
@@ -166,24 +164,16 @@ if [[ "$RALPH_AUTO_APPROVAL" == "enabled" ]]; then
   OPENCODE_ARGS+=(--auto)
 fi
 
-# Check if ralph.md exists in the installed location
-RALPH_PROMPT_FILE="$HOME/.config/opencode/ralph.md"
-if [[ ! -f "$RALPH_PROMPT_FILE" ]]; then
-  error "$RALPH_PROMPT_FILE not found"
+# Check if the Ralph agent exists in the installed location
+RALPH_AGENT_FILE="$HOME/.config/opencode/agents/ralph.md"
+if [[ ! -f "$RALPH_AGENT_FILE" ]]; then
+  error "$RALPH_AGENT_FILE not found"
   printf "Please run 'make install' to set up the Ralph configuration.\n" >&2
   exit 1
 fi
 
-# Build the prompt in memory so Ralph does not see prompt material as an
-# untracked project file during autonomous runs.
-RALPH_PROMPT=$(sed \
-  -e "s/\$MAX_ITERATIONS/$MAX_ITERATIONS/g" \
-  -e "s/\$RALPH_MODE/$RALPH_MODE/g" \
-  -e "s/\$RALPH_AUTO_APPROVAL/$RALPH_AUTO_APPROVAL/g" \
-  "$RALPH_PROMPT_FILE")
-
 echo "Starting Ralph autonomous AI loop..."
-echo "Using Ralph prompt from $RALPH_PROMPT_FILE"
+echo "Using Ralph agent from $RALPH_AGENT_FILE"
 echo "Execution mode: $RALPH_MODE"
 echo "Model: $MODEL"
 echo "Auto approval: $RALPH_AUTO_APPROVAL"
@@ -198,8 +188,22 @@ ITERATION=0
 while [ $ITERATION -lt $MAX_ITERATIONS ]; do
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
-  # Run OpenCode with the processed prompt
-  opencode run "${OPENCODE_ARGS[@]}" -m "$MODEL" --variant high "$RALPH_PROMPT"
+  RALPH_RUNTIME_CONTEXT=$(cat <<EOF
+Ralph runtime context:
+- Iteration: $((ITERATION + 1)) of $MAX_ITERATIONS
+- Maximum iterations: $MAX_ITERATIONS
+- Execution mode: $RALPH_MODE
+- Auto approval: $RALPH_AUTO_APPROVAL
+
+Treat these values as authoritative for this invocation. Follow your Ralph
+agent instructions, work on exactly one incomplete story, and let the runner
+enforce the iteration limit and completion checks.
+EOF
+)
+
+  # Select the native primary agent; the runner remains the hard-limit boundary.
+  opencode run --agent ralph "${OPENCODE_ARGS[@]}" -m "$MODEL" --variant high \
+    "$RALPH_RUNTIME_CONTEXT"
 
   ITERATION=$((ITERATION + 1))
 

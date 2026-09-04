@@ -12,7 +12,7 @@ Converts existing PRDs to the prd.json format that Ralph uses for autonomous exe
 ## The Job
 
 Take a PRD (markdown file or text) and convert it to `prd.json` in the Ralph
-working directory where `ralph.md` expects to read it.
+working directory where the `ralph` primary agent expects to read it.
 
 If `prd.json` already exists, preview the replacement and require confirmation
 before overwriting it. If the existing file belongs to a different feature,
