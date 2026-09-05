@@ -188,3 +188,7 @@ fi
 if [[ -r "$HOME/.env" ]]; then
   source "$HOME/.env"
 fi
+
+# >>> railway initialize >>>
+source "$HOME/.railway/env"
+# <<< railway initialize <<<
