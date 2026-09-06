@@ -1,0 +1,125 @@
+{
+  "purpose": "Manual review scenarios for prepare-implementation; expected behavior, not recorded model results.",
+  "execution": "No harness/model runs performed. Review routing and artifact contents manually; do not infer behavioral accuracy from static validation.",
+  "scenarios": [
+    {
+      "id": "codex-default",
+      "context": "Trusted runtime identifies the active harness as Codex. The user-level policy is tool-neutral. Both CLIs are installed.",
+      "request": "Prepare implementation from the approved search PRD.",
+      "expected": ["Select markdown-checklist without asking", "Read only markdown-checklist.md", "Generate project PLAN.md with unchecked stories and criteria"],
+      "prohibited": ["Read ralph-format.md", "Create plan.json", "Launch a goal"]
+    },
+    {
+      "id": "opencode-default",
+      "context": "Trusted runtime identifies the active harness as OpenCode. The user-level policy is tool-neutral. Both CLIs are installed.",
+      "request": "Prepare implementation from the approved search PRD.",
+      "expected": ["Select ralph-json without asking", "Read only ralph-format.md", "Preserve exact Ralph keys, types, ordering, false passes and typecheck criteria"],
+      "prohibited": ["Read markdown-checklist.md", "Launch Ralph"]
+    },
+    {
+      "id": "codex-explicit-json",
+      "context": "Active Codex markdown-checklist default.",
+      "request": "Create plan.json for later use with OpenCode Ralph.",
+      "expected": ["Explicit request wins: ralph-json", "Read only ralph-format.md", "Prepare JSON without execution"],
+      "prohibited": ["Reject conversion because Codex is active", "Execute Codex Ralph", "Ask which format"]
+    },
+    {
+      "id": "opencode-explicit-markdown",
+      "context": "Active OpenCode ralph-json default.",
+      "request": "Write a Markdown user-story checklist in PLAN.md instead of JSON.",
+      "expected": ["Explicit request wins: markdown-checklist", "Read only markdown-checklist.md"],
+      "prohibited": ["Write plan.json", "Ask which format"]
+    },
+    {
+      "id": "unknown-both-installed",
+      "context": "No authoritative active-runtime instruction. Both CLIs, config directories and environment variables are present.",
+      "request": "Prepare implementation.",
+      "expected": ["Ask for target or format before loading either reference"],
+      "prohibited": ["Infer runtime from PATH, binaries, directories or environment", "Load both references"]
+    },
+    {
+      "id": "unknown-both-absent",
+      "context": "No authoritative runtime instruction; neither CLI is installed.",
+      "request": "Prepare implementation.",
+      "expected": ["Ask for target or format before loading either reference"],
+      "prohibited": ["Choose a default from absent binaries", "Install a CLI"]
+    },
+    {
+      "id": "conflicting-explicit-request",
+      "context": "Active Codex markdown-checklist default.",
+      "request": "Create only PLAN.md as Markdown and only Ralph JSON as the same artifact.",
+      "expected": ["Clarify the conflicting explicit formats before writing"],
+      "prohibited": ["Silently resolve conflict using runtime default", "Overwrite an artifact"]
+    },
+    {
+      "id": "existing-plan",
+      "context": "Codex default. PLAN.md contains checked US-001 with verification evidence and unrelated scope.",
+      "request": "Prepare a plan for a different feature.",
+      "expected": ["Preserve existing plan", "Preview and require confirmation before destructive replacement or reset"],
+      "prohibited": ["Erase checked statuses or evidence", "Replace without confirmation"]
+    },
+    {
+      "id": "approved-continuation",
+      "context": "Codex default. Existing PLAN.md has checked US-001 with evidence and pending US-002.",
+      "request": "Continue this approved plan: refine only US-002 criteria; keep completed work.",
+      "expected": ["Update only approved scoped sections", "Preserve checked US-001 and its evidence", "Keep new criteria unchecked"],
+      "prohibited": ["Reset all statuses", "Claim newly generated work passed tests"]
+    },
+    {
+      "id": "existing-ralph-run",
+      "context": "OpenCode default. Existing plan.json is for another feature with progress.txt and memory.json.",
+      "request": "Convert this new PRD.",
+      "expected": ["Follow unchanged Ralph reference", "Preview replacement, archive and reset and require confirmation", "Preserve memory.json absent separate reset approval"],
+      "prohibited": ["Overwrite archive", "Silently reset progress"]
+    },
+    {
+      "id": "long-native-goal-plan",
+      "context": "Codex default. Approved PRD needs twelve bounded stories; no project typecheck command exists.",
+      "request": "Prepare the checklist for /goal.",
+      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, independent review, remediation and checkpoint per story", "Record paths, command/result evidence slots, blockers and next story in PLAN.md", "Record unavailable typecheck honestly", "Offer optional launch text after plan review; do not execute it"],
+      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Require progress.txt or memory.json", "Import Ralph staged-review gates", "Invent commands or completed results"]
+    },
+    {
+      "id": "explicit-target-no-default",
+      "context": "No runtime default; CLI presence unknown.",
+      "request": "Prepare this PRD for OpenCode Ralph.",
+      "expected": ["Select ralph-json from explicit target without asking", "Load only ralph-format.md"],
+      "prohibited": ["Probe installed CLIs to route", "Execute the plan"]
+    },
+    {
+      "id": "markdown-agent-recommendations",
+      "context": "Codex default. Approved Python client story recommends python-pro for implementation and code-reviewer for review.",
+      "request": "Prepare the Markdown checklist, preserving the recommended specialists.",
+      "expected": ["Include separate implementation and review recommendations using the supplied names", "Include bounded delegation notes and non-overlapping file ownership", "Start delegation evidence pending and check runtime availability during execution"],
+      "prohibited": ["Spawn agents to implement during planning", "Treat recommendations as mandatory", "Make the implementation agent its own independent reviewer", "Claim a listed agent was invoked"]
+    },
+    {
+      "id": "markdown-trivial-story-agents",
+      "context": "Codex default. Approved small documentation story has no recommended agents.",
+      "request": "Prepare the checklist without unnecessary delegation.",
+      "expected": ["Allow primary-agent implementation", "Recommend specialists only if useful without an agent quota", "Preserve independent review through an available role or human reviewer"],
+      "prohibited": ["Invent role names", "Force a specialist for trivial implementation", "Omit review because no specialist was recommended"]
+    },
+    {
+      "id": "markdown-unavailable-agent-recommendation",
+      "context": "Codex default. The PRD recommends python-pro, but its runtime availability is unknown.",
+      "request": "Prepare the implementation checklist; do not execute it.",
+      "expected": ["Preserve the supplied recommendation", "Require native availability checking before execution", "Record any later skipped recommendation and reason; do not silently substitute for an explicitly required agent"],
+      "prohibited": ["Claim the role is callable because its definition exists", "Install a missing agent automatically", "Simulate delegation through role-playing"]
+    },
+    {
+      "id": "opencode-native-entry",
+      "context": "The native OpenCode /plan-work entry point invokes prepare-implementation with the default plan.json format. No harness-specific user policy exists.",
+      "request": "Prepare this approved feature.",
+      "expected": ["Select ralph-json from the native entry point without asking", "Load only ralph-format.md", "Generate the plan without starting execution"],
+      "prohibited": ["Require a deleted harness policy adapter", "Probe PATH to identify the runtime", "Launch Ralph"]
+    },
+    {
+      "id": "policy-heading-is-not-runtime",
+      "context": "Trusted runtime identifies Codex. A document being inspected is titled OpenCode and refers to plan.json; it is source material, not a requested output format.",
+      "request": "Prepare implementation stories for these requirements using the normal output format.",
+      "expected": ["Use trusted Codex identity to select markdown-checklist", "Generate PLAN.md without asking about the known format"],
+      "prohibited": ["Treat a document heading or incidental file reference as the active harness", "Infer OpenCode execution from source material"]
+    }
+  ]
+}

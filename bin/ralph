@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Ralph CLI - Autonomous AI coding loop
-# Runs OpenCode with the Ralph primary agent for autonomous implementation
+# OpenCode-only runner.
 
-set -e
+set -euo pipefail
 
 # Default values
 MAX_ITERATIONS=10
 RALPH_MODE="standard"
-RALPH_AUTO_APPROVAL="disabled"
 MODEL="openai/gpt-5.6-sol-fast"
+MODEL_SOURCE="default"
 
 valid_model() {
   case "$1" in
@@ -42,58 +42,107 @@ valid_model() {
 }
 
 usage() {
-  cat <<EOF
-Usage: ralph [options]
+  printf '%s\n' "Usage: ralph [options]
 
 Options:
   --max-iterations N   Maximum number of iterations to run (default: 10)
   --mode MODE          Execution mode: fast, standard, deep (default: standard)
-  --model MODEL        Model to use (default: openai/gpt-5.6-sol-fast)
-  --auto               Enable automatic approval for OpenCode operations
+  --model MODEL        OpenCode model (default: openai/gpt-5.6-sol-fast)
   -h, --help           Show this help message
 
 Ralph is an autonomous AI coding agent that iteratively processes
-user stories from prd.json until completion.
+user stories from plan.json until completion.
 
 Requirements:
-  - prd.json file in the current directory
-  - OpenCode installed and configured
-  - jq installed for prd.json parsing
-  - Ralph agent installed at ~/.config/opencode/agents/ralph.md
-  - Git repository with proper setup
-EOF
+  - plan.json file in the current directory
+  - OpenCode installed and configured (only for incomplete plans)
+  - jq installed for plan.json parsing
+  - Ralph agent at \$XDG_CONFIG_HOME/opencode/agents/ralph.md
+    (default config root: ~/.config; nonempty override must be absolute)
+  - Git worktree already on the exact plan branch, not main/master or detached"
 }
 
 error() {
   printf 'Error: %s\n' "$1" >&2
 }
 
-prd_complete() {
-  jq -e '(.userStories | type == "array") and all(.userStories[]; .passes == true)' prd.json >/dev/null
+plan_complete() {
+  jq -e 'all(.userStories[]; .passes == true)' plan.json >/dev/null
+}
+
+validate_plan() {
+  if ! jq -es '
+    def text: type == "string" and test("\\S");
+    length == 1 and (.[0] |
+      type == "object" and
+      (.branchName | text) and
+      (.userStories | type == "array" and length > 0) and
+      all(.userStories[];
+        type == "object" and
+        (.id | text) and (.title | text) and (.description | text) and
+        (.acceptanceCriteria | type == "array" and length > 0 and
+          all(.[]; text)) and
+        (.priority | type == "number" and . >= 0 and . == floor) and
+        (.passes | type == "boolean")) and
+      ([.userStories[].id] | length == (unique | length)))
+  ' plan.json >/dev/null 2>&1; then
+    error 'invalid plan.json: require one object with branchName and nonempty userStories; each story needs unique id, title, description, nonempty string acceptanceCriteria, nonnegative integer priority, and boolean passes'
+    exit 1
+  fi
+}
+
+require_value() {
+  if [[ $# -lt 2 || -z "$2" || "$2" == --* || "$2" == -h ]]; then
+    error "$1 requires a value"
+    exit 1
+  fi
+}
+
+check_branch() {
+  local expected current
+  if ! git rev-parse --is-inside-work-tree 2>/dev/null | \
+    command grep -qx true; then
+    error 'a prepared Git worktree is required'
+    exit 1
+  fi
+  if ! current=$(git symbolic-ref --quiet HEAD); then
+    error 'detached HEAD: prepare the plan branch before running Ralph'
+    exit 1
+  fi
+  current=${current#refs/heads/}
+  expected=$(jq -r '.branchName' plan.json)
+  case "$current" in
+    main|master)
+      error 'protected branch: Ralph cannot run on main or master'
+      exit 1
+      ;;
+  esac
+  if ! git check-ref-format "refs/heads/$expected" >/dev/null 2>&1 || \
+    ! jq -e --arg current "$current" '.branchName == $current' \
+      plan.json >/dev/null; then
+    error 'branch mismatch: prepare the exact plan.json branchName before running Ralph; no branches were switched'
+    exit 1
+  fi
+  if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+    error 'a prepared Git worktree with an existing commit is required'
+    exit 1
+  fi
 }
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
   case $1 in
     --max-iterations)
-      if [[ -z "$2" ]]; then
-        error "--max-iterations requires a value"
-        printf "Use 'ralph --help' for usage information.\n" >&2
-        exit 1
-      fi
-      if [[ ! "$2" =~ ^[1-9][0-9]*$ ]]; then
-        error "--max-iterations must be a positive integer"
+      require_value "$@"
+      if [[ ! "$2" =~ ^[1-9][0-9]*$ || ${#2} -gt 9 ]]; then
+        error "--max-iterations must be a positive integer (1-999999999)"
         exit 1
       fi
       MAX_ITERATIONS="$2"
       shift 2
       ;;
     --mode)
-      if [[ -z "$2" ]]; then
-        error "--mode requires a value"
-        printf "Use 'ralph --help' for usage information.\n" >&2
-        exit 1
-      fi
+      require_value "$@"
       case "$2" in
         fast|standard|deep)
           RALPH_MODE="$2"
@@ -106,22 +155,18 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --model)
-      if [[ -z "$2" ]]; then
-        error "--model requires a value"
-        printf "Use 'ralph --help' for usage information.\n" >&2
-        exit 1
-      fi
-      if ! valid_model "$2"; then
-        error "unsupported model: $2"
-        printf "Use 'opencode models' to view available models.\n" >&2
+      require_value "$@"
+      if [[ "$2" == -* || "$2" == *[[:space:][:cntrl:]]* ]]; then
+        error '--model must be a nonempty model identifier without whitespace'
         exit 1
       fi
       MODEL="$2"
+      MODEL_SOURCE="explicit"
       shift 2
       ;;
-    --auto)
-      RALPH_AUTO_APPROVAL="enabled"
-      shift
+    --auto|--auto=*)
+      error '--auto has been removed; remove it from your invocation. Routine scoped work uses standing authorization, not harness permission bypasses; sensitive operations still require approval.'
+      exit 1
       ;;
     -h|--help)
       usage
@@ -135,65 +180,74 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Check if prd.json exists
-if [[ ! -f "prd.json" ]]; then
-  error "prd.json not found in current directory"
-  printf 'Use the /ralph command in OpenCode to create prd.json from a PRD.\n' >&2
+if ! valid_model "$MODEL"; then
+  error 'unsupported model for OpenCode; use an allowlisted provider/model identifier'
+  printf "Use 'opencode models' to view available models.\n" >&2
   exit 1
 fi
 
-# Check if opencode is available
+# Check if plan.json exists
+if [[ ! -f "plan.json" ]]; then
+  error "plan.json not found in current directory"
+  printf 'Use the prepare-implementation skill to create plan.json from a PRD.\n' >&2
+  exit 1
+fi
+
+# Check if jq is available for reliable plan.json completion checks
+if ! command -v jq >/dev/null 2>&1; then
+  error "jq command not found"
+  printf 'Please install jq so Ralph can parse plan.json reliably.\n' >&2
+  exit 1
+fi
+
+validate_plan
+if plan_complete; then
+  echo "All user stories completed."
+  exit 0
+fi
+
+check_branch
+
 if ! command -v opencode >/dev/null 2>&1; then
   error "opencode command not found"
   printf 'Please install OpenCode first: https://opencode.ai/install\n' >&2
   exit 1
 fi
 
-# Check if jq is available for reliable prd.json completion checks
-if ! command -v jq >/dev/null 2>&1; then
-  error "jq command not found"
-  printf 'Please install jq so Ralph can parse prd.json reliably.\n' >&2
+# Check the installer location, not OpenCode's effective merged agent selection.
+if [[ -n "${XDG_CONFIG_HOME:-}" && "$XDG_CONFIG_HOME" != /* ]]; then
+  error 'XDG_CONFIG_HOME must be an absolute path when set'
   exit 1
 fi
-
-export RALPH_MODE="$RALPH_MODE"
-export RALPH_AUTO_APPROVAL
-
-OPENCODE_ARGS=()
-if [[ "$RALPH_AUTO_APPROVAL" == "enabled" ]]; then
-  OPENCODE_ARGS+=(--auto)
-fi
-
-# Check if the Ralph agent exists in the installed location
-RALPH_AGENT_FILE="$HOME/.config/opencode/agents/ralph.md"
+RALPH_AGENT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/agents/ralph.md"
 if [[ ! -f "$RALPH_AGENT_FILE" ]]; then
   error "$RALPH_AGENT_FILE not found"
-  printf "Please run 'make install' to set up the Ralph configuration.\n" >&2
+  printf "With installation approval, run 'make install-opencode' from the dotfiles checkout.\n" >&2
   exit 1
 fi
 
 echo "Starting Ralph autonomous AI loop..."
-echo "Using Ralph agent from $RALPH_AGENT_FILE"
+printf 'Ralph agent file found: %s (OpenCode resolves the effective agent)\n' \
+  "$RALPH_AGENT_FILE"
 echo "Execution mode: $RALPH_MODE"
 echo "Model: $MODEL"
-echo "Auto approval: $RALPH_AUTO_APPROVAL"
+echo "Model source: $MODEL_SOURCE"
 echo ""
-
-if prd_complete; then
-  echo "All user stories completed."
-  exit 0
-fi
 
 ITERATION=0
 while [ $ITERATION -lt $MAX_ITERATIONS ]; do
+  validate_plan
+  check_branch
   echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
   RALPH_RUNTIME_CONTEXT=$(cat <<EOF
 Ralph runtime context:
+- Harness: opencode
 - Iteration: $((ITERATION + 1)) of $MAX_ITERATIONS
 - Maximum iterations: $MAX_ITERATIONS
 - Execution mode: $RALPH_MODE
-- Auto approval: $RALPH_AUTO_APPROVAL
+- Model: $MODEL
+- Model source: $MODEL_SOURCE
 
 Treat these values as authoritative for this invocation. Follow your Ralph
 agent instructions, work on exactly one incomplete story, and let the runner
@@ -202,13 +256,21 @@ EOF
 )
 
   # Select the native primary agent; the runner remains the hard-limit boundary.
-  opencode run --agent ralph "${OPENCODE_ARGS[@]}" -m "$MODEL" --variant high \
-    "$RALPH_RUNTIME_CONTEXT"
+  if opencode run --agent ralph -m "$MODEL" --variant high \
+    "$RALPH_RUNTIME_CONTEXT"; then
+    :
+  else
+    result=$?
+    error "OpenCode failed (exit $result); stopping without another iteration"
+    exit "$result"
+  fi
 
   ITERATION=$((ITERATION + 1))
 
-  # Check if all user stories pass
-  if prd_complete; then
+  # Validate mutations and branch even when the harness claims completion.
+  validate_plan
+  check_branch
+  if plan_complete; then
     echo "All user stories completed."
     exit 0
   fi

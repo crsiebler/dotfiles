@@ -2,39 +2,72 @@
 
 A collection of configuration files for storing user preferences and preserving the state of a utility. Support for Zsh only.
 
-## Requirements
+## Setup and documentation
 
-- Python 3.8+ (required by `make install` to synchronize `~/.env` with
-  missing keys from `env/.env.example`)
+- [AI configuration, connections, and validation](docs/ai-configuration.md)
+- [Manual removal of old AI files](docs/remove-old-ai-files.md)
+- [Native agent authoring and rendering](docs/agent-authoring.md)
+- [Repository contributor instructions](AGENTS.md)
 
-## Setting Up
+### Requirements
 
-1. Copy the provided `env/.env.example` from this repository to your `$HOME` directory as `.env`, and fill in your own values:
+- Shell setup: Zsh, Oh My Zsh, standard Unix tools, and `python3` for environment synchronization.
+- AI installer: Python 3.11+ (`PYTHON` defaults to `python3.11`).
+- Codex installation: Codex CLI **0.153.4**.
+- OpenCode skill installation: the `skills` CLI already on `PATH`, plus OpenCode to use the result.
+- Source validation and agent rendering: Python 3.11+. Ralph requires `jq` and Git;
+  its review regression test also uses Ruby to validate native reviewer YAML.
 
-   cp env/.env.example $HOME/.env
-   # then edit $HOME/.env to add your secrets
+The installer does not download missing tools. If `skills` is missing, arrange
+an explicitly approved installation; there is no silent `npx` fallback.
 
-2. The OpenCode user configuration, bundled skills, and commands should be copied into `$HOME/.config/opencode/`:
+### Choose an installation scope
 
-   ```bash
-   mkdir -p $HOME/.config/opencode/
-   cp ai/opencode/opencode.json $HOME/.config/opencode/opencode.json
-   cp ai/opencode/tui.json $HOME/.config/opencode/tui.json
-   mkdir -p $HOME/.config/opencode/skills/
-   cp -R ai/opencode/skills/. $HOME/.config/opencode/skills/
-   mkdir -p $HOME/.config/opencode/agents/
-   cp -R ai/opencode/agents/. $HOME/.config/opencode/agents/
-   mkdir -p $HOME/.config/opencode/commands/
-   cp -R ai/opencode/commands/. $HOME/.config/opencode/commands/
-   ```
+Run validation from this checkout without credentials. Before choosing one of the
+installation targets, review the [installation guide](docs/ai-configuration.md#installation-and-merge-behavior),
+authorize installation, and securely export the required `GITHUB_MCP_TOKEN`:
 
-3. Run `make install` to copy all supported dotfiles to your home directory as usual.
+```sh
+make validate-ai       # Local source validation only; no harness or MCP starts
+make install-codex     # Codex configuration, local plugins, native roles
+make install-opencode  # OpenCode configuration, copied skills, agents, commands
+make install-ai        # Both AI harnesses; no shell/env/git setup or binaries
+```
 
-4. **After installation:**
-   - Open a new terminal, or manually run `source ~/.zshrc` to apply all settings and load environment variables from `$HOME/.env`.
-   - Any changes to `$HOME/.env` require you to re-source it (`source ~/.env`) or start a new shell.
+The four checkout-local `craft` plugins are `coding`, `reporting`, `researching`,
+and `delegating`. The `researching` plugin provides provider-agnostic `search-web`
+with conditional Exa MCP guidance.
+The single harness-agnostic personal policy, [`ai/AGENTS.md`](ai/AGENTS.md), is
+copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
+[`AGENTS.md`](AGENTS.md) remains separate, repository-only guidance.
+GitHub, Exa, and Context7 are globally enabled; Jira/Rovo and PostgreSQL remain off.
+AWS and Elastic MCP definitions are intentionally absent from both source configs.
+See the guide for credentials, project opt-in, profiles, and merge behavior.
 
-`make install` will back up any existing files before overwriting them. Your secrets in `.env` will never be committed, and your configuration files (`.zshrc`, `.env`, `opencode.json`, OpenCode skills, agents, and commands) are backed up with timestamp-based names prior to overwrite.
+For the broader shell setup, `make install` copies shell/alias files, creates or
+synchronizes `$HOME/.env`, sets the global Git excludes file, calls
+`install-opencode`, and installs Ralph with `sudo`. It does **not** install Codex
+or a global `subagents`. It can change shell/env/git files before AI preflight
+fails, so resolve prerequisites first. Not every overwritten shell
+file or binary is backed up.
+
+For a new environment, copy `env/.env.example` to `$HOME/.env` only if that file
+does not already exist, then fill in values privately. For existing environments,
+merge missing keys without overwriting secrets. Load the exports in the shell
+launching the installer and harness; AI-only targets do not source or sync `.env`.
+After shell installation, open a new terminal or run `source ~/.zshrc`.
+After AI installation, restart the harness and start a new Codex thread.
+
+## Related Project
+
+[mcp-suite](https://github.com/crsiebler/mcp-suite) supplies the custom local Node
+PostgreSQL MCP server referenced by both harness configurations at
+`$HOME/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js`.
+It is disabled by default and requires trusted project opt-in plus a privately
+exported `POSTGRESQL_CONNECTION_STRING`. Follow the upstream setup documentation
+to prepare Node and the built server; the dotfiles installer does not clone,
+build, or install `mcp-suite`. See the [connection guide](docs/ai-configuration.md#trusted-project-opt-in)
+for transport details and server-validation responsibilities.
 
 ## OpenCode PR Review Command
 
@@ -42,17 +75,17 @@ This repository includes a manual `/review-pr` OpenCode command that reviews Git
 
 ### Setup
 
-After running `make install`, the PR review assets are installed automatically:
+After running `make install-opencode` (also included in `make install`):
 
 - `/review-pr` command: `~/.config/opencode/commands/review-pr.md`
-- GitHub PR review standards are self-contained in the command file.
 
 ### Requirements
 
 - OpenCode configured with a working provider/model
-- GitHub CLI (`gh`) authenticated via `gh auth login`; verify keyring
-  authentication with `gh auth status`. No GitHub token environment variable
-  is required.
+- GitHub CLI (`gh`) authenticated separately; inspect installed help for the
+  login flow and verify with `gh auth status`. The command's `gh` path does not
+  require a token environment variable, but the globally enabled GitHub MCP
+  separately requires `GITHUB_MCP_TOKEN` during AI installation and at runtime.
 - A git branch with an associated GitHub pull request, or an explicit PR selector
 
 ### Usage
@@ -73,19 +106,21 @@ After running `make install`, the PR review assets are installed automatically:
 
 By default, `/review-pr` generates a local review report only. When `--post` is provided, it previews the PR URL, review event, consolidated body, inline comment count, and exact `gh` command or API payload, then requires explicit confirmation before posting anything to GitHub.
 
-## Godot Sprite Generation
+## Sprite Generation
 
-This repository includes a `/godot-sprite` OpenCode command for generating
+This repository includes a `/create-sprite` OpenCode command for generating
 pixel-art sprite sheets through a ChatGPT subscription and integrating approved
-assets into Godot 4 projects.
+assets into projects when requested, including Godot 4. Asset-only work needs
+neither a Godot project nor binary; Godot guidance is loaded only for Godot
+requests or relevant project context.
 
 The workflow installs:
 
 - `opencode-gpt-imagegen@0.1.9`, an unofficial OpenCode plugin that exposes the
   `gpt_imagegen` tool through the existing ChatGPT OAuth session
-- `godot-sprite-artist`, the specialized generation and integration agent
-- `godot-sprite-forge`, the reusable asset planning and prompt skill
-- `/godot-sprite`, the command entry point
+- `sprite-artist`, the specialized generation and integration agent
+- `create-sprites`, the reusable asset planning and prompt skill
+- `/create-sprite`, the command entry point
 
 ### Requirements
 
@@ -98,17 +133,17 @@ No `OPENAI_API_KEY` is required for the plugin's subscription-backed generation
 path. Image calls consume ChatGPT subscription capacity. The plugin is unofficial
 and reads OpenCode's OAuth data from its standard authentication store.
 
-After running `make install`, quit and restart OpenCode so it installs and loads
+After running `make install-opencode`, quit and restart OpenCode so it installs and loads
 the configured plugin and prompt assets.
 
 ### Usage
 
 ```text
-/godot-sprite create a four-direction forest ranger with idle and walk animations
+/create-sprite create a four-direction forest ranger with idle and walk animations
 
-/godot-sprite create a side-view lightning knight with idle, run, attack, hurt, and death animations
+/create-sprite create a side-view lightning knight with idle, run, attack, hurt, and death animations
 
-/godot-sprite --plan-only create a six-frame fire elemental boss idle
+/create-sprite --plan-only create a six-frame fire elemental boss idle
 ```
 
 The agent previews its asset contract and planned image calls before invoking
@@ -118,159 +153,115 @@ without generating images or changing project files.
 
 ## Ralph Autonomous AI Loop
 
-This dotfiles repository includes configuration for Ralph, an autonomous AI coding agent that can iteratively implement features from Product Requirements Documents (PRDs).
+Ralph's implementation loop runs through **OpenCode only**.
 
-### Features
+1. Use `write-requirements` (OpenCode `/define-requirements`) to create a PRD.
+2. Use `prepare-implementation` (OpenCode `/plan-work`) to create `plan.json`.
+3. Prepare a Git worktree with an existing commit on exactly the PRD's
+   `branchName`, not detached HEAD, `main`, or `master`. Ralph does not switch branches.
+4. With OpenCode configured and `jq` available, run:
 
-- **PRD Generation**: Use the PRD skill in OpenCode to create detailed requirements documents
-- **PRD Conversion**: Use the Ralph skill in OpenCode to convert PRDs to JSON format for autonomous execution
-- **Autonomous Implementation**: Run `ralph --max-iterations 10` to automatically implement user stories
-- **Scoped Auto Approval**: Add `--auto` to pre-authorize required project-local development operations in every iteration
-- **Execution Modes**: Use `ralph --mode fast|standard|deep` to control Ralph's agent budget and review depth
-- **Model Selection**: Use `ralph --model provider/model` to select an available OpenCode model
-- **Recommended Agents**: Story `notes` can list optional `@agent-name` recommendations that Ralph may invoke before implementation based on story risk and mode
-- **Quality Assurance**: Each iteration includes type checking, linting, and testing
-- **Mode-Aware Review Gate**: Each staged story gets self-review or one bounded `ralph-reviewer` pass based on mode and risk before commit
-- **Bounded Read-Only Review**: The Ralph reviewer receives compact story context and uses at most two read-only inspection turns before its final holistic review; all mutation, browser, web, MCP, external-directory, and delegation tools remain denied
-- **Iterative Feedback**: One targeted re-review can resume the initial reviewer session after Ralph fixes blocking findings
-- **Bounded Review Memory**: Validated review patterns and false-positive suppressions are stored project-locally in `memory.json`
-- **Self-Contained Review Standards**: Ralph includes local staged-change review standards directly in its agent so target-project agents do not need access to `~/.config/opencode/`
-- **Progress Tracking**: Automatic commits and progress logging
+   ```sh
+   ralph --mode standard --max-iterations 10
+   ```
 
-### Setup
+`make install` installs the executable; AI-only targets do not. The checkout
+entry point is `bin/ralph`. `--auto` is unsupported and rejected. Standing
+authorization covers routine scoped implementation, necessary project
+dependencies, and relevant tests, not permission bypasses. Docker lifecycle,
+migrations (including local/test), global changes, service operations, and other
+sensitive actions still need separate approval.
 
-After running `make install`, Ralph configuration is automatically set up:
+Modes are `fast` (minimal review for low-risk work), `standard` (risk-based), and
+`deep` (bounded reviewer for every story). Optional story notes recommend agents,
+not mandatory delegation. OpenCode defaults to `openai/gpt-5.6-sol-fast`;
+`--model` must match the allowlist in `bin/ralph` and an available provider model.
+The interactive Astra profile does not expand Ralph's model allowlist.
 
-- OpenCode skills are installed to `~/.config/opencode/skills/`
-- `ai/opencode/opencode.json` is installed to `~/.config/opencode/opencode.json`
-- `ai/opencode/tui.json` is installed to `~/.config/opencode/tui.json`
-- `ai/opencode/skills/*/SKILL.md` files are installed under `~/.config/opencode/skills/`
-- `ralph-reviewer` is installed to `~/.config/opencode/agents/ralph-reviewer.md`
-- The Ralph primary agent is installed to `~/.config/opencode/agents/ralph.md` (customizable)
-- The `ralph` CLI tool is installed to `/usr/local/bin/ralph`
+The review gate uses self-review where allowed or the dedicated three-step,
+project-local `ralph-reviewer`, with at most one same-session follow-up after
+substantive fixes. It never substitutes a general-purpose reviewer. Checks include
+relevant typecheck, lint, tests, and `verify-interface` for UI changes.
 
-### Usage
+`progress.txt` is the append-only handoff and review history. Optional
+`memory.json` retains at most 20 validated patterns and 20 false-positive
+suppressions; its initial absence is normal. Only durable rules belong in the
+nearest `AGENTS.md`. `plan.json` tracks story completion.
 
-1. **Create a PRD**: In any project directory, open OpenCode and use the PRD skill to generate requirements
-2. **Convert to JSON**: Use the Ralph skill to create `prd.json` from your PRD
-3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` to start implementation with scoped project-local approval
-4. **Select a Model (optional)**: Add `--model openai/gpt-5.4` or another supported model
-5. **Monitor Progress**: Check `progress.txt` for detailed logs, `memory.json` for bounded validated review knowledge, and `prd.json` for completion status
+## Codex Story Checklists
 
-For a single direct OpenCode invocation, select the same primary agent with
-`opencode run --agent ralph "your task"`. The `/ralph` command is separate and
-converts PRDs to `prd.json`; it does not run the autonomous implementation loop.
+Invoke `prepare-implementation` in Codex to turn approved requirements into
+`PLAN.md`: ordered user stories, unchecked acceptance criteria, verification,
+independent review, and evidence checkpoints. The same skill defaults to Ralph's
+`plan.json` in OpenCode. Explicit format requests take precedence; no format question
+is needed when trusted runtime context or the invoking native entry point identifies
+the active harness. OpenCode's `ai/opencode/commands/plan-work.md` supplies the JSON
+default. If routing is unavailable or ambiguous, the skill asks rather than
+inferring the harness from `PATH`, installed tools, folders, or environment variables.
 
-Supported Ralph models:
+Planning does not start execution. After reviewing the plan, you can use native
+`/goal` to continue through its stories in the same thread. See
+[Codex goals](docs/codex-goals.md) for the handoff and authorization boundaries.
+Automatic story-boundary compaction is [backlogged](docs/backlog.md); no custom
+hook runs during normal development.
 
-- `opencode/big-pickle`
-- `opencode/ling-3.0-flash-fin-free`
-- `opencode/mimo-v2.5-free`
-- `opencode/muse-spark-1.2-contributor-free`
-- `opencode/nemotron-3-ultra-free`
-- `opencode/nemotron-3.5-lightning-free`
-- `mlx/mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit`
-- `openai/gpt-5.3-codex-spark`
-- `openai/gpt-5.4`
-- `openai/gpt-5.4-fast`
-- `openai/gpt-5.4-mini`
-- `openai/gpt-5.4-mini-fast`
-- `openai/gpt-5.5`
-- `openai/gpt-5.5-fast`
-- `openai/gpt-5.6-luna`
-- `openai/gpt-5.6-luna-fast`
-- `openai/gpt-5.6-sol`
-- `openai/gpt-5.6-sol-fast`
-- `openai/gpt-5.6-terra`
-- `openai/gpt-5.6-terra-fast`
+## Native agents and discovery
 
-Ralph modes:
+The canonical custom agents are **127 native TOML files** in `ai/codex/agents/`.
+Codex receives all 127 sources byte-for-byte. OpenCode receives 127 generated
+Markdown agents plus three unchanged native sources from `ai/opencode/agents/`:
+`sprite-artist`, `ralph`, and `ralph-reviewer`, for **130 installed agents**.
+Those three native Markdown roles are OpenCode-only.
 
-- `fast`: minimizes implementation agents and specialist reviews; best for low-risk stories
-- `standard`: default risk-based agent and review budget
-- `deep`: broader specialist help for complex or high-risk stories
+PowerShell scripting, modules, and profiles use `powershell-expert`; GUI/TUI work
+uses `powershell-ui-architect`, and dedicated read-only control assessment uses
+`powershell-security-hardening`. After an authorized installation, verify the
+replacement, preserve customized old copies, then approve each exact retired path
+before manual removal in either harness. Follow the
+[PowerShell cleanup steps](docs/remove-old-ai-files.md#consolidated-powershell-agents);
+the installer performs no automatic deletion or alias migration.
+Seven inspection roles, including `powershell-security-hardening`, use native
+`sandbox_mode = "read-only"` and read-only role guidance.
+Codex permits runtime-authorized read-only shell inspection; OpenCode
+renders a more restrictive deny-by-default `read`/`glob`/`grep` allowlist. These
+are not equivalent sandbox or MCP guarantees: Codex parent runtime overrides
+apply, and MCP approvals are independent. See [agent authoring](docs/agent-authoring.md)
+for role boundaries and renderer semantics.
 
-Ralph keeps review data in three layers. `progress.txt` is the append-only audit
-trail of findings and dispositions. `memory.json` retains at most 20
-validated patterns and 20 false-positive suppressions for later iterations.
-Its absence before the first passing review is normal; Ralph uses empty memory
-in process and creates the file only after review succeeds.
-Durable repository conventions may be promoted to the nearest `AGENTS.md`, but
-temporary findings, counters, and story-specific review details must remain out
-of agent instruction files.
+Use native delegation to invoke agents; reading a definition is not delegation.
+OpenCode `/find-agents` loads `use-subagents` for discovery; the skill bundles
+the unchanged `subagents` helper. `/ship` prepares a PR with preview and explicit
+approval; it does not push implicitly. `/review-pr` remains the review command.
+From this checkout:
 
-`ralph --auto` passes OpenCode's `--auto` option to every fresh iteration and
-pre-authorizes operations required by the active story, including dependency
-installation, project configuration, local development containers, local/test
-migrations, quality checks, browser verification, and the story commit. Explicit
-OpenCode denials still apply. The option does not authorize production access,
-secrets, changes outside the worktree, destructive database or Docker volume
-operations, history rewriting, protected-branch pushes, disabled safeguards, or
-out-of-scope work under Ralph's instructions. Ralph records whether auto approval
-was enabled in each `progress.txt` entry.
-
-### Requirements
-
-- OpenCode must be installed and configured with API keys
-- `jq` must be installed for reliable `prd.json` completion checks
-- Projects must be git repositories
-- The default `openai/gpt-5.6-sol-fast` model, or another supported model, should be available
-
-## Subagents CLI Tool
-
-This dotfiles repository includes a CLI tool for managing OpenCode subagents, providing access to 130+ specialized agents organized by category.
-
-### Features
-
-- **List**: View all configured subagents organized by category (Backend, Frontend, DevOps, Security, etc.)
-- **Search**: Find subagents by keyword in names, descriptions, and tools
-- **Fetch**: Retrieve complete agent definitions with capabilities and tool descriptions
-- **Global Access**: Works from any directory - no path context issues
-- **Pure Bash**: No Python dependency required for operation
-
-### Available Agent Categories
-
-- **Backend Development**: API design, database architecture, performance optimization
-- **Frontend Development**: React, Vue, Angular, UI/UX implementation
-- **DevOps & Infrastructure**: CI/CD, containerization, cloud deployment
-- **Security**: Security auditing, vulnerability assessment, compliance
-- **Data & Analytics**: Data engineering, machine learning, business intelligence
-- **Mobile Development**: iOS, Android, cross-platform development
-- And 6+ additional specialized categories
-
-### Setup
-
-After running `make install`, the subagents CLI is automatically installed to `/usr/local/bin/subagents` and can access agent files from `~/.config/opencode/agents/`.
-
-### Usage
-
-```bash
-# List all agents by category
-subagents list
-
-# Search for specific agents
-subagents search security
-subagents search react
-subagents search database
-
-# Fetch complete agent definition
-subagents fetch frontend-developer
-subagents fetch cli-developer
-
-# Get help
-subagents help
+```sh
+helper=ai/plugins/delegating/skills/use-subagents/scripts/subagents
+sh "$helper" --harness opencode list
+sh "$helper" --harness opencode search security
+sh "$helper" --harness opencode fetch cli-developer
+sh "$helper" help
 ```
 
-### Integration with OpenCode
+## Removing backup files
 
-The subagents CLI integrates with the OpenCode subagents skill. When you use that skill to list, search, or fetch agents in OpenCode, it internally calls the global `subagents` command to access agent definitions regardless of your current working directory.
-
-## Removing Backup Files (Cleanup)
-
-If you wish to remove the backup files created by `make install` (such as `.zshrc.backup.*`, `.env.backup.*`, `opencode.json.backup.*`, `skills.backup.*`, `agents.backup.*`, `commands.backup.*`, `ralph.backup.*`, and `subagents.backup.*`), run the following command:
-
-    make clean
-
-This will delete all backup versions of `.zshrc`, `.env`, `opencode.json`, OpenCode skills, agents, commands, `ralph`, and `subagents`. Use this if you want to clean up your home or configuration folders after verifying your new setup is working as expected.
-
----
+1. Verify the installed configuration and retain backups needed for rollback.
+2. Review adjacent `.backup.<timestamp>` files and changed OpenCode skill assets
+   under `.install-ai-backups/<timestamp>/skills/` in the configuration root.
+   The broad installer backs up `.zshrc`. Existing `.env` files are synchronized
+   by appending missing keys/exports without creating backups.
+3. After reviewing all matching `.zshrc` backups, run `make clean` to remove
+   only `$HOME/.zshrc.backup.*`. It preserves active files, existing `.env`
+   backups, and all AI configuration/backups.
+4. For AI files and backups, follow the [manual removal guide](docs/remove-old-ai-files.md).
+   Approve and remove only reviewed paths; never delete a whole configuration root.
+5. Separately review the obsolete installed command and sprite-agent paths listed
+   in that guide. Renames install no compatibility aliases or automatic cleanup;
+   preserve the Ralph executable, native Ralph agents, and project artifacts.
+6. Review retained installed AWS/Elastic MCP entries and old PostgreSQL Docker
+   fields separately. Back up customizations and approve exact config edits before
+   removal; preserve approval rules, active `POSTGRESQL_CONNECTION_STRING`, and
+    exports still used elsewhere. Source removal does not delete installed entries.
+7. For `use-exa` renamed to `search-web`, verify the replacement after authorized
+   installation or Codex native plugin refresh, preserve customized old copies,
+   and approve exact paths before manual cleanup. Restart the harness and start
+   a new Codex thread; follow the [rename steps](docs/remove-old-ai-files.md#renamed-web-research-skill).

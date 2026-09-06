@@ -69,6 +69,10 @@ grep -q 'do not block immediately' "$AGENT_FILE" ||
 
 grep -q '`ralph-reviewer`' "$RALPH_FILE" ||
   fail "Ralph does not invoke the consolidated reviewer"
+grep -q 'Read `branchName` from `plan.json`' "$RALPH_FILE" ||
+  fail "Ralph does not read the execution plan branch"
+grep -q 'story to `passes: true` in `plan.json`' "$RALPH_FILE" ||
+  fail "Ralph does not update execution plan completion"
 grep -q '`memory.json`' "$RALPH_FILE" ||
   fail "Ralph does not define bounded review memory"
 grep -q 'accepted_fixed' "$RALPH_FILE" ||
@@ -81,6 +85,16 @@ grep -q 'Aggregate patch truncation is not itself a blocker' "$RALPH_FILE" ||
   fail "Ralph still treats aggregate diff truncation as an immediate blocker"
 grep -q 'Do not call Read when `memory.json` is absent' "$RALPH_FILE" ||
   fail "Ralph may still produce a missing memory file tool error"
+
+grep -q '^## Standing Authorization' "$RALPH_FILE" ||
+  fail 'Ralph is missing scoped standing authorization'
+if grep -Ei 'auto.approval|ralph --auto|dev-browser' "$RALPH_FILE"; then
+  fail 'Ralph still uses removed approval state or old browser skill'
+fi
+grep -q '`verify-interface`' "$RALPH_FILE" ||
+  fail 'Ralph must use renamed browser verification skill'
+grep -q 'Docker.*migrations.*explicit approval' "$RALPH_FILE" ||
+  fail 'Docker and migrations must not receive standing authorization'
 
 if grep -A220 '^## Mode-Aware Review Stabilization Loop' "$RALPH_FILE" |
   grep -Eq '`(code-reviewer|qa-expert|ui-designer|ux-researcher|security-engineer)`'; then

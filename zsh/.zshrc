@@ -89,8 +89,6 @@ plugins=(
     git
     gh
     opencode
-    hasura
-    heroku
     kubectl
     nvm
     python
@@ -184,11 +182,11 @@ fi
 # BasicTex
 [[ -d /Library/TeX/texbin ]] && path=(/Library/TeX/texbin $path)
 
+# >>> railway initialize >>>
+source "$HOME/.railway/env"
+# <<< railway initialize <<<
+
 # Load personal environment variables for opencode and other secrets
 if [[ -r "$HOME/.env" ]]; then
   source "$HOME/.env"
 fi
-
-# >>> railway initialize >>>
-source "$HOME/.railway/env"
-# <<< railway initialize <<<

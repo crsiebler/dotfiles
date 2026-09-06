@@ -1,13 +1,26 @@
 FILES = aliases/.aliases aliases/.docker_aliases aliases/.git_aliases aliases/.node_aliases aliases/.symfony_aliases zsh/.zshenv zsh/.zshrc
+PYTHON ?= python3.11
+.DEFAULT_GOAL := install
 
+.PHONY: install install-ai install-codex install-opencode validate-ai clean sync-env
+
+install-ai:
+	@$(PYTHON) scripts/install-ai.py all
+
+install-codex:
+	@$(PYTHON) scripts/install-ai.py codex
+
+install-opencode:
+	@$(PYTHON) scripts/install-ai.py opencode
+
+validate-ai:
+	@$(PYTHON) scripts/install-ai.py validate
+
+# Full setup includes shell/env/git changes and sudo Ralph.
+# AI-only targets above never install binaries or require sudo.
 install:
 	@if [ -f ~/.zshrc ]; then cp ~/.zshrc ~/.zshrc.backup.$$(date +%Y%m%d_%H%M%S); fi
 	for file in $(FILES); do cp -f $$file ~/; done
-	@mkdir -p $$HOME/.config/opencode/skills $$HOME/.config/opencode/agents $$HOME/.config/opencode/commands
-	@if [ -f $$HOME/.env ]; then \
-	  cp -f $$HOME/.env $$HOME/.env.backup.$$(date +%Y%m%d_%H%M%S); \
-	  echo "Backed up existing .env to .env.backup.*"; \
-	fi
 	@if [ ! -f $$HOME/.env ]; then \
 	  cp env/.env.example $$HOME/.env; \
 	  echo "Copied env/.env.example to $$HOME/.env. Please edit this file to add your secrets."; \
@@ -15,61 +28,18 @@ install:
 	  echo "$$HOME/.env already exists. Synchronizing environment keys..."; \
 	  python3 $(CURDIR)/scripts/sync-env.py; \
 	fi
-	# Install global gitignore for git configuration
 	cp git/.gitignore_global $${HOME}/.gitignore_global
 	git config --global core.excludesfile $${HOME}/.gitignore_global
-	@if [ -f $$HOME/.config/opencode/opencode.json ]; then \
-	  cp $$HOME/.config/opencode/opencode.json $$HOME/.config/opencode/opencode.json.backup.$$(date +%Y%m%d_%H%M%S); \
-	  echo "Backed up existing opencode.json to .config/opencode/opencode.json.backup.*"; \
-	fi
-	cp ai/opencode/opencode.json $$HOME/.config/opencode/opencode.json
-	@echo "Copied ai/opencode/opencode.json to $$HOME/.config/opencode/opencode.json."
-	cp ai/opencode/tui.json $$HOME/.config/opencode/tui.json
-	@echo "Copied ai/opencode/tui.json to $$HOME/.config/opencode/tui.json."
-	@if [ -f $$HOME/.config/opencode/AGENTS.md ]; then \
-	  cp $$HOME/.config/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md.backup.$$(date +%Y%m%d_%H%M%S); \
-	  echo "Backed up existing AGENTS.md to .config/opencode/AGENTS.md.backup.*"; \
-	fi
-	cp ai/opencode/AGENTS.md $$HOME/.config/opencode/AGENTS.md
-	@echo "Copied ai/opencode/AGENTS.md to $$HOME/.config/opencode/AGENTS.md."
-	@if [ -d $$HOME/.config/opencode/skills ] && [ "$$(ls -A $$HOME/.config/opencode/skills 2>/dev/null)" ]; then \
-	  cp -R $$HOME/.config/opencode/skills $$HOME/.config/opencode/skills.backup.$$(date +%Y%m%d_%H%M%S); \
-	  echo "Backed up existing skills to .config/opencode/skills.backup.*"; \
-	fi
-	cp -R ai/opencode/skills/. $$HOME/.config/opencode/skills/
-	@echo "Copied ai/opencode/skills to $$HOME/.config/opencode/skills/."
-	@if [ -d $$HOME/.config/opencode/agents ] && [ "$$(ls -A $$HOME/.config/opencode/agents 2>/dev/null)" ]; then \
-	  cp -R $$HOME/.config/opencode/agents $$HOME/.config/opencode/agents.backup.$$(date +%Y%m%d_%H%M%S); \
-	  echo "Backed up existing agents to .config/opencode/agents.backup.*"; \
-	fi
-	cp -R ai/opencode/agents/. $$HOME/.config/opencode/agents/
-	@echo "Copied ai/opencode/agents to $$HOME/.config/opencode/agents/."
-	@if [ -d $$HOME/.config/opencode/commands ] && [ "$$(ls -A $$HOME/.config/opencode/commands 2>/dev/null)" ]; then \
-	  cp -R $$HOME/.config/opencode/commands $$HOME/.config/opencode/commands.backup.$$(date +%Y%m%d_%H%M%S); \
-	  echo "Backed up existing commands to .config/opencode/commands.backup.*"; \
-	fi
-	cp -R ai/opencode/commands/. $$HOME/.config/opencode/commands/
-	@echo "Copied ai/opencode/commands to $$HOME/.config/opencode/commands/."
+	$(MAKE) install-opencode
 	sudo cp bin/ralph /usr/local/bin/ralph
 	sudo chmod +x /usr/local/bin/ralph
-	@echo "Installed ralph CLI to /usr/local/bin/ralph."
-	sudo cp bin/subagents /usr/local/bin/subagents
-	sudo chmod +x /usr/local/bin/subagents
-	@echo "Installed subagents CLI to /usr/local/bin/subagents."
-	@echo "Installation complete. Dotfile setup, .env, opencode config, agents, commands, ralph CLI, and subagents CLI are in place. Restart your shell to apply changes."
+	@echo "Installed shell/env setup."
 
+# Only .zshrc backups; other configuration cleanup remains manual.
 clean:
-	@echo "Removing dotfile backups (.zshrc, .env, opencode.json, ralph, subagents, AGENTS.md, skills, agents, commands)..."
-	@rm -f $${HOME}/.zshrc.backup.*
-	@rm -f $${HOME}/.env.backup.*
-	@rm -f $${HOME}/.config/opencode/opencode.json.backup.*
-	@rm -f /usr/local/bin/ralph.backup.*
-	@rm -f /usr/local/bin/subagents.backup.*
-	@rm -f $${HOME}/.config/opencode/AGENTS.md.backup.*
-	@rm -rf $${HOME}/.config/opencode/skills.backup.*
-	@rm -rf $${HOME}/.config/opencode/agents.backup.*
-	@rm -rf $${HOME}/.config/opencode/commands.backup.*
-	@echo "Backup removal complete."
+	@case "$$HOME" in ""|/|[!/]*) printf '%s\n' 'HOME must be an absolute directory other than /.' >&2; exit 1 ;; esac
+	rm -f -- "$$HOME"/.zshrc.backup.*
+	@printf '%s\n' 'Removed .zshrc backups. Other files and backups were not changed.'
 
 sync-env:
 	@python3 $(CURDIR)/scripts/sync-env.py

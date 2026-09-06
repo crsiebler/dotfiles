@@ -198,7 +198,7 @@ mapped to a valid diff-visible line. The summary should include:
   templates, styles, design tokens, icons, images, animations, interaction
   behavior, accessibility-relevant markup, responsive behavior, or
   rendering-related frontend dependencies/configuration changed. It must load and
-  use the `dev-browser` skill to verify affected flows for UX quality,
+  use the `verify-interface` skill to verify affected flows for UX quality,
   accessibility, visual consistency, responsive behavior, interaction clarity,
   and industry best practices. Do not use for backend-only code, local-only
   scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
@@ -206,7 +206,7 @@ mapped to a valid diff-visible line. The summary should include:
 - `ux-researcher`: Use when user flows, task completion paths, navigation,
   forms, modals, onboarding, dashboards, validation messages, empty/error/loading
   states, accessibility-affecting behavior, responsive behavior, or user-facing
-  copy changed. It must load and use the `dev-browser` skill to verify the
+  copy changed. It must load and use the `verify-interface` skill to verify the
   changed frontend experience for UX standards, accessibility, flow consistency,
   usability heuristics, and industry best practices. Do not use for internal
   implementation changes that do not alter visible behavior or interaction flow.
@@ -258,7 +258,7 @@ content indicates their domain is relevant:
   templates, styles, design tokens, icons, images, animations, interaction
   behavior, accessibility-relevant markup, responsive behavior, or
   rendering-related frontend dependencies/configuration changed. It must load and
-  use the `dev-browser` skill to verify affected flows for UX quality,
+  use the `verify-interface` skill to verify affected flows for UX quality,
   accessibility, visual consistency, responsive behavior, interaction clarity,
   and industry best practices. Do not run for backend-only code, local-only
   scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
@@ -266,7 +266,7 @@ content indicates their domain is relevant:
 - `ux-researcher`: include when user flows, task completion paths, navigation,
   forms, modals, onboarding, dashboards, validation messages, empty/error/loading
   states, accessibility-affecting behavior, responsive behavior, or user-facing
-  copy changed. It must load and use the `dev-browser` skill to verify the
+  copy changed. It must load and use the `verify-interface` skill to verify the
   changed frontend experience for UX standards, accessibility, flow consistency,
   usability heuristics, and industry best practices. Do not run for internal
   implementation changes that do not alter visible behavior or interaction flow.
