@@ -57,6 +57,8 @@ class MakeCleanTest(unittest.TestCase):
             self.assertIn('scripts/sync-env.py', result.stdout)
             self.assertIn('.zshrc.backup.', result.stdout)
             self.assertNotIn('.env.backup.', result.stdout)
+            self.assertLess(result.stdout.index('scripts/install-zsh-extensions.py'),
+                            result.stdout.index('.zshrc.backup.'))
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ FILES = aliases/.aliases aliases/.docker_aliases aliases/.git_aliases aliases/.n
 PYTHON ?= python3.11
 .DEFAULT_GOAL := install
 
-.PHONY: install install-ai install-codex install-opencode validate-ai clean sync-env
+.PHONY: install install-zsh-extensions install-ai install-codex install-opencode validate-ai clean sync-env
 
 install-ai:
 	@$(PYTHON) scripts/install-ai.py all
@@ -18,7 +18,10 @@ validate-ai:
 
 # Full setup includes shell/env/git changes and sudo Ralph.
 # AI-only targets above never install binaries or require sudo.
-install:
+install-zsh-extensions:
+	@$(PYTHON) scripts/install-zsh-extensions.py
+
+install: install-zsh-extensions
 	@if [ -f ~/.zshrc ]; then cp ~/.zshrc ~/.zshrc.backup.$$(date +%Y%m%d_%H%M%S); fi
 	for file in $(FILES); do cp -f $$file ~/; done
 	@if [ ! -f $$HOME/.env ]; then \

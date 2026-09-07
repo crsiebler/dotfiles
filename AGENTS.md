@@ -45,6 +45,15 @@ defines the native role contract.
 - `make install` additionally modifies shell/env/global Git and uses sudo for
   Ralph; it installs OpenCode but not Codex or global subagents. Never use it as
   a validation command.
+- `make install` first runs `install-zsh-extensions`: clone only missing custom
+  plugins and Powerlevel10k from the explicit registry in
+  `scripts/install-zsh-extensions.py`. Honor `ZSH`/`ZSH_CUSTOM`, require an existing
+  Oh My Zsh installation, and never pull/reset/replace existing extensions.
+  Preserve custom non-Git copies with readable entry points; stop on invalid
+  directories or symlinks. Tests use local Git fixtures, not live downloads.
+  No CLI applications or Railway setup are included. AI-only targets stay separate.
+  Before manual extension updates/removal, inspect existing copies, retain needed
+  backups, and obtain scoped approval. `make clean` must not remove plugins/themes.
 - GitHub, Exa, Context7 are globally enabled. Jira/Rovo and PostgreSQL require
   trusted project opt-in. AWS/Elastic MCP definitions are intentionally absent.
   PostgreSQL uses the built local Node `mcp-suite` server documented in the
