@@ -2,116 +2,111 @@
 
 This document provides guidelines for agents working in this dotfiles repository. These dotfiles contain shell configurations, aliases, and scripts primarily for Zsh environments.
 
-## Ralph Autonomous AI Loop
+## AI source ownership and installation
 
-This repository includes configuration for Ralph, an autonomous AI coding agent that iteratively processes user stories from Product Requirements Documents (PRDs) until completion.
+Read [docs/ai-configuration.md](docs/ai-configuration.md) for setup,
+connections, and limitations; [docs/agent-authoring.md](docs/agent-authoring.md)
+defines the native role contract.
 
-## Subagents CLI Tool
+- Portable skills live in `ai/plugins/<plugin>/skills/<action>/`. The checkout-local
+  `craft` marketplace at `.agents/plugins/marketplace.json` contains `coding`,
+  `reporting`, `researching`, and `delegating`.
+- `researching` provides provider-agnostic `search-web`; load its Exa MCP reference
+  only when those tools are available and selected. Skill discovery is automatic.
+- The single harness-agnostic personal policy is `ai/AGENTS.md`. Installation
+  copies its bytes unchanged to both user-level `AGENTS.md` destinations, without
+  concatenation or normalization. This root file is repository-only guidance.
+- Codex configuration sources are `ai/codex/config.toml` and `astra.config.toml`.
+  OpenCode configuration and native prompts remain under `ai/opencode/`.
+- `ai/codex/agents/*.toml` is the canonical custom-agent collection (127 roles).
+  Copy all sources byte-for-byte to Codex and generate 127 OpenCode Markdown files.
+  Keep `sprite-artist`, `ralph`, and `ralph-reviewer` native and OpenCode-only
+  under `ai/opencode/agents/`; the installer copies all three unchanged (130 total).
+  Agent metadata belongs in native TOML or those three Markdown frontmatters;
+  use generic rendering, not exclusions or overrides JSON.
+- The seven inspection roles, including `powershell-security-hardening`, use native
+  `sandbox_mode = "read-only"` and guidance
+  prohibiting tests, edits, mutating commands, and external posts. Native read-only
+  shell inspection is permitted by the role when authorized by the runtime.
+  OpenCode maps read-only sandbox mode to deny-all plus `read`/`glob`/`grep`, a more
+  restrictive tool policy, not equivalent Codex sandbox or MCP enforcement.
+  Codex parent runtime overrides apply after role settings; MCP approval is
+  independent. Do not claim immutable per-role policy or project-only access.
+- `use-subagents` bundles discovery tooling; do not install it globally.
+  Inspecting a definition is not a native delegated invocation.
+- OpenCode commands are `/create-sprite`, `/define-requirements`, `/plan-work`,
+  `/ship`, `/find-agents`, and unchanged `/review-pr`. `create-sprites` owns common
+  generation rules; load its Godot reference only for Godot requests or relevant
+  project context. Asset-only work must not require a Godot binary.
+- `make install-codex`, `make install-opencode`, and `make install-ai` modify user
+  AI configuration only. They require explicit installation authorization. No
+  logins, dependency bootstrap, shell setup, or binary installation are included.
+  Missing `skills` is a blocker, not permission to download it with `npx`.
+- `make install` additionally modifies shell/env/global Git and uses sudo for
+  Ralph; it installs OpenCode but not Codex or global subagents. Never use it as
+  a validation command.
+- GitHub, Exa, Context7 are globally enabled. Jira/Rovo and PostgreSQL require
+  trusted project opt-in. AWS/Elastic MCP definitions are intentionally absent.
+  PostgreSQL uses the built local Node `mcp-suite` server documented in the
+  installation guide, not Docker; installation does not clone/build/install it.
+  Launcher tests use fake Node only, model known OpenCode env substitutions, and
+  do not establish server-side validation or live integration.
+  Exact GitHub/Jira/PostgreSQL read-tool exceptions skip approval; writes and
+  unknown tools still ask. PostgreSQL `execute_query` always asks because it
+  accepts arbitrary SQL. Exa/Context7 expose only approved research tools.
+  OpenCode Chrome/Playwright/Jam allow all tools when enabled; ElevenLabs asks
+  for every tool. These four remain absent from Codex. Preserve this policy and
+  narrower reviewer restrictions; never log tokens,
+  connection strings, full authorization headers, or credential stores.
 
-This repository includes a CLI tool for managing OpenCode subagents that resolves the path context issue with the original subagents skill.
+## Review and Ralph boundaries
 
-### Problem Solved
-
-The original `@ai/opencode/commands/subagents.md` skill had a CLI tool/path context issue where it could only access agent files from the current working directory, but agents are stored in `$HOME/.config/opencode/agents/` regardless of where the command is invoked.
-
-### Solution
-
-**CLI Tool Location**: `bin/subagents` (pure bash implementation) 
-**Installation**: Installed globally to `/usr/local/bin/subagents` via `make install`
-
-### Usage
-
-```bash
-# Works from ANY directory - globally available command
-subagents list                    # Show all agents by category
-subagents search security         # Find security-related agents
-subagents fetch cli-developer     # Get full agent definition
-subagents help                    # Show usage help
-```
-
-### Features
-
-- **Global Access**: Works from any directory after `make install`
-- **Pure Bash**: No Python dependency required - lightweight and fast
-- **Categories agents**: Automatically groups 130+ agents by filename prefixes (backend-, frontend-, etc.)
-- **Search functionality**: Searches in names, descriptions, and tools with case-insensitive matching
-- **Full content fetch**: Retrieves complete agent definitions with YAML frontmatter
-- **Error handling**: Provides helpful guidance and suggestions when agents are not found
-
-### Agent Categories
-
-- **Backend Development**: backend-* files
-- **Frontend Development**: frontend-* files  
-- **DevOps & Infrastructure**: devops-* files
-- **Quality & Testing**: qa-* files
-- **Security**: security-* files
-- **Data & Analytics**: data-* files
-- **UI/UX Design**: ui-* files
-- **Mobile Development**: mobile-* files
-- **Cloud & Platform**: cloud-* files
-- **Documentation**: docs-* files
-- **General**: All other agents
-
-### Skill Updates
-
-The subagents skill has been updated to call the global `subagents` command:
-- **Command**: Uses globally installed `/usr/local/bin/subagents` command
-- **Path Resolution**: Bash script handles `$HOME/.config/opencode/agents/` access from any directory
-- **Integration**: OpenCode skill internally calls `subagents list`, `subagents search`, and `subagents fetch`
-
-### Ralph Setup
-
-- **Skills**: PRD generation (`ai/opencode/skills/prd/SKILL.md`) and PRD-to-JSON conversion (`ai/opencode/skills/ralph/SKILL.md`)
-- **Commands**: `/prd` for creating PRDs, `/ralph` for converting PRDs to JSON format
-- **CLI Tool**: `ralph` command installed to `/usr/local/bin/ralph` with `--auto`, `--max-iterations`, and `--mode fast|standard|deep` options
-- **Configuration**: OpenCode config, skills, and commands installed to `~/.config/opencode/`
-- **Local Reviewer**: `ai/opencode/agents/ralph-reviewer.md` provides the bounded, read-only staged-story review used by Ralph
-
-### Using Ralph
-
-1. **Create a PRD**: Use `/prd` command in OpenCode to generate requirements
-2. **Convert to JSON**: Use `/ralph` command to create `prd.json` from the PRD
-3. **Run Autonomous Loop**: Execute `ralph --auto --mode standard --max-iterations 10` in your project directory. Add `--model provider/model` to select a supported model.
-4. **Monitor Progress**: Check `progress.txt` for iteration logs, `memory.json` for bounded review knowledge, and `prd.json` for completion status
-
-Ralph modes:
-- `fast`: minimizes implementation agents and specialist reviews for low-risk stories
-- `standard`: default risk-based agent and review budget
-- `deep`: broader specialist help for complex or high-risk stories
-
-`--auto` is opt-in. It forwards OpenCode's auto-approval flag to every Ralph
-iteration and pre-authorizes non-destructive project-local operations required
-by the active story, including local Docker container creation and lifecycle
-operations. Explicit permission denials and Ralph's production, secrets,
-destructive-operation, protected-branch, security, and task-scope boundaries
-remain in force. Each progress entry records whether auto approval was enabled.
-
-### Ralph Workflow
-
-- Reads `prd.json` for user stories
-- Implements highest-priority incomplete story
-- Runs quality checks (lint, typecheck, test)
-- Uses self-review or one three-step `ralph-reviewer` pass based on mode and risk
-- Resumes the same reviewer session at most once to verify substantive review fixes
-- Stores validated review patterns and false-positive suppressions in project-local `memory.json`
-- Commits with format: `feat: [Story ID] - [Story Title]`
-- Appends detailed iteration handoff notes to `progress.txt` for context continuity
-- Updates progress and repeats until completion
-
-### Quality Requirements for Ralph
-
-- Each story must be completable in one iteration
-- Include "Typecheck passes" in all acceptance criteria
-- UI stories require "Verify in browser using dev-browser skill"
-- Follow existing code patterns and project conventions
+- Keep GitHub PR review objectives, schemas, orchestration, and context gathering
+  canonical in `ai/opencode/commands/review-pr.md`. `/review-pr --post` must preview
+  the exact GitHub review command/API payload and obtain explicit confirmation
+  before any `gh` review write, regardless of available MCP write permissions.
+- Ralph local staged reviews use only `ai/opencode/agents/ralph-reviewer.md`, not
+  general reviewers. Preserve the three-step, project-local read/staged-Git-only
+  boundary, exact JSON output, and at most one same-session follow-up.
+- `write-requirements` creates requirements; `prepare-implementation` defaults to
+  `plan.json` in OpenCode and a Markdown story checklist in `PLAN.md` in Codex.
+  Explicit user format requests override these defaults. OpenCode entry points
+  are `/define-requirements` and `/plan-work`; neither starts execution.
+  Resolve active-harness identity from trusted runtime context or the invoking
+  native entry point; `ai/opencode/commands/plan-work.md` supplies the JSON default.
+  Ask when routing is unavailable or ambiguous, never infer it from `PATH`,
+  installed binaries, directories, environment variables, or policy headings.
+- Ralph is OpenCode-only: `ralph --mode standard --max-iterations 10`.
+  Require a prepared committed Git worktree on exactly `plan.json`'s `branchName`;
+  reject detached HEAD and main/master. Do not create or switch branches for Ralph.
+- `--auto` is unsupported and rejected. Standing authorization covers routine scoped
+  implementation, necessary project dependencies, and relevant tests, not
+  permission bypasses. Docker lifecycle, migrations including local/test, service
+  operations, global changes, and other sensitive actions need explicit approval.
+- A fully complete valid Ralph PRD exits without launching OpenCode.
+- Codex may execute an approved Markdown plan through native `/goal`. Keep story
+  evidence and resumption checkpoints in the plan. Do not import Ralph's reviewer
+  gate or fresh-session loop into that workflow. Automatic story-boundary compaction
+  is deferred in `docs/backlog.md`; do not install compaction hooks/controllers.
+- Each Ralph story should fit one iteration and include typecheck acceptance criteria.
+  Use `verify-interface` for browser verification of UI changes. Run relevant
+  lint/typecheck/tests before committing; do not claim unavailable checks passed.
+- Keep append-only review history in `progress.txt`, bounded operational knowledge
+  in project `memory.json` (at most 20 patterns and 20 suppressions), and only
+  durable repository instructions in the nearest `AGENTS.md`.
 
 ## Build/Lint/Test Commands
 
-Since this is a configuration repository, traditional build processes do not
-apply. Run the Ralph review contract regression test and the relevant manual validation:
+There is no standalone repository typecheck target. Run local source validation
+and relevant regression tests; record unavailable checks explicitly:
 
 ```bash
-tests/ralph_review_test.sh
+make validate-ai
+python3.11 -m unittest discover -s tests -p '*test*.py'
+python3.11 tests/agent_contract_test.py
+bash tests/ralph_model_test.sh
+bash tests/ralph_review_test.sh
+bash tests/zsh_aliases_test.sh
 ```
 
 ### Manual Validation
@@ -119,11 +114,8 @@ tests/ralph_review_test.sh
 # Check Makefile syntax (dry run of install)
 make -n install
 
-# Optionally, check dotfiles for syntax issues (no standalone *.sh scripts)
-# Example: run shellcheck on a config file (if shellcheck is available)
-shellcheck aliases/.aliases
-shellcheck zsh/.zshenv
-# etc.
+# Check relevant shell syntax without sourcing personal environment files
+zsh -n aliases/.aliases zsh/.zshenv zsh/.zshrc
 ```
 
 ### Testing Manual Sourcing
@@ -140,11 +132,12 @@ zsh -c "source zsh/.zshenv"
 ```
 
 ### Single Test Execution
-There are no formal unit tests. For quick manual checks:
+Python, Ruby, and shell regression tests live under `tests/`. For an optional
+manual sourcing check, use a project-local scratch directory, not `/tmp`:
 
 ```bash
 # Test a specific alias or function by sourcing and executing
-zsh -c "source aliases/.aliases && mkcd /tmp/test_dir && pwd"
+zsh -c "source aliases/.aliases && mkcd ./tests/manual-mkcd && pwd"
 
 # Test environment variable loading
 zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
@@ -224,7 +217,7 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 
 ### Git Workflow
 - Commit related changes together
-- Use descriptive commit messages
+- Use `<type>(<scope>): <description>` commit messages; commit only when authorized
 - Keep the repository focused on configuration files
 - Test changes before committing
 
@@ -238,26 +231,35 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 
 ## Cleaning Up Dotfile Backups
 
-After running `make install`, backup files are created for existing configuration files before they are overwritten. These backup files include:
-
-- `~/.zshrc.backup.*`
-- `~/.env.backup.*`
-- `~/.config/opencode/opencode.json.backup.*`
-- `~/.config/opencode/AGENTS.md.backup.*`
-- `~/.config/opencode/skills.backup.*`
-- `~/.config/opencode/agents.backup.*`
-- `~/.config/opencode/commands.backup.*`
-- `/usr/local/bin/ralph.backup.*`
-- `/usr/local/bin/subagents.backup.*`
-
-To remove all backup files generated by install, use:
-
-    make clean
-
-This will remove all matching backup files in one step with no confirmation prompt. No other files are cleaned at this time.
+1. Verify the installed configuration and retain any backups needed for rollback.
+2. Review adjacent `.backup.<timestamp>` files and changed OpenCode skill assets
+   under `.install-ai-backups/<timestamp>/skills/` in the configuration root.
+   The broad installer backs up `.zshrc`. Existing `.env` files are synchronized
+   by appending missing keys/exports without creating backups.
+3. With explicit approval covering all matching `.zshrc` backups, `make clean`
+   removes only `$HOME/.zshrc.backup.*`. It preserves active files, existing
+   `.env` backups, and all AI configuration/backups.
+4. For AI files and backups, follow [manual removal](docs/remove-old-ai-files.md),
+   obtain explicit deletion approval, and remove only reviewed paths. Never delete
+   a whole configuration root to remove backups.
+5. Review obsolete installed command/agent paths listed in that guide separately;
+   command renames do not rename `bin/ralph`, native Ralph agents, `prd.json`, or
+   the bundled `subagents` helper. No automatic migration or aliases are installed.
+6. For the PowerShell consolidation, verify `powershell-expert`, preserve custom
+   copies, and obtain exact-path approval before removing the three retired roles
+   in either harness using that guide. Keep UI and read-only assessment roles.
+7. Review retained installed AWS/Elastic MCP entries and old PostgreSQL Docker
+   fields separately. Back up customizations and approve exact config edits before
+   removal; preserve approval rules, active `POSTGRESQL_CONNECTION_STRING`, and
+   environment exports still used elsewhere. Source removal is not installed cleanup.
+8. For `use-exa` renamed to `search-web`, verify the replacement after authorized
+   installation or Codex native plugin refresh, preserve customizations, and
+   approve exact old installed paths before manual removal using that guide.
+   Restart the harness and start a new Codex thread; never delete plugin caches
+   manually or assume OpenCode copies were automatically removed.
 
 **Process for future iterations:**
-- If new or additional backup files are added to the Makefile, update the `clean` target to handle them.
+- Keep AI and old `.env` backup removal manual; limit `make clean` to `.zshrc` backups.
 - Always update both README.md and AGENTS.md to document the backup and cleanup process step-by-step so code and docs remain in sync.
 
 ---
@@ -265,10 +267,10 @@ This will remove all matching backup files in one step with no confirmation prom
 ## Development Workflow
 
 1. Make changes to configuration files
-2. Test changes locally: `source ~/.zshrc`
-3. Run validation as appropriate
-4. Test aliases and environment: `zsh -c "source .aliases && test_alias"`
-5. Commit with descriptive message
+2. Run relevant repository-local regression and syntax checks
+3. Use manual sourcing only when appropriate; it can load personal environment files
+4. Inspect the diff and preserve unrelated work; do not install globally to test
+5. Commit with the repository convention only when authorized
 6. Update documentation if needed
 
 ## Dependencies
@@ -277,43 +279,20 @@ This repository assumes:
 - Zsh as the required shell
 - Oh My Zsh framework
 - Standard Unix tools (bash, cp, mkdir, etc.)
-- jq for Ralph `prd.json` completion checks
+- Python 3.11+ for AI source validation, rendering, and installation;
+  `python3` for environment sync
+- Ruby only for native reviewer YAML validation in `tests/ralph_review_test.sh`,
+  not as an installer dependency
+- Codex CLI 0.153.4 for Codex installation; `skills` CLI for OpenCode skill copies
+- jq for Ralph `plan.json` completion checks
 - Optional: shellcheck for linting (run manually, not automated)
 
 ## Environment Setup
 
-After cloning this repository:
-1. Run `make install` to install configurations (backs up existing `.zshrc` with a timestamp)
-2. Source configurations: `source ~/.zshrc` (or open a new shell)
-3. Copy `env/.env.example` to `$HOME/.env` and edit as needed for secrets
-4. AI-specific config: `ai/opencode/opencode.json` copied to `$HOME/.config/opencode/opencode.json`, `ai/opencode/commands/` copied to `$HOME/.config/opencode/commands/`, and `ai/opencode/skills/` copied to `$HOME/.config/opencode/skills/` (Makefile will handle this).
-5. Verify setup: ensure `$JAVA_HOME` is set (for example, run `echo "$JAVA_HOME"`)
-
-## Common Patterns
-
-### Safe File Operations
-```bash
-# Check file exists before sourcing
-if [ -f ~/.aliases ]; then
-    . ~/.aliases
-fi
-```
-
-### Function Definitions
-```bash
-mkcd() {
-    mkdir -p "$1"
-    cd "$1"
-}
-```
-
-### Conditional Logic
-```bash
-if [ $# -eq 0 ]; then
-    # Handle no arguments
-else
-    # Handle arguments
-fi
-```
-
-Remember: These dotfiles are personal Zsh configurations. Changes should be tested thoroughly before deployment to avoid breaking shell functionality. Bash users will need to adapt or use at their own risk.
+Follow [README setup](README.md#setup-and-documentation) and the
+[installation guide](docs/ai-configuration.md) before any authorized install.
+Never overwrite an existing `$HOME/.env`:
+merge missing example keys privately and export the needed values in the launching
+shell. AI-only targets neither source nor synchronize it. Enabled GitHub MCP
+requires `GITHUB_MCP_TOKEN`; installation never performs authentication. Restart
+the selected harness after installation, and start a new Codex thread for plugins.

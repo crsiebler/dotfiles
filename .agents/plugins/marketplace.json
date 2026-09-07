@@ -1,0 +1,10 @@
+{
+  "name": "craft",
+  "interface": {"displayName": "Craft"},
+  "plugins": [
+    {"name": "coding", "source": {"source": "local", "path": "./ai/plugins/coding"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"}, "category": "Development"},
+    {"name": "reporting", "source": {"source": "local", "path": "./ai/plugins/reporting"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"}, "category": "Productivity"},
+    {"name": "researching", "source": {"source": "local", "path": "./ai/plugins/researching"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"}, "category": "Productivity"},
+    {"name": "delegating", "source": {"source": "local", "path": "./ai/plugins/delegating"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"}, "category": "Development"}
+  ]
+}

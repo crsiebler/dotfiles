@@ -39,23 +39,25 @@
             "type": "remote",
             "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_fetch_exa,agent_run,web_search_advanced_exa"
         },
+        "github": {
+            "enabled": true,
+            "type": "remote",
+            "url": "https://api.githubcopilot.com/mcp/",
+            "oauth": false,
+            "headers": {
+                "Authorization": "Bearer {env:GITHUB_MCP_TOKEN}",
+                "X-MCP-Toolsets": "repos,issues,pull_requests"
+            }
+        },
         "jam": {
             "enabled": false,
             "type": "remote",
             "url": "https://mcp.jam.dev/mcp"
         },
         "jira": {
-            "command": [
-                "node",
-                "{env:HOME}/Repositories/mcp-suite/servers/jira/dist/servers/jira/src/index.js"
-            ],
             "enabled": false,
-            "environment": {
-                "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}",
-                "JIRA_BASE_URL": "{env:JIRA_BASE_URL}",
-                "JIRA_EMAIL": "{env:JIRA_EMAIL}"
-            },
-            "type": "local"
+            "type": "remote",
+            "url": "https://mcp.atlassian.com/v2/mcp"
         },
         "playwright": {
             "command": [
@@ -71,16 +73,106 @@
                 "{env:HOME}/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js"
             ],
             "enabled": false,
+            "type": "local",
             "environment": {
                 "POSTGRESQL_CONNECTION_STRING": "{env:POSTGRESQL_CONNECTION_STRING}"
-            },
-            "type": "local"
+            }
         }
     },
     "permission": {
+        "github_*": "ask",
+        "github_get_commit": "allow",
+        "github_get_file_contents": "allow",
+        "github_get_label": "allow",
+        "github_get_latest_release": "allow",
+        "github_get_release_by_tag": "allow",
+        "github_get_tag": "allow",
+        "github_issue_read": "allow",
+        "github_list_branches": "allow",
+        "github_list_commits": "allow",
+        "github_list_issue_fields": "allow",
+        "github_list_issue_types": "allow",
+        "github_list_issues": "allow",
+        "github_list_pull_requests": "allow",
+        "github_list_releases": "allow",
+        "github_list_repository_collaborators": "allow",
+        "github_list_tags": "allow",
+        "github_pull_request_read": "allow",
+        "github_search_code": "allow",
+        "github_search_commits": "allow",
+        "github_search_issues": "allow",
+        "github_search_pull_requests": "allow",
+        "github_search_repositories": "allow",
+        "jira_*": "ask",
+        "jira_atlassianUserInfo": "allow",
+        "jira_getAccessibleAtlassianResources": "allow",
+        "jira_discover": "allow",
+        "jira_getContentFormatGuide": "allow",
+        "jira_executeRead": "allow",
+        "jira_search": "allow",
+        "jira_getTeamworkGraphContext": "allow",
+        "jira_getTeamworkGraphObject": "allow",
+        "jira_getJiraIssue": "allow",
+        "jira_listJiraProjects": "allow",
+        "jira_listJiraProjectIssueTypesMetadata": "allow",
+        "jira_getJiraIssueTypeMetaWithFields": "allow",
+        "jira_listJiraIssueTransitions": "allow",
+        "jira_listJiraIssueLinkTypes": "allow",
+        "jira_listJiraIssueRemoteIssueLinks": "allow",
+        "jira_listJiraIssueWorklogs": "allow",
+        "jira_lookupJiraAccountId": "allow",
+        "jira_findJiraIssueAssignableUsers": "allow",
+        "jira_listJiraIssueComments": "allow",
+        "jira_listJiraIssueChangelogs": "allow",
+        "jira_getJiraCurrentUser": "allow",
+        "jira_getJiraUser": "allow",
+        "jira_listJiraStatuses": "allow",
+        "jira_listJiraProjectComponents": "allow",
+        "jira_getJiraProjectVersions": "allow",
+        "jira_getJiraProjectVersionRelatedWork": "allow",
+        "jira_listJiraBoards": "allow",
+        "jira_getJiraBoardConfig": "allow",
+        "jira_getJiraBoardIssueData": "allow",
+        "jira_getJiraBoardSprintData": "allow",
+        "jira_listJiraBoardSprints": "allow",
+        "jira_listJiraFilters": "allow",
+        "jira_listJiraDashboards": "allow",
+        "jira_getJiraEntityProperty": "allow",
+        "jira_downloadJiraIssueAttachment": "allow",
+        "jira_searchJiraIssuesUsingJql": "allow",
+        "jira_getJiraIssueRemoteIssueLinks": "allow",
+        "jira_getJiraProjectIssueTypesMetadata": "allow",
+        "jira_getIssueLinkTypes": "allow",
+        "jira_getTransitionsForJiraIssue": "allow",
+        "jira_getVisibleJiraProjects": "allow",
+        "jira_getConfluencePage": "allow",
+        "jira_getConfluencePageDescendants": "allow",
+        "jira_getConfluencePageFooterComments": "allow",
+        "jira_getConfluencePageInlineComments": "allow",
+        "jira_getConfluenceCommentChildren": "allow",
+        "jira_getConfluenceSpaces": "allow",
+        "jira_getPagesInConfluenceSpace": "allow",
+        "jira_searchConfluenceUsingCql": "allow",
+        "jira_searchAtlassian": "allow",
+        "jira_fetchAtlassian": "allow",
+        "jira_fetch": "allow",
+        "postgresql_*": "ask",
+        "postgresql_check_dangerous_operations_allowed": "allow",
+        "exa_*": "deny",
+        "exa_web_search_exa": "allow",
+        "exa_web_search_advanced_exa": "allow",
+        "exa_web_fetch_exa": "allow",
+        "exa_agent_run": "allow",
+        "context7_*": "deny",
+        "context7_resolve-library-id": "allow",
+        "context7_query-docs": "allow",
+        "chrome_*": "allow",
+        "playwright_*": "allow",
+        "jam_*": "allow",
+        "elevenlabs_*": "ask",
         "skill": {
-            "code-review-analyzer": "allow",
-            "code-review-resolver": "allow"
+            "analyze-review-feedback": "allow",
+            "resolve-review-feedback": "allow"
         }
     },
     "plugin": [

@@ -1,0 +1,303 @@
+# PRD Generator
+
+Create detailed Product Requirements Documents that are clear, actionable, and suitable for implementation.
+
+---
+
+## The Job
+
+1. Receive a feature description from the user
+2. Ask only unresolved questions that materially affect requirements; lettered options can help
+3. Generate a structured PRD based on answers
+4. Save to `tasks/prd-[feature-name].md` when file creation was requested or confirmed
+
+**Important:** Do NOT start implementing. Just create the PRD.
+
+If the user did not explicitly ask to save a file, preview the target filename
+and ask before writing. Do not overwrite an existing PRD without explicit
+confirmation.
+
+---
+
+## Step 1: Clarifying Questions
+
+Ask only critical questions where the initial prompt is ambiguous. Focus on:
+
+- **Problem/Goal:** What problem does this solve?
+- **Core Functionality:** What are the key actions?
+- **Scope/Boundaries:** What should it NOT do?
+- **Success Criteria:** How do we know it's done?
+
+### Format Questions Like This:
+
+```
+1. What is the primary goal of this feature?
+   A. Improve user onboarding experience
+   B. Increase user retention
+   C. Reduce support burden
+   D. Other: [please specify]
+
+2. Who is the target user?
+   A. New users only
+   B. Existing users only
+   C. All users
+   D. Admin users only
+
+3. What is the scope?
+   A. Minimal viable version
+   B. Full-featured implementation
+   C. Just the backend/API
+   D. Just the UI
+```
+
+This lets users respond with "1A, 2C, 3B" for quick iteration. Remember to indent the options.
+
+---
+
+## Step 2: PRD Structure
+
+Generate the PRD with these sections:
+
+### 1. Introduction/Overview
+Brief description of the feature and the problem it solves.
+
+### 2. Goals
+Specific, measurable objectives (bullet list).
+
+### 3. User Stories
+Each story needs:
+- **Title:** Short descriptive name
+- **Description:** "As a [user], I want [feature] so that [benefit]"
+- **Acceptance Criteria:** Verifiable checklist of what "done" means
+- **Recommended Agents:** Optional development specialists Ralph may consult
+  before implementation
+
+Each story should be small enough to implement in one focused session.
+
+**Format:**
+```markdown
+### US-001: [Title]
+**Description:** As a [user], I want [feature] so that [benefit].
+
+**Acceptance Criteria:**
+- [ ] Specific verifiable criterion
+- [ ] Another criterion
+- [ ] Typecheck passes
+- [ ] Tests pass, if behavior is testable
+- [ ] **[UI stories only]** Verify in browser using verify-interface skill
+
+**Recommended Agents:** @agent-name, @agent-name
+```
+
+**Important:**
+- Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
+- For implementation stories, include "Typecheck passes" as acceptance criteria.
+- For testable behavior, include "Tests pass" as acceptance criteria.
+- **For UI changes:** Include "Verify in browser using verify-interface skill" as acceptance criteria.
+
+### Recommended Development Agents
+
+For each implementation story, add a short `Recommended Agents` line only when
+specialist guidance is likely to improve quality or reduce risk. Keep the list
+focused: 0-2 agents per story, selected from the trigger matrix below. Omit
+recommended agents for trivial, mechanical, docs-only, or low-risk stories. Do
+not recommend business, planning, sales, legal, marketing, or orchestration
+agents for Ralph implementation stories.
+
+Use exact configured agent names with `@` prefixes. The following are candidate
+names only: verify availability before adding hints. Hints are optional and do
+not prove the agent is loaded or require native invocation.
+
+- General implementation: `@backend-developer`, `@frontend-developer`,
+  `@fullstack-developer`, `@cli-developer`, `@tooling-engineer`
+- Debugging and quality: `@debugger`, `@test-automator`,
+  `@refactoring-specialist`, `@architect-reviewer`, `@performance-engineer`
+- Build and dependencies: `@build-engineer`, `@dependency-manager`
+- Security and compliance: `@security-engineer`, `@security-auditor`,
+  `@compliance-auditor`
+- Documentation: `@documentation-engineer`, `@technical-writer`
+- UI, UX, and accessibility: `@react-specialist`, `@nextjs-developer`,
+  `@vue-expert`, `@angular-architect`, `@ui-designer`, `@ux-researcher`,
+  `@accessibility-tester`
+- API and backend architecture: `@api-designer`, `@graphql-architect`,
+  `@websocket-engineer`, `@microservices-architect`
+- Databases and data: `@sql-pro`, `@postgres-pro`, `@database-optimizer`,
+  `@database-administrator`, `@data-engineer`
+- DevOps and infrastructure: `@devops-engineer`, `@deployment-engineer`,
+  `@kubernetes-specialist`, `@terraform-engineer`, `@cloud-architect`,
+  `@platform-engineer`, `@sre-engineer`
+- Language and framework specialists: `@typescript-pro`, `@javascript-pro`,
+  `@python-pro`, `@golang-pro`, `@rust-engineer`, `@java-architect`,
+  `@spring-boot-engineer`, `@csharp-developer`, `@dotnet-core-expert`,
+  `@php-pro`, `@laravel-specialist`, `@rails-expert`, `@django-developer`
+- Mobile and native: `@mobile-developer`, `@flutter-expert`,
+  `@swift-expert`, `@kotlin-specialist`, `@electron-pro`
+- AI and integrations: `@ai-engineer`, `@ml-engineer`, `@llm-architect`,
+  `@nlp-engineer`, `@mcp-developer`, `@payment-integration`,
+  `@slack-expert`, `@wordpress-master`
+
+Examples:
+
+- Database migration story: `Recommended Agents: @database-optimizer, @sql-pro`
+- React UI story: `Recommended Agents: @react-specialist, @accessibility-tester`
+- CLI script story: `Recommended Agents: @cli-developer, @test-automator`
+- Dependency upgrade story: `Recommended Agents: @dependency-manager, @build-engineer`
+
+### 4. Functional Requirements
+Numbered list of specific functionalities:
+- "FR-1: The system must allow users to..."
+- "FR-2: When a user clicks X, the system must..."
+
+Be explicit and unambiguous.
+
+### 5. Non-Goals (Out of Scope)
+What this feature will NOT include. Critical for managing scope.
+
+### 6. Design Considerations (Optional)
+- UI/UX requirements
+- Link to mockups if available
+- Relevant existing components to reuse
+
+### 7. Technical Considerations (Optional)
+- Known constraints or dependencies
+- Integration points with existing systems
+- Performance requirements
+
+### 8. Success Metrics
+Define observable success from the user's goals. Include numerical targets only
+when supplied or agreed; otherwise identify the measurement and unresolved target.
+
+### 9. Open Questions
+Remaining questions or areas needing clarification.
+
+---
+
+## Writing for Junior Developers
+
+The PRD reader may be a junior developer or AI agent. Therefore:
+
+- Be explicit and unambiguous
+- Avoid jargon or explain it
+- Provide enough detail to understand purpose and core logic
+- Number requirements for easy reference
+- Use concrete examples where helpful
+
+---
+
+## Output
+
+- **Format:** Markdown (`.md`)
+- **Location:** `tasks/`
+- **Filename:** `prd-[feature-name].md` (kebab-case)
+- **Safety:** Preview the filename before saving when file creation was not explicit; never overwrite an existing PRD without confirmation.
+
+---
+
+## Example PRD
+
+```markdown
+# PRD: Task Priority System
+
+## Introduction
+
+Add priority levels to tasks so users can focus on what matters most. Tasks can be marked as high, medium, or low priority, with visual indicators and filtering to help users manage their workload effectively.
+
+## Goals
+
+- Allow assigning priority (high/medium/low) to any task
+- Provide clear visual differentiation between priority levels
+- Enable filtering and sorting by priority
+- Default new tasks to medium priority
+
+## User Stories
+
+### US-001: Add priority field to database
+**Description:** As a developer, I need to store task priority so it persists across sessions.
+
+**Acceptance Criteria:**
+- [ ] Add priority column to tasks table: 'high' | 'medium' | 'low' (default 'medium')
+- [ ] Generate and run migration successfully
+- [ ] Typecheck passes
+
+**Recommended Agents:** @database-optimizer, @sql-pro
+
+### US-002: Display priority indicator on task cards
+**Description:** As a user, I want to see task priority at a glance so I know what needs attention first.
+
+**Acceptance Criteria:**
+- [ ] Each task card shows colored priority badge (red=high, yellow=medium, gray=low)
+- [ ] Priority visible without hovering or clicking
+- [ ] Typecheck passes
+- [ ] Verify in browser using verify-interface skill
+
+**Recommended Agents:** @react-specialist, @accessibility-tester
+
+### US-003: Add priority selector to task edit
+**Description:** As a user, I want to change a task's priority when editing it.
+
+**Acceptance Criteria:**
+- [ ] Priority dropdown in task edit modal
+- [ ] Shows current priority as selected
+- [ ] Saves immediately on selection change
+- [ ] Typecheck passes
+- [ ] Verify in browser using verify-interface skill
+
+**Recommended Agents:** @frontend-developer, @accessibility-tester
+
+### US-004: Filter tasks by priority
+**Description:** As a user, I want to filter the task list to see only high-priority items when I'm focused.
+
+**Acceptance Criteria:**
+- [ ] Filter dropdown with options: All | High | Medium | Low
+- [ ] Filter persists in URL params
+- [ ] Empty state message when no tasks match filter
+- [ ] Typecheck passes
+- [ ] Verify in browser using verify-interface skill
+
+**Recommended Agents:** @frontend-developer, @ux-researcher
+
+## Functional Requirements
+
+- FR-1: Add `priority` field to tasks table ('high' | 'medium' | 'low', default 'medium')
+- FR-2: Display colored priority badge on each task card
+- FR-3: Include priority selector in task edit modal
+- FR-4: Add priority filter dropdown to task list header
+- FR-5: Sort by priority within each status column (high to medium to low)
+
+## Non-Goals
+
+- No priority-based notifications or reminders
+- No automatic priority assignment based on due date
+- No priority inheritance for subtasks
+
+## Technical Considerations
+
+- Reuse existing badge component with color variants
+- Filter state managed via URL search params
+- Priority stored in database, not computed
+
+## Success Metrics
+
+- Users can change priority through the agreed task-edit interaction
+- High-priority tasks immediately visible at top of lists
+- No regression in task list performance
+
+## Open Questions
+
+- Should priority affect task ordering within a column?
+- Should we add keyboard shortcuts for priority changes?
+```
+
+---
+
+## Checklist
+
+Before saving the PRD:
+
+- [ ] Resolved material ambiguities or labeled assumptions
+- [ ] Incorporated user's answers
+- [ ] User stories are small and specific
+- [ ] Each implementation story recommends 0-2 relevant development agents
+- [ ] Functional requirements are numbered and unambiguous
+- [ ] Non-goals section defines clear boundaries
+- [ ] Saved to `tasks/prd-[feature-name].md`

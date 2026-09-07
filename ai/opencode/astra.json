@@ -1,0 +1,10 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "model": "openai/gpt-6-astra",
+    "agent": {
+        "build": {
+            "model": "openai/gpt-6-astra",
+            "variant": "default"
+        }
+    }
+}

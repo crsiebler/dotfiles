@@ -1,0 +1,4 @@
+# Opt-in model evaluation profile: codex --profile astra.
+# Verify account/model availability first. Keep the base model instructions.
+model = "gpt-6-astra"
+model_reasoning_effort = "high"

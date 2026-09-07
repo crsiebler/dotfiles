@@ -1,0 +1,143 @@
+# Personal defaults. Preserve the configured model; opt in with --profile astra.
+# Credentials are read at runtime, never interpolated into this file by install.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
+exclude_tmpdir_env_var = true
+exclude_slash_tmp = true
+
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp/"
+enabled = true
+bearer_token_env_var = "GITHUB_MCP_TOKEN"
+http_headers = { "X-MCP-Toolsets" = "repos,issues,pull_requests" }
+default_tools_approval_mode = "prompt"
+
+# Exact read exceptions; writes and newly introduced tools still prompt.
+[mcp_servers.github.tools]
+get_commit = { approval_mode = "approve" }
+get_file_contents = { approval_mode = "approve" }
+get_label = { approval_mode = "approve" }
+get_latest_release = { approval_mode = "approve" }
+get_release_by_tag = { approval_mode = "approve" }
+get_tag = { approval_mode = "approve" }
+issue_read = { approval_mode = "approve" }
+list_branches = { approval_mode = "approve" }
+list_commits = { approval_mode = "approve" }
+list_issue_fields = { approval_mode = "approve" }
+list_issue_types = { approval_mode = "approve" }
+list_issues = { approval_mode = "approve" }
+list_pull_requests = { approval_mode = "approve" }
+list_releases = { approval_mode = "approve" }
+list_repository_collaborators = { approval_mode = "approve" }
+list_tags = { approval_mode = "approve" }
+pull_request_read = { approval_mode = "approve" }
+search_code = { approval_mode = "approve" }
+search_commits = { approval_mode = "approve" }
+search_issues = { approval_mode = "approve" }
+search_pull_requests = { approval_mode = "approve" }
+search_repositories = { approval_mode = "approve" }
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+enabled = true
+env_http_headers = { "CONTEXT7_API_KEY" = "CONTEXT7_API_KEY" }
+enabled_tools = ["resolve-library-id", "query-docs"]
+default_tools_approval_mode = "prompt"
+
+[mcp_servers.context7.tools]
+resolve-library-id = { approval_mode = "approve" }
+query-docs = { approval_mode = "approve" }
+
+[mcp_servers.exa]
+url = "https://mcp.exa.ai/mcp?tools=web_search_exa,web_fetch_exa,agent_run,web_search_advanced_exa"
+enabled = true
+env_http_headers = { "x-api-key" = "EXA_API_KEY" }
+enabled_tools = ["web_search_exa", "web_fetch_exa", "agent_run", "web_search_advanced_exa"]
+default_tools_approval_mode = "prompt"
+
+[mcp_servers.exa.tools]
+web_search_exa = { approval_mode = "approve" }
+web_fetch_exa = { approval_mode = "approve" }
+agent_run = { approval_mode = "approve" }
+web_search_advanced_exa = { approval_mode = "approve" }
+
+# Retain the logical connection name jira; the provider is Atlassian Rovo v2.
+# Enable per project and authenticate through Codex's MCP OAuth support.
+[mcp_servers.jira]
+url = "https://mcp.atlassian.com/v2/mcp"
+enabled = false
+default_tools_approval_mode = "prompt"
+
+# Documented Rovo v2 and directly exposed read tools. Discovery varies by tenant.
+# executeRead is the server's read dispatcher, not an unrestricted write tool.
+[mcp_servers.jira.tools]
+atlassianUserInfo = { approval_mode = "approve" }
+getAccessibleAtlassianResources = { approval_mode = "approve" }
+discover = { approval_mode = "approve" }
+getContentFormatGuide = { approval_mode = "approve" }
+executeRead = { approval_mode = "approve" }
+search = { approval_mode = "approve" }
+getTeamworkGraphContext = { approval_mode = "approve" }
+getTeamworkGraphObject = { approval_mode = "approve" }
+getJiraIssue = { approval_mode = "approve" }
+listJiraProjects = { approval_mode = "approve" }
+listJiraProjectIssueTypesMetadata = { approval_mode = "approve" }
+getJiraIssueTypeMetaWithFields = { approval_mode = "approve" }
+listJiraIssueTransitions = { approval_mode = "approve" }
+listJiraIssueLinkTypes = { approval_mode = "approve" }
+listJiraIssueRemoteIssueLinks = { approval_mode = "approve" }
+listJiraIssueWorklogs = { approval_mode = "approve" }
+lookupJiraAccountId = { approval_mode = "approve" }
+findJiraIssueAssignableUsers = { approval_mode = "approve" }
+listJiraIssueComments = { approval_mode = "approve" }
+listJiraIssueChangelogs = { approval_mode = "approve" }
+getJiraCurrentUser = { approval_mode = "approve" }
+getJiraUser = { approval_mode = "approve" }
+listJiraStatuses = { approval_mode = "approve" }
+listJiraProjectComponents = { approval_mode = "approve" }
+getJiraProjectVersions = { approval_mode = "approve" }
+getJiraProjectVersionRelatedWork = { approval_mode = "approve" }
+listJiraBoards = { approval_mode = "approve" }
+getJiraBoardConfig = { approval_mode = "approve" }
+getJiraBoardIssueData = { approval_mode = "approve" }
+getJiraBoardSprintData = { approval_mode = "approve" }
+listJiraBoardSprints = { approval_mode = "approve" }
+listJiraFilters = { approval_mode = "approve" }
+listJiraDashboards = { approval_mode = "approve" }
+getJiraEntityProperty = { approval_mode = "approve" }
+downloadJiraIssueAttachment = { approval_mode = "approve" }
+searchJiraIssuesUsingJql = { approval_mode = "approve" }
+getJiraIssueRemoteIssueLinks = { approval_mode = "approve" }
+getJiraProjectIssueTypesMetadata = { approval_mode = "approve" }
+getIssueLinkTypes = { approval_mode = "approve" }
+getTransitionsForJiraIssue = { approval_mode = "approve" }
+getVisibleJiraProjects = { approval_mode = "approve" }
+getConfluencePage = { approval_mode = "approve" }
+getConfluencePageDescendants = { approval_mode = "approve" }
+getConfluencePageFooterComments = { approval_mode = "approve" }
+getConfluencePageInlineComments = { approval_mode = "approve" }
+getConfluenceCommentChildren = { approval_mode = "approve" }
+getConfluenceSpaces = { approval_mode = "approve" }
+getPagesInConfluenceSpace = { approval_mode = "approve" }
+searchConfluenceUsingCql = { approval_mode = "approve" }
+searchAtlassian = { approval_mode = "approve" }
+fetchAtlassian = { approval_mode = "approve" }
+fetch = { approval_mode = "approve" }
+
+[mcp_servers.postgresql]
+# Use a shell to expand HOME; Codex passes command arguments literally.
+command = "sh"
+args = [
+    "-c",
+    'exec node "$HOME/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js"',
+]
+env_vars = ["HOME", "POSTGRESQL_CONNECTION_STRING"]
+enabled = false
+default_tools_approval_mode = "prompt"
+
+# execute_query accepts arbitrary SQL and must continue to prompt.
+[mcp_servers.postgresql.tools]
+check_dangerous_operations_allowed = { approval_mode = "approve" }
