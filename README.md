@@ -18,7 +18,7 @@ A collection of configuration files for storing user preferences and preserving 
 - Source validation and agent rendering: Python 3.11+. Ralph requires `jq` and Git;
   its review regression test also uses Ruby to validate native reviewer YAML.
 
-The installer does not download missing tools. If `skills` is missing, arrange
+The AI installer does not download missing tools. If `skills` is missing, arrange
 an explicitly approved installation; there is no silent `npx` fallback.
 
 ### Choose an installation scope
@@ -44,12 +44,49 @@ GitHub, Exa, and Context7 are globally enabled; Jira/Rovo and PostgreSQL remain 
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
 See the guide for credentials, project opt-in, profiles, and merge behavior.
 
-For the broader shell setup, `make install` copies shell/alias files, creates or
+For the broader shell setup, `make install` first installs missing custom Zsh
+plugins and the configured theme, then copies shell/alias files, creates or
 synchronizes `$HOME/.env`, sets the global Git excludes file, calls
 `install-opencode`, and installs Ralph with `sudo`. It does **not** install Codex
 or a global `subagents`. It can change shell/env/git files before AI preflight
 fails, so resolve prerequisites first. Not every overwritten shell
 file or binary is backed up.
+
+### Custom Zsh plugins and theme
+
+With Oh My Zsh already installed, `make install` clones these missing extensions
+from their verified upstream repositories before replacing `.zshrc`:
+
+| Extension | Repository |
+| --- | --- |
+| `opencode` | [crsiebler/omz-plugin-opencode](https://github.com/crsiebler/omz-plugin-opencode) |
+| `gh` | [crsiebler/omz-plugin-gh](https://github.com/crsiebler/omz-plugin-gh) |
+| `bun` | [ntnyq/omz-plugin-bun](https://github.com/ntnyq/omz-plugin-bun) |
+| `you-should-use` | [MichaelAquilina/zsh-you-should-use](https://github.com/MichaelAquilina/zsh-you-should-use) |
+| `zsh-autosuggestions` | [zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) |
+| `zsh-syntax-highlighting` | [zsh-users/zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) |
+| Powerlevel10k | [romkatv/powerlevel10k](https://github.com/romkatv/powerlevel10k) |
+
+To install only these extensions, without shell copies or AI installation:
+
+```sh
+make PYTHON=python3 install-zsh-extensions
+```
+
+The installer respects exported `ZSH` and `ZSH_CUSTOM`; defaults are
+`$HOME/.oh-my-zsh` and `$ZSH/custom`. Keep any custom values exported when starting
+new shells too. Git and network access are required for missing extensions.
+Fresh clones use the upstream default branch; subsequent installs never pull,
+reset, or replace existing extensions, including custom non-Git copies. Existing
+entry files must be readable; invalid directories or symlinks stop installation
+for manual reconciliation. Failed clones are not installed; completed extensions
+remain if a later one fails. Existing origins are not changed or required to match.
+
+This does not install Oh My Zsh itself or the `opencode`, `gh`, `bun`, or Railway
+applications. Railway configuration is left untouched. The AI-only targets do
+not install Zsh extensions. Review existing copies and retain any needed backups
+before separately approved manual updates or removal; `make clean` does not touch
+plugins or themes. Open a new terminal after installation to load the extensions.
 
 For a new environment, copy `env/.env.example` to `$HOME/.env` only if that file
 does not already exist, then fill in values privately. For existing environments,
