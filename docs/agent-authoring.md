@@ -7,7 +7,7 @@ both user-level instruction files. Root [`AGENTS.md`](../AGENTS.md) is separate
 repository-only guidance. Keep specialist contracts in the native role sources
 below, not in the personal policy.
 
-`ai/codex/agents/*.toml` is the canonical collection of 127 custom agents. Each
+`ai/codex/agents/*.toml` is the canonical collection of 128 custom agents. Each
 native TOML source requires meaningful, nonempty `name`, `description`, and
 `developer_instructions` strings. Keep the Markdown role body in multiline
 `developer_instructions`; OpenCode generation preserves that parsed body unchanged,
@@ -50,7 +50,7 @@ TOML sources or the three OpenCode-only Markdown frontmatters; there are no
 exclusions or overrides JSON files. Do not add wildcard mutation or Jira-delete
 grants.
 
-These seven inspection roles use native `sandbox_mode = "read-only"` and read-only
+These eight inspection roles use native `sandbox_mode = "read-only"` and read-only
 role guidance in both harnesses:
 
 - `code-reviewer`
@@ -60,6 +60,7 @@ role guidance in both harnesses:
 - `compliance-auditor`
 - `agent-installer`
 - `powershell-security-hardening`
+- `story-reviewer`
 
 They inspect and return recommendations: no tests, edits, mutating commands, or
 external posts. Native read-only shell inspection is allowed when permitted by
@@ -72,6 +73,25 @@ MCP enforcement. Codex parent runtime permission overrides apply after role
 settings; MCP approvals are independent, and a read-only sandbox does not prohibit
 all external-service mutations. Neither role guidance nor these settings guarantee
 immutable per-role policy or project-only filesystem access.
+
+`story-reviewer.toml` is the dedicated Codex Goal staged-review wrapper. Its
+OpenCode counterpart is generated with the same generic mapping, so it has no
+shell permission and cannot replace native OpenCode `ralph-reviewer`. That native
+wrapper retains `steps: 3` and its exact staged-Git allowlist. Codex's three-step
+tool-turn budget is behavioral guidance, not equivalent hard enforcement.
+
+Both wrappers receive the complete
+[shared review protocol/schema](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md)
+from the executor, which loads it and
+[story-execution.md](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
+in full relative to the advertised installed `prepare-implementation` skill.
+Neither wrapper owns a duplicate schema or resolves checkout/cache paths. Missing
+protocol blocks review. Native review is project-local read/staged-Git-only,
+with one initial pass and at most one targeted pass in the same actual session;
+no tests, edits, browser/web/MCP, external posts, or further delegation.
+Do not substitute a general reviewer when required native review is unavailable.
+The GitHub PR review command and its schema remain separately canonical in
+`ai/opencode/commands/review-pr.md`.
 
 `sprite-artist` remains provider-specific. It loads `create-sprites`, uses
 `gpt_imagegen: ask`, and requires explicit confirmation before paid/subscription
@@ -143,10 +163,13 @@ Without `--output`, no agent files are written. `--check` and `--output` conflic
 | `ralph-reviewer` | Separate native source copied unchanged / no native source allowed |
 | `sprite-artist` | Native source copied unchanged with `gpt_imagegen: ask` / no Codex source |
 
-The 127 TOML sources produce **127 OpenCode Markdown files** or **127 unchanged
+The 128 TOML sources produce **128 OpenCode Markdown files** or **128 unchanged
 Codex source copies**, with no skips. The three separately copied native sources
-bring the OpenCode installation to **130 agents**. Codex uses native `/goal` for
-approved checklist execution, independently of the OpenCode Ralph loop.
+bring the OpenCode installation to **131 agents**. Codex uses native `/goal` for
+approved checklist execution with Ralph's full shared execution, memory, review,
+prepared-branch, and per-story commit contract. Markdown versus JSON is the task
+adapter difference; native Goal continuation/compaction does not acquire Ralph's
+external hard iteration controller or completion sentinel. See [Codex goals](codex-goals.md).
 
 ## Validation and evaluation
 

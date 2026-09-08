@@ -4,6 +4,7 @@ set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 RALPH_FILE="$ROOT_DIR/bin/ralph"
+PYTHON=$(command -v python3.11)
 TEST_DIR=$(mktemp -d "$ROOT_DIR/tests/ralph_model.XXXXXX")
 trap 'rm -rf "$TEST_DIR"' EXIT
 
@@ -15,12 +16,22 @@ unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR
 unset XDG_CONFIG_HOME
 command -v jq >/dev/null || { printf 'real jq required\n' >&2; exit 1; }
 ln -s "$(command -v jq)" "$TEST_DIR/no-cli/jq"
+ln -s "$(command -v git)" "$TEST_DIR/no-cli/git"
 git -C "$TEST_DIR" init -q
 git -C "$TEST_DIR" symbolic-ref HEAD refs/heads/ralph/test
+# Ignore only this fixture's harness/config/output helpers, never candidate work.
+printf '%s\n' /bin/ /home/ /no-cli/ '/custom config/' /empty-bin/ /git-only/ \
+  /opencode.args /codex.called /output /plan.next /plan.saved /prd.json \
+  /agent.saved > "$TEST_DIR/.git/info/exclude"
 git -C "$TEST_DIR" -c user.name=Test -c user.email=test@example.invalid \
   -c commit.gpgsign=false commit --allow-empty -qm fixture
 write_plan() {
+  # Independent scenario: discard only this fixture's runner control ledger.
+  rm -rf "$TEST_DIR/.git/ralph"
   printf '%s\n' '{"branchName":"ralph/test","userStories":[{"id":"US-001","title":"Test","description":"Test story","acceptanceCriteria":["Typecheck passes"],"priority":1,"passes":false}]}' > "$TEST_DIR/plan.json"
+  git -C "$TEST_DIR" add plan.json
+  git -C "$TEST_DIR" -c user.name=Test -c user.email=test@example.invalid \
+    -c commit.gpgsign=false commit --allow-empty -qm 'prepared fixture'
 }
 write_plan
 printf '%s\n' '---' 'description: test Ralph agent' 'mode: primary' '---' 'test prompt' > "$TEST_DIR/home/.config/opencode/agents/ralph.md"
@@ -32,6 +43,9 @@ case "${RALPH_TEST_ACTION:-complete}" in
   complete)
     jq '.userStories[].passes = true' plan.json > plan.next
     mv plan.next plan.json
+    git add plan.json
+    git -c user.name=Test -c user.email=test@example.invalid -c commit.gpgsign=false commit --allow-empty -qm story
+    "$RALPH_TEST_PYTHON" -c 'import json,os; json.dump(dict(version=1,iteration_id=os.environ["RALPH_ITERATION_ID"],story_id=os.environ["RALPH_STORY_ID"],status="completed"),open(os.environ["RALPH_OUTCOME_FILE"],"w"))'
     ;;
   branch|branchcomplete)
     git symbolic-ref HEAD refs/heads/ralph/changed
@@ -61,7 +75,8 @@ run_ralph() {
     HOME="$TEST_DIR/home" \
       PATH="${RALPH_TEST_PATH:-$TEST_DIR/bin:$PATH}" \
       RALPH_TEST_DIR="$TEST_DIR" \
-      /bin/bash "$RALPH_FILE" "$@"
+      RALPH_TEST_PYTHON="$PYTHON" \
+      "$PYTHON" "$RALPH_FILE" "$@"
   )
 }
 
@@ -77,9 +92,12 @@ reject() {
   [[ ! -e "$TEST_DIR/codex.called" ]] || fail 'invoked unsupported Codex runner'
 }
 
+reject 'unknown option' --authorize-story-commits
+reject 'unknown option' --authorize-story-commits=true
+reject 'unknown option' --authorize-story-commits false
 reject '--auto has been removed' --auto
 reject '--auto has been removed' --auto=true
-for option in --model --mode --max-iterations; do
+for option in --model --mode --max-iterations --max-story-retries --iteration-timeout; do
   reject 'requires a value' "$option"
   reject 'requires a value' "$option" --help
   reject 'requires a value' "$option" ''
@@ -132,10 +150,15 @@ run_ralph --model openai/gpt-5.3-codex-spark --max-iterations 1 >/dev/null
 grep -qx -- '- Model: openai/gpt-5.3-codex-spark' "$TEST_DIR/opencode.args" || fail 'Spark model lost'
 grep -qx -- '- Model source: explicit' "$TEST_DIR/opencode.args" || fail 'explicit source lost'
 
-# Valid completion needs neither an OpenCode binary/agent nor Git.
-RALPH_TEST_PATH="$TEST_DIR/no-cli" run_ralph > "$TEST_DIR/output"
+# Valid completion needs neither an OpenCode binary nor agent; Git inspects state.
+RALPH_TEST_AUTHORIZE=false RALPH_TEST_PATH="$TEST_DIR/no-cli" run_ralph > "$TEST_DIR/output"
 grep -q 'All user stories completed' "$TEST_DIR/output" || fail 'completion short circuit'
-RALPH_TEST_PATH="$TEST_DIR/no-cli" run_ralph --help >/dev/null
+[[ ! -e "$TEST_DIR/opencode.args" ]] || fail 'completed plan launched OpenCode'
+RALPH_TEST_AUTHORIZE=false RALPH_TEST_PATH="$TEST_DIR/no-cli" run_ralph --help > "$TEST_DIR/output"
+for expected in '--resume' 'one commit per passing story' \
+  'this invocation' 'Sensitive operations' 'external posts' 'push'; do
+  grep -Fq -- "$expected" "$TEST_DIR/output" || fail "missing help scope: $expected"
+done
 
 # Dependency diagnostics and option parsing must not depend on harness installs.
 mv "$TEST_DIR/plan.json" "$TEST_DIR/plan.saved"
@@ -147,14 +170,16 @@ reject 'plan.json not found'
 mv "$TEST_DIR/prd.json" "$TEST_DIR/plan.json"
 write_plan
 mkdir -p "$TEST_DIR/empty-bin" "$TEST_DIR/git-only"
-RALPH_TEST_PATH="$TEST_DIR/empty-bin" reject 'jq command not found'
+RALPH_TEST_PATH="$TEST_DIR/empty-bin" reject 'Git command not found'
 for dependency in jq git grep; do
   ln -s "$(command -v "$dependency")" "$TEST_DIR/git-only/$dependency"
 done
 RALPH_TEST_PATH="$TEST_DIR/git-only" reject 'opencode command not found'
+write_plan
 mv "$TEST_DIR/home/.config/opencode/agents/ralph.md" "$TEST_DIR/agent.saved"
 reject 'ralph.md not found'
 mv "$TEST_DIR/agent.saved" "$TEST_DIR/home/.config/opencode/agents/ralph.md"
+write_plan
 
 # Custom XDG installation: no agent file exists under the default HOME root.
 mkdir -p "$TEST_DIR/custom config/opencode/agents"
@@ -170,7 +195,9 @@ mv "$TEST_DIR/custom config/opencode/agents/ralph.md" \
   "$TEST_DIR/home/.config/opencode/agents/ralph.md"
 write_plan
 XDG_CONFIG_HOME="$TEST_DIR/custom config" reject 'ralph.md not found'
+write_plan
 XDG_CONFIG_HOME='relative/config' reject 'XDG_CONFIG_HOME must be an absolute path'
+write_plan
 XDG_CONFIG_HOME='' run_ralph --max-iterations 1 > "$TEST_DIR/output"
 grep -Fq "Ralph agent file found: $TEST_DIR/home/.config/opencode/agents/ralph.md" \
   "$TEST_DIR/output" || fail 'empty XDG override must use HOME fallback'
@@ -216,8 +243,8 @@ reject 'detached HEAD'
 git -C "$TEST_DIR" symbolic-ref HEAD refs/heads/ralph/test
 
 for action in branch branchcomplete invalid unchanged fail; do
-  write_plan
   git -C "$TEST_DIR" symbolic-ref HEAD refs/heads/ralph/test
+  write_plan
   result=0
   RALPH_TEST_ACTION="$action" run_ralph --max-iterations 2 > "$TEST_DIR/output" 2>&1 || result=$?
   if [[ "$result" == 0 ]]; then
@@ -228,8 +255,14 @@ for action in branch branchcomplete invalid unchanged fail; do
   fi
   count=$(grep -cx 'run' "$TEST_DIR/opencode.args")
   if [[ "$action" == unchanged ]]; then
-    [[ "$count" == 2 ]] || fail 'iteration limit not enforced'
-    grep -q 'Reached maximum iterations (2)' "$TEST_DIR/output" || fail 'missing limit error'
+    [[ "$count" == 1 ]] || fail 'missing outcome must stop immediately'
+    if grep -Eq 'User authorization handoff|Outcome JSON:' "$TEST_DIR/opencode.args"; then
+      fail 'static agent policy duplicated in runtime context'
+    fi
+    for iteration in 1; do
+      grep -Fqx -- "- Iteration: $iteration of 2" "$TEST_DIR/opencode.args" || fail 'iteration context lost'
+    done
+    grep -q 'missing iteration outcome' "$TEST_DIR/output" || fail 'missing outcome error'
   else
     [[ "$count" == 1 ]] || fail "unsafe next iteration: $action"
     case "$action" in

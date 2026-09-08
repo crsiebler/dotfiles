@@ -14,7 +14,7 @@ CANONICAL = ROOT / "ai/codex/agents"
 RESTRICTED = {
     "code-reviewer", "architect-reviewer", "ad-security-reviewer",
     "security-auditor", "compliance-auditor", "agent-installer",
-    "powershell-security-hardening",
+    "powershell-security-hardening", "story-reviewer",
 }
 
 
@@ -230,11 +230,11 @@ class AgentContractTest(unittest.TestCase):
 
     def test_collection_counts_and_native_byte_copies(self):
         report = self.success(self.run_cli(canonical=True))
-        self.assertEqual(127, report["sources"])
-        self.assertEqual(127, report["rendered"])
+        self.assertEqual(128, report["sources"])
+        self.assertEqual(128, report["rendered"])
         report = self.success(self.run_cli("--harness", "codex", "--output", self.output,
                                            canonical=True))
-        self.assertEqual(127, report["written"])
+        self.assertEqual(128, report["written"])
         self.assertNotIn("skipped", report)
         self.assertEqual({p.name for p in CANONICAL.glob("*.toml")},
                          {p.name for p in self.output.glob("*.toml")})

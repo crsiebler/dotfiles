@@ -180,13 +180,19 @@ remove only confirmed obsolete generated definitions, including older
 `ai/opencode/agents/` and their installed OpenCode copies.
 
 Preserve `ad-security-reviewer`, `agent-installer`, `architect-reviewer`,
-`code-reviewer`, `compliance-auditor`, `security-auditor`, and
-`powershell-security-hardening`: they are supported
+`code-reviewer`, `compliance-auditor`, `security-auditor`,
+`powershell-security-hardening`, and `story-reviewer`: they are supported
 native Codex roles with `sandbox_mode = "read-only"` and read-only guidance, not
 cleanup candidates by name. Compare customized copies with `ai/codex/agents/`
-before any approved replacement. Codex receives all 127 TOML sources unchanged;
+before any approved replacement. Codex receives all 128 TOML sources unchanged;
 there is no exclusions file. See [agent authoring](agent-authoring.md) for source
 ownership and the distinct Codex sandbox, MCP, and OpenCode tool boundaries.
+
+The new `story-reviewer.toml` adds a role; it retires no installed paths. Preserve
+its generically generated OpenCode `story-reviewer.md` counterpart too: the 128
+generated agents plus three native sources total 131 OpenCode agents. That
+read/glob/grep-only counterpart does not replace native `ralph-reviewer.md`.
+No additional deletion or migration is needed for this addition.
 
 Privately inspect user/project `config.toml` and companion profiles for obsolete
 `[agents.<role>]` tables and `config_file` references. Aliases may use different

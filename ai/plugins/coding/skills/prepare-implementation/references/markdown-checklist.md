@@ -1,140 +1,169 @@
 # Markdown implementation checklist
 
 Write project-local `PLAN.md` unless the user specifies another path. Produce a
-self-contained user-story checklist, not JSON. Inspect the project for real paths,
-instructions, test tools and commands; record missing checks as unavailable or
-unresolved, never invent scripts or documentation. Planning does not execute tests.
+task checklist, not JSON. Inspect relevant project paths, instructions, and real
+verification commands; mark missing checks unknown/unavailable rather than
+inventing them. Planning does not execute tests or create execution-state files.
+
+This is the Markdown task-source adapter for the same
+[execution contract](story-execution.md) and [review protocol](story-review.md)
+as Ralph JSON. The formats differ, not the story lifecycle. Codex retains native
+Goal continuation and compaction; it does not run the external Ralph loop.
 
 ## Plan contract
 
-- Record objective, requirement sources, scope/non-goals, existing working branch
-  if known (otherwise unknown), and current authorization/delivery expectations.
-  Do not create/switch branches. No commits unless explicitly requested; sensitive
-  actions still require approval. Plan approval is not blanket execution authority.
-- Use unique stable IDs (`US-001`), numeric priorities in execution order, and
-  explicit dependencies (`none` or earlier story IDs). Validate every dependency
-  exists, is earlier, and the graph has no cycles; order by dependencies first.
-- Bound each story to one focused task including verification and review. Do not
-  require a fresh session per story. Include concrete user benefit, relevant paths,
-  measurable acceptance criteria, tests and typecheck as applicable, and browser
-  verification for UI changes using the project's available workflow.
-- Start every generated story and acceptance/workflow checkbox unchecked. Evidence
-  slots say pending/not run, never fabricated completion. Approved continuation
-  preserves existing checked statuses and their evidence; edit only scoped sections.
-- Each story schedules research, implementation, verification, independent review,
-  remediation/reverification, then a checkpoint after review. Independent review
-  may use `@code-reviewer` through available native delegation, or a human reviewer.
-  If unavailable, record review pending; do not label self-review independent.
-  Reviewers inspect; implementers run tests and fix findings. No simulated delegation.
-- Keep sufficient resumption state in this same plan: decisions, changed paths,
-  actual command/result evidence, review findings and disposition, blockers,
-  authorization limits, and next eligible story. No required Ralph progress/memory
-  files, staged-only reviewer, or imported Ralph execution hard gate.
+- Record objective, requirement sources, scope/non-goals, working branch,
+  authorization, delivery expectations, verification commands, and material gaps.
+- The working branch must be an exact prepared Git branch before execution, not
+  main/master or detached HEAD, with an existing commit. During planning it may
+  be unknown, but label that an execution blocker. Do not create/switch branches.
+- Use unique stable IDs (`US-001`), numeric priorities, and explicit dependencies
+  (`none` or earlier IDs). Validate references, dependency order, and acyclicity.
+  Execution selects the lowest numeric priority eligible incomplete story.
+- Bound each story to one focused implementation, verification, review, and
+  commit unit. Include user benefit, relevant paths, observable criteria, tests,
+  typecheck, formatting/lint commands, and `verify-interface` for UI changes.
+  Report unavailable checks honestly; unmet required criteria block completion.
+- Start new story, acceptance, and workflow checkboxes unchecked. Preserve
+  existing checked state and evidence during approved scoped continuation.
+- Require the shared `fast`/`standard`/`deep` advisor and staged-review budgets,
+  defaulting to `standard`. Mode-permitted self-review is not independent review.
+  Native review must use `story-reviewer`; never substitute a general reviewer
+  or a human ad hoc to bypass an unavailable required gate.
+- Keep scope, requirements, criteria, dependencies, completion checkboxes, and
+  concise current status in the plan, not repeated execution narratives.
+  Execution evidence and checkpoints go in append-only `docs/progress.md`;
+  validated patterns/suppressions go in bounded `memory.json`. These paths are
+  relative to the worktree root, even when the task source has a custom path.
+- Mark a story delivered only after checks, review, and an explicitly authorized
+  per-story commit succeed. Planning/plan approval is not execution or commit
+  permission. Honor narrower instructions and report undelivered work.
 
-## Recommended agents
+## Recommended advisors
 
-Preserve supplied specialist recommendations in each story. When none are supplied,
-suggest agents only where their expertise would help; use exact known role names,
-not invented specialists or a mandatory agent quota. Trivial implementation work
-can stay with the primary agent. Recommendations are optional unless the user
-explicitly requires a particular agent.
+Preserve supplied implementation recommendations; infer only useful exact known
+role names, never a quota. The executor implements and tests. Implementation
+specialists are read-only advisors under the shared mode budget (at most two),
+not competing file editors. Record the role's bounded question in the plan;
+record actual invocation or a skip reason in `docs/progress.md` at execution time.
+Discovery is not invocation and a definition does not prove native availability.
 
-Separate implementation and review assignments. An implementation specialist may
-research, edit, and test within the authorized scope. An independent reviewer
-inspects the changes and reports findings; the implementer handles remediation.
-Include delegation notes defining responsibilities and file ownership so the
-primary agent and specialists do not edit the same files concurrently.
-
-At execution time, confirm the role is available through native delegation before
-invoking it. A name in the plan or a definition on disk is not proof of availability.
-If a recommendation is unavailable or unnecessary, record the reason and select
-an appropriate alternative; do not silently substitute for an explicitly required
-agent. Preserve the independent-review requirement even if the suggested reviewer
-is unavailable. Planning records recommendations only and does not spawn agents
-to execute the stories.
+The staged reviewer is fixed to Codex `story-reviewer` when the mode requires
+native review. Supplied general review recommendations may inform risk/advisor
+selection but cannot replace this gate or extend its budget. The executor loads
+the full installed `story-review.md` and supplies it with the compact packet,
+without embedding the diff; retain the actual returned native reviewer ID for
+at most one targeted same-session follow-up.
 
 ## Template
 
-Replace placeholders using project evidence; repeat the story section as needed.
+Replace placeholders using project evidence; repeat only the story section.
+The resume instructions below must be included in the generated plan so a Goal
+loads the shared contract even when the planning skill is not otherwise active.
 
 ```markdown
 # Implementation plan: <feature>
 
 ## Objective and context
 - Objective: <observable outcome>
-- Sources: <supplied requirements and inspected project paths>
+- Sources: <requirements and inspected paths>
 - Scope: <included work>
 - Non-goals: <excluded work>
-- Working branch: <existing branch or unknown; no creation/switching>
-- Authorization: <current grant and actions still needing approval>
-- Delivery: <requested deliverable; no commits unless explicitly requested>
-- Verification commands: <existing commands and purposes; unavailable checks>
+- Working branch: <exact prepared branch; unknown is an execution blocker>
+- Mode: standard
+- Authorization: <actual execution/commit grant, or pending; sensitive actions excluded>
+- Delivery: one authorized commit per verified and reviewed story
+- Verification commands: <real format/lint/typecheck/test commands and unavailable checks>
 - Assumptions / open questions: <material gaps or none>
 
 ## Ordered stories
 
-### US-001 — <bounded story title>
+### US-001 - <bounded story title>
 - [ ] Story complete
 - Priority: 1
 - Depends on: none
 - User story: As a <user>, I want <capability> so that <benefit>.
-- Relevant paths: <source/test paths identified during inspection>
-- Recommended implementation agents: <known role names, or primary agent>
-- Recommended review agent: <known independent role, human reviewer, or not selected>
-- Delegation notes: <bounded assignments and file ownership, or not needed>
+- Relevant paths: <source/test paths>
+- Recommended implementation advisors: <known roles or none>
+- Advisor questions: <bounded read-only guidance needed or not needed>
+- Staged reviewer: story-reviewer when required by the shared mode/risk budget
 
 #### Acceptance criteria
-- [ ] <specific observable behavior>
-- [ ] <regression/edge case verified with relevant existing tests>
-- [ ] <applicable typecheck command succeeds, or documented unavailability>
+- [ ] <observable behavior>
+- [ ] <regression/edge case verified>
+- [ ] <typecheck passes; explicit treatment of unavailable checks>
 
 #### Execution checklist
-- [ ] Research relevant code, instructions, dependencies and test coverage.
-- [ ] Implement scoped changes and appropriate tests.
-- [ ] Verify acceptance criteria with identified commands/tools.
-- [ ] Obtain independent review; record reviewer, scope and findings.
-- [ ] Remediate findings and rerun affected checks (or record no fixes needed).
-- [ ] Checkpoint after review: update evidence, decisions and next story.
-
-#### Evidence and checkpoint
-- Changed paths: pending
-- Verification: not run; record command, result and relevant evidence paths
-- Review / remediation: pending
-- Agents used / recommendations skipped: pending; record actual delegation and reasons
-- Decisions / blockers / approval needed: pending
-- Next eligible story: <ID or final delivery; confirm after checkpoint>
+- [ ] Verify authorization and exact prepared branch; read project instructions and state.
+- [ ] Research and implement this story with tests; use only budgeted read-only advisors.
+- [ ] Run formatting, lint, typecheck, tests, and UI verification as applicable.
+- [ ] Stage the intended candidate and complete the shared mode-aware review gate.
+- [ ] Resolve findings, rerun affected checks, and perform at most one targeted re-review.
+- [ ] Update bounded memory and append progress; finalize task metadata and commit.
 
 ## Resume and delivery
-- Current state: planned; implementation and checks not run
-- Next action: review plan and resolve material questions
-- Resumption notes: <constraints and knowledge needed to continue>
-- [ ] Final report: delivered scope, evidence, review outcomes, gaps and remaining work
+- For authorized execution, load the installed prepare-implementation skill and
+  read references/story-execution.md and references/story-review.md relative to
+  that skill's reported base directory. Follow its CodexGoalMarkdown adapter.
+  If discovery, a reference, or required story-reviewer invocation is unavailable,
+  stop with the blocker; do not invent a path, substitute a reviewer, or skip rules.
+- Read this plan, relevant latest docs/progress.md entries, and memory.json if
+  present, resolving state paths from the worktree root. Keep this plan concise:
+  scope, requirements, criteria, dependencies, completion state, and current status.
+  Put commands/results, changed paths, review findings/dispositions, blockers,
+  approvals, actual advisor use, commit status, and resumption checkpoints in
+  append-only docs/progress.md; never rewrite its history. Create it only when
+  authorized execution requires a checkpoint and branch/unrelated-work guards pass.
+- Missing memory.json is normal: check existence before reading, use empty
+  version-1 memory in process, and create it only after passing review. Preserve
+  invalid memory and stop; keep at most 20 patterns and 20 suppressions.
+- Recheck the prepared branch before changes, staging, and commit. No branch
+  creation/switching, implicit pushes, external posts, or sensitive-operation grants.
+- Native review uses story-reviewer, its supplied shared JSON schema, and at most
+  one initial plus one targeted same-session pass. Self-review is permitted only
+  by the mode/risk budget; malformed/blocked review stops delivery.
+- Provisional completion boxes are staged only after checks/review pass; a story
+  is delivered only after its authorized commit succeeds. On failure follow the
+  shared marker-restoration and checkpoint procedure. Never claim unchecked work done.
+- [ ] Final report: actual commits, checks/review outcomes, delivered scope, remaining gaps.
+- After all tasks are verified and committed, offer separately approved archival
+  using references/completed-run-archive.md from the installed skill. Do not move
+  active state or commit an archive under story-commit authorization alone.
 ```
 
-For example, a search change might first add query normalization with unit tests,
-then add a results filter depending on that story. Use actual project commands;
-a documentation-only story may record typecheck as not applicable with a reason.
-These are examples, not a mandatory architecture or fixed number of stories.
+For a Python client story, `python-pro` may advise on implementation risks while
+the executor edits/tests and `story-reviewer` performs the required staged review.
+Documentation-only work may record typecheck as not applicable with an explicit
+reason. These are examples, not mandatory architecture or fixed agent counts.
 
-For a Python API-client story, recommendations could be:
+## Handoff and existing plans
 
-```markdown
-- Recommended implementation agents: `python-pro`
-- Recommended review agent: `code-reviewer`
-- Delegation notes: Let python-pro own the client module and its tests. Review the
-  resulting diff independently; the primary agent coordinates and verifies the handoff.
+Report path, dependency/ordering checks, assumptions, unresolved verification,
+branch preparation, and authorization gaps. Offer this launch text only after
+plan review; do not enter it or execute anything during planning:
+
+```text
+/goal Execute the approved PLAN.md using prepare-implementation's shared story
+execution and staged-review contracts in standard mode. I authorize scoped
+implementation, required project dependencies, checks, and one commit per passing
+story. Read PLAN.md, docs/progress.md, and memory.json as specified. Keep task
+checkboxes and concise current status in PLAN.md, append execution history to
+docs/progress.md, and update bounded memory only from validated review evidence.
+Preserve unrelated work and existing
+permission boundaries; ask for sensitive operations. Stop on branch, verification,
+review, memory, or commit blockers. Do not push, deploy, or post externally.
 ```
 
-## Handoff
+The user must actually grant that scope; quoted launch text is not authorization.
+Codex continues in its native thread and rereads state after compaction/resumption.
+Do not force fresh sessions, install compaction hooks, invent runner iteration
+limits, or run `/compact` as a shell command.
 
-Report the saved path, ordering/dependency checks, assumptions and unresolved
-verification tools. Offer optional launch text only for use after plan review:
-“Read PLAN.md and project instructions. Continue the next eligible story within
-current authorization, maintain evidence/checkpoints in PLAN.md, and report gaps.”
-
-The user may enter that text through native `/goal`; do not create the goal or
-execute CLI commands during generation. The native thread continues with its
-knowledge and rereads PLAN.md as needed. Rely on native automatic compaction;
-do not force compaction, add hooks, run a fake `/compact` shell command, or impose
-Ralph-style fresh contexts. Record durable resumption state rather than resetting
-the plan. Finish execution with an evidence-backed delivery report.
+Do not create/reset progress or memory during planning. Existing plans may have
+implementation notes: preserve them and completed checkboxes. Relocating that
+evidence requires explicit cleanup approval during authorized execution and must
+preserve it in docs/progress.md before removing it from the plan. Do not replace an
+unfinished run. Archive completed runs only under the shared
+[archival procedure](completed-run-archive.md). A resumed old plan missing the
+branch or shared contract needs a scoped plan update, not silent execution with
+weaker rules.

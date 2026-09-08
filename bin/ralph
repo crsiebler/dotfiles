@@ -1,280 +1,774 @@
-#!/bin/bash
+#!/usr/bin/env python3
+"""Single-file, POSIX Ralph supervisor. Requires Python 3.11+ and Git."""
 
-# Ralph CLI - Autonomous AI coding loop
-# OpenCode-only runner.
+import sys
 
-set -euo pipefail
+if sys.version_info < (3, 11):
+    print("Error: Ralph requires Python 3.11 or newer.", file=sys.stderr)
+    raise SystemExit(1)
 
-# Default values
-MAX_ITERATIONS=10
-RALPH_MODE="standard"
-MODEL="openai/gpt-5.6-sol-fast"
-MODEL_SOURCE="default"
+import copy
+import fcntl
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import signal
+import stat
+import subprocess
+import time
+import uuid
 
-valid_model() {
-  case "$1" in
-    opencode/big-pickle|\
-    opencode/ling-3.0-flash-fin-free|\
-    opencode/mimo-v2.5-free|\
-    opencode/muse-spark-1.2-contributor-free|\
-    opencode/nemotron-3-ultra-free|\
-    opencode/nemotron-3.5-lightning-free|\
-    mlx/mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit|\
-    openai/gpt-5.3-codex-spark|\
-    openai/gpt-5.4|\
-    openai/gpt-5.4-fast|\
-    openai/gpt-5.4-mini|\
-    openai/gpt-5.4-mini-fast|\
-    openai/gpt-5.5|\
-    openai/gpt-5.5-fast|\
-    openai/gpt-5.6-luna|\
-    openai/gpt-5.6-luna-fast|\
-    openai/gpt-5.6-sol|\
-    openai/gpt-5.6-sol-fast|\
-    openai/gpt-5.6-terra|\
-    openai/gpt-5.6-terra-fast)
-      return 0
-      ;;
-    *)
-      return 1
-      ;;
-  esac
+MODELS = {
+    "opencode/" + name for name in (
+        "big-pickle", "ling-3.0-flash-fin-free", "mimo-v2.5-free",
+        "muse-spark-1.2-contributor-free", "nemotron-3-ultra-free",
+        "nemotron-3.5-lightning-free")
+} | {"mlx/mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit"} | {
+    "openai/" + name for name in (
+        "gpt-5.3-codex-spark", "gpt-5.4", "gpt-5.4-fast", "gpt-5.4-mini",
+        "gpt-5.4-mini-fast", "gpt-5.5", "gpt-5.5-fast", "gpt-5.6-luna",
+        "gpt-5.6-luna-fast", "gpt-5.6-sol", "gpt-5.6-sol-fast",
+        "gpt-5.6-terra", "gpt-5.6-terra-fast")
 }
+HELP = """Usage: ralph [options]
+  --max-iterations N     Sessions this invocation (1-999999999; default 10)
+  --max-story-retries N  Recovery sessions per story (0-5; default 2).
+                        Explicit values update the persisted budget, never counts.
+  --iteration-timeout N  Seconds per session (0-86400; default 0, unlimited)
+  --resume              Approve reconciled interrupted/blocked work; never reset counts
+  --status              Read-only diagnosis; cannot combine with execution options
+  --mode MODE           fast, standard, deep (default standard)
+  --model MODEL         Allowlisted OpenCode model (default openai/gpt-5.6-sol-fast)
+  -h, --help            Show help
 
-usage() {
-  printf '%s\n' "Usage: ralph [options]
+Invoking Ralph for execution grants routine scoped implementation, needed dependencies
+and checks, and one commit per passing story, as defined in the native agent.
+Read-only --status grants no execution authority.
+Required checks and review must pass. Sensitive operations, external posts and pushes
+still require separate approval; no runtime permission is overridden.
+--auto and --authorize-story-commits are unsupported.
+Requires Python 3.11+, POSIX process groups/flock, Git, plan.json and a prepared
+committed exact plan branch (not main/master/detached). OpenCode and its installed
+Ralph agent are needed only for incomplete plans. No jq dependency.
+A fresh run requires a clean prepared worktree, index and nonignored untracked
+files, with plan.json committed. --resume without existing state cannot waive this.
+.ralph-stop always stops execution and is retained until the user clears it.
+State is per-worktree Git metadata: git rev-parse --git-path ralph/state.json.
+Outcomes are project-root .ralph-outcome-<32 lowercase hex iteration ID>.json files.
+They remain for audit/manual cleanup. Never stage or commit outcomes or .ralph-stop.
+Blocked/running state requires --resume after human reconciliation; ready state
+resumes only with an unchanged candidate snapshot. Timeout/signals never retry.
+--resume cannot accept provisional passes markers: newly completed work must be
+delivered in a descendant commit with the exact selected-story plan transition.
+"""
 
-Options:
-  --max-iterations N   Maximum number of iterations to run (default: 10)
-  --mode MODE          Execution mode: fast, standard, deep (default: standard)
-  --model MODEL        OpenCode model (default: openai/gpt-5.6-sol-fast)
-  -h, --help           Show this help message
 
-Ralph is an autonomous AI coding agent that iteratively processes
-user stories from plan.json until completion.
+class Refusal(Exception):
+    def __init__(self, message, exit_code=1):
+        super().__init__(message)
+        self.exit_code = exit_code
 
-Requirements:
-  - plan.json file in the current directory
-  - OpenCode installed and configured (only for incomplete plans)
-  - jq installed for plan.json parsing
-  - Ralph agent at \$XDG_CONFIG_HOME/opencode/agents/ralph.md
-    (default config root: ~/.config; nonempty override must be absolute)
-  - Git worktree already on the exact plan branch, not main/master or detached"
-}
 
-error() {
-  printf 'Error: %s\n' "$1" >&2
-}
+def require(condition, message):
+    if not condition:
+        raise Refusal(message)
 
-plan_complete() {
-  jq -e 'all(.userStories[]; .passes == true)' plan.json >/dev/null
-}
 
-validate_plan() {
-  if ! jq -es '
-    def text: type == "string" and test("\\S");
-    length == 1 and (.[0] |
-      type == "object" and
-      (.branchName | text) and
-      (.userStories | type == "array" and length > 0) and
-      all(.userStories[];
-        type == "object" and
-        (.id | text) and (.title | text) and (.description | text) and
-        (.acceptanceCriteria | type == "array" and length > 0 and
-          all(.[]; text)) and
-        (.priority | type == "number" and . >= 0 and . == floor) and
-        (.passes | type == "boolean")) and
-      ([.userStories[].id] | length == (unique | length)))
-  ' plan.json >/dev/null 2>&1; then
-    error 'invalid plan.json: require one object with branchName and nonempty userStories; each story needs unique id, title, description, nonempty string acceptanceCriteria, nonnegative integer priority, and boolean passes'
-    exit 1
-  fi
-}
+def options(args):
+    if "--status" in args:
+        require(all(a in ("--status", "--help", "-h") for a in args),
+                "--status cannot be combined with execution options or arguments")
+        if "--help" in args or "-h" in args:
+            print(HELP)
+            raise SystemExit(0)
+        return dict(status=True)
+    values = dict(max_iterations=10, max_story_retries=None, iteration_timeout=0,
+                  mode="standard", model="openai/gpt-5.6-sol-fast", resume=False,
+                  model_source="default")
+    while args:
+        flag = args.pop(0)
+        if flag in ("-h", "--help"):
+            print(HELP)
+            raise SystemExit(0)
+        if flag == "--resume":
+            values["resume"] = True
+            continue
+        require(not flag.startswith("--auto"), "--auto has been removed")
+        require(flag in ("--max-iterations", "--max-story-retries", "--iteration-timeout", "--mode", "--model"),
+                "unknown option or argument; use --help")
+        require(args and args[0] and not args[0].startswith("--") and args[0] != "-h",
+                flag + " requires a value")
+        value = args.pop(0)
+        key = flag[2:].replace("-", "_")
+        if key == "mode":
+            require(value in ("fast", "standard", "deep"), "--mode must be one of: fast, standard, deep")
+        elif key == "model":
+            require(not value.startswith("-") and not any(c.isspace() or ord(c) < 32 for c in value),
+                    "--model must be a nonempty model identifier without whitespace")
+            values["model_source"] = "explicit"
+        else:
+            low, high = (1, 999999999) if key == "max_iterations" else (0, 5 if key == "max_story_retries" else 86400)
+            require(re.fullmatch(r"0|[1-9][0-9]{0,8}", value) and low <= int(value) <= high,
+                    f"{flag} must be a {'positive integer' if low else 'nonnegative integer'} ({low}-{high})")
+            value = int(value)
+        values[key] = value
+    require(values["model"] in MODELS, "unsupported model for OpenCode; use an allowlisted provider/model identifier")
+    return values
 
-require_value() {
-  if [[ $# -lt 2 || -z "$2" || "$2" == --* || "$2" == -h ]]; then
-    error "$1 requires a value"
-    exit 1
-  fi
-}
 
-check_branch() {
-  local expected current
-  if ! git rev-parse --is-inside-work-tree 2>/dev/null | \
-    command grep -qx true; then
-    error 'a prepared Git worktree is required'
-    exit 1
-  fi
-  if ! current=$(git symbolic-ref --quiet HEAD); then
-    error 'detached HEAD: prepare the plan branch before running Ralph'
-    exit 1
-  fi
-  current=${current#refs/heads/}
-  expected=$(jq -r '.branchName' plan.json)
-  case "$current" in
-    main|master)
-      error 'protected branch: Ralph cannot run on main or master'
-      exit 1
-      ;;
-  esac
-  if ! git check-ref-format "refs/heads/$expected" >/dev/null 2>&1 || \
-    ! jq -e --arg current "$current" '.branchName == $current' \
-      plan.json >/dev/null; then
-    error 'branch mismatch: prepare the exact plan.json branchName before running Ralph; no branches were switched'
-    exit 1
-  fi
-  if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
-    error 'a prepared Git worktree with an existing commit is required'
-    exit 1
-  fi
-}
+def git(*args, optional=False):
+    try:
+        result = subprocess.run(["git", *args], capture_output=True,
+                                env=dict(os.environ, GIT_OPTIONAL_LOCKS="0"))
+    except FileNotFoundError:
+        raise Refusal("Git command not found; cannot inspect interrupted state") from None
+    if optional:
+        return result
+    require(result.returncode == 0, "Git inspection failed: " + args[0])
+    return result.stdout
 
-# Parse command line options
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --max-iterations)
-      require_value "$@"
-      if [[ ! "$2" =~ ^[1-9][0-9]*$ || ${#2} -gt 9 ]]; then
-        error "--max-iterations must be a positive integer (1-999999999)"
-        exit 1
-      fi
-      MAX_ITERATIONS="$2"
-      shift 2
-      ;;
-    --mode)
-      require_value "$@"
-      case "$2" in
-        fast|standard|deep)
-          RALPH_MODE="$2"
-          ;;
-        *)
-          error "--mode must be one of: fast, standard, deep"
-          exit 1
-          ;;
-      esac
-      shift 2
-      ;;
-    --model)
-      require_value "$@"
-      if [[ "$2" == -* || "$2" == *[[:space:][:cntrl:]]* ]]; then
-        error '--model must be a nonempty model identifier without whitespace'
-        exit 1
-      fi
-      MODEL="$2"
-      MODEL_SOURCE="explicit"
-      shift 2
-      ;;
-    --auto|--auto=*)
-      error '--auto has been removed; remove it from your invocation. Routine scoped work uses standing authorization, not harness permission bypasses; sensitive operations still require approval.'
-      exit 1
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    *)
-      error "unknown option or argument: $1"
-      printf "Use 'ralph --help' for usage information.\n" >&2
-      exit 1
-      ;;
-  esac
-done
 
-if ! valid_model "$MODEL"; then
-  error 'unsupported model for OpenCode; use an allowlisted provider/model identifier'
-  printf "Use 'opencode models' to view available models.\n" >&2
-  exit 1
-fi
+def digest(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
-# Check if plan.json exists
-if [[ ! -f "plan.json" ]]; then
-  error "plan.json not found in current directory"
-  printf 'Use the prepare-implementation skill to create plan.json from a PRD.\n' >&2
-  exit 1
-fi
 
-# Check if jq is available for reliable plan.json completion checks
-if ! command -v jq >/dev/null 2>&1; then
-  error "jq command not found"
-  printf 'Please install jq so Ralph can parse plan.json reliably.\n' >&2
-  exit 1
-fi
+def decode_json(data, phase):
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate JSON key")
+            result[key] = value
+        return result
 
-validate_plan
-if plan_complete; then
-  echo "All user stories completed."
-  exit 0
-fi
+    try:
+        return json.loads(data, object_pairs_hook=unique)
+    except (ValueError, TypeError, RecursionError):
+        raise Refusal("invalid JSON in " + phase) from None
 
-check_branch
 
-if ! command -v opencode >/dev/null 2>&1; then
-  error "opencode command not found"
-  printf 'Please install OpenCode first: https://opencode.ai/install\n' >&2
-  exit 1
-fi
+def load(path, phase="runner state"):
+    require(not path.is_symlink(), "symlink control/plan file refused")
+    try:
+        require(path.stat().st_size <= 4 * 1024 * 1024, "oversized JSON file")
+        return decode_json(path.read_bytes(), phase)
+    except OSError:
+        raise Refusal("cannot read " + phase) from None
 
-# Check the installer location, not OpenCode's effective merged agent selection.
-if [[ -n "${XDG_CONFIG_HOME:-}" && "$XDG_CONFIG_HOME" != /* ]]; then
-  error 'XDG_CONFIG_HOME must be an absolute path when set'
-  exit 1
-fi
-RALPH_AGENT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/agents/ralph.md"
-if [[ ! -f "$RALPH_AGENT_FILE" ]]; then
-  error "$RALPH_AGENT_FILE not found"
-  printf "With installation approval, run 'make install-opencode' from the dotfiles checkout.\n" >&2
-  exit 1
-fi
 
-echo "Starting Ralph autonomous AI loop..."
-printf 'Ralph agent file found: %s (OpenCode resolves the effective agent)\n' \
-  "$RALPH_AGENT_FILE"
-echo "Execution mode: $RALPH_MODE"
-echo "Model: $MODEL"
-echo "Model source: $MODEL_SOURCE"
-echo ""
+def safe_error(error, phase):
+    # Only runner-authored refusals may be rendered. Exceptions can contain
+    # arbitrary JSON keys, bytes or filenames; never print or persist their text.
+    if isinstance(error, Refusal):
+        return str(error)
+    category = "I/O" if isinstance(error, OSError) else "data or internal operation"
+    return phase + " failed: " + category
 
-ITERATION=0
-while [ $ITERATION -lt $MAX_ITERATIONS ]; do
-  validate_plan
-  check_branch
-  echo "Iteration $((ITERATION + 1)) of $MAX_ITERATIONS"
 
-  RALPH_RUNTIME_CONTEXT=$(cat <<EOF
-Ralph runtime context:
+def text(value):
+    return isinstance(value, str) and bool(value.strip())
+
+
+def plan_read():
+    require(Path("plan.json").is_file(), "plan.json not found in current directory")
+    try:
+        return validate_plan(load(Path("plan.json"), "plan.json"))
+    except Refusal:
+        raise Refusal("invalid plan.json") from None
+
+
+def validate_plan(plan):
+    try:
+        stories = plan["userStories"]
+        valid = text(plan["branchName"]) and isinstance(stories, list) and stories
+        for s in stories:
+            valid = valid and all(text(s[k]) for k in ("id", "title", "description"))
+            valid = valid and isinstance(s["acceptanceCriteria"], list) and s["acceptanceCriteria"] and all(map(text, s["acceptanceCriteria"]))
+            p = s["priority"]
+            valid = valid and type(p) in (int, float) and p >= 0 and p == int(p) and type(s["passes"]) is bool
+        valid = valid and len({s["id"] for s in stories}) == len(stories)
+        require(valid, "invalid plan.json")
+        return plan
+    except (ValueError, KeyError, TypeError, OverflowError):
+        raise Refusal("invalid plan.json") from None
+
+
+def branch_check(plan):
+    require(not git("rev-parse", "--show-prefix").strip(), "run Ralph from the Git worktree root")
+    branch = git("symbolic-ref", "--quiet", "HEAD", optional=True)
+    require(branch.returncode == 0, "detached HEAD: prepare the plan branch")
+    current = branch.stdout.decode().removeprefix("refs/heads/").rstrip("\n")
+    require(current not in ("main", "master"), "protected branch: Ralph cannot run on main or master")
+    require(current == plan["branchName"] and git("check-ref-format", "refs/heads/" + current, optional=True).returncode == 0,
+            "branch mismatch: prepare the exact plan.json branchName")
+    require(git("rev-parse", "--verify", "HEAD", optional=True).returncode == 0,
+            "a prepared Git worktree with an existing commit is required")
+
+
+def control_name(name):
+    return name == ".ralph-stop" or re.fullmatch(r"\.ralph-outcome-[0-9a-f]{32}\.json", name) is not None
+
+
+def controls_untracked(since=None):
+    names = git("ls-files", "--cached", "-z").split(b"\0")
+    revisions = ["HEAD"]
+    if since:
+        revisions += git("rev-list", since + "..HEAD").decode().splitlines()
+    for revision in revisions:
+        names += git("ls-tree", "-r", "--name-only", "-z", revision).split(b"\0")
+    require(not any(control_name(os.fsdecode(name)) for name in names if name),
+            "control artifacts must never be tracked, staged or committed")
+
+
+def clean_candidate():
+    controls_untracked()
+    # Tracked control files are refused, never hidden by a pathspec exclusion.
+    for args in (("diff", "--quiet"), ("diff", "--cached", "--quiet")):
+        result = git(*args, optional=True)
+        require(result.returncode in (0, 1), "candidate inspection failed")
+        if result.returncode:
+            return False
+    return not any(name and not control_name(os.fsdecode(name)) for name in
+                   git("ls-files", "--others", "--exclude-standard", "-z").split(b"\0"))
+
+
+def committed_plan():
+    result = git("show", "HEAD:plan.json", optional=True)
+    require(result.returncode == 0, "plan.json must be committed")
+    return decode_json(result.stdout, "committed plan")
+
+
+def clean_start(plan):
+    require(clean_candidate() and committed_plan() == plan,
+            "a clean prepared worktree and index are required; commit plan.json and reconcile user work before starting")
+
+
+def validate_delivery(expected, starting_head, head):
+    require(committed_plan() == expected,
+            "completion requires committed selected story passes=true; provisional markers cannot be resumed")
+    require(isinstance(starting_head, str) and re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", starting_head)
+            and head != starting_head and git("merge-base", "--is-ancestor", starting_head, head, optional=True).returncode == 0,
+            "completion requires a new descendant committed delivery")
+    controls_untracked(starting_head)
+    require(clean_candidate(), "completion has uncommitted candidate work")
+
+
+def valid_snapshot(value):
+    return (isinstance(value, dict) and isinstance(value.get("head"), str)
+            and re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", value["head"]) is not None
+            and valid_hash(value.get("candidate")))
+
+
+def valid_hash(value):
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
+def validate_state(state):
+    message = "malformed runner state; manual reconciliation required"
+    require(isinstance(state, dict) and type(state.get("version")) is int and state["version"] == 1
+            and state.get("status") in ("running", "ready", "blocked", "completed")
+            and type(state.get("budget")) is int and 0 <= state["budget"] <= 5
+            and isinstance(state.get("stories"), dict) and valid_hash(state.get("plan_key"))
+            and valid_snapshot(state.get("baseline")), message)
+    try:
+        expected = copy.deepcopy(validate_plan(state.get("expected_plan")))
+    except Refusal:
+        raise Refusal(message) from None
+    ids = {s["id"] for s in expected["userStories"]}
+    for story in expected["userStories"]:
+        story["passes"] = False
+    require(digest(expected) == state["plan_key"], message)
+    for story_id, ledger in state["stories"].items():
+        require(story_id in ids and isinstance(ledger, dict) and type(ledger.get("retries")) is int
+                and 0 <= ledger["retries"] <= 5 and type(ledger.get("attempts")) is int
+                and ledger["attempts"] == ledger["retries"] + 1
+                and isinstance(ledger.get("history"), list) and len(ledger["history"]) <= 6, message)
+        for entry in ledger["history"]:
+            require(isinstance(entry, dict) and valid_hash(entry.get("approach"))
+                    and valid_hash(entry.get("evidence")) and valid_snapshot(entry.get("snapshot")), message)
+    if state["stories"]:
+        require(isinstance(state.get("selected_story"), str) and state["selected_story"] in state["stories"]
+                and isinstance(state.get("iteration_id"), str)
+                and re.fullmatch(r"[0-9a-f]{32}", state["iteration_id"]) is not None
+                and valid_snapshot(state.get("initial_snapshot"))
+                and state.get("starting_head") == state["initial_snapshot"]["head"], message)
+    for key in ("runner_pid", "child_pid"):
+        value = state.get(key)
+        require(value is None or (type(value) is int and value > 0), message)
+
+
+def snapshot():
+    # Full tracked index plus tracked/untracked nonignored worktree bytes and modes.
+    # Control files are the only exclusions; no mtime-based progress claims.
+    controls_untracked()
+    paths = git("ls-files", "-z", "--cached", "--others", "--exclude-standard").split(b"\0")
+    entries = []
+    for raw in sorted(set(paths) - {b""}):
+        name = os.fsdecode(raw)
+        if control_name(name):
+            continue
+        path = Path(name)
+        try:
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                content = os.fsencode(os.readlink(path))
+            elif stat.S_ISREG(mode):
+                content = path.read_bytes()
+            else:
+                raise Refusal("unsupported candidate file type (including submodules)")
+            entries.append((name, mode, hashlib.sha256(content).hexdigest()))
+        except FileNotFoundError:
+            entries.append((name, "missing"))
+    index = git("ls-files", "--stage", "-z").decode(errors="surrogateescape")
+    return dict(head=git("rev-parse", "HEAD").decode().strip(), candidate=digest([index, entries]))
+
+
+def atomic(path, value):
+    temp = path.with_name(path.name + "." + uuid.uuid4().hex)
+    with temp.open("x", encoding="utf-8") as stream:
+        os.chmod(temp, 0o600)
+        json.dump(value, stream, sort_keys=True)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temp, path)
+    fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def stopped():
+    require(not os.path.lexists(".ralph-stop"), ".ralph-stop present; user must clear it before resuming")
+
+
+def alive(pid):
+    if not isinstance(pid, int) or pid <= 0:
+        return False
+    for probe in (os.kill, os.killpg):
+        try:
+            probe(pid, 0)
+            return True
+        except ProcessLookupError:
+            pass
+        except PermissionError:
+            return True
+    return False
+
+
+def supervise(argv, env, state, save, timeout):
+    received = []
+    previous = {}
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        previous[sig] = signal.signal(sig, lambda number, frame: received.append(number))
+    child = None
+    try:
+        require(not received, "interrupted before launch")
+        child = subprocess.Popen(argv, env=env, start_new_session=True)
+        state["child_pid"] = child.pid
+        save()
+        start = time.monotonic()
+        reason = None
+        while child.poll() is None:
+            if received:
+                reason = "interrupted"
+            elif timeout and time.monotonic() - start >= timeout:
+                reason = "iteration timeout"
+            elif os.path.lexists(".ralph-stop"):
+                reason = ".ralph-stop present"
+            if reason:
+                break
+            time.sleep(.05)
+        if reason:
+            raise Refusal(reason)
+        require(not received, "interrupted")
+        if child.returncode != 0:
+            raise Refusal(f"OpenCode failed (exit {child.returncode})",
+                          child.returncode if child.returncode > 0 else 128 - child.returncode)
+    finally:
+        if child is not None:
+            # Always clean descendants, even if the session leader already exited.
+            try:
+                os.killpg(child.pid, received[0] if received else signal.SIGTERM)
+                deadline = time.monotonic() + 1
+                while time.monotonic() < deadline:
+                    child.poll()
+                    try:
+                        os.killpg(child.pid, 0)
+                    except ProcessLookupError:
+                        break
+                    time.sleep(.05)
+                else:
+                    os.killpg(child.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            child.wait()
+        for sig, handler in previous.items():
+            signal.signal(sig, handler)
+
+
+def execute(opts, control, state, plan):
+    statefile = control / "state.json"
+    save = lambda: atomic(statefile, state)
+
+    def interrupted(number, frame):
+        raise Refusal("interrupted", 128 + number)
+
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        signal.signal(sig, interrupted)
+    try:
+        stopped()
+        identity = copy.deepcopy(plan)
+        for story in identity["userStories"]:
+            story["passes"] = False
+        require(state["plan_key"] == digest(identity), "plan mismatch with persisted runner state; reconcile original plan, do not reset ledger")
+        if state["status"] in ("running", "blocked"):
+            require(opts["resume"], "runner state requires explicit --resume after human reconciliation")
+            require(not alive(state.get("child_pid")), "prior session PID is still alive; reconcile manually (runner will not kill it)")
+        branch_check(plan)
+        if not state["stories"]:
+            clean_start(plan)
+        elif opts["resume"]:
+            controls_untracked(state["starting_head"])
+        current = snapshot()
+        if not opts["resume"]:
+            require(current == state["baseline"], "candidate snapshot mismatch; reconcile and use --resume")
+            require(plan == state["expected_plan"], "plan completion mismatch with runner state")
+        elif plan != state["expected_plan"]:
+            expected = copy.deepcopy(state["expected_plan"])
+            selected = next((s for s in expected["userStories"]
+                             if s["id"] == state.get("selected_story") and not s["passes"]), None)
+            require(selected is not None, "resume requires the exact committed selected-story transition")
+            selected["passes"] = True
+            require(plan == expected, "resume requires the exact committed selected-story transition")
+            validate_delivery(expected, state.get("starting_head"), current["head"])
+        else:
+            require(committed_plan() == plan, "resume requires plan.json to match its committed markers")
+            require(git("merge-base", "--is-ancestor", state["baseline"]["head"],
+                        current["head"], optional=True).returncode == 0,
+                    "resume requires a descendant of the recorded candidate/delivery HEAD")
+        if opts["max_story_retries"] is not None:
+            state["budget"] = opts["max_story_retries"]
+        if all(s["passes"] for s in plan["userStories"]):
+            validate_delivery(plan, state.get("starting_head"), current["head"])
+            state.update(status="completed", baseline=current, expected_plan=plan)
+            save()
+            print("All user stories completed.")
+            return 0
+        require(shutil.which("opencode"), "opencode command not found")
+        config = os.environ.get("XDG_CONFIG_HOME") or str(Path.home() / ".config")
+        require(os.path.isabs(config), "XDG_CONFIG_HOME must be an absolute path when set")
+        agent = Path(config) / "opencode/agents/ralph.md"
+        require(agent.is_file(), f"{agent} not found")
+        print(f"Ralph agent file found: {agent} (OpenCode resolves the effective agent)", flush=True)
+        for iteration in range(1, opts["max_iterations"] + 1):
+            stopped()
+            branch_check(plan)
+            selected = min((s for s in plan["userStories"] if not s["passes"]), key=lambda s: s["priority"])
+            story_id = selected["id"]
+            before = snapshot()
+            require(before == (current if iteration == 1 else state["baseline"]) and plan_read() == plan,
+                    "candidate snapshot mismatch before launch")
+            iteration_id = uuid.uuid4().hex
+            outcome = Path.cwd() / (".ralph-outcome-" + iteration_id + ".json")
+            require(not os.path.lexists(outcome), "outcome path already exists; refusing launch")
+            ledger = state["stories"].setdefault(story_id, dict(attempts=0, retries=0, history=[]))
+            if ledger["attempts"]:
+                require(ledger["retries"] < state["budget"], "story recovery budget exhausted")
+                ledger["retries"] += 1
+            ledger["attempts"] += 1
+            prior_outcome = (
+                str(Path.cwd() / (".ralph-outcome-" + state["iteration_id"] + ".json"))
+                if ledger["attempts"] > 1 and state.get("selected_story") == story_id
+                else "none"
+            )
+            state.update(status="running", iteration_id=iteration_id, selected_story=story_id,
+                         starting_head=before["head"], initial_snapshot=before, baseline=before,
+                         expected_plan=plan, child_pid=None, runner_pid=os.getpid())
+            save()  # Crash before/after spawn is never treated as a retryable handoff.
+            context = f"""Ralph runtime context:
 - Harness: opencode
-- Iteration: $((ITERATION + 1)) of $MAX_ITERATIONS
-- Maximum iterations: $MAX_ITERATIONS
-- Execution mode: $RALPH_MODE
-- Model: $MODEL
-- Model source: $MODEL_SOURCE
+- Iteration: {iteration} of {opts['max_iterations']}
+- Maximum iterations: {opts['max_iterations']}
+- Execution mode: {opts['mode']}
+- Model: {opts['model']}
+- Model source: {opts['model_source']}
+- Iteration ID: {iteration_id}
+- Selected story: {story_id}
+- Story attempt: {ledger['attempts']}; recoveries consumed: {ledger['retries']} of {state['budget']}
+- Prior outcome: {prior_outcome}
+- Outcome file: {outcome}
+"""
+            env = dict(os.environ, RALPH_ITERATION_ID=iteration_id,
+                       RALPH_STORY_ID=story_id, RALPH_OUTCOME_FILE=str(outcome))
+            env.pop("RALPH_STATE_DIR", None)
+            require(not os.path.lexists(outcome), "outcome path already exists; refusing launch")
+            supervise(["opencode", "run", "--agent", "ralph", "-m", opts["model"], "--variant", "high", context], env, state, save, opts["iteration_timeout"])
+            stopped()
+            after_plan = plan_read()
+            branch_check(after_plan)
+            after = snapshot()
+            controls_untracked(before["head"])
+            require(outcome.is_file(), "missing iteration outcome")
+            report = load(outcome, "iteration outcome")
+            require(isinstance(report, dict) and type(report.get("version")) is int and report["version"] == 1
+                    and report.get("iteration_id") == iteration_id and report.get("story_id") == story_id,
+                    "malformed or stale iteration outcome")
+            status = report.get("status")
+            require(status in ("completed", "retryable", "blocked"), "invalid outcome status")
+            if status == "blocked":
+                require(text(report.get("reason")), "blocked outcome requires reason")
+                raise Refusal("agent reported blocked; human reconciliation required")
+            expected = copy.deepcopy(plan)
+            if status == "completed":
+                next(s for s in expected["userStories"] if s["id"] == story_id)["passes"] = True
+            require(after_plan == expected, "unexpected plan mutation; only selected story completion may change")
+            if status == "completed":
+                validate_delivery(expected, before["head"], after["head"])
+            else:
+                ids = report.get("finding_ids")
+                require(isinstance(ids, list) and 0 < len(ids) <= 32 and all(map(text, ids))
+                        and all(text(report.get(k)) for k in ("attempted_action", "next_action", "evidence")),
+                        "retryable requires concrete findings, attempted action, next action and evidence")
+                approach = digest([sorted(set(i.strip().casefold() for i in ids)), " ".join(report["next_action"].casefold().split())])
+                evidence = digest(report["evidence"].strip())
+                history = ledger["history"]
+                require(not any(h["approach"] == approach for h in history), "repeated blocker and approach; no automatic recovery")
+                require(after != before or (history and evidence != history[-1]["evidence"]), "no measurable progress or new verification evidence")
+                history.append(dict(approach=approach, evidence=evidence, snapshot=after))
+                ledger["history"] = history[-6:]
+                require(ledger["retries"] < state["budget"], "story recovery budget exhausted")
+            plan = after_plan
+            state.update(status="completed" if all(s["passes"] for s in plan["userStories"]) else "ready",
+                         baseline=after, expected_plan=plan, child_pid=None)
+            save()
+            if state["status"] == "completed":
+                print("All user stories completed.")
+                return 0
+        print(f"Reached maximum iterations ({opts['max_iterations']}) without completing all stories.")
+        return 1
+    except Exception as error:
+        message = safe_error(error, "runner execution")
+        state.update(status="blocked", reason=message)
+        save()
+        if isinstance(error, Refusal):
+            raise
+        raise Refusal(message) from None
 
-Treat these values as authoritative for this invocation. Follow your Ralph
-agent instructions, work on exactly one incomplete story, and let the runner
-enforce the iteration limit and completion checks.
-EOF
-)
 
-  # Select the native primary agent; the runner remains the hard-limit boundary.
-  if opencode run --agent ralph -m "$MODEL" --variant high \
-    "$RALPH_RUNTIME_CONTEXT"; then
-    :
-  else
-    result=$?
-    error "OpenCode failed (exit $result); stopping without another iteration"
-    exit "$result"
-  fi
+def status_bytes(path):
+    # No FIFO blocking, symlink traversal, creation, or unbounded JSON reads.
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except FileNotFoundError:
+        return None
+    with os.fdopen(fd, "rb") as stream:
+        require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode), "unsafe status file")
+        data = stream.read(4 * 1024 * 1024 + 1)
+        require(len(data) <= 4 * 1024 * 1024, "oversized status file")
+        return data
 
-  ITERATION=$((ITERATION + 1))
 
-  # Validate mutations and branch even when the harness claims completion.
-  validate_plan
-  check_branch
-  if plan_complete; then
-    echo "All user stories completed."
-    exit 0
-  fi
-done
+def status_report():
+    require(not git("rev-parse", "--show-prefix").strip(),
+            "cannot inspect workspace: run --status from the Git worktree root")
+    control = Path(os.fsdecode(git("rev-parse", "--git-path", "ralph")).rstrip("\n")).absolute()
+    fields = dict(State="unavailable", **{"Current story": "none", "Next story": "unavailable",
+                  "Last outcome": "unavailable", "Candidate": "unavailable", "Branch": "unavailable",
+                  "Budget": "unavailable", "Attempts": "unavailable", "Remaining": "unavailable",
+                  "Stop reason": "none", "Next action": "needs reconciliation"})
+    paths = [Path.cwd() / "plan.json", control / "state.json", control / "lock", Path.cwd() / ".ralph-stop"]
+    lock = None
+    phase = "control unavailable"
+    active = False
+    raw_outcome = None
 
-echo "Reached maximum iterations ($MAX_ITERATIONS) without completing all stories."
-exit 1
+    def story_label(value):
+        # Arbitrary IDs, titles, branch names and reasons may be credentials.
+        return value if isinstance(value, str) and re.fullmatch(r"(?:S|US)-?[0-9]{1,6}", value) else "withheld (inspect plan)"
+
+    def sample():
+        return (status_bytes(paths[0]), status_bytes(paths[1]), snapshot(),
+                git("symbolic-ref", "--quiet", "HEAD", optional=True).stdout,
+                os.path.lexists(paths[3]),
+                (paths[2].lstat().st_ino if os.path.lexists(paths[2]) else None),
+                status_bytes(paths[4]) if len(paths) > 4 else None)
+
+    try:
+        require(not control.is_symlink(), "unsafe control")
+        try:
+            lock = os.open(paths[2], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        except FileNotFoundError:
+            pass
+        if lock is not None:
+            require(stat.S_ISREG(os.fstat(lock).st_mode), "unsafe lock")
+            try:
+                fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            except BlockingIOError:
+                active = True
+        phase = "state unavailable"
+        raw_state = status_bytes(paths[1])
+        state = None
+        if raw_state is not None:
+            state = decode_json(raw_state, "state")
+            validate_state(state)
+            fields["State"] = state["status"]
+            fields["Current story"] = story_label(state["selected_story"]) if state["stories"] else "none"
+            fields["Budget"] = str(state["budget"])
+            if state["stories"]:
+                paths.append(Path.cwd() / (".ralph-outcome-" + state["iteration_id"] + ".json"))
+                try:
+                    raw_outcome = status_bytes(paths[4])
+                    report = decode_json(raw_outcome, "outcome")
+                    require(isinstance(report, dict) and type(report.get("version")) is int and report["version"] == 1
+                            and report.get("iteration_id") == state["iteration_id"]
+                            and report.get("story_id") == state["selected_story"], "stale outcome")
+                    outcome = report.get("status")
+                    require(outcome in ("completed", "retryable", "blocked"), "invalid outcome")
+                    if outcome == "blocked":
+                        require(text(report.get("reason")), "invalid blocked outcome")
+                    if outcome == "retryable":
+                        ids = report.get("finding_ids")
+                        require(isinstance(ids, list) and 0 < len(ids) <= 32 and all(map(text, ids))
+                                and all(text(report.get(k)) for k in ("attempted_action", "next_action", "evidence")), "invalid retryable outcome")
+                    fields["Last outcome"] = outcome
+                except (Refusal, OSError, ValueError, TypeError):
+                    pass
+        else:
+            fields["State"] = "no ledger"
+            fields["Budget"] = "2 (default)"
+        phase = "plan unavailable"
+        raw_plan = status_bytes(paths[0])
+        plan = validate_plan(decode_json(raw_plan, "plan"))
+        pending = sorted((s for s in plan["userStories"] if not s["passes"]), key=lambda s: s["priority"])
+        fields["Next story"] = story_label(pending[0]["id"]) if pending else "none"
+        ledger = state["stories"].get(pending[0]["id"], {}) if state and pending else {}
+        fields["Attempts"] = str(ledger.get("attempts", 0))
+        remaining = (state["budget"] if state else 2) - ledger.get("retries", 0)
+        fields["Remaining"] = str(max(0, remaining)) + " recoveries for next story; initial attempt separate"
+        phase = "branch or HEAD not prepared"
+        branch_check(plan)
+        fields["Branch"] = "matches plan (prepared, nonprotected)"
+        phase = "candidate inspection unavailable"
+        before = sample()
+        require(before[0] == raw_plan and before[1] == raw_state and before[6] == raw_outcome, "snapshot changed")
+        current = before[2]
+        phase = "dirty initial candidate or uncommitted plan"
+        if not state or not state["stories"]:
+            clean_start(plan)
+        fields["Candidate"] = "clean prepared start" if not state else "matches baseline" if current == state["baseline"] else "changed from baseline"
+        if state:
+            phase = "plan identity mismatch"
+            identity = copy.deepcopy(plan)
+            for story in identity["userStories"]:
+                story["passes"] = False
+            require(digest(identity) == state["plan_key"], "identity")
+            phase = "uncommitted markers, invalid transition or rewritten HEAD"
+            if plan != state["expected_plan"]:
+                expected = copy.deepcopy(state["expected_plan"])
+                selected = next((s for s in expected["userStories"] if s["id"] == state.get("selected_story") and not s["passes"]), None)
+                require(selected is not None, "transition")
+                selected["passes"] = True
+                require(plan == expected, "transition")
+                validate_delivery(plan, state.get("starting_head"), current["head"])
+            else:
+                require(committed_plan() == plan and git("merge-base", "--is-ancestor", state["baseline"]["head"], current["head"], optional=True).returncode == 0, "markers or ancestry")
+            if state["stories"]:
+                controls_untracked(state["starting_head"])
+            if not pending:
+                validate_delivery(plan, state.get("starting_head"), current["head"])
+            phase = "recovery budget exhausted"
+            require(not pending or not ledger.get("attempts") or remaining > 0, "budget")
+            phase = "running or blocked state requires human reconciliation"
+            require(state["status"] not in ("running", "blocked"), "reconcile")
+            phase = "candidate or completion mismatch requires human reconciliation"
+            require(current == state["baseline"] and plan == state["expected_plan"], "candidate")
+            phase = "latest outcome unavailable; inspect local evidence"
+            require(not state["stories"] or fields["Last outcome"] != "unavailable", "outcome")
+            if state["stories"]:
+                selected_done = next(s["passes"] for s in plan["userStories"] if s["id"] == state["selected_story"])
+                require(fields["Last outcome"] == ("completed" if selected_done else "retryable"), "outcome mismatch")
+        phase = "recovery budget exhausted"
+        require(not pending or not ledger.get("attempts") or remaining > 0, "budget")
+        phase = "snapshot changed during inspection"
+        require(sample() == before, "changed")
+        fields["Next action"] = ("ready to resume after explicit approval" if state else "ready to start") if pending else (
+            "completed (committed delivery verified)" if state else "plan all complete; delivery not proven without ledger")
+    except (Refusal, OSError, ValueError, TypeError, KeyError, RecursionError):
+        fields["Stop reason"] = phase
+    finally:
+        if lock is not None:
+            os.close(lock)
+    if os.path.lexists(paths[3]):
+        fields.update({"Stop reason": "stop file present; contents withheld", "Next action": "needs reconciliation"})
+    if active:
+        fields.update(State="active", **{"Stop reason": "worktree lock held", "Next action": "do not reconcile while active; inspect again after runner stops"})
+    print("Ralph read-only snapshot; not a guarantee during concurrent changes. No automatic execution.")
+    print("Reasons, evidence, arbitrary identifiers and tokens are withheld; inspect local evidence privately.")
+    print("Runtime prerequisites: not checked; readiness describes local evidence only.")
+    for label, value in fields.items():
+        print(f"{label}: {value}")
+    for path in paths:
+        print("Evidence path: " + json.dumps(str(path), ensure_ascii=True))
+    return 0
+
+
+def main():
+    opts = options(sys.argv[1:])
+    if opts.get("status"):
+        return status_report()
+    stopped()
+    plan = plan_read()
+    location = git("rev-parse", "--git-path", "ralph", optional=True)
+    if location.returncode:
+        require(all(s["passes"] for s in plan["userStories"]), "a prepared Git worktree is required")
+        print("All user stories completed.")
+        return 0
+    control = Path(os.fsdecode(location.stdout).strip()).absolute()
+    require(not control.is_symlink(), "symlink runner control directory refused")
+    if git("rev-parse", "--verify", "HEAD", optional=True).returncode == 0:
+        controls_untracked()
+    if not control.exists() and all(s["passes"] for s in plan["userStories"]):
+        print("All user stories completed.")
+        return 0
+    control.mkdir(mode=0o700, parents=True, exist_ok=True)
+    parent_fd = os.open(control.parent, os.O_RDONLY)
+    try:
+        os.fsync(parent_fd)
+    finally:
+        os.close(parent_fd)
+    # flock is kernel-owned: no stale lock deletion or PID-directed termination.
+    fd = os.open(control / "lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, "w") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise Refusal("another Ralph runner holds the worktree lock") from None
+        path = control / "state.json"
+        if path.exists() or path.is_symlink():
+            state = load(path)
+            validate_state(state)
+        else:
+            if all(s["passes"] for s in plan["userStories"]):
+                print("All user stories completed.")
+                return 0
+            branch_check(plan)
+            clean_start(plan)
+            print("Clean prepared start verified: plan.json committed; no unrelated candidate work.", flush=True)
+            identity = copy.deepcopy(plan)
+            for story in identity["userStories"]:
+                story["passes"] = False
+            state = dict(version=1, status="ready", plan_key=digest(identity),
+                         budget=2, stories={}, baseline=snapshot(), expected_plan=plan)
+        return execute(opts, control, state, plan)
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception as error:
+        print("Error: " + safe_error(error, "runner startup or persistence"), file=sys.stderr)
+        sys.exit(error.exit_code if isinstance(error, Refusal) else 1)

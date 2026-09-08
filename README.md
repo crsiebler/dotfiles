@@ -7,6 +7,7 @@ A collection of configuration files for storing user preferences and preserving 
 - [AI configuration, connections, and validation](docs/ai-configuration.md)
 - [Manual removal of old AI files](docs/remove-old-ai-files.md)
 - [Native agent authoring and rendering](docs/agent-authoring.md)
+- [Diagnosing and recovering stopped Ralph runs](docs/ralph-recovery.md)
 - [Repository contributor instructions](AGENTS.md)
 
 ### Requirements
@@ -15,7 +16,7 @@ A collection of configuration files for storing user preferences and preserving 
 - AI installer: Python 3.11+ (`PYTHON` defaults to `python3.11`).
 - Codex installation: Codex CLI **0.153.4**.
 - OpenCode skill installation: the `skills` CLI already on `PATH`, plus OpenCode to use the result.
-- Source validation and agent rendering: Python 3.11+. Ralph requires `jq` and Git;
+- Source validation and agent rendering: Python 3.11+. Ralph requires Python 3.11+, POSIX, and Git;
   its review regression test also uses Ruby to validate native reviewer YAML.
 
 The AI installer does not download missing tools. If `skills` is missing, arrange
@@ -194,17 +195,18 @@ Ralph's implementation loop runs through **OpenCode only**.
 
 1. Use `write-requirements` (OpenCode `/define-requirements`) to create a PRD.
 2. Use `prepare-implementation` (OpenCode `/plan-work`) to create `plan.json`.
-3. Prepare a Git worktree with an existing commit on exactly the PRD's
+3. Prepare a clean Git worktree with `plan.json` committed on exactly the plan's
    `branchName`, not detached HEAD, `main`, or `master`. Ralph does not switch branches.
-4. With OpenCode configured and `jq` available, run:
+4. With OpenCode configured and Python 3.11+ available, run:
 
    ```sh
    ralph --mode standard --max-iterations 10
    ```
 
 `make install` installs the executable; AI-only targets do not. The checkout
-entry point is `bin/ralph`. `--auto` is unsupported and rejected. Standing
-authorization covers routine scoped implementation, necessary project
+entry point is the single-file Python supervisor `bin/ralph`. `--auto` and the old
+`--authorize-story-commits` flag are unsupported. Invoking `ralph` itself
+authorizes passing-story commits, routine scoped implementation, necessary project
 dependencies, and relevant tests, not permission bypasses. Docker lifecycle,
 migrations (including local/test), global changes, service operations, and other
 sensitive actions still need separate approval.
@@ -215,39 +217,147 @@ not mandatory delegation. OpenCode defaults to `openai/gpt-5.6-sol-fast`;
 `--model` must match the allowlist in `bin/ralph` and an available provider model.
 The interactive Astra profile does not expand Ralph's model allowlist.
 
-The review gate uses self-review where allowed or the dedicated three-step,
-project-local `ralph-reviewer`, with at most one same-session follow-up after
+Both Ralph and Codex Goal follow the full shared
+[story execution contract](ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
+and [review protocol/schema](ai/plugins/coding/skills/prepare-implementation/references/story-review.md).
+Executors load both references in full from the advertised installed
+`prepare-implementation` skill, not checkout paths, and pass the full review
+protocol to the reviewer. Ralph's review gate uses self-review where allowed or
+the dedicated three-step, project-local `ralph-reviewer`, with at most one same-session follow-up after
 substantive fixes. It never substitutes a general-purpose reviewer. Checks include
 relevant typecheck, lint, tests, and `verify-interface` for UI changes.
 
-`progress.txt` is the append-only handoff and review history. Optional
-`memory.json` retains at most 20 validated patterns and 20 false-positive
-suppressions; its initial absence is normal. Only durable rules belong in the
-nearest `AGENTS.md`. `plan.json` tracks story completion.
+Worktree-root `docs/progress.md` is the append-only handoff and review history. Optional
+version-1 `memory.json` retains at most 20 validated patterns and 20 evidenced
+false-positive suppressions; its initial absence is normal, invalid memory blocks.
+Memory changes follow passing review; reusable accepted fixes require passing
+verification before promotion. Only durable rules belong in the nearest
+`AGENTS.md`. `plan.json` tracks story completion, not execution notes.
+Delivery requires passing checks/review and a successful explicitly authorized
+story commit. Failed finalization or commit leaves the story pending, restoring
+only its provisional completion marker and preserving unrelated work.
+
+### Completed-run archives
+
+Use one active plan per worktree. `PLAN.md` or `plan.json` and `memory.json` remain
+at the root; the journal is `docs/progress.md`, independent of a custom plan path.
+Neither workflow reads or migrates legacy execution logs. PRDs retain requirements
+and open questions, not implementation checkpoints.
+
+Both workflows use the [completed-run archive procedure](ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
+
+1. Verify all tasks, required checks/reviews, and story commits. For Ralph, wait
+   until the runner validates completion and exits before changing active state.
+2. Preview the final summary, unique `archive/YYYY-MM-DD-feature-name/` destination,
+   exact plan/journal/memory paths, and active-copy removals; obtain explicit approval.
+3. Append the final summary, copy existing run artifacts with relative paths intact,
+   and verify identical contents before removing approved active copies.
+4. Preserve PRDs, unrelated work, and Ralph controls. Do not reset the journal or
+   create replacement state. Any archive commit needs separate authorization.
+
+Archival is manual, not automatic runner behavior. Memory is archived with its run;
+new execution starts fresh. PRD replacement separately requires approval to archive
+the existing PRD and verified preservation before replacement. Drafting requirements
+never archives execution state as a side effect.
+
+### Stops, crashes, and bounded recovery
+
+Before each paid session the runner atomically records `running` state in
+per-worktree Git metadata. A successful OpenCode exit alone cannot launch another
+session: the agent must write a matching iteration outcome. A `completed` outcome
+requires a new descendant commit with the selected story completed and no pending
+candidate changes. A `retryable` outcome keeps the story incomplete, preserves its
+work, and supplies unresolved finding IDs, attempted fix, evidence, and a concrete
+next approach. The next session continues that same candidate and gets one new
+bounded review cycle. Missing handoffs, human blockers, crashes, failed commits,
+and repeated ineffective recovery stop instead of automatically consuming usage.
+
+Default recovery allowance is **two additional sessions per story**, persisted
+across invocations. `--max-story-retries 0..5` explicitly adjusts that allowance,
+never resets consumed retries. `--max-iterations` also caps sessions per invocation.
+For a 30-minute wall-clock limit per session, for example:
+
+```sh
+ralph --mode standard --max-iterations 10 --iteration-timeout 1800
+```
+
+Timeout defaults to `0` (unlimited); it is not provider-specific quota detection.
+Timeout, Ctrl+C, or SIGTERM stops future sessions and cleans up the managed process
+group. Processes that deliberately escape the group are not covered.
+
+Create `.ralph-stop` at the worktree root to request a stop, including termination
+of the currently managed session. Ralph never removes it. Before resuming, inspect
+`docs/progress.md`, the latest `.ralph-outcome-<id>.json`, and the candidate changes;
+resolve the blocker and clear the stop file yourself, or authorize the separate
+interactive recovery assistant to remove that exact file after preview. Then use
+`ralph --resume` only after reconciliation and launch approval.
+It preserves retry counts and cannot accept uncommitted completion markers.
+An interrupted ledger or changed candidate requires this explicit reconciliation.
+A validated ready handoff resumes without `--resume` only if its snapshot matches.
+
+Control artifacts are not story files: never stage `.ralph-stop` or the exact
+`.ralph-outcome-<32-lowercase-hex-ID>.json` files. They are excluded from runner
+snapshots but refused if tracked. Review and retain needed audit copies before
+separately approved exact-path cleanup. State is located with
+`git rev-parse --git-path ralph/state.json`; do not delete it to reset retry budgets.
+The lock prevents concurrent runners, but the ledger is not protected from an
+unrestricted same-user agent. A different plan requires manual state reconciliation.
+`make clean` does not remove these controls, outcomes, or execution history.
+
+### Interactive recovery
+
+Run `ralph --status` for a read-only snapshot of state, attempts, remaining
+recoveries, and detectable blockers. It never launches a model or writes runner
+state. Exit zero means it produced a diagnosis, not that resumption is approved;
+runtime prerequisites and the technical fix still need verification.
+
+Use OpenCode `/recover-ralph`, or ask another harness's primary assistant to load
+the `recover-ralph` skill, to assess the stop and propose a bounded repair. The
+default endpoint is a readiness report, not an automatic restart. Repairs require
+scoped approval; removing the stop file and launching the exact resume command
+require separately previewed explicit confirmation. The autonomous Ralph agent
+cannot clear its own stop, and no helper may reset the ledger or retry counters.
+See the [recovery runbook](docs/ralph-recovery.md) for the full process and examples.
 
 ## Codex Story Checklists
 
 Invoke `prepare-implementation` in Codex to turn approved requirements into
 `PLAN.md`: ordered user stories, unchecked acceptance criteria, verification,
-independent review, and evidence checkpoints. The same skill defaults to Ralph's
+budget-selected staged review, and completion checkboxes. Execution status,
+implementation notes, evidence, and resumption checkpoints go in append-only `docs/progress.md`, not
+growing sections in `PLAN.md`. The same skill defaults to Ralph's
 `plan.json` in OpenCode. Explicit format requests take precedence; no format question
 is needed when trusted runtime context or the invoking native entry point identifies
 the active harness. OpenCode's `ai/opencode/commands/plan-work.md` supplies the JSON
 default. If routing is unavailable or ambiguous, the skill asks rather than
 inferring the harness from `PATH`, installed tools, folders, or environment variables.
 
-Planning does not start execution. After reviewing the plan, you can use native
-`/goal` to continue through its stories in the same thread. See
-[Codex goals](docs/codex-goals.md) for the handoff and authorization boundaries.
+Planning does not start execution or create `docs/progress.md`/`memory.json`. After
+reviewing the plan, explicitly authorize scoped implementation, necessary project
+dependencies, checks, and story commits when launching an actual native `/goal`.
+A quoted template or prepared plan grants no permission. Goal uses the same
+execution/memory/review/branch/commit contract as Ralph, with Markdown rather than
+JSON task status. Require an existing commit and the plan's exact prepared branch;
+reject detached HEAD, `main`, `master`, and mismatch without branch repair.
+
+Both use the same fast/standard/deep risk budgets, at most two read-only advisors,
+and one initial staged review plus at most one targeted same-session pass. Codex
+requires native `story-reviewer` when the budget selects native review; missing
+protocol, required reviewer/session, invalid memory, or failed checks/review/commit
+stops delivery with the story pending. It is not a general-reviewer fallback.
+Goal retains native continuation and compaction, not Ralph's external hard
+iteration limit, fresh-session loop, or completion sentinel. OpenCode's reviewer
+has `steps: 3`; Codex's tool-turn budget is behavioral, not a hard cap.
+See [Codex goals](docs/codex-goals.md) for the handoff and authorization boundaries.
 Automatic story-boundary compaction is [backlogged](docs/backlog.md); no custom
 hook runs during normal development.
 
 ## Native agents and discovery
 
-The canonical custom agents are **127 native TOML files** in `ai/codex/agents/`.
-Codex receives all 127 sources byte-for-byte. OpenCode receives 127 generated
+The canonical custom agents are **128 native TOML files** in `ai/codex/agents/`.
+Codex receives all 128 sources byte-for-byte. OpenCode receives 128 generated
 Markdown agents plus three unchanged native sources from `ai/opencode/agents/`:
-`sprite-artist`, `ralph`, and `ralph-reviewer`, for **130 installed agents**.
+`sprite-artist`, `ralph`, and `ralph-reviewer`, for **131 installed agents**.
 Those three native Markdown roles are OpenCode-only.
 
 PowerShell scripting, modules, and profiles use `powershell-expert`; GUI/TUI work
@@ -257,13 +367,18 @@ replacement, preserve customized old copies, then approve each exact retired pat
 before manual removal in either harness. Follow the
 [PowerShell cleanup steps](docs/remove-old-ai-files.md#consolidated-powershell-agents);
 the installer performs no automatic deletion or alias migration.
-Seven inspection roles, including `powershell-security-hardening`, use native
+Eight inspection roles, including `powershell-security-hardening` and
+`story-reviewer`, use native
 `sandbox_mode = "read-only"` and read-only role guidance.
 Codex permits runtime-authorized read-only shell inspection; OpenCode
 renders a more restrictive deny-by-default `read`/`glob`/`grep` allowlist. These
 are not equivalent sandbox or MCP guarantees: Codex parent runtime overrides
 apply, and MCP approvals are independent. See [agent authoring](docs/agent-authoring.md)
 for role boundaries and renderer semantics.
+
+The new `story-reviewer.toml` is rendered generically for OpenCode too, but that
+read/glob/grep-only counterpart cannot replace Ralph's native `ralph-reviewer`
+with its exact staged-Git allowlist. Adding this role retires no installed paths.
 
 Use native delegation to invoke agents; reading a definition is not delegation.
 OpenCode `/find-agents` loads `use-subagents` for discovery; the skill bundles
