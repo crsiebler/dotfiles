@@ -385,7 +385,32 @@ or native review with one initial pass and at most one targeted same-session pas
 Native Codex review requires `story-reviewer`; OpenCode Ralph still requires its
 native `ralph-reviewer`, with `steps: 3` and the exact staged-Git allowlist. The
 generic generated OpenCode `story-reviewer` has no shell access and is not a
-substitute. Codex's tool-turn budget is behavioral, not equivalent hard enforcement.
+substitute. The executor explicitly maps RalphJSON to `three-step` and
+CodexGoalMarkdown to `expanded-initial`, supplying `Review profile` and `Pass type`
+in both initial and targeted packets. Each wrapper requires its matching profile;
+missing, unknown, or conflicting selection blocks with the exact problem in
+`residual_risks`. The reviewer does not infer its harness from tools, binaries,
+paths, or role names. Profiles are input-only and grant no tools or runtime
+overrides; the generated OpenCode role remains shell-disabled.
+
+The `expanded-initial` initial review permits up to 40 small read-only evidence
+calls, starting with inventory and reading manageable patch groups. Recover only
+missing sections after truncation, never repeat oversized requests, and track changed-file
+and affected-contract coverage as one holistic review. Stop when sufficient;
+block with exact missing sections if required evidence is unavailable at the
+ceiling. This configurable reading budget is behavioral, not equivalent hard
+enforcement. Targeted review under either profile retains two evidence-gathering
+turns and only prior findings/remediation regressions, using the same profile.
+
+To activate a revised reviewer, separately authorize `make install-codex` to copy
+the canonical role and refresh `coding@craft` through the installed CLI's supported
+native plugin refresh process so both shared references are current. Refresh
+the wrapper and shared references together: older packets without a profile now
+block review. Restart Codex and start a new thread; verify the role and installed references before a
+new review cycle. Existing reviewer sessions do not establish that revised
+instructions were loaded. Do not delete plugin caches manually. For OpenCode's
+native wrapper and skill copies, separately authorize `make install-opencode` and
+restart OpenCode; Ralph's native step limits remain unchanged.
 
 Keep task sources limited to the stable plan, completion state, and concise current
 status, worktree-root `docs/progress.md` append-only, and root `memory.json` at version 1 with at most
@@ -411,6 +436,27 @@ native continuation/compaction, not Ralph's external hard iteration limit,
 fresh-session loop, or completion sentinel.
 See [Codex goals](codex-goals.md); automatic checkpoint compaction is
 [backlogged](backlog.md), with no hook or controller installed.
+
+A final blocked native story review also stops further review attempts for that
+story. The shared execution contract requires a checkpoint preserving the candidate,
+incomplete status, findings/history, consumed passes, exact blocker, required
+material change, and resolution evidence. Goal continuation, compaction, elapsed
+time, or reviewer replacement does not resolve it or renew review budgets. Bounded
+truncation recovery remains available before the final verdict. Resume only after
+verifying material-change evidence, carrying forward existing authorization; ask
+only for genuinely missing authority or input. Another story must be independently
+eligible and safely isolated, or work stops. See [Goal blocker and lifecycle rules](codex-goals.md#blocked-stories-and-evidence-gated-resumption);
+the native Goal blocked-status audit is distinct from this immediate story gate.
+Ralph's explicit recovery protocol and counters remain unchanged.
+
+To activate shared-instruction changes, separately authorize refreshing `coding@craft`
+through the installed Codex CLI's supported native plugin process, then restart
+Codex and start a new thread. Verify the loaded skill and both shared references
+contain the revised blocker contract. If activating reviewer-profile updates
+too, follow the wrapper installation guidance above. OpenCode skill copies
+require separately authorized `make install-opencode` and a restart. Do not edit
+installed copies or plugin caches. Activation does not resolve an existing story
+blocker or reset its review history/budget; carry its checkpoint into the new thread.
 
 ## Validation and manual evaluation
 

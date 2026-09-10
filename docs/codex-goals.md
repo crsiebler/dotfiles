@@ -72,8 +72,14 @@ checkpoints to docs/progress.md, and
 maintain bounded version-1 memory.json only as the shared contract permits.
 Preserve unrelated work. Stop with the story pending for missing required input,
 protocol, reviewer/session, permission, invalid memory, or failed checks, review,
-or commit. Report actual checks, review provenance, commit hashes, and remaining
-limitations. Do not push, deploy, post externally, or perform sensitive operations
+or commit. After a final blocked review, preserve the candidate and evidence and
+stop further review attempts until material-change evidence resolves the recorded
+blocker. Continuation, compaction, or a new reviewer does not reset the review
+budget. Carry forward existing authorization; ask only for genuinely missing
+authority or input. Continue another story only if independently eligible and
+safely isolated; otherwise report the blocker and stop work, honoring the native
+Goal status lifecycle. Report actual checks, review provenance, commit hashes,
+and remaining limitations. Do not push, deploy, post externally, or perform sensitive operations
 without separate explicit approval.
 ```
 
@@ -92,7 +98,7 @@ matrix. At most two native implementation advisors may contribute per story;
 they are read-only and provide guidance, not edits, checks, posts, or delegation.
 Record recommended, used, and skipped advisors with reasons.
 
-The staged-review budget is identical to Ralph's:
+The staged-review selection matrix is identical to Ralph's:
 
 | Mode | Trivial | Standard | Test-sensitive | High-risk |
 | --- | --- | --- | --- | --- |
@@ -112,9 +118,37 @@ only inspect project-local files and permitted staged Git evidence, never run
 checks, edit, browse, use MCP, or post externally. One initial holistic pass and
 at most one targeted remediation pass are allowed. Resume the same actual native
 agent ID for targeted review; no fresh audit, replacement session, or third pass.
-OpenCode enforces `steps: 3` and an exact Git allowlist. Codex uses at most two
-evidence-gathering tool turns then a result as behavioral guidance, not an equivalent
-hard step cap or immutable sandbox/MCP restriction; parent runtime controls apply.
+The executor selects `expanded-initial` from the CodexGoalMarkdown adapter and
+sends explicit packet lines:
+
+```text
+Review profile: expanded-initial
+Pass type: initial
+```
+
+For same-session remediation, retain the profile and send `Pass type: targeted`.
+Self-review explicitly selects the same profile and pass type in review context.
+The native wrapper requires this profile; missing, unknown, or conflicting
+selection blocks before evidence gathering, with the exact problem in
+`residual_risks`. Never infer the harness from tools, binaries, paths, or role
+names. The profile is input-only and grants no tools or runtime overrides.
+
+RalphJSON explicitly selects `three-step`; OpenCode enforces `steps: 3` and an
+exact Git allowlist. An `expanded-initial` initial review permits up to 40 small
+read-only evidence calls, counting calls in batches individually.
+Start with staged filenames, status, and statistics; read manageable patch groups
+without requiring an aggregate patch. Recover only missing sections after
+truncation using permitted staged Git reads; never repeat oversized requests.
+Track relevant changed files and directly affected contracts and assess the
+evidence holistically. Stop when coverage is sufficient: 40 calls is a ceiling,
+not a target. Return `blocked` with exact missing sections in `residual_risks` if
+required evidence remains unavailable at the ceiling or through permitted tools.
+Targeted review under either profile retains at most two evidence-gathering turns
+and only prior findings and remediation regressions. The configurable reading
+budget is behavioral guidance, not an equivalent hard step cap or immutable sandbox/MCP
+restriction; parent runtime controls apply. See the
+[activation steps](ai-configuration.md#installation-and-merge-behavior) and the
+reviewer refresh guidance in that guide before starting a new review cycle.
 
 Validate the exact JSON response. Missing required protocol, reviewer, invocation
 or resumption capability/session, malformed or blocked review, and failed required
@@ -134,6 +168,41 @@ explicitly. Reconcile stale markers against Git delivery evidence on resumption.
 Report the actual commit hash in the final response; the committed log retains
 pre-commit pending status, without a second bookkeeping commit.
 
+### Blocked stories and evidence-gated resumption
+
+A final native review `blocked` verdict stops delivery and further review attempts
+for that story immediately. Preserve its candidate, unchecked status, findings,
+dispositions, checks, reviewer ID, and historical evidence. Append a safe checkpoint
+to `docs/progress.md` naming the exact blocker, what must materially change, the
+evidence required before resumption, consumed review passes, and existing authority.
+If write guards prohibit the checkpoint, report it in the response instead.
+
+Truncation before the verdict remains recoverable within the current review's
+permitted evidence budget. A final blocked verdict ends that recovery; it cannot
+be repackaged as a targeted pass. Automatic continuation, elapsed time, another
+turn, compaction, or a new reviewer session neither resolves the blocker nor resets
+the review budget. Rewording a request, raising output limits after repeated
+truncation, or replacing the reviewer alone is not resolution evidence.
+
+Before resuming, verify current-state evidence against the recorded resolution
+requirements and append the actual material change and remaining constraints.
+For example, confirm that the exact previously unavailable staged sections are
+now accessible through permitted tools, rather than merely proposing higher limits.
+Only verified resolution can permit a new bounded initial attempt under existing
+scope, preserving the failed attempt's history. Valid initial reviews with
+actionable findings still use verified remediation and at most one targeted pass
+in the same session; do not use this gate to evade exhausted remediation budgets.
+Carry forward existing user authorization. Ask only for genuinely new authority
+or missing input, naming the exact constraint rather than repeating approval requests.
+
+Another story may proceed only if independently eligible under dependencies and
+priority ordering and safely isolated from the preserved blocked candidate through
+implementation, staging, checks, and commit. Otherwise report the blocker and stop
+work; do not manufacture experiments or bookkeeping to sustain activity.
+The canonical [persistent blocker gate](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md#persistent-blockers-and-goal-resumption)
+is separate from evidence-reading budgets and leaves Ralph's explicit recovery
+handoffs and persisted counters unchanged.
+
 ### Native controls
 
 | Command | Action |
@@ -148,6 +217,18 @@ boundaries. It is not a background daemon that keeps executing after the process
 exits. Completion, interruption, blockers, and budget limits can stop progress.
 Do not assume a Markdown checkbox or a model's completion claim proves the
 acceptance criteria; retain the supporting verification and review evidence.
+
+The story-review stop and the overall native Goal status are distinct. The
+[upstream Goal continuation prompt](https://github.com/openai/codex/blob/main/codex-rs/ext/goal/templates/goals/continuation.md)
+inspected for this contract requires the same impasse for at least three consecutive
+Goal turns, including the original turn, before `update_goal` with status `blocked`.
+User resumption starts a fresh native blocked audit. Follow the actual runtime's
+lifecycle instructions and exposed capabilities if they differ; these dotfiles do
+not implement or override that audit. While it is pending, report the unchanged
+impasse without repeating reviews or inventing activity. Once its conditions are
+met, use the supported native blocked-status transition. A fresh native audit does
+not reset the story blocker or review budget. Do not invent a restart loop,
+continuation controller, unsupported Goal setting, or false completion claim.
 
 ## Context and checkpoints
 

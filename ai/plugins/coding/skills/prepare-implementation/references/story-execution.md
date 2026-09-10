@@ -198,9 +198,26 @@ Classify the staged diff using filenames, content, criteria, notes, and checks:
 | standard | Self | Native | Native | Native |
 | deep | Native | Native | Native | Native |
 
-For self-review, inspect `git diff --cached --name-only`, `--stat`, and `--patch`
-and produce the same structured result. Self-review is a budget choice, never a
-fallback for a missing required native reviewer.
+Select the review profile from the already-selected task-source adapter:
+
+| Adapter | Native reviewer | Review profile |
+| --- | --- | --- |
+| RalphJSON | `ralph-reviewer` | `three-step` |
+| CodexGoalMarkdown | `story-reviewer` | `expanded-initial` |
+
+Use this explicit mapping for both native and self-review, not reviewer-side
+harness detection. If routing is unavailable or ambiguous, stop; do not infer it
+from tools, binaries, paths, or role names. Verify that the selected native
+wrapper requires the mapped profile. A missing, unknown, or conflicting profile
+blocks review under `story-review.md`; do not silently choose a default or switch
+profiles. Profiles grant no tools and never override tighter runtime limits.
+
+For self-review, explicitly select the same adapter profile and pass type in the
+review context. Start with staged filenames, status, and statistics, then inspect
+path-scoped patches in manageable groups under `story-review.md`'s applicable
+profile budget; an aggregate patch is not required. Produce the same structured
+result. Self-review is a budget choice, never a fallback for a missing required
+native reviewer.
 
 When native review is selected, verify the exact adapter role is available to
 the active runtime before invocation. A role file on disk is not proof. Missing
@@ -209,9 +226,11 @@ required session ID blocks the story. Never substitute `code-reviewer`, a genera
 agent, or another arbitrary reviewer; never run multiple reviewers for a pass.
 
 Load the full sibling protocol yourself, then pass its full text plus compact
-story context to that exact role. Include pass type `initial`, story identity,
-description, criteria, notes, check results, UI evidence, repository instructions,
-relevant patterns/memory, and the compact staged filename list. Do not embed the
+story context to that exact role. Include `Review profile: <profile>` and
+`Pass type: initial` as literal packet lines, replacing `<profile>` with the
+mapped value. Also include story identity, description, criteria, notes, check
+results, UI evidence, repository instructions, relevant patterns/memory, and the
+compact staged filename list. Do not embed the
 patch or diff statistics. Request JSON only and one holistic staged review.
 The reviewer reads authoritative staged content itself.
 
@@ -222,13 +241,29 @@ agent ID for same-session continuation. Do not manufacture or interchange IDs.
 
 Review is limited to project-local reads/search and non-mutating staged Git
 inspection: no edits, tests, browser/web/MCP, external directories, or delegation.
-Preserve three steps: batched initial evidence gathering, at most one bounded
-follow-up tool turn for missing evidence, then the structured response. Patch
-truncation alone is not blocking; recover exact staged/baseline content or a
-targeted staged diff in that follow-up. Unavailable required evidence afterward
-blocks review. OpenCode enforces native `steps: 3`; Codex uses bounded tool-turn
-instructions, not an equivalent hard step cap. Parent runtime permissions can
-be wider; role prose is not immutable sandbox/MCP enforcement.
+With `expanded-initial` selected, for an initial review, permit up to 40 small,
+read-only evidence-gathering calls, counting individual calls in batches separately.
+Start with staged filenames, status, and statistics, then manageable patch groups; an aggregate
+patch is not required. Track coverage of relevant changed files and directly
+affected contracts, assessing all collected evidence as one holistic review.
+Patch truncation alone is not blocking: retrieve only missing sections through
+permitted staged Git reads or permitted pagination of their output, never repeat
+the same oversized request. Follow `story-review.md` for exact permitted reads;
+do not expand the allowlist or substitute worktree content for staged evidence.
+Stop when coverage is sufficient: 40 calls is a ceiling, not a target. If required
+evidence remains unavailable at the limit or through permitted tools, return
+`blocked`, naming exact missing sections in `residual_risks`.
+
+The `three-step` profile uses two evidence-gathering turns before the response.
+OpenCode Ralph retains native `steps: 3`, its exact Git allowlist, and two
+evidence-gathering turns (batched initial reads plus at most one recovery turn)
+before the response. The `expanded-initial` reading budget does not extend
+Ralph's runtime limits. Under either profile, targeted review retains at most two
+evidence-gathering tool turns and only prior findings and remediation regressions.
+Keep the same profile for that targeted pass. These reading budgets are
+configurable behavioral instructions, not an equivalent hard step
+cap. Parent runtime permissions can be wider; role prose is not immutable
+sandbox/MCP enforcement.
 
 ## Validation, dispositions, and stabilization
 
@@ -239,6 +274,8 @@ inconsistent verdict/evidence, or `blocked` is a failed review: append the
 blocker safely, keep the story pending, and stop without committing. Do not repair
 reviewer output by inventing fields, infer success from empty/truncated output,
 or spend the targeted pass retrying a failed initial protocol.
+Apply the persistent blocker gate below before any later attempt; ending a turn
+does not make this failed review eligible for another invocation.
 
 In-scope `critical`, `high`, and `medium` findings block. `low` is non-blocking
 unless it violates requirements/criteria. Empty findings with a valid passing
@@ -257,9 +294,11 @@ requiring verification, end review immediately. Do not run another audit.
 For substantive code/behavior/test/documentation remediation of blockers, run
 one targeted pass against the new complete staged candidate. Resume the same
 native session using its saved ID (or use the same self-review protocol).
-Supply the full protocol, compact updated context, prior findings/dispositions,
-remediation, and verification. Limit review to prior root causes and regressions
-introduced by fixes. No fresh audit, replacement session, or third pass.
+Supply the full protocol, the same `Review profile: <profile>` and
+`Pass type: targeted` packet lines, compact updated context, prior
+findings/dispositions, remediation, and verification. Limit review to prior root
+causes and regressions introduced by fixes. No fresh audit, replacement session,
+or third pass.
 
 That session rule applies within the current attempt. A fresh Ralph executor may
 start a new bounded review cycle only after the runner validates a retryable
@@ -276,6 +315,77 @@ Actionable remaining findings may yield a Ralph `retryable` handoff, not deliver
 Missing approval, invalid/missing review protocol, unavailable reviewer/session,
 failed commit/finalization, and unresolvable or repeated ineffective work require
 `blocked`. No automatic recovery loop is added to native Codex Goal.
+
+## Persistent blockers and Goal resumption
+
+After a final `blocked` native review, stop delivery and further review attempts
+for that story. Preserve the staged/worktree candidate, incomplete task status,
+findings and dispositions, check results, reviewer/session provenance, and
+historical evidence. Do not update review memory or mark the story complete.
+Append a blocker checkpoint to `docs/progress.md` only when the existing write
+guards allow; otherwise report it in the response. Record:
+
+- The specific blocking condition, including exact unavailable evidence or input.
+- What must materially change to resolve it and the evidence required to prove it.
+- Candidate identity/paths, existing findings/evidence, and initial/targeted passes
+  already consumed, including the final verdict and actual reviewer session ID.
+- Existing authorization and any genuinely missing authority or input.
+
+This execution gate is separate from the reviewer's evidence-reading budget.
+Before a final verdict, recoverable output truncation may be resolved within the
+current review's permitted evidence-recovery budget. Preserve that bounded
+recovery; once the reviewer returns final `blocked`, do not reopen evidence
+gathering or convert the blocked initial review into a targeted pass.
+
+For CodexGoalMarkdown, automatic Goal continuation, elapsed time, a new turn,
+compaction, or a new reviewer session does not resolve a blocker or reset the
+review budget. Read the checkpoint on continuation before taking further action.
+Rewording the request, increasing output limits after repeated truncation, or
+replacing the reviewer does not by itself establish resolution. Do not relabel
+unchanged work as a new story attempt to obtain more review passes.
+
+Resume the blocked story only after verifying that the blocking condition has
+materially changed against the recorded resolution requirements. Use concrete
+current-state evidence, such as the exact previously missing staged sections now
+being accessible through permitted tools, or the missing input actually supplied;
+an intention to change limits or a claim that a new reviewer will work is not proof.
+Append the verified change, evidence, and remaining constraints before resuming.
+Carry forward existing user authorization. Ask only when resolution requires
+genuinely new authority or missing input, identifying the exact constraint; do not
+repeatedly request the same approval or bypass an actual runtime denial.
+
+A verified material resolution may permit a new bounded initial review attempt
+under the existing execution scope, retaining the failed attempt's history.
+This is not an automatic budget reset: continuation alone never grants another
+cycle. Each permitted attempt still has one initial and at most one targeted
+same-session remediation pass. A valid initial review with actionable findings
+continues through verified remediation and its remaining targeted pass, not a
+fresh initial audit. Never turn a final blocked initial review into that targeted
+pass, or use material-change language to evade an exhausted remediation budget.
+
+Another Goal story may proceed only if independently eligible under the plan's
+dependencies and priority rules and safely isolated from the blocked candidate.
+Treat the blocked story as ineligible until the gate is met; preserve its state
+and evidence. Verify that implementation, staging, checks, and the other story's
+commit can exclude the blocked candidate without discarding or rewriting it.
+If isolation or eligibility cannot be established, report the blocker and stop
+work. Do not manufacture additional experiments or bookkeeping to sustain activity.
+
+Honor the built-in Goal's actual lifecycle rules for reporting overall Goal status;
+the story-review stop is immediate even if the runtime requires further blocked
+audit turns before accepting a Goal `blocked` status. Those turns may report the
+unchanged impasse without retrying review or inventing activity. Use only exposed
+native lifecycle capabilities when their runtime conditions are met. A native
+blocked-audit restart after user resumption does not reset this story gate or its
+review budget. Never invent a restart loop, continuation controller, unsupported
+Goal setting, or completion claim to stop continuation.
+
+RalphJSON retains its explicit [Ralph control](ralph-control.md) handoffs, stop
+protocol, runner-validated retryable cycles, and persisted recovery counters.
+The Goal resumption rules above neither authorize Ralph retries nor change their
+semantics; Ralph does not independently skip to another story. All adapters retain
+acceptance criteria, required native review/checks, branch and unrelated-work
+guards, and authorized commit gates.
 
 ## Bounded memory and durable knowledge
 

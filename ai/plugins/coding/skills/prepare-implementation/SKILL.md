@@ -14,6 +14,10 @@ plan (including a Codex Goal), do not regenerate it: read the installed skill's
 task-source adapter. Require execution and commit authorization; the presence of
 a plan or skill does not grant it. Missing references or required native reviewer
 availability block execution. No hardcoded checkout or plugin-cache paths.
+On continuation or resumption, apply the shared contract's persistent blocker
+gate before further story work or review. A final blocked review keeps the story
+incomplete until material-change evidence is verified; another Goal turn does
+not resolve it or renew the review budget. Preserve existing authorization.
 
 ## Select the format
 

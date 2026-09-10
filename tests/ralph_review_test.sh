@@ -71,8 +71,8 @@ grep -q '"verdict": "pass|changes_requested|blocked"' "$REVIEW_FILE" ||
   fail "shared output schema is missing verdict"
 grep -q '"learning_candidates"' "$REVIEW_FILE" ||
   fail "shared output schema is missing learning candidates"
-grep -q 'do not block immediately' "$REVIEW_FILE" ||
-  fail "agent does not recover from aggregate diff truncation"
+grep -q 'retrieve only missing sections' "$REVIEW_FILE" ||
+  fail "agent does not recover only missing evidence after truncation"
 
 grep -q '`ralph-reviewer`' "$RALPH_FILE" ||
   fail "Ralph does not invoke the consolidated reviewer"
