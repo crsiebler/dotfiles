@@ -177,7 +177,7 @@
     },
     "plugin": [
         "@mohak34/opencode-notifier@0.1.15",
-        "opencode-dir",
+        "opencode-dir@1.2.3",
         "opencode-gpt-imagegen@0.1.9"
     ],
     "provider": {
