@@ -67,7 +67,7 @@
     },
     {
       "id": "existing-ralph-run",
-      "context": "OpenCode default. Existing plan.json is for another feature with progress.txt and memory.json.",
+      "context": "OpenCode default. Existing plan.json is for another feature with worktree-root docs/progress.md and memory.json.",
       "request": "Convert this new PRD.",
       "expected": ["Follow unchanged Ralph reference", "Preview replacement, archive and reset and require confirmation", "Preserve memory.json absent separate reset approval"],
       "prohibited": ["Overwrite archive", "Silently reset progress"]
@@ -76,8 +76,8 @@
       "id": "long-native-goal-plan",
       "context": "Codex default. Approved PRD needs twelve bounded stories; no project typecheck command exists.",
       "request": "Prepare the checklist for /goal.",
-      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, mode-aware staged review, remediation and authorized story commit", "Embed installed-skill loading for story-execution.md and story-review.md", "Append execution status and evidence to progress.txt; bounded validated review knowledge in memory.json", "Keep PLAN.md limited to the plan and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Require an exact prepared branch before execution", "Offer explicit execution and story-commit launch authorization; do not execute it"],
-      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Create or reset progress.txt or memory.json during planning", "Invent commands or completed results", "Claim Codex enforces Ralph's hard iteration limit"]
+      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, mode-aware staged review, remediation and authorized story commit", "Embed installed-skill loading for story-execution.md and story-review.md", "Append execution status and evidence to worktree-root docs/progress.md; bounded validated review knowledge in memory.json", "Keep PLAN.md limited to the plan and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Require an exact prepared branch before execution", "Offer explicit execution and story-commit launch authorization; do not execute it"],
+      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Create or reset docs/progress.md or memory.json during planning", "Invent commands or completed results", "Claim Codex enforces Ralph's hard iteration limit"]
     },
     {
       "id": "explicit-target-no-default",
@@ -116,16 +116,16 @@
     },
     {
       "id": "markdown-progress-preservation",
-      "context": "Codex default. PLAN.md has unchecked US-002; progress.txt has US-001 completion evidence and a US-002 blocked checkpoint awaiting approval.",
+      "context": "Codex default. PLAN.md has unchecked US-002; worktree-root docs/progress.md has US-001 completion evidence and a US-002 blocked checkpoint awaiting approval.",
       "request": "Refine only US-002's implementation plan; do not execute it.",
-      "expected": ["Read relevant progress context and preserve pending approvals", "Update only scoped plan content", "Preserve progress.txt unchanged during planning", "Keep the pending story unchecked and route future execution notes to append-only progress.txt"],
+      "expected": ["Read relevant progress context and preserve pending approvals", "Update only scoped plan content", "Preserve docs/progress.md unchanged during planning", "Keep the pending story unchecked and route future execution notes to append-only worktree-root docs/progress.md"],
       "prohibited": ["Reset the log", "Duplicate implementation history into PLAN.md", "Treat a checkpoint as execution authorization"]
     },
     {
       "id": "markdown-existing-notes",
-      "context": "Existing PLAN.md has completed checkboxes and extensive implementation notes; progress.txt does not exist.",
+      "context": "Existing PLAN.md has completed checkboxes and extensive implementation notes; docs/progress.md does not exist.",
       "request": "Use the new progress-file convention for future execution; preserve existing work.",
-      "expected": ["Preserve existing plan evidence and completion checkboxes", "Direct future execution notes to progress.txt", "Require explicit cleanup approval before relocating old notes", "Create progress.txt only when authorized execution begins"],
+      "expected": ["Preserve existing plan evidence and completion checkboxes", "Direct future execution notes to worktree-root docs/progress.md", "Require explicit cleanup approval before relocating old notes", "Create docs/progress.md only for an authorized execution checkpoint when branch and unrelated-work guards pass"],
       "prohibited": ["Delete old notes automatically", "Create fabricated execution entries", "Treat the convention change as execution or commit approval"]
     },
     {
