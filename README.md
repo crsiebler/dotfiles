@@ -347,8 +347,24 @@ protocol, required reviewer/session, invalid memory, or failed checks/review/com
 stops delivery with the story pending. It is not a general-reviewer fallback.
 Goal retains native continuation and compaction, not Ralph's external hard
 iteration limit, fresh-session loop, or completion sentinel. OpenCode's reviewer
-has `steps: 3`; Codex's tool-turn budget is behavioral, not a hard cap.
+has `steps: 3`. The executor explicitly selects `three-step` for RalphJSON and
+`expanded-initial` for CodexGoalMarkdown, supplying `Review profile` and `Pass type`
+in each initial/targeted packet. Wrappers require matching profiles; missing,
+unknown, or conflicting selection blocks review rather than guessing the harness.
+Profiles grant no tools or runtime overrides. An `expanded-initial` initial review
+allows up to 40 small read-only evidence calls, stopping when coverage is
+sufficient. Its configurable reading budget is behavioral, not native hard
+enforcement. Targeted review remains scoped to prior
+findings and remediation regressions, with at most two evidence-gathering turns.
 See [Codex goals](docs/codex-goals.md) for the handoff and authorization boundaries.
+After a final blocked review, preserve the candidate, incomplete status, and
+evidence; stop further attempts until a recorded material change is verified.
+Goal continuation, compaction, or a new reviewer does not reset that gate or its
+review budget. Keep bounded truncation recovery before the verdict and native
+Goal lifecycle accounting separate. Carry forward authorization; another story
+must be independently eligible and safely isolated, or work stops. See the
+[blocker contract](docs/codex-goals.md#blocked-stories-and-evidence-gated-resumption)
+and [activation guidance](docs/ai-configuration.md#native-agents-and-ralph-limitations).
 Automatic story-boundary compaction is [backlogged](docs/backlog.md); no custom
 hook runs during normal development.
 

@@ -77,8 +77,24 @@ immutable per-role policy or project-only filesystem access.
 `story-reviewer.toml` is the dedicated Codex Goal staged-review wrapper. Its
 OpenCode counterpart is generated with the same generic mapping, so it has no
 shell permission and cannot replace native OpenCode `ralph-reviewer`. That native
-wrapper retains `steps: 3` and its exact staged-Git allowlist. Codex's three-step
-tool-turn budget is behavioral guidance, not equivalent hard enforcement.
+wrapper retains `steps: 3` and its exact staged-Git allowlist. Wrappers declare
+their review profiles directly: `story-reviewer` requires `expanded-initial` and
+`ralph-reviewer` requires `three-step`. These describe the role's contract, not
+detected runtime identity. The executor maps its already-selected adapter to a
+profile and includes literal `Review profile` and `Pass type` lines on both
+initial and targeted invocations. Missing, unknown, or conflicting profiles block
+before evidence gathering, with the exact problem in `residual_risks`. Do not infer
+the harness from tools, binaries, paths, or role names, or add profile fields to
+the response JSON. Profiles grant no tools and never override tighter limits.
+
+The `expanded-initial` initial review permits up to 40 small read-only evidence
+calls: inventory first, grouped patches, then only missing-section recovery after
+truncation, without repeating oversized
+requests. Track changed-file and affected-contract coverage; stop when sufficient
+or block with exact missing sections at the ceiling. This configurable reading
+budget is behavioral guidance, not equivalent hard enforcement. Both profiles
+retain at most two evidence-gathering turns and remediation-only scope for targeted
+review; the same profile is required on resumption.
 
 Both wrappers receive the complete
 [shared review protocol/schema](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md)

@@ -84,8 +84,20 @@ defines the native role contract.
   uses native `story-reviewer`, never general reviewers. The generated OpenCode
   `story-reviewer` has no shell permission and is not a Ralph substitute. Preserve
   the project-local read/staged-Git-only boundary and exact JSON output. OpenCode
-  enforces `steps: 3` and its exact Git allowlist; Codex has a behavioral tool-turn
-  budget, not equivalent hard step or immutable sandbox/MCP enforcement.
+  enforces `steps: 3` and its exact Git allowlist. The executor explicitly maps
+  RalphJSON to `three-step` and CodexGoalMarkdown to `expanded-initial`, supplying
+  `Review profile` and `Pass type` on every initial/targeted packet. Each native
+  wrapper requires its profile; missing, unknown, or conflicting selection blocks
+  in the existing JSON schema. Never infer the harness from tools, binaries,
+  paths, or role names. Profiles grant no capabilities or runtime overrides.
+  The `expanded-initial` initial review permits up to 40 small read-only evidence
+  calls, inventory first, then manageable patch groups and missing-section
+  recovery without repeating oversized requests.
+  Track changed-file/affected-contract coverage and stop when sufficient; block
+  with exact missing sections if required evidence remains unavailable at the
+  ceiling. This configurable reading budget is behavioral, not equivalent hard
+  step or immutable sandbox/MCP enforcement. Targeted review under either profile
+  retains two evidence-gathering turns and only prior findings/remediation regressions.
 - `write-requirements` creates requirements; `prepare-implementation` defaults to
   `plan.json` in OpenCode and a Markdown story checklist in `PLAN.md` in Codex.
   Explicit user format requests override these defaults. OpenCode entry points
@@ -135,6 +147,17 @@ defines the native role contract.
   pass and at most one targeted pass in the same actual native session per attempt. Missing
   required protocol/reviewer/session, invalid memory, failed required checks,
   failed review, or failed commit stops delivery with the story pending.
+- A final blocked native review stops further story review attempts. Preserve the
+  candidate, incomplete status, findings/history, and consumed passes; record the
+  exact blocker, required material change, and resolution evidence. Goal may resume
+  that story only after verifying the change, not merely on continuation, elapsed
+  time, compaction, or reviewer replacement. Preserve bounded evidence recovery
+  before a final verdict and the actionable-findings initial/targeted contract.
+  Carry forward existing authorization; ask only for genuinely missing authority
+  or input. Another story must be independently eligible and safely isolated, or
+  stop work without manufactured experiments/bookkeeping. Native Goal lifecycle
+  audits do not reset story review budgets. Ralph's explicit recovery protocol and
+  persisted counters remain authoritative and unchanged.
 - Keep only story completion status in the task source; append execution status,
   notes, evidence, dispositions, and resumption checkpoints to `docs/progress.md`.
   Delivery requires passing checks/review and a successful authorized story commit;
