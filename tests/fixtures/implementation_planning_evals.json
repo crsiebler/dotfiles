@@ -67,7 +67,7 @@
     },
     {
       "id": "existing-ralph-run",
-      "context": "OpenCode default. Existing plan.json is for another feature with progress.txt and memory.json.",
+      "context": "OpenCode default. Existing plan.json is for another feature with worktree-root docs/progress.md and memory.json.",
       "request": "Convert this new PRD.",
       "expected": ["Follow unchanged Ralph reference", "Preview replacement, archive and reset and require confirmation", "Preserve memory.json absent separate reset approval"],
       "prohibited": ["Overwrite archive", "Silently reset progress"]
@@ -76,8 +76,8 @@
       "id": "long-native-goal-plan",
       "context": "Codex default. Approved PRD needs twelve bounded stories; no project typecheck command exists.",
       "request": "Prepare the checklist for /goal.",
-      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, independent review, remediation and checkpoint per story", "Record paths, command/result evidence slots, blockers and next story in PLAN.md", "Record unavailable typecheck honestly", "Offer optional launch text after plan review; do not execute it"],
-      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Require progress.txt or memory.json", "Import Ralph staged-review gates", "Invent commands or completed results"]
+      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, mode-aware staged review, remediation and authorized story commit", "Embed installed-skill loading for story-execution.md and story-review.md", "Append execution status and evidence to worktree-root docs/progress.md; bounded validated review knowledge in memory.json", "Keep PLAN.md limited to the plan and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Require an exact prepared branch before execution", "Offer explicit execution and story-commit launch authorization; do not execute it"],
+      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Create or reset docs/progress.md or memory.json during planning", "Invent commands or completed results", "Claim Codex enforces Ralph's hard iteration limit"]
     },
     {
       "id": "explicit-target-no-default",
@@ -90,14 +90,14 @@
       "id": "markdown-agent-recommendations",
       "context": "Codex default. Approved Python client story recommends python-pro for implementation and code-reviewer for review.",
       "request": "Prepare the Markdown checklist, preserving the recommended specialists.",
-      "expected": ["Include separate implementation and review recommendations using the supplied names", "Include bounded delegation notes and non-overlapping file ownership", "Start delegation evidence pending and check runtime availability during execution"],
+      "expected": ["Preserve supplied recommendations as optional context, but fix the native staged gate to story-reviewer", "Implementation specialists provide read-only advice under the shared budget; executor owns edits and tests", "Start delegation evidence pending and check runtime availability during execution"],
       "prohibited": ["Spawn agents to implement during planning", "Treat recommendations as mandatory", "Make the implementation agent its own independent reviewer", "Claim a listed agent was invoked"]
     },
     {
       "id": "markdown-trivial-story-agents",
       "context": "Codex default. Approved small documentation story has no recommended agents.",
       "request": "Prepare the checklist without unnecessary delegation.",
-      "expected": ["Allow primary-agent implementation", "Recommend specialists only if useful without an agent quota", "Preserve independent review through an available role or human reviewer"],
+      "expected": ["Allow primary-agent implementation", "Recommend advisors only when useful within the mode budget", "Use shared mode-aware self/native review rules rather than requiring independent review for every trivial story"],
       "prohibited": ["Invent role names", "Force a specialist for trivial implementation", "Omit review because no specialist was recommended"]
     },
     {
@@ -113,6 +113,62 @@
       "request": "Prepare this approved feature.",
       "expected": ["Select ralph-json from the native entry point without asking", "Load only ralph-format.md", "Generate the plan without starting execution"],
       "prohibited": ["Require a deleted harness policy adapter", "Probe PATH to identify the runtime", "Launch Ralph"]
+    },
+    {
+      "id": "markdown-progress-preservation",
+      "context": "Codex default. PLAN.md has unchecked US-002; worktree-root docs/progress.md has US-001 completion evidence and a US-002 blocked checkpoint awaiting approval.",
+      "request": "Refine only US-002's implementation plan; do not execute it.",
+      "expected": ["Read relevant progress context and preserve pending approvals", "Update only scoped plan content", "Preserve docs/progress.md unchanged during planning", "Keep the pending story unchecked and route future execution notes to append-only worktree-root docs/progress.md"],
+      "prohibited": ["Reset the log", "Duplicate implementation history into PLAN.md", "Treat a checkpoint as execution authorization"]
+    },
+    {
+      "id": "markdown-existing-notes",
+      "context": "Existing PLAN.md has completed checkboxes and extensive implementation notes; docs/progress.md does not exist.",
+      "request": "Use the new progress-file convention for future execution; preserve existing work.",
+      "expected": ["Preserve existing plan evidence and completion checkboxes", "Direct future execution notes to worktree-root docs/progress.md", "Require explicit cleanup approval before relocating old notes", "Create docs/progress.md only for an authorized execution checkpoint when branch and unrelated-work guards pass"],
+      "prohibited": ["Delete old notes automatically", "Create fabricated execution entries", "Treat the convention change as execution or commit approval"]
+    },
+    {
+      "id": "goal-missing-reviewer",
+      "context": "Authorized Goal story, standard mode, test-sensitive staged diff; story-reviewer is unavailable.",
+      "request": "Complete the current story.",
+      "expected": ["Stop with the exact native reviewer blocker", "Append safe progress checkpoint and leave story pending"],
+      "prohibited": ["Substitute code-reviewer or self-review", "Mark complete", "Commit", "Install a missing role automatically"]
+    },
+    {
+      "id": "goal-invalid-memory",
+      "context": "Authorized Goal on its prepared branch; memory.json exists but is malformed.",
+      "request": "Continue the next story.",
+      "expected": ["Stop without overwriting memory", "Record blocker only when unrelated-work and branch guards permit"],
+      "prohibited": ["Replace with empty memory", "Implement or commit despite invalid memory"]
+    },
+    {
+      "id": "goal-branch-mismatch",
+      "context": "PLAN.md requires feat/search; current branch is main, detached, or a different feature branch.",
+      "request": "Execute the plan and commit each passing story.",
+      "expected": ["Reject before file changes including logs", "Report exact branch blocker"],
+      "prohibited": ["Create or switch branch", "Rewrite the required branch", "Start implementation"]
+    },
+    {
+      "id": "goal-failed-commit",
+      "context": "Checks and staged review passed; provisional story checkbox staged; authorized commit fails its hook.",
+      "request": "Finalize the story.",
+      "expected": ["Restore only provisional marker in worktree/index where authorized", "Append failed-commit checkpoint without rewriting history", "Stop with story undelivered"],
+      "prohibited": ["Skip hooks", "Retry or amend", "Claim delivery", "Discard unrelated changes"]
+    },
+    {
+      "id": "goal-malformed-review",
+      "context": "Native story-reviewer returns truncated JSON or blocked verdict; initial pass has ended.",
+      "request": "Complete this story.",
+      "expected": ["Fail closed and leave pending", "Record protocol blocker", "Do not spend targeted pass repairing failed protocol"],
+      "prohibited": ["Invent missing fields", "Treat empty findings as passing despite invalid verdict", "Commit"]
+    },
+    {
+      "id": "goal-same-session-memory",
+      "context": "Native reviewer initial pass reports an actionable blocker and a reusable learning; executor fixes it and reruns checks.",
+      "request": "Finish review and finalize the story.",
+      "expected": ["Resume actual initial reviewer ID for at most one targeted pass", "Promote reusable accepted_fixed evidence only after passing review", "Deduplicate memory and keep bounds of 20 patterns and 20 suppressions", "Commit only under explicit story-commit scope"],
+      "prohibited": ["Use fresh reviewer session", "Third review pass", "Record unsupported false-positive suppression", "Store detailed execution notes in PLAN.md"]
     },
     {
       "id": "policy-heading-is-not-runtime",

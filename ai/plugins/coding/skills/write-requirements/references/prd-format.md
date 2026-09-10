@@ -14,8 +14,31 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 **Important:** Do NOT start implementing. Just create the PRD.
 
 If the user did not explicitly ask to save a file, preview the target filename
-and ask before writing. Do not overwrite an existing PRD without explicit
-confirmation.
+and ask before writing. Apply the preservation guard before every save.
+
+## PRD lifecycle and preservation
+
+PRDs record approved requirements, requirement changes, and open questions; label
+drafts and assumptions rather than presenting them as approved. Once execution
+begins, implementation outcomes and checkpoints belong in worktree-root
+`docs/progress.md`. Approved requirement changes update the PRD and should be
+cross-referenced from that journal during execution. Do not bloat the PRD with
+execution notes or require/create the journal while drafting requirements.
+
+1. Check whether the exact target PRD exists before saving. Never automatically
+   overwrite, move, or archive existing files. A new PRD request is not approval
+   to replace one. Explicit revisions of the same PRD update only approved scope.
+2. For replacement, preview the existing path, a unique project-local archive
+   destination such as `archive/YYYY-MM-DD-feature-name-prd/tasks/prd-feature.md`,
+   and the proposed replacement. Obtain explicit user approval to archive the
+   existing PRD before writing the replacement; never overwrite an archive.
+3. Recheck source/destination and approved scope, copy the existing PRD to the
+   archive, and verify identical contents before replacing the active file. Do
+   not follow out-of-project symlinks. If approval is withheld or preservation
+   fails, leave the original unchanged and return the draft in the response.
+4. Never archive `PLAN.md`, `plan.json`, `memory.json`, or `docs/progress.md` as a
+   drafting side effect. They belong to separately approved completed-run
+   archival, not PRD replacement. Preserve unrelated files and execution evidence.
 
 ---
 
@@ -189,7 +212,7 @@ The PRD reader may be a junior developer or AI agent. Therefore:
 - **Format:** Markdown (`.md`)
 - **Location:** `tasks/`
 - **Filename:** `prd-[feature-name].md` (kebab-case)
-- **Safety:** Preview the filename before saving when file creation was not explicit; never overwrite an existing PRD without confirmation.
+- **Safety:** Check the target and follow the preservation guard; replacement requires explicit archival approval and verified preservation first.
 
 ---
 
@@ -300,4 +323,6 @@ Before saving the PRD:
 - [ ] Each implementation story recommends 0-2 relevant development agents
 - [ ] Functional requirements are numbered and unambiguous
 - [ ] Non-goals section defines clear boundaries
+- [ ] Existing PRD preserved under the approved revision or archive-before-replace scope
+- [ ] No execution checkpoints or state files created during drafting
 - [ ] Saved to `tasks/prd-[feature-name].md`

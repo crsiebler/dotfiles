@@ -9,9 +9,25 @@ Converts existing PRDs to the plan.json format that Ralph uses for autonomous ex
 Take a PRD (markdown file or text) and convert it to `plan.json` in the Ralph
 working directory where the `ralph` primary agent expects to read it.
 
-If `plan.json` already exists, preview the replacement and require confirmation
-before overwriting it. If the existing file belongs to a different feature,
-archive the previous run before writing the new one.
+This is a planning adapter, not execution authorization. Approved execution uses
+[Bounded Story Execution](story-execution.md) and the full sibling
+[Story Review](story-review.md) protocol, loaded relative to the installed
+`prepare-implementation` skill. Preserve the JSON keys and types below. Ralph
+maps `branchName`, `userStories`, and `passes` to the shared execution contract;
+the runner still owns external iterations and their maximum. Prepare a committed
+worktree on that exact branch before execution; never use `main`, `master`, or
+detached HEAD. Execution and per-story commits require explicit authorization;
+migrations and Docker operations still require their own applicable approvals.
+
+If `plan.json` already exists, preserve it and require confirmation for scoped
+updates. Do not overwrite an unfinished run with a different feature. Completed
+runs use the separately approved [archival procedure](completed-run-archive.md),
+after the runner has validated completion and exited, not during conversion.
+
+Keep `plan.json` a stable task source with concise planning context in `notes`,
+not execution narratives. Append execution evidence only to worktree-root
+`docs/progress.md`; bounded reusable review knowledge stays in root `memory.json`.
+Planning creates neither state file and never resets them.
 
 ---
 
@@ -111,7 +127,7 @@ For stories with testable logic, also include:
 "Verify in browser using verify-interface skill"
 ```
 
-Frontend stories require browser verification using `verify-interface`. Existing PRDs containing the legacy `dev-browser` criterion remain compatible: interpret it as the same browser requirement, not permission to omit verification.
+Frontend stories require browser verification using `verify-interface`.
 
 ---
 
@@ -151,6 +167,12 @@ orchestration agents.
 These are candidate names, not proof of runtime availability. Preserve supplied
 `@agent-name` hints as optional notes; verify configured names before adding new
 ones. Discovery does not load or invoke an agent. Do not require delegation.
+
+These notes select optional read-only implementation advisors, not the staged
+review role. The shared mode/risk budget selects self-review or the exact native
+`ralph-reviewer` in OpenCode (`story-reviewer` for Codex Goal Markdown execution).
+When native review is required, missing role availability blocks execution;
+never substitute an arbitrary or general-purpose reviewer from these examples.
 
 Use this scope matrix:
 
@@ -294,21 +316,13 @@ Add ability to mark tasks with different statuses.
 
 ---
 
-## Archiving Previous Runs
+## Archiving Completed Runs
 
-**Before writing a new plan.json, check if there is an existing one from a different feature:**
-
-1. Read the current `plan.json` if it exists
-2. Check if `branchName` differs from the new feature's branch name
-3. If different AND `progress.txt` has content beyond the header:
-   - Create archive folder: `archive/YYYY-MM-DD-feature-name/`
-   - Copy current `plan.json` and `progress.txt` to archive
-   - Reset `progress.txt` with fresh header
-
-Do not assume the installed runner archives automatically. Preview and confirm
-the archive and reset before manual conversion. Never overwrite an existing
-archive; choose a unique project-local destination. Preserve `memory.json`
-unless a separately approved run-reset policy says otherwise.
+After all stories pass checks/review and their commits succeed, wait for runner
+completion validation and exit. Offer the [shared archival procedure](completed-run-archive.md)
+for `plan.json`, `docs/progress.md`, and existing `memory.json` together. It requires
+explicit approval and verified preservation before active-copy removal. Do not
+archive inside an iteration, reset the journal, or assume automatic runner cleanup.
 
 ---
 
@@ -316,7 +330,7 @@ unless a separately approved run-reset policy says otherwise.
 
 Before writing plan.json, verify:
 
-- [ ] **Previous run archived** (if plan.json exists with different branchName, archive it first)
+- [ ] No unfinished run is being replaced; completed-run archival is separately approved
 - [ ] Each story is completable in one iteration (small enough)
 - [ ] Stories are ordered by dependency (schema to backend to UI)
 - [ ] Every story has "Typecheck passes" as criterion
