@@ -51,7 +51,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `create-sprites` |
+| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `create-sprites`, `map-codebase` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web` |
 | `delegating` | `use-subagents` |
@@ -67,6 +67,17 @@ are loaded conditionally from `references/exa.md`. Plugin skill discovery is
 directory-based, so the rename needs no installer or manifest special case.
 For retained installed `use-exa` copies and Codex plugin refresh, follow the
 [rename cleanup steps](remove-old-ai-files.md#renamed-web-research-skill).
+
+`map-codebase` creates or updates persistent, source-backed technical documents
+when explicitly requested. It defaults to `docs/overview.md` plus cohesive subject
+documents directly in `docs/`, reuses existing guides, and adds a concise project
+`AGENTS.md` discovery reference. Readers select relevant documents and verify
+affected source; links do not establish automatic indexing. Detailed procedures
+may move out of `AGENTS.md` only within authorized documentation consolidation,
+preserving mandatory rules and concise workflow obligations. Routine refreshes
+update affected subjects without rewriting policy or execution state. Read-only
+requests return proposed content instead of saving. Directory-based discovery
+requires no new command, agent, or installer special case.
 
 The base Codex configuration leaves the user's model selection intact. Astra is
 opt-in: `astra.config.toml` selects `gpt-6-astra` with high reasoning effort;
@@ -467,6 +478,10 @@ The following are **manual evaluation cases, not recorded successful runs**:
   `tests/fixtures/implementation_planning_evals.json`. These are manual evaluation
   cases, not recorded model results. Verify both native defaults, explicit format
   overrides, preservation of existing plans, and generation without execution.
+- Evaluate mapping with `tests/fixtures/codebase_mapping_evals.json`: persistent
+  output, existing-document reuse, scoped consolidation, source-backed navigation,
+  and read-only behavior. These are manual scenarios, not recorded model results;
+  compare navigation accuracy and effort with ordinary focused inspection.
 - Evaluate task scenarios in `tests/fixtures/agent_evals.yml` only with approval;
   record runtime/model, inputs, grader, repetitions, observed outcomes, latency,
   tokens, and cost basis. Static tests do not establish behavioral safety or speed.
