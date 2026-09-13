@@ -31,6 +31,7 @@ plugins=(
     zsh-syntax-highlighting
 )
 
+# Docker Desktop installs completions outside the standard Oh My Zsh paths.
 [[ -d "$HOME/.docker/completions" ]] && \
   fpath=("$HOME/.docker/completions" $fpath)
 
@@ -42,6 +43,7 @@ else
   compinit
 fi
 
+# Prefer VS Code locally, then Neovim, with Vim as the fallback editor.
 if [[ -z ${SSH_CONNECTION:-} ]] && (( $+commands[code] )); then
   export EDITOR="code --wait"
 elif (( $+commands[nvim] )); then
@@ -51,6 +53,7 @@ else
 fi
 export VISUAL="$EDITOR"
 
+# Load personal aliases after Oh My Zsh so they can override its defaults.
 for alias_file in \
   "$HOME/.docker_aliases" \
   "$HOME/.git_aliases" \
@@ -91,6 +94,7 @@ fi
 source "$HOME/.railway/env"
 # <<< railway initialize <<<
 
+# Load personal environment variables when available.
 if [[ -r "$HOME/.env" ]]; then
   source "$HOME/.env"
 fi
