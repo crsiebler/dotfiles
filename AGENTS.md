@@ -39,6 +39,14 @@ defines the native role contract.
   `/ship`, `/find-agents`, `/recover-ralph`, and unchanged `/review-pr`. `create-sprites` owns common
   generation rules; load its Godot reference only for Godot requests or relevant
   project context. Asset-only work must not require a Godot binary.
+- `create-audio` owns the audio generation workflow and backend adapters;
+  `/create-audio` is configured inline in OpenCode JSON and agents resolve
+  `scripts/create_audio.py` from the installed skill. There is no audio shell
+  alias. Stable Audio MLX infrastructure defaults to
+  `~/Models/local-audio/`; project request JSON owns prompts and generation
+  preferences. AI installation must not provision models. Existing game
+  installations are not automatically moved or removed. No chat-provider entry
+  is added for an audio-only model.
 - `make install-codex`, `make install-opencode`, and `make install-ai` modify user
   AI configuration only. They require explicit installation authorization. No
   logins, dependency bootstrap, shell setup, or binary installation are included.

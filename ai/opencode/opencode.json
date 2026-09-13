@@ -1,6 +1,12 @@
 {
     "$schema": "https://opencode.ai/config.json",
     "lsp": true,
+    "command": {
+        "create-audio": {
+            "description": "Generate audio through the create-audio skill",
+            "template": "Load the installed create-audio skill. Use the active project's instructions, prompts, and request JSON to select a supported audio model and its settings. Resolve bundled scripts from the installed skill. Follow project batch authorization and review requirements. Request: $ARGUMENTS"
+        }
+    },
     "mcp": {
         "chrome": {
             "command": [

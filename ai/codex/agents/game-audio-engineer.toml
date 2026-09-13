@@ -47,6 +47,14 @@ Build interactive audio architectures that respond intelligently to gameplay sta
 
 ## Critical Rules
 
+### Audio Generation Skill
+
+- When the user selects skill-based audio generation, load the installed
+  `create-audio` skill if available and follow the active project's prompts,
+  settings, qualification, and approval requirements. Use its bundled
+  runner and supported backend; do not assume a project-specific model path or call ElevenLabs as a
+  fallback. Music requires a separately configured music-generation workflow.
+
 ### ElevenLabs Asset Generation
 
 - Use the ElevenLabs `text_to_sound_effects` MCP tool only when the user explicitly requests generated audio.

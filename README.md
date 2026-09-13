@@ -144,6 +144,25 @@ After running `make install-opencode` (also included in `make install`):
 
 By default, `/review-pr` generates a local review report only. When `--post` is provided, it previews the PR URL, review event, consolidated body, inline comment count, and exact `gh` command or API payload, then requires explicit confirmation before posting anything to GitHub.
 
+## Audio Generation
+
+Agents use the shared `create-audio` skill and its bundled `create_audio.py`
+entry point. OpenCode also exposes `/create-audio` to load the skill. There is
+no shell alias or audio chat-provider entry. The first backend implements Stable
+Audio 3 Small-SFX through MLX on Apple Silicon; backend-specific validation and
+execution are separate from request data, artifact storage, and orchestration.
+Generation preferences and prompts come from a project-owned JSON request.
+Stable Audio models default to `~/Models/local-audio/`; no game-specific directory or
+prompt is built into the tool. This is a file-generating runtime, not an MLX-LM
+chat-model entry.
+
+See the [audio request and setup guide](ai/plugins/coding/skills/create-audio/references/local-audio.md).
+AI installation copies the skill but does not provision models.
+Setup is separate and can copy verified existing weights into a fresh
+generic runtime without changing the original installation. Use the existing
+sprite skill and this audio skill from project adapters while keeping artistic
+direction, output policies, and engine integration in the project.
+
 ## Sprite Generation
 
 This repository includes a `/create-sprite` OpenCode command for generating

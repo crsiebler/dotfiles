@@ -51,7 +51,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `create-sprites`, `map-codebase` |
+| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `create-sprites`, `create-audio`, `map-codebase` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web` |
 | `delegating` | `use-subagents` |
@@ -60,6 +60,18 @@ Use the skill identifier actually advertised by the harness; do not guess Codex
 namespace syntax or cached installation paths. Resolve bundled resources from
 the loaded skill location. Marketplace authentication policy is `ON_USE`, not an
 instruction to log in during installation.
+
+`create-audio` bundles a model-independent generation workflow, a Stable Audio
+3 Small-SFX MLX adapter, and explicit local setup. OpenCode JSON adds
+`/create-audio`, which loads the installed
+skill using the current chat model. Stable Audio is not listed as a chat model.
+Agents invoke `scripts/create_audio.py` relative to the installed skill; no Zsh
+alias is installed. Stable Audio infrastructure defaults to `~/Models/local-audio/` or
+`LOCAL_AUDIO_MODELS_ROOT`; projects supply prompts, model selection, sampling
+settings, output, and cache locations. See the
+[audio guide](../ai/plugins/coding/skills/create-audio/references/local-audio.md).
+Directory-based skill discovery installs its scripts without an installer
+special case. Model provisioning remains separate from AI configuration installation.
 
 `search-web` selects available search, page-fetching, or multi-step research tools
 by their exposed schemas. Its core guidance is provider-agnostic; Exa MCP details
