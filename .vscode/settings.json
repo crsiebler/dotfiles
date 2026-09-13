@@ -1,4 +1,7 @@
 {
+    "python.analysis.extraPaths": [
+        "./ai/plugins/coding/skills/create-audio/scripts"
+    ],
     "cSpell.words": [
         "Toolsets"
     ]
