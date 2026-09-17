@@ -54,6 +54,10 @@ selection but cannot replace this gate or extend its budget. The executor loads
 the full installed `story-review.md` and supplies it with the compact packet,
 without embedding the diff; retain the actual returned native reviewer ID for
 at most one targeted same-session follow-up.
+Embed the complete protocol/schema in the invocation message itself, never an
+inherited tool-output reference. Apply the execution contract's packet preflight.
+Start a fresh reviewer session per story and record its actual selected role and
+returned ID alongside the story/attempt; labels alone do not establish identity.
 
 ## Template
 
@@ -122,6 +126,11 @@ loads the shared contract even when the planning skill is not otherwise active.
 - Native review uses story-reviewer, its supplied shared JSON schema, and at most
   one initial plus one targeted same-session pass. Self-review is permitted only
   by the mode/risk budget; malformed/blocked review stops delivery.
+- Embed the full review protocol/schema directly in every native review message.
+  Preflight the packet under story-execution.md before sending. Start a separate
+  reviewer session for each story; label it with the story ID and attempt number,
+  and record the actual selected role and returned session ID separately. Send a
+  targeted follow-up only to the recorded session for that same story and attempt.
 - Provisional completion boxes are staged only after checks/review pass; a story
   is delivered only after its authorized commit succeeds. On failure follow the
   shared marker-restoration and checkpoint procedure. Never claim unchecked work done.

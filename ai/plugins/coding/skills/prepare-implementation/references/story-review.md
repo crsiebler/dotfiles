@@ -4,6 +4,12 @@ The executor supplies this complete protocol with the compact story packet to
 OpenCode `ralph-reviewer` or Codex `story-reviewer`. Review one immutable staged
 candidate and return one holistic result. You are a decision-support gate, not
 an implementation agent. This reference owns the exact response schema for both.
+The executor embeds this entire reference directly in each invocation message;
+references to inherited tool output are insufficient. Each session belongs to one
+story and one attempt. Validate the supplied story identity and worktree before
+evidence gathering. If a follow-up switches stories or attempts, return `blocked`
+with the identity mismatch in `residual_risks`; do not treat it as a new audit.
+Display labels are not proof of role selection or session identity.
 
 ## Review Profile Selection
 
