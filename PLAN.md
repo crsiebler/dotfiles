@@ -9,15 +9,13 @@
   create-skill/create-gif adaptations, eight original document skills, tests, and docs.
 - Non-goals: PRD section 6; no proprietary Anthropic document sources, general Office
   editing, OCR, macro execution, automatic conversion, new providers, or installation.
-- Current status: planning only; all stories pending. PRD remains the requirements
-  source; this checklist owns implementation completion status.
-- Working branch: unprepared (currently main). Proposed exact execution branch:
-  `feat/producing-and-document-skills`. Execution is blocked until that branch is
-  prepared with an existing commit and this plan/PRD are committed. Planning does
-  not create or switch branches or commit files.
+- Current status: execution authorized; US-001 delivered after its story commit. PRD remains the
+  requirements source; this checklist owns implementation completion status.
+- Working branch: `feat/producing-and-document-skills`, prepared with the committed
+  plan and PRD before execution.
 - Mode: standard; risk classification selects the shared review budget per story.
-- Authorization: checklist preparation only. Implementation, dependency installation,
-  and per-story commits require explicit authorization before execution.
+- Authorization: user approved implementation after the explicit request covering
+  all 14 stories and per-story commits. Dependency installation remains separate.
 - Delivery: one authorized commit per passing story; no implicit push or installation.
 - Adapter: CodexGoalMarkdown for later authorized Codex execution. This Markdown
   choice does not start a Goal or Ralph run; Ralph requires its JSON adapter.
@@ -79,7 +77,7 @@ Each story inherits these requirements in addition to its own criteria:
 ## Ordered stories
 
 ### US-001 — Register producing and relocate media skills
-- [ ] Story complete
+- [x] Story complete
 - Priority: 1
 - Depends on: none
 - Requirements: PRD US-001; FR-01–FR-04.
@@ -290,7 +288,7 @@ Each story inherits these requirements in addition to its own criteria:
 
 ## Material gaps before or during execution
 
-- Exact prepared branch and execution/commit authorization are outstanding.
+- Prepared branch and implementation/per-story commit authorization are satisfied.
 - Required dependency installations need authorization; no environment was provisioned.
 - Verify upstream clone/commit and Apache notices before adapting either licensed skill.
 - Select tested dependency constraints, extraction schemas/limits, GIF dependency set,

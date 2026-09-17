@@ -35,8 +35,9 @@ make install-opencode  # OpenCode configuration, copied skills, agents, commands
 make install-ai        # Both AI harnesses; no shell/env/git setup or binaries
 ```
 
-The four checkout-local `craft` plugins are `coding`, `reporting`, `researching`,
-and `delegating`. The `researching` plugin provides provider-agnostic `search-web`
+The five checkout-local `craft` plugins are `coding`, `reporting`, `researching`,
+`delegating`, and `producing`. The `producing` plugin owns audio and sprite
+creation. The `researching` plugin provides provider-agnostic `search-web`
 with conditional Exa MCP guidance.
 The single harness-agnostic personal policy, [`ai/AGENTS.md`](ai/AGENTS.md), is
 copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
@@ -156,7 +157,7 @@ Stable Audio models default to `~/Models/local-audio/`; no game-specific directo
 prompt is built into the tool. This is a file-generating runtime, not an MLX-LM
 chat-model entry.
 
-See the [audio request and setup guide](ai/plugins/coding/skills/create-audio/references/local-audio.md).
+See the [audio request and setup guide](ai/plugins/producing/skills/create-audio/references/local-audio.md).
 AI installation copies the skill but does not provision models.
 Setup is separate and can copy verified existing weights into a fresh
 generic runtime without changing the original installation. Use the existing

@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'ai/plugins/coding/skills/create-audio/scripts'))
+sys.path.insert(0, str(ROOT / 'ai/plugins/producing/skills/create-audio/scripts'))
 
 from audio_domain import AudioRequest
 from audio_files import ProjectFiles

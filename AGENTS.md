@@ -10,7 +10,8 @@ defines the native role contract.
 
 - Portable skills live in `ai/plugins/<plugin>/skills/<action>/`. The checkout-local
   `craft` marketplace at `.agents/plugins/marketplace.json` contains `coding`,
-  `reporting`, `researching`, and `delegating`.
+  `reporting`, `researching`, `delegating`, and `producing`.
+  `producing` owns the complete `create-audio` and `create-sprites` bundles.
 - `researching` provides provider-agnostic `search-web`; load its Exa MCP reference
   only when those tools are available and selected. Skill discovery is automatic.
 - The single harness-agnostic personal policy is `ai/AGENTS.md`. Installation

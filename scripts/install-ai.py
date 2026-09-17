@@ -268,8 +268,8 @@ def local_plugins(root, manifest):
             skills.add(file.parent.name)
         names.add(plugin_name)
         result.append((plugin_name, path))
-    if len(result) != 4:
-        raise ValueError('expected four plugin manifests')
+    if len(result) != 5:
+        raise ValueError('expected five plugin manifests')
     return result
 
 

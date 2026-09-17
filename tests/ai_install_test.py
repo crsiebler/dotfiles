@@ -396,6 +396,30 @@ class InstallTest(unittest.TestCase):
         self.assertEqual(calls, [['skills', 'add', str(ROOT / 'ai/plugins/coding/skills'),
                                  '--agent', 'opencode', '--global', '--copy', '--yes']])
 
+    def test_producing_plugin_owns_media_bundles(self):
+        m = self.module()
+        manifest = json.loads((ROOT / '.agents/plugins/marketplace.json').read_text())
+        plugins = dict(m.local_plugins(ROOT, manifest))
+        self.assertEqual(set(plugins),
+                         {'coding', 'reporting', 'researching', 'delegating', 'producing'})
+        source = plugins['producing']
+        metadata = json.loads((source / '.codex-plugin/plugin.json').read_text())
+        self.assertEqual(metadata['description'],
+                         'Creative asset and document production workflows.')
+        for name in ('create-audio', 'create-sprites'):
+            owners = [plugin for plugin, path in plugins.items()
+                      if (path / 'skills' / name / 'SKILL.md').is_file()]
+            self.assertEqual(owners, ['producing'])
+            self.assertFalse((plugins['coding'] / 'skills' / name).exists())
+        self.assertTrue((source / 'skills/create-audio/scripts/create_audio.py').is_file())
+        self.assertTrue((source / 'skills/create-sprites/references').is_dir())
+        calls = []
+        m.install_skills(list(plugins.items()), calls.append)
+        self.assertEqual(len(calls), 5)
+        self.assertIn(str(source / 'skills'), [call[2] for call in calls])
+        with self.assertRaisesRegex(ValueError, 'expected five plugin manifests'):
+            m.local_plugins(ROOT, dict(manifest, plugins=manifest['plugins'][:4]))
+
     def test_research_skill_discovery_and_bundled_reference(self):
         m = self.module()
         manifest = json.loads((ROOT / '.agents/plugins/marketplace.json').read_text())
@@ -433,7 +457,7 @@ class InstallTest(unittest.TestCase):
                          'permission: {"*": "deny", "read": "allow"}\n---\n\nExact café body\n')
             put('tests/.fixture', '')
             plugins = []
-            for name in ('coding', 'reporting', 'researching', 'delegating'):
+            for name in ('coding', 'reporting', 'researching', 'delegating', 'producing'):
                 put(f'ai/plugins/{name}/.codex-plugin/plugin.json', json.dumps({'name': name, 'skills': './skills/'}))
                 put(f'ai/plugins/{name}/skills/{name}/SKILL.md', f'---\nname: {name}\n---\nLocal')
                 plugins.append({'name': name, 'source': {'source': 'local', 'path': f'ai/plugins/{name}'},

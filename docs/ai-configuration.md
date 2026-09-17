@@ -47,14 +47,15 @@ OpenCode Markdown; edit the three OpenCode-only agents in their native Markdown.
 Agent metadata lives in native sources, with generic TOML-to-Markdown rendering;
 there are no exclusions or overrides JSON files.
 
-### Four plugins and skill names
+### Five plugins and skill names
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `create-sprites`, `create-audio`, `map-codebase` |
+| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web` |
 | `delegating` | `use-subagents` |
+| `producing` | `create-audio`, `create-sprites` |
 
 Use the skill identifier actually advertised by the harness; do not guess Codex
 namespace syntax or cached installation paths. Resolve bundled resources from
@@ -69,7 +70,7 @@ Agents invoke `scripts/create_audio.py` relative to the installed skill; no Zsh
 alias is installed. Stable Audio infrastructure defaults to `~/Models/local-audio/` or
 `LOCAL_AUDIO_MODELS_ROOT`; projects supply prompts, model selection, sampling
 settings, output, and cache locations. See the
-[audio guide](../ai/plugins/coding/skills/create-audio/references/local-audio.md).
+[audio guide](../ai/plugins/producing/skills/create-audio/references/local-audio.md).
 Directory-based skill discovery installs its scripts without an installer
 special case. Model provisioning remains separate from AI configuration installation.
 
