@@ -441,3 +441,40 @@
   callbacks and TrueType registration; /websites/pypdf_readthedocs_io_en_stable
   extraction, page geometry, metadata and stream-size/scan limitations. Font fixture
   licensing/coverage still to inspect; no proprietary document implementation read.
+
+## US-011 - PDF creation ready for review
+- Previous turn progress: US-010 committed a8b186f. Exact prepared branch/HEAD/status
+  verified before writes; unrelated environment/scratch retained.
+- Original contract written before helper. Three initial tests failed missing helper;
+  four now pass including 80-row table flowing across three pages with repeated headers.
+- Runtime Codex/GPT-6/standard; implementation standard, review test-sensitive.
+  No advisors needed. Context7 official ReportLab Platypus/table/font and pypdf
+  extraction/geometry APIs researched. No proprietary document code consulted.
+- Font fixture selected: installed ReportLab fonts/Vera.ttf, unmodified. Inspected
+  adjacent bitstream-vera-license.txt permits use/copy with notices; tests copy both
+  unchanged into project fixtures. No font vendored/downloaded. Tests establish
+  Latin accents and missing-emoji rejection, not universal Unicode/shaping support.
+- Tests use Python3.11 driver + bundled Python3.12.14, ReportLab4.4.9, pypdf6.10.0,
+  Pillow12.3.0. Independent pypdf checks geometry, text, page numbers, embedded
+  TrueType and images. Test oversized row/image/layout and absent font/glyph failures,
+  collisions/path/symlink/missing packages and isolated executable documentation recipe.
+- make validate-ai/diff whitespace pass. No formatter configuration or standalone
+  typecheck target; direct Python3.11/library pairing remains unverified.
+- Rendered report.pdf (2 pages) and table.pdf (3 pages) with existing pdftoppm;
+  inspected all five images. Accents/literal markup readable, image proportional,
+  table transitions/repeated headers intact, footer separation and no clipping/overlap.
+  Evidence retained untracked .skill-test-tmp/us011 with font license. Fixture visual
+  approval does not guarantee arbitrary content, complex shaping or universal viewers.
+- Intended commit feat(US-011): add paginated PDF creation and validation
+- Native story-reviewer expanded-initial initial pending; no passes consumed.
+
+## US-011 - Passing review and finalization
+- Native /root/review_us001 returned complete valid initial JSON: pass, empty
+  findings/resolutions/learnings. Schema and verdict checked. One initial consumed,
+  no targeted needed. Memory unchanged; no new finding/disposition event.
+- Four focused tests and source validation pass; five rendered fixture pages viewed.
+  Direct Python3.11 pairing, universal glyph/shaping and renderer compatibility
+  remain unverified. Final authorized consistency check/commit pending.
+- Next US-012: public pypdf extraction/page/metadata and image-only limitations
+  already researched through Context7; independent reader must identify possible
+  scans/missing text, preserve bytes and reject malformed/oversized inputs.
