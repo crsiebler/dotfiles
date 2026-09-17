@@ -132,3 +132,33 @@
   tests/create_skill_test.py. US-002 remains pending dependency approval/verification.
 - Next eligible story: US-004 optional AI-assisted GIF instructions; afterward
   original document helpers may use already available bundled dependencies.
+
+## US-004 - Optional AI GIF workflow candidate
+- Task PLAN.md US-004; US-003 delivered as c395b4c. US-002 remains isolated/untracked
+  pending the existing dependency approval request. Prior goal turn made progress.
+- Implemented: optional AI artwork reference and entry-point routing; seven manual
+  scenario walkthroughs with observed instruction paths and explicit limitations.
+- Intended commit message: feat(US-004): document optional AI GIF artwork workflow
+- Runtime: Codex / GPT-6 runtime identity / standard mode; implementation risk
+  standard, staged risk standard (provider routing instructions). Advisors not needed.
+- Evaluated supplied frames, procedural circle, AI pixel art, AI illustration,
+  absent provider, mismatched pixel provider, and static-image motion. Evaluations
+  are executor instruction walkthroughs, not live model/provider or behavioral runs.
+- Active runtime exposes image_gen image creation/editing, but no tool was invoked.
+  Instructions require current schemas at use time and preserve create-sprites'
+  narrower documented OpenCode provider boundary. No generation/spending occurred.
+- Checks: python3.11 -m json.tool tests/fixtures/gif_routing_evals.json; make validate-ai;
+  git diff --check: passed. No helper logic changed. Typecheck unavailable for prose;
+  no configured formatter. No product UI or browser check applies.
+- Native story-reviewer expanded-initial initial pass pending. No review passes
+  consumed for this story. Existing implementation/per-story commit scope retained.
+- Commit status: pending checks/review/finalization; story incomplete.
+
+## US-004 - Passing review and finalization
+- Native session /root/review_us001 returned complete schema-valid JSON: initial
+  pass, no findings/resolutions/learnings, empty feedback arrays, explicit residual
+  limits for manual evaluation and pixel provider support. No targeted pass needed.
+- No memory changes: no accepted fixes or false-positive events to count.
+- Commit status pending authorized finalization; next eligible story US-005.
+- US-002 still excluded; source validation passes with its candidate but it is not
+  delivered or claimed fully tested. No dependency approval received yet.
