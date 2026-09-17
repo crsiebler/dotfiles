@@ -306,3 +306,39 @@
 - Next US-007: Context7 verified python-pptx public layout/placeholder, geometry,
   text/image/chart APIs. Existing soffice/pdftoppm wrappers are available; use an
   explicit project-local LibreOffice profile if rendering, avoiding default /tmp.
+
+## US-007 - PPTX creation ready for review
+- Previous goal turn was progress: US-006 committed f9467b8. Exact prepared branch
+  and existing HEAD verified before changes; local dependency environment preserved.
+- Original PPTX JSON/CLI contract documented before helpers. Context7 official
+  python-pptx layouts/placeholders, shapes and category chart APIs checked.
+  No proprietary document sources or advisors used; public API scope sufficient.
+- Runtime Codex/GPT-6/standard, ordinary implementation with test-sensitive review.
+  Three initial cases failed missing helper. Four cases now pass via bundled
+  Python3.12.14/python-pptx1.0.2/Pillow12.3.0 and Python3.11 test driver.
+- Tests independently assert XML Unicode/text, slide count/geometry, image aspect,
+  category/value caches and embedded chart workbook, layouts, malformed shapes,
+  missing packages, collision/path/symlink refusal, oversized content, source and
+  isolated resource preservation, and exact documented JSON recipe execution.
+- make validate-ai and git diff --check pass. No configured formatter or standalone
+  typecheck target found. Direct Python3.11/library pairing remains unverified.
+- Rendered the two-slide fixture with existing LibreOffice using project-local
+  profile/output and TMPDIR; pdftoppm generated slide-1.png/slide-2.png. Inspected
+  both images: no clipping/overlap, readable accents/text/table/chart labels,
+  proportional centered image, coherent default type/color treatment. Fontconfig
+  emitted cache configuration warnings; conversion succeeded and actual PDF/images
+  inspected. This checks the fixture, not arbitrary future decks or PowerPoint.
+- Evidence retained untracked under .skill-test-tmp/us007; no installed resources,
+  global configuration, dependencies, or user input files modified.
+- Intended commit feat(US-007): add editable PPTX creation and validation
+- Native story-reviewer expanded-initial initial pending; no story passes consumed.
+
+## US-007 - Passing review and finalization
+- Native /root/review_us001 returned complete valid initial JSON: pass, no findings,
+  resolutions or learnings. Schema/verdict validated. One initial consumed; no
+  targeted required. Memory unchanged; no new accepted fix or suppression event.
+- Four artifact/failure tests and source validation pass. Rendered fixture inspected;
+  arbitrary content, PowerPoint equivalence and direct Python3.11 pairing unverified.
+- Authorized final consistency check/story commit pending. Next US-008 APIs researched
+  through Context7: has_notes_slide avoids creating notes; notes_text_frame may be
+  absent; group shapes require explicit recursion or omission reporting.
