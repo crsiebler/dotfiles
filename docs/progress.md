@@ -478,3 +478,33 @@
 - Next US-012: public pypdf extraction/page/metadata and image-only limitations
   already researched through Context7; independent reader must identify possible
   scans/missing text, preserve bytes and reject malformed/oversized inputs.
+
+## US-012 - PDF reading ready for review
+- Previous turn progress: US-011 committed7b37dcf. Revalidated exact branch/HEAD and
+  unrelated scratch/environment before writes. No installation/proprietary sources.
+- Original reader contract written before code; three initial tests failed missing
+  helper then pass. Public pypdf selection/extraction/metadata/stream limitations
+  researched through Context7 in earlier story. Independent reader imports no creator.
+- Runtime Codex/GPT-6/standard, implementation standard, review test-sensitive.
+  No advisors needed. Tests use Python3.11 driver with bundled Python3.12.14/pypdf6.10.0.
+- Three cases cover four-page independent fixture (text/image-only/text/blank),
+  exact page locations/selection/metadata/geometry, missing-text versus truncated
+  excerpts, sparse/possible-scan indicators, source hashes, malformed files and
+  sanitized errors, dependency absence, paths/symlinks and untouched isolated bundle.
+  Blank pages deliberately trigger heuristic too; no claim of scan diagnosis/OCR.
+- 33 installer tests/make validate-ai/diff whitespace pass. No formatter config or
+  standalone typecheck; direct Python3.11 pairing unverified. No renderer needed
+  for reader operation, no visual completeness claim. No save/conversion performed.
+- Intended commit feat(US-012): add page-located PDF extraction and scan indicators
+- Native story-reviewer expanded-initial initial pending; zero passes consumed.
+
+## US-012 - Passing review and finalization
+- Native /root/review_us001 returned complete valid initial JSON: pass, empty
+  findings/resolutions/learnings. Schema/verdict checked. One initial consumed;
+  no targeted required. Memory unchanged, no new learning/disposition events.
+- Three reader tests/33 installer tests/source validation pass. Direct Python3.11
+  pairing and visual completeness unverified; sparse flags remain heuristic and
+  stream-size limits are not an OS memory sandbox. Final authorized commit pending.
+- Next US-013 isolated packaging/integration: full suite needs separate documented
+  interpreter selection for PyYAML versus document dependencies; use already
+  authorized local environment and bundled runtime, no new installation.

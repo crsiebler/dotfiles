@@ -426,7 +426,7 @@ class InstallTest(unittest.TestCase):
         plugins = dict(m.local_plugins(ROOT, manifest))
         skills = plugins['researching'] / 'skills'
         self.assertEqual({p.parent.name for p in skills.glob('*/SKILL.md')},
-                         {'search-web', 'read-docx', 'read-pptx', 'read-xlsx'})
+                         {'search-web', 'read-docx', 'read-pptx', 'read-xlsx', 'read-pdf'})
         source = skills / 'search-web'
         self.assertEqual({p.relative_to(source).as_posix()
                           for p in source.rglob('*') if p.is_file()},
