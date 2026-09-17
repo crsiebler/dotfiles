@@ -219,3 +219,42 @@
   Formatter/typecheck unavailable; actual focused tests and source validation pass.
 - Commit status pending final authorized consistency check/commit. US-005 candidate
   and local dependency environment remain excluded from this commit.
+
+## US-005 - DOCX creation ready for review
+- Task PLAN.md US-005; prerequisite US-001 delivered. Candidate original helpers
+  and format-specific JSON contract cover semantic headings/paragraph styles,
+  tables, inline PNG/JPEG images, section/page dimensions/margins, and page breaks.
+- Intended commit message: feat(US-005): add structured DOCX creation and inspection
+- Runtime Codex/GPT-6/standard. Implementation standard; staged review test-sensitive.
+  No advisors: public API scope resolved through Context7 and independent artifacts.
+- Context7 checked official python-docx document, sections, styles/picture APIs.
+  No proprietary document sources consulted. python-docx 1.2.0 already bundled;
+  no dependency installation for this story. Tests use Python3.11 driver and
+  existing bundled Python3.12.14 dependency runtime via SKILL_TEST_PYTHON.
+- Test-first: four initial cases failed before implementation. Later invalid-image
+  diagnostic regression failed on a library traceback, then passed after input
+  format validation and sanitized third-party failure reporting.
+- Focused command with the documented bundled SKILL_TEST_PYTHON:
+  python3.11 -m unittest discover -s tests -p create_docx_test.py: seven passed.
+  Independent ZIP/XML assertions verify Unicode, tables, style properties, image
+  bytes/relationships, margins/page dimensions and breaks. Further cases verify
+  collisions, invalid requests/images, missing dependencies, path/symlink guards,
+  bounded inspection, isolated read-only resources, and executable docs recipe.
+- Creation itself reopens and compares content/styles/layout before publication.
+  make validate-ai and git diff --check pass. No formatter config or standalone
+  typecheck target; not claimed passing. No UI/browser applicable.
+- Rendering not performed; structural tests do not establish pagination, glyph
+  coverage, font availability, or subjective layout. These limits are documented.
+- Review native story-reviewer expanded-initial initial pending; no passes consumed.
+  Commit status pending. Local .skill-test-venv excluded; existing user scope retained.
+
+## US-005 - Passing review and finalization
+- Native session /root/review_us001 returned complete valid initial JSON: pass,
+  empty findings/resolutions/learnings/feedback arrays, explicit runtime/rendering
+  limits. Schema and verdict consistency checked. No targeted pass needed.
+- No new memory events. All seven focused artifact cases/source checks pass;
+  direct Python3.11 library pairing and rendering remain unverified as documented.
+- Commit status pending authorized final consistency check/commit.
+- Next: US-006 read-docx. Context7 already verified Document/_Cell.iter_inner_content
+  preserve paragraph/table order; nested/revision-wrapped tables require explicit
+  handling/omission reporting. Creation and reader bundles must remain independent.

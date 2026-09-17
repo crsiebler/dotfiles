@@ -9,7 +9,7 @@
   create-skill/create-gif adaptations, eight original document skills, tests, and docs.
 - Non-goals: PRD section 6; no proprietary Anthropic document sources, general Office
   editing, OCR, macro execution, automatic conversion, new providers, or installation.
-- Current status: execution authorized; US-001–US-004 delivered after their story commits. PRD remains the
+- Current status: execution authorized; US-001–US-005 delivered after their story commits. PRD remains the
   requirements source; this checklist owns implementation completion status.
 - Working branch: `feat/producing-and-document-skills`, prepared with the committed
   plan and PRD before execution.
@@ -145,7 +145,7 @@ Each story inherits these requirements in addition to its own criteria:
   common verification and review gates pass (typecheck unavailable for prose).
 
 ### US-005 — Create DOCX documents
-- [ ] Story complete
+- [x] Story complete
 - Priority: 5
 - Depends on: US-001
 - Requirements: PRD US-005; FR-05–FR-14, FR-24, FR-26.
