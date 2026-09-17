@@ -14,6 +14,20 @@
       "rejected_count": 0,
       "last_validated_story": "US-003",
       "status": "active"
+    },
+    {
+      "id": "executable-schema-examples",
+      "lens": "correctness",
+      "scope": [
+        "ai/plugins/*/skills/*/references/*.md",
+        "tests/*skill*"
+      ],
+      "guidance": "When documentation presents JSON consumed by helpers, extract those exact examples in regression tests and run the supported contracts; keep counts, required source fields, and optional metrics consistent.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-002",
+      "status": "active"
     }
   ],
   "suppressions": []

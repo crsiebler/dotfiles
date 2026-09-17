@@ -162,3 +162,60 @@
 - Commit status pending authorized finalization; next eligible story US-005.
 - US-002 still excluded; source validation passes with its candidate but it is not
   delivered or claimed fully tested. No dependency approval received yet.
+
+## US-002 - Dependency resolved and candidate verification
+- User explicitly approved PyYAML verification. Created .skill-test-venv with
+  Python 3.11 and installed only PyYAML 6.0.3, with TMPDIR project-local and no pip
+  cache. No other dependencies/global files installed or modified. Test environment
+  is untracked and excluded from delivery; no .gitignore change.
+- Material dependency blocker resolved: SKILL_TEST_PYTHON="$PWD/.skill-test-venv/bin/python"
+  python3.11 -m unittest discover -s tests -p create_skill_test.py passes eight cases,
+  covering reopened packaging, source preservation, invalid/missing dependencies,
+  symlinks/escapes/collisions, benchmark timing/tokens, malformed evidence, independent
+  installed copy, and installed-resource write refusal.
+- PyYAML constraint pinned to tested 6.0.3; its check/validation operations pass
+  under Python 3.11. validate of the actual create-skill bundle passes.
+- make validate-ai and git diff --check pass. No configured formatter; standalone
+  typecheck unavailable. Schema/report utilities retained; no browser viewer shipped
+  or changed, so browser verification not applicable. Optional Claude utilities are
+  explicitly not retained, never run or installed. No live model evaluation claimed.
+- Updated portable grader/analyzer prompts to avoid character-count token proxies
+  and assumed subagents; missing metrics remain unknown. License/provenance retained.
+- Intended commit message: feat(US-002): add portable skill authoring and evaluation
+- Runtime Codex/GPT-6/standard; implementation standard, review test-sensitive.
+  No advisors. Native story-reviewer initial pass pending, expanded-initial.
+- Independently started US-005 create-docx candidate/tests remain untracked and
+  excluded; four initial artifact tests pass but story not yet finalized/reviewed.
+- Commit status pending; no provisional completion marker yet.
+
+## US-002 - Review output correction and schema-example remediation
+- Native session /root/review_us001 initial result requested changes but omitted
+  required finding confidence. Delivery stopped; executor did not invent the field.
+- Same reviewer supplied a complete serialization of that same initial report,
+  without further evidence calls/review or changed findings, adding its confidence
+  high. Required output is now present; complete schema/initial verdict validated.
+  No review budget reset, new audit, or targeted pass was spent on serialization.
+- Finding create-skill-schema-examples-rejected-by-helpers (medium correctness):
+  inherited grading counts disagreed with expectations; benchmark lacked source and
+  had inconsistent counts/current metadata. Disposition accepted_fixed.
+- Added two tests extracting actual Markdown JSON examples. Before remediation both
+  failed: summary disagrees with evidence; invalid benchmark run. Corrected grading
+  counts, replaced benchmark example with current helper-generated shape, and replaced
+  historical viewer field guidance with supported source/metadata/count/null/delta
+  documentation. Validation was not weakened.
+- Ten focused create-skill cases now pass under Python3.11/PyYAML6.0.3; make validate-ai
+  and diff whitespace pass. One targeted same-session review follows.
+
+## US-002 - Passing targeted review and finalization
+- Native session /root/review_us001 returned complete valid targeted JSON: pass,
+  no findings, resolved create-skill-schema-examples-rejected-by-helpers with
+  documented-example regression evidence. All schema fields and verdict checked.
+- One initial review and one targeted pass consumed; same-report serialization
+  correction gathered no new evidence and did not reset or add review passes.
+- Memory event: producing-and-document-skills|US-002|executable-schema-examples|
+  create-skill-schema-examples-rejected-by-helpers|accepted_fixed. Promoted once;
+  preserved existing GIF QA entry. Version-1 bounds/counters validated.
+- No live model evaluation, native role installation, or global configuration changes.
+  Formatter/typecheck unavailable; actual focused tests and source validation pass.
+- Commit status pending final authorized consistency check/commit. US-005 candidate
+  and local dependency environment remain excluded from this commit.
