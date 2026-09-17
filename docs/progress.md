@@ -375,3 +375,37 @@
   return codes including string truncation, explicit formula caches, tables,
   autofilter/freeze panes and chart range references. Preserve literal strings,
   do not claim calculation from writer-generated caches.
+
+## US-009 - XLSX creation ready for review
+- Previous turn progress: US-008 committed 4e136ac. Exact branch/HEAD/status checked;
+  unrelated scratch and local environment preserved. No new installation needed.
+- Original XLSX contract written before code; three initial tests failed missing
+  helper. Four now pass under existing bundled Python3.12.14/XlsxWriter3.2.9/
+  openpyxl3.1.5 with Python3.11 test driver. Context7 verified typed writer return
+  codes, formula/cache behavior, table/filter/freeze/chart APIs, openpyxl data_only,
+  read-only iteration and close semantics. No proprietary sources consulted.
+- Runtime Codex/GPT-6/standard; implementation standard, staged review test-sensitive.
+  No advisors needed. Explicit typed cells preserve string IDs, formula-like text
+  and URLs. Formula provenance supplied/placeholder is separate from recalculation.
+- Tests inspect independent XML cell types/shared strings, caches/formulas,
+  absent inferred hyperlinks, table/chart presence, freeze/filter/calculation flags;
+  exercise names/rows/oversize data/paths/symlinks/collisions/dependency absence,
+  isolated resources and exact documentation recipe. Injected writer -2 truncation
+  and close OSError both return failure without output or modified source.
+- Reopened verification uses sequential read-only row streams rather than repeated
+  random access. make validate-ai/diff whitespace pass. No configured formatter
+  or standalone typecheck available; direct Python3.11/library pairing unverified.
+- No spreadsheet renderer or calculation engine invoked; visual appearance and
+  actual formula calculation explicitly unverified. Never equate cache/flags to it.
+- Intended commit feat(US-009): add typed XLSX creation and cache verification
+- Native story-reviewer expanded-initial initial pending, no passes consumed.
+
+## US-009 - Passing review and finalization
+- Native /root/review_us001 returned complete valid initial JSON: pass, empty
+  findings/resolutions/learnings. Schema/verdict consistency validated. One initial
+  consumed; no targeted needed. Memory unchanged (no new accepted fix events).
+- Four focused tests/source validation pass; actual calculation/rendering and direct
+  Python3.11 dependency pairing remain unverified. Final authorized commit pending.
+- Next US-010 Context7 openpyxl query verified bounded iter_rows/range_boundaries,
+  formula versus data_only views, sheet state, and read-only metadata limitations.
+  Preserve missing caches as unknown/missing, never call them calculated results.
