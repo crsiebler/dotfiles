@@ -342,3 +342,36 @@
 - Authorized final consistency check/story commit pending. Next US-008 APIs researched
   through Context7: has_notes_slide avoids creating notes; notes_text_frame may be
   absent; group shapes require explicit recursion or omission reporting.
+
+## US-008 - PPTX reading ready for review
+- Previous turn progress: US-007 delivered in 3453b7b. Revalidated exact prepared
+  branch, HEAD and unrelated scratch/environment before writes.
+- Original independent reader contract documented first; three tests failed missing
+  helper, then pass. Context7 official notes/shape/chart APIs researched in preceding
+  turn; has_notes_slide prevents note creation and groups recurse explicitly.
+- Runtime Codex/GPT-6/standard; implementation standard, review test-sensitive.
+  No advisors needed for this public API scope. No proprietary sources consulted.
+- Three focused tests pass using Python3.11 driver and existing bundled Python3.12.14
+  with python-pptx1.0.2. Fixtures independently create speaker notes, literal table
+  values, grouped text, flat-category and scatter charts, and image-only content.
+  Exact slide/shape/notes locations, selections, chart caches, omission reports,
+  truncation, invalid input, missing dependencies and unchanged hashes/resources
+  verified. No creation-skill imports or rendering used.
+- 33 installer tests, make validate-ai and git diff --check pass. No configured
+  formatter or standalone typecheck available. Direct Python3.11 pairing unverified.
+- Intended commit feat(US-008): add bounded slide-located PPTX extraction
+- Native story-reviewer expanded-initial initial pending, zero passes consumed.
+  Local .skill-test-tmp/.skill-test-venv excluded; no installation/global writes.
+
+## US-008 - Passing review and finalization
+- Native session /root/review_us001 returned complete valid initial JSON: pass,
+  empty findings/resolutions/learnings. Schema and consistency validated. One
+  initial consumed; targeted unnecessary. No new memory events; existing valid
+  bounded version-1 memory retained.
+- Three reader tests, 33 installer tests and source validation pass. Structural
+  extraction does not prove visual completeness; direct Python3.11 pairing remains
+  unverified. Authorized final check/commit pending.
+- Next US-009 research: Context7 /jmcnamara/xlsxwriter verified typed writers,
+  return codes including string truncation, explicit formula caches, tables,
+  autofilter/freeze panes and chart range references. Preserve literal strings,
+  do not claim calculation from writer-generated caches.
