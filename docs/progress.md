@@ -409,3 +409,35 @@
 - Next US-010 Context7 openpyxl query verified bounded iter_rows/range_boundaries,
   formula versus data_only views, sheet state, and read-only metadata limitations.
   Preserve missing caches as unknown/missing, never call them calculated results.
+
+## US-010 - XLSX reading ready for review
+- Previous turn progress: US-009 committed 5f7a152. Exact prepared branch/HEAD and
+  unrelated scratch/environment checked before writes; no dependency installation.
+- Original contract documented first; three initial tests failed missing reader,
+  now pass. Context7 openpyxl read-only/data_only/range/dimension APIs checked in
+  preceding turn. Bounded XML metadata supplies actual bounds and hidden spans.
+- Runtime Codex/GPT-6/standard; implementation standard, review test-sensitive.
+  No advisors needed for public API scope; no proprietary document sources read.
+- Three focused tests under Python3.11 driver and bundled Python3.12.14/openpyxl3.1.5
+  verify exact coordinates, literals, hidden sheet/row/grouped-column flags, missing
+  versus zero/supplied caches, selected ranges and partial-row global limits.
+  Independent fixture falsifies dimension hint; reader still finds actual cells.
+  Invalid ranges/packages/paths/symlinks, dependency absence and unchanged source/
+  isolated resource bytes tested. Specialized non-string formulas marked unsupported.
+- 33 installer tests and make validate-ai pass; diff whitespace clean. No formatter
+  config/standalone typecheck available; direct Python3.11 pairing unverified.
+  No calculation, external refresh, save or rendering claimed/performed.
+- Intended commit feat(US-010): add precise XLSX reading and cache reporting
+- Native story-reviewer expanded-initial initial pending; zero passes consumed.
+
+## US-010 - Passing review and finalization
+- Native /root/review_us001 returned complete valid initial JSON: pass, empty
+  findings/resolutions/learnings. Schema/verdict validated. One initial consumed;
+  no targeted needed. Memory retained unchanged; no new learning/disposition event.
+- Three reader tests/33 installer tests/source validation pass. Formula provenance,
+  freshness, visual completeness and direct Python3.11 dependency pairing remain
+  unverified as documented. Final authorized consistency check/commit pending.
+- Next US-011 Context7 researched /websites/reportlab Platypus flowables, page
+  callbacks and TrueType registration; /websites/pypdf_readthedocs_io_en_stable
+  extraction, page geometry, metadata and stream-size/scan limitations. Font fixture
+  licensing/coverage still to inspect; no proprietary document implementation read.
