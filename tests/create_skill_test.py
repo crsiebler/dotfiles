@@ -13,7 +13,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / 'ai/plugins/coding/skills/create-skill'
-PYTHON = os.environ.get('SKILL_TEST_PYTHON', sys.executable)
+PYTHON = os.environ.get('SKILL_TEST_YAML_PYTHON', os.environ.get('SKILL_TEST_PYTHON', sys.executable))
 
 
 class CreateSkillTest(unittest.TestCase):

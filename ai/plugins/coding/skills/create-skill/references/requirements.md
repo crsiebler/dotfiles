@@ -15,3 +15,7 @@ project environment, never part of the helper or AI configuration installer.
 PyYAML safe_load/YAMLError usage was checked with Context7 against
 [official PyYAML documentation](https://github.com/yaml/pyyaml/blob/main/_autodocs/api-reference/top-level-functions.md).
 Safe loading restricts constructed YAML types; input limits still apply.
+
+Repository tests may select an existing PyYAML interpreter with
+`SKILL_TEST_YAML_PYTHON`; it falls back to `SKILL_TEST_PYTHON` and then the test
+driver. This test-only selection neither installs packages nor changes helper paths.

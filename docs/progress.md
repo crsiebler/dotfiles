@@ -508,3 +508,42 @@
 - Next US-013 isolated packaging/integration: full suite needs separate documented
   interpreter selection for PyYAML versus document dependencies; use already
   authorized local environment and bundled runtime, no new installation.
+
+## US-013 - Isolated packaging and full regression ready for review
+- Previous turn progress: US-012 committed d118aca. Exact prepared branch/HEAD
+  verified; unrelated project-local environments/render evidence preserved.
+- Runtime Codex/GPT-6/standard; implementation standard, review test-sensitive.
+  No advisors needed; no installation, global modification or proprietary source use.
+- New contract tests cover unique discovery for all ten bundles/seven producing
+  skills, required resource/link closure, local helper imports and Apache provenance.
+  All ten copied into isolated installations and invoked from an unrelated directory:
+  prerequisite checks and missing-package failures, five real artifact creations,
+  four document reads, skill packaging, source/resource hashes all pass.
+- Existing create-skill suite first failed four cases under the combined dependency
+  selection because it ignored the separate PyYAML interpreter. Added test-only
+  SKILL_TEST_YAML_PYTHON override with existing fallback; no runtime dependency changes.
+- Full regression command with SKILL_TEST_PYTHON set to existing bundled Python3.12.14
+  and SKILL_TEST_YAML_PYTHON set to authorized .skill-test-venv/bin/python:
+  python3.11 -m unittest discover -s tests -p '*test*.py'
+  Result 238 tests in67.169s, OK, one preexisting conditional skip. No new artifact
+  or required dependency tests skipped. Full output .skill-test-tmp/full-suite-us013.log.
+- Verified exact skip with focused verbose native strict-mode case: codex-cli0.153.4
+  does not support --strict-config for codex mcp; native non-strict parsing is tested
+  separately. This is an unavailable native capability, not a claimed passing check.
+- make validate-ai and diff whitespace pass. No standalone typecheck or configured
+  formatter; AST contracts parse helper code with Python3.11. Direct Python3.11
+  document-library runtime pairing remains unverified, all actual artifacts tested
+  under supported Python3.12.14. docs/document-skill-verification.md records evidence.
+- Intended commit test(US-013): verify isolated skill packaging and integration
+- Native story-reviewer expanded-initial initial pending; zero passes consumed.
+
+## US-013 - Passing review and finalization
+- Native /root/review_us001 returned complete valid initial JSON: pass, no findings,
+  resolutions or learnings. Schema/verdict validated. One initial consumed; no
+  targeted needed. Memory unchanged; no new accepted fix/suppression event.
+- Full suite238 tests OK with one verified preexisting native strict-MCP skip;
+  all required artifact/integration tests pass. Source validation passes. Document
+  dependency execution3.12.14 and PyYAML3.11 distinction remains explicit.
+- Final authorized consistency check/commit pending. US-014 must update final
+  inventories and installer list (producing registration is missing from one prose
+  list), coordinated plugin refresh/copies, separate setup and safe manual cleanup.
