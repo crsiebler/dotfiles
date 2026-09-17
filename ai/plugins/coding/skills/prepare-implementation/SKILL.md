@@ -18,6 +18,11 @@ On continuation or resumption, apply the shared contract's persistent blocker
 gate before further story work or review. A final blocked review keeps the story
 incomplete until material-change evidence is verified; another Goal turn does
 not resolve it or renew the review budget. Preserve existing authorization.
+Native review requires a self-contained invocation containing the complete review
+protocol/schema. Parent tool-output references are not delivery. Start a separate
+reviewer session for each story; record the selected native role and actual session
+ID independently of its display label. Follow the execution contract's packet
+preflight and story/session checks before every initial or targeted invocation.
 
 ## Select the format
 

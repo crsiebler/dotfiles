@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "patterns": [
+    {
+      "id": "resampling-tests-transform-contrasting-input",
+      "lens": "qa",
+      "scope": [
+        "tests/*gif*",
+        "ai/plugins/producing/skills/create-gif/**"
+      ],
+      "guidance": "To verify a resampling choice, change source dimensions and use contrasting pixels; assert decoded edge/block locations and demonstrate detection of an incorrect sampling method.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-003",
+      "status": "active"
+    },
+    {
+      "id": "executable-schema-examples",
+      "lens": "correctness",
+      "scope": [
+        "ai/plugins/*/skills/*/references/*.md",
+        "tests/*skill*"
+      ],
+      "guidance": "When documentation presents JSON consumed by helpers, extract those exact examples in regression tests and run the supported contracts; keep counts, required source fields, and optional metrics consistent.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-002",
+      "status": "active"
+    },
+    {
+      "id": "table-grid-coordinates-include-omissions",
+      "lens": "correctness",
+      "scope": [
+        "ai/plugins/researching/skills/read-docx/**",
+        "tests/read_docx_test.py"
+      ],
+      "guidance": "Use table grid offsets when reporting DOCX cell coordinates; fixture omitted leading cells and merged cells independently to avoid shifting evidence under the wrong heading.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-006",
+      "status": "active"
+    }
+  ],
+  "suppressions": []
+}

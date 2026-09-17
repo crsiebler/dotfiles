@@ -47,19 +47,64 @@ OpenCode Markdown; edit the three OpenCode-only agents in their native Markdown.
 Agent metadata lives in native sources, with generic TOML-to-Markdown rendering;
 there are no exclusions or overrides JSON files.
 
-### Four plugins and skill names
+### Five plugins and skill names
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `create-sprites`, `create-audio`, `map-codebase` |
+| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
-| `researching` | `search-web` |
+| `researching` | `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | `delegating` | `use-subagents` |
+| `producing` | `create-audio`, `create-sprites`, `create-gif`, `create-docx`, `create-pptx`, `create-xlsx`, `create-pdf` |
 
 Use the skill identifier actually advertised by the harness; do not guess Codex
 namespace syntax or cached installation paths. Resolve bundled resources from
 the loaded skill location. Marketplace authentication policy is `ON_USE`, not an
 instruction to log in during installation.
+
+### Producing and document skill activation
+
+Production skills create artifact files; researching skills extract source-located
+evidence; reporting skills own report content and communication. Use an adequate
+native reader for simple reads. `create-skill` supports portable authoring,
+evaluation evidence and packaging without requiring native agents or token metrics.
+`create-gif` supports supplied/procedural frames without an AI provider and routes
+optional pixel artwork through the discovered `create-sprites` workflow.
+
+The eight document bundles are original implementations. Required packages, fonts,
+optional renderers and tested versions live in each installed skill's
+references/requirements.md and requirements.txt. Python 3.11+ is the source baseline;
+[verification](document-skill-verification.md) distinguishes the tested dependency
+runtimes from unverified pairings. Dependency setup is separately authorized: AI
+installation does not install Python packages, fonts, renderers or image providers.
+No general Office editing, OCR, automatic conversion or formula engine is supplied.
+
+1. Preserve customized installed copies and needed backups before activation.
+   Inspect the registered local `craft` source and current installed plugin/skill
+   inventory; keep this checkout available. Source edits alone do not establish
+   that an already-running task loaded the new instructions.
+2. With separate installation authorization, choose the documented `make install-codex`,
+   `make install-opencode`, or `make install-ai` target. Coordinate `coding`,
+   `researching`, and `producing` so the old coding-owned audio/sprite copies do not
+   remain discoverable beside their producing replacements.
+3. For Codex, use native plugin management and verify the resulting loaded sources.
+   CLI 0.153.4's `plugin marketplace upgrade` refreshes Git marketplace snapshots;
+   it is not a local-checkout refresh guarantee. If a stale plugin snapshot remains,
+   preview native removal/re-addition of the exact affected plugin IDs and obtain
+   scoped approval before replacement. Preserve custom copies first. Never delete
+   plugin caches manually or remove the whole active marketplace as routine cleanup.
+4. For OpenCode, authorized installation copies each local bundle through `skills`.
+   Audio/sprite names and command references stay unchanged; their same-named active
+   installed paths are not obsolete merely because source ownership changed.
+   The installer preserves changed skill assets in its documented backup location.
+5. Restart the selected harness and start a new Codex task. Verify seven producing
+   skills, create-skill in coding, and the four readers plus search-web in researching,
+   without unwanted duplicates. Run the loaded helper's `check` in the intended
+   dependency environment; missing packages are a setup gap, not permission to install.
+6. Only after verification, review exact obsolete standalone copies using the
+   [rollout cleanup procedure](remove-old-ai-files.md#producing-and-document-rollout).
+   Cleanup/deletion and native replacement need separate scoped approval. Retain
+   needed backups; never treat a matching skill name as deletion authorization.
 
 `create-audio` bundles a model-independent generation workflow, a Stable Audio
 3 Small-SFX MLX adapter, and explicit local setup. OpenCode JSON adds
@@ -69,7 +114,7 @@ Agents invoke `scripts/create_audio.py` relative to the installed skill; no Zsh
 alias is installed. Stable Audio infrastructure defaults to `~/Models/local-audio/` or
 `LOCAL_AUDIO_MODELS_ROOT`; projects supply prompts, model selection, sampling
 settings, output, and cache locations. See the
-[audio guide](../ai/plugins/coding/skills/create-audio/references/local-audio.md).
+[audio guide](../ai/plugins/producing/skills/create-audio/references/local-audio.md).
 Directory-based skill discovery installs its scripts without an installer
 special case. Model provisioning remains separate from AI configuration installation.
 
@@ -117,8 +162,9 @@ are blockers: no `npx` bootstrap, login, dependency installation, or binary inst
 is performed by these targets.
 
 The installer registers the local checkout with Codex's native plugin interface
-and adds `coding@craft`, `reporting@craft`, `researching@craft`, and
-`delegating@craft`. OpenCode uses local `skills add` copies rather than symlinks.
+and adds `coding@craft`, `reporting@craft`, `researching@craft`,
+`delegating@craft`, and `producing@craft`. OpenCode uses local `skills add` copies
+rather than symlinks.
 The checkout must remain available for subsequent local marketplace refreshes.
 
 Managed JSON/TOML keys override existing values; unrelated keys survive.

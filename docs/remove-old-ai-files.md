@@ -119,6 +119,28 @@ Skill cleanup is separate from command cleanup. Preserve `/review-pr` unchanged.
    `search-web` discovery and absence of unwanted duplicates before discarding
    backups. Updating checkout sources alone does not clean installed copies.
 
+### Producing and document rollout
+
+1. Preserve customized installed media, skill-authoring and document bundles outside
+   discovery roots, along with any rollback backups. Source relocation changes
+   audio/sprite ownership from coding to producing while retaining the same names.
+2. Separately authorize coordinated activation of `coding@craft`, `researching@craft`
+   and `producing@craft`, or the OpenCode copies, using the
+   [activation steps](ai-configuration.md#producing-and-document-skill-activation).
+   Use the native Codex manager for any reviewed replacement; never manually delete
+   plugin-cache directories or remove the whole active marketplace by default.
+3. Restart the harness and use a new Codex task. Verify the seven producing skills,
+   create-skill in coding, and four document readers in researching. Check that
+   audio/sprite command references still resolve by their unchanged skill names.
+4. Inspect separately installed standalone copies and any unwanted duplicates in
+   verified discovery roots. Do not delete active `$opencode_root/skills/create-audio`
+   or `$opencode_root/skills/create-sprites` solely because their source plugin moved.
+   Compare actual content and preserve customizations before proposing removal.
+5. Preview exact obsolete paths/plugin IDs and obtain scoped removal approval.
+   Apply only that approved cleanup, then recheck discovery before discarding any
+   unneeded backups. Installation, dependency setup and cleanup are separate actions;
+   no broad name-based deletion loop or automatic migration is provided.
+
 ### Renamed OpenCode commands and sprite agent
 
 After preserving customizations and verifying an authorized installation of the

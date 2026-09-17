@@ -35,9 +35,23 @@ make install-opencode  # OpenCode configuration, copied skills, agents, commands
 make install-ai        # Both AI harnesses; no shell/env/git setup or binaries
 ```
 
-The four checkout-local `craft` plugins are `coding`, `reporting`, `researching`,
-and `delegating`. The `researching` plugin provides provider-agnostic `search-web`
-with conditional Exa MCP guidance.
+The five checkout-local `craft` plugins are `coding`, `reporting`, `researching`,
+`delegating`, and `producing`. Skill ownership is:
+
+| Purpose | Plugin and skills |
+| --- | --- |
+| Creative assets and document files | `producing`: `create-audio`, `create-sprites`, `create-gif`, `create-docx`, `create-pptx`, `create-xlsx`, `create-pdf` |
+| Skill authoring and evaluation | `coding`: `create-skill`, alongside the existing development workflows |
+| Research and document evidence | `researching`: `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
+| Report content and communication | `reporting`: existing assessment/progress/status workflows |
+
+Use a native tool when it adequately handles a simple document read. Production
+skills create files; researching extracts evidence; reporting owns synthesis and
+communication. Each new skill has its own Python requirements and validation guide.
+Dependency setup is separately authorized and is never part of AI installation.
+See [verification and tested runtimes](docs/document-skill-verification.md) and
+[coordinated activation](docs/ai-configuration.md#producing-and-document-skill-activation).
+`search-web` retains conditional Exa MCP guidance.
 The single harness-agnostic personal policy, [`ai/AGENTS.md`](ai/AGENTS.md), is
 copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
 [`AGENTS.md`](AGENTS.md) remains separate, repository-only guidance.
@@ -156,7 +170,7 @@ Stable Audio models default to `~/Models/local-audio/`; no game-specific directo
 prompt is built into the tool. This is a file-generating runtime, not an MLX-LM
 chat-model entry.
 
-See the [audio request and setup guide](ai/plugins/coding/skills/create-audio/references/local-audio.md).
+See the [audio request and setup guide](ai/plugins/producing/skills/create-audio/references/local-audio.md).
 AI installation copies the skill but does not provision models.
 Setup is separate and can copy verified existing weights into a fresh
 generic runtime without changing the original installation. Use the existing
@@ -452,3 +466,11 @@ sh "$helper" help
    installation or Codex native plugin refresh, preserve customized old copies,
    and approve exact paths before manual cleanup. Restart the harness and start
    a new Codex thread; follow the [rename steps](docs/remove-old-ai-files.md#renamed-web-research-skill).
+
+8. For the producing/document rollout, preserve customized media/document copies,
+   refresh `coding`, `researching`, and `producing` together through separately
+   authorized native Codex installation/refresh or OpenCode skill copies, then
+   restart and verify unique discovery in a new Codex task. Media skill names stay
+   unchanged; do not delete active same-named OpenCode copies. Review exact obsolete
+   paths separately under the [rollout cleanup steps](docs/remove-old-ai-files.md#producing-and-document-rollout).
+   Never delete plugin caches manually or discard backups before verification.

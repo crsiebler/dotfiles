@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / 'ai/plugins/coding/skills/create-audio/scripts'
+SCRIPTS = ROOT / 'ai/plugins/producing/skills/create-audio/scripts'
 sys.path.insert(0, str(SCRIPTS))
 
 from audio_files import ProjectFiles, sha256

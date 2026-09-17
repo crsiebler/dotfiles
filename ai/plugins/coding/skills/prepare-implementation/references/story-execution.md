@@ -234,10 +234,64 @@ compact staged filename list. Do not embed the
 patch or diff statistics. Request JSON only and one holistic staged review.
 The reviewer reads authoritative staged content itself.
 
+### Self-contained packet preflight
+
+The actual invocation message must contain the complete, unabridged protocol,
+including its Output Schema and all following validation rules, on both initial
+and targeted passes. Reading it in the executor is not delivery to the reviewer.
+Do not substitute a path, link, summary, parent tool-output reference, or claim
+that the reviewer inherited it. Inherited history is not a required-input channel.
+If the full message cannot be supplied, stop before invocation; do not truncate
+the protocol or ask the reviewer to fetch installed/global skill files.
+
+Assemble the message with clearly delimited sections in this order:
+
+1. Review identity: literal profile/pass lines, story ID/title, attempt number,
+   selected native role, and absolute project worktree root.
+2. Complete review protocol: verbatim contents of the installed `story-review.md`,
+   between `BEGIN REVIEW PROTOCOL` and `END REVIEW PROTOCOL` delimiters.
+3. Story context: description, acceptance criteria, notes, relevant repository
+   instructions, patterns/memory, exact check results and UI evidence (or explicitly
+   not applicable), and current staged filename list. Do not embed patches/statistics.
+4. For targeted review: prior findings/dispositions, remediation, and verification
+   evidence for this story and attempt only.
+
+Before sending, compare the assembled protocol section with the complete loaded
+reference and confirm the schema and trailing rules are present. Verify that
+story identity, criteria, worktree, staged paths, profile, and pass agree with the
+current candidate. Stop at the executor on incomplete assembly or mismatched
+identity; do not consume a reviewer pass with a knowingly invalid packet.
+
+### Story-scoped native sessions
+
 Use actual exposed native invocation schemas, not invented tools or arguments.
 OpenCode invokes `ralph-reviewer` through Task and saves returned `task_id`.
 Codex invokes dedicated native `story-reviewer` and saves its actual returned
 agent ID for same-session continuation. Do not manufacture or interchange IDs.
+
+Select the exact native role through the runtime's actual role-selection field;
+putting `story-reviewer` in prose or a task label does not select that role. Record
+the actual selected role, story ID, attempt number, worktree, and returned session
+ID together. A display label or agent path is not proof of the returned identity.
+Use a descriptive label such as `Review US-002 attempt 1` where supported.
+
+Start a fresh reviewer session for each story's initial review. Never send a new
+story to another story's reviewer session, even after that reviewer has finished.
+Reuse the returned session only for the same story and attempt's permitted
+targeted remediation pass. Before every follow-up, check its destination against
+the recorded story/attempt/session mapping and current packet. Missing or
+conflicting mapping blocks the follow-up; never guess from `Review us001` or
+another display label. If the runtime cannot establish the mapping, stop.
+
+A materially resolved final blocker may permit a new initial attempt only through
+the persistent blocker gate below. Use a fresh session for that permitted attempt,
+preserving the prior attempt's identity, history, and consumed passes. Session
+creation itself never resolves a blocker or grants another review budget.
+
+Distinguish missing packet input from missing capabilities or actual permission
+denials. A selected role, display label, or passing JSON response does not prove
+that staged evidence was read. Record actual review evidence and capability
+limitations; never widen permissions or replace the reviewer to bypass a denial.
 
 Review is limited to project-local reads/search and non-mutating staged Git
 inspection: no edits, tests, browser/web/MCP, external directories, or delegation.

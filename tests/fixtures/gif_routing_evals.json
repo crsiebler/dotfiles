@@ -1,0 +1,67 @@
+{
+  "purpose": "Manual instruction evaluation for create-gif provider and motion routing.",
+  "evaluation": "Executor walkthrough of the shipped instructions, not an independent harness/model benchmark or live generation run.",
+  "scenarios": [
+    {
+      "id": "supplied-assets",
+      "request": "Assemble my three PNG frames at 80, 100, and 120 ms, loop forever.",
+      "capabilities": "Python/Pillow only; no image provider.",
+      "expected": "Use assemble with supplied paths and durations; inspect encoded timing; no provider needed.",
+      "observed_walkthrough": "SKILL.md routes supplied assets to authoring.md, whose assemble contract takes frames/durations_ms and loop=0. AI reference applies only to requested original artwork.",
+      "result": "pass"
+    },
+    {
+      "id": "procedural",
+      "request": "Create a looping red circle orbiting on a white 64x64 canvas.",
+      "capabilities": "Python/Pillow only.",
+      "expected": "Use procedural circle route without installing or invoking a provider.",
+      "observed_walkthrough": "authoring.md specifies a periodic circle with frame_count/duration_ms/radius/foreground and explicit background; no font/provider requirement.",
+      "result": "pass"
+    },
+    {
+      "id": "ai-pixel-art",
+      "request": "Generate an original pixel-art ranger walking in a seamless GIF.",
+      "capabilities": "OpenCode with advertised create-sprites and its documented image tool.",
+      "expected": "Load create-sprites, inspect actual tool schema, honor batch authorization, generate distinct poses, validate grid/anchors and loop; no engine required.",
+      "observed_walkthrough": "ai-artwork.md routes pixel art through discovered create-sprites and its provider contract, then requires pose/grid/anchor inspection and actual decoded timing.",
+      "result": "pass"
+    },
+    {
+      "id": "ai-illustration",
+      "request": "Make an illustrated fox wave; it must change paw poses, not slide across the frame.",
+      "capabilities": "Codex with an exposed still-image generation/editing tool; no video tool.",
+      "expected": "Check available schema, request coherent distinct poses or a sheet, preserve source, inspect actual frame content, assemble and review; do not infer video capability.",
+      "observed_walkthrough": "ai-artwork.md explicitly distinguishes whole-image transforms from articulated poses and requires observed sheet/grid verification before extraction.",
+      "result": "pass"
+    },
+    {
+      "id": "provider-absent",
+      "request": "Generate an original animated character.",
+      "capabilities": "No suitable image provider is exposed.",
+      "expected": "Explain missing capability; offer planning or supplied art; procedural graphics only if intent matches, without claiming generated poses.",
+      "observed_walkthrough": "ai-artwork.md forbids invented provider availability, implicit provider installs, and substituting a translated still for articulated artwork.",
+      "result": "pass"
+    },
+    {
+      "id": "pixel-provider-mismatch",
+      "request": "Generate pixel-art frames in Codex.",
+      "capabilities": "An image tool exists, but the loaded create-sprites workflow documents only an OpenCode provider.",
+      "expected": "Honor the loaded pixel-art workflow's provider boundary, explain the concrete mismatch, and offer planning/supplied frames.",
+      "observed_walkthrough": "ai-artwork.md explicitly handles narrower verified provider support in create-sprites rather than assuming tool equivalence from product names.",
+      "result": "pass"
+    },
+    {
+      "id": "static-image-motion",
+      "request": "Gently zoom my single illustration in a loop; no character pose changes needed.",
+      "capabilities": "Supplied still and available project-local image processing.",
+      "expected": "Use explicit static-image transforms, preserve source, review loop transition, and describe static-image motion honestly.",
+      "observed_walkthrough": "Motion and frame construction allows zoom/translation/effects for a still while separating pose changes; delivery requires accurate route labeling.",
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "No image provider was called and no spending was incurred.",
+    "No model routing reliability or animation quality is established by this walkthrough.",
+    "Actual tool availability and generation approval must be checked when the workflow is used."
+  ]
+}
