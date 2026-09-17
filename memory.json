@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "patterns": [
+    {
+      "id": "resampling-tests-transform-contrasting-input",
+      "lens": "qa",
+      "scope": [
+        "tests/*gif*",
+        "ai/plugins/producing/skills/create-gif/**"
+      ],
+      "guidance": "To verify a resampling choice, change source dimensions and use contrasting pixels; assert decoded edge/block locations and demonstrate detection of an incorrect sampling method.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-003",
+      "status": "active"
+    }
+  ],
+  "suppressions": []
+}

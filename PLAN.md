@@ -9,7 +9,7 @@
   create-skill/create-gif adaptations, eight original document skills, tests, and docs.
 - Non-goals: PRD section 6; no proprietary Anthropic document sources, general Office
   editing, OCR, macro execution, automatic conversion, new providers, or installation.
-- Current status: execution authorized; US-001 delivered after its story commit. PRD remains the
+- Current status: execution authorized; US-001 and US-003 delivered after their story commits. PRD remains the
   requirements source; this checklist owns implementation completion status.
 - Working branch: `feat/producing-and-document-skills`, prepared with the committed
   plan and PRD before execution.
@@ -112,7 +112,7 @@ Each story inherits these requirements in addition to its own criteria:
 - [ ] Common verification and review gates pass.
 
 ### US-003 — Adapt GIF assembly and inspection
-- [ ] Story complete
+- [x] Story complete
 - Priority: 3
 - Depends on: US-001
 - Requirements: PRD US-003; FR-05–FR-14, FR-18, FR-21–FR-23, FR-31.
