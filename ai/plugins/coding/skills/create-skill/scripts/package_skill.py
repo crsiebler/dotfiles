@@ -1,6 +1,7 @@
 """Adapted from Anthropic skill-creator, Apache-2.0; see ../LICENSE.txt.
 Modified 2026-09-17: in-memory packaging, bounded input, no overwrite, reopened
 archive inspection, and project-owned publication through create_skill.py.
+Preserve source file modes in Unix ZIP metadata and verify them on reopening.
 """
 import fnmatch
 import io
@@ -32,11 +33,19 @@ def package_skill(path):
             if should_exclude(relative):
                 continue
             content = file.read_bytes()
-            expected[relative.as_posix()] = content
-            archive.writestr(relative.as_posix(), content)
+            entry = zipfile.ZipInfo(relative.as_posix())
+            entry.create_system = 3
+            entry.external_attr = (file.stat().st_mode & 0xffff) << 16
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            expected[entry.filename] = (content, entry.external_attr)
+            archive.writestr(entry, content)
     with zipfile.ZipFile(buffer) as archive:
         if archive.testzip() is not None or set(archive.namelist()) != set(expected):
             raise SkillError(5, 'validation: package inventory mismatch')
-        if any(archive.read(name) != value for name, value in expected.items()):
+        if any(archive.read(name) != value[0] for name, value in expected.items()):
             raise SkillError(5, 'validation: package content mismatch')
+        if any(archive.getinfo(name).create_system != 3
+               or archive.getinfo(name).external_attr != value[1]
+               for name, value in expected.items()):
+            raise SkillError(5, 'validation: package permission mismatch')
     return buffer.getvalue()

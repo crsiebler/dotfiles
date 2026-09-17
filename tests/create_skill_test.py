@@ -4,6 +4,7 @@ import json
 import os
 import re
 import shutil
+import stat
 from pathlib import Path
 import subprocess
 import sys
@@ -56,6 +57,23 @@ class CreateSkillTest(unittest.TestCase):
         (self.source / 'linked.txt').symlink_to(self.source / 'data.txt')
         self.assertEqual(self.run_cli('package', 'example', 'bad.skill').returncode, 2)
         self.assertFalse((self.project / 'bad.skill').exists())
+
+    def test_package_preserves_permissions_and_compression(self):
+        helper = self.source / 'helper.sh'
+        helper.write_text('#!/bin/sh\nprintf "hello\\n"\n')
+        helper.chmod(0o755)
+        data = self.source / 'data.txt'
+        data.chmod(0o644)
+        result = self.run_cli('package', 'example', 'example.skill')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        with zipfile.ZipFile(self.project / 'example.skill') as archive:
+            for source in (helper, data):
+                entry = archive.getinfo(f'example/{source.name}')
+                self.assertEqual(entry.create_system, 3)
+                self.assertEqual(stat.S_IMODE(entry.external_attr >> 16),
+                                 stat.S_IMODE(source.stat().st_mode))
+                self.assertEqual(entry.compress_type, zipfile.ZIP_DEFLATED)
+                self.assertEqual(archive.read(entry), source.read_bytes())
 
     def test_missing_dependency_and_invalid_frontmatter(self):
         result = self.run_cli('validate', 'example', flags=('-S',))
