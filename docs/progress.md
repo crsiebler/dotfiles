@@ -258,3 +258,51 @@
 - Next: US-006 read-docx. Context7 already verified Document/_Cell.iter_inner_content
   preserve paragraph/table order; nested/revision-wrapped tables require explicit
   handling/omission reporting. Creation and reader bundles must remain independent.
+
+## US-006 - DOCX reader ready for review
+- US-005 delivered in 1b1ec93; US-006 eligible on exact prepared branch.
+- Original independent read-docx contract documented before implementation.
+  Context7 verified ordered blocks and header/footer definition inheritance.
+  No proprietary sources, advisors, installation, or renderers used.
+- Runtime Codex/GPT-6/standard; implementation standard, review test-sensitive.
+  Three initial tests failed missing helper; all three now pass under bundled
+  Python3.12.14/python-docx1.2.0 via SKILL_TEST_PYTHON and Python3.11 test driver.
+  Direct Python3.11/library pairing remains unverified, as documented.
+- Tests cover paragraph/table order, Unicode/headings, nested/revision omissions,
+  inherited/disabled header/footer variants, limits, source SHA preservation,
+  invalid packages/paths/symlinks, missing dependency, isolated read-only resources.
+- Installer discovery updated; 33 installer tests and make validate-ai pass.
+  git diff --check passes. No configured formatter or standalone typecheck found;
+  neither is claimed passing. Extraction does not establish visual completeness.
+- Intended commit: feat(US-006): add independent source-located DOCX extraction
+- Native story-reviewer expanded-initial initial pending; no passes consumed.
+  Local dependency environment excluded. Commit status pending.
+
+## US-006 - Initial review and coordinate remediation
+- Native /root/review_us001 returned complete valid initial JSON, changes_requested.
+  Medium correctness finding read-docx-omitted-leading-cells-shift-locations:
+  row.cells excludes omitted leading grid positions; enumeration shifted evidence.
+- Disposition accepted_fixed. Added independent XML fixture with gridBefore=1
+  and a merged second row. After fixing fixture construction order, it failed on
+  actual column 1 versus expected 2, proving the extraction defect.
+- Offset enumeration by row.grid_cols_before; documented omitted positions without
+  inventing cells/text. Four reader tests now pass, including merged-cell positions.
+  make validate-ai and diff whitespace pass; previous limitations unchanged.
+- One initial consumed; one targeted same-session remediation review pending.
+
+## US-006 - Passing targeted review and finalization
+- Same native session /root/review_us001 returned complete valid targeted JSON:
+  pass, no findings, resolved read-docx-omitted-leading-cells-shift-locations with
+  corrected offset and independent regression evidence. Schema/verdict checked.
+- One initial and one targeted consumed. Promoted verified reusable grid-coordinate
+  guidance once to version-1 memory; three patterns, no suppressions, bounds valid.
+  Event producing-and-document-skills|US-006|table-grid-coordinates-include-omissions|
+  read-docx-omitted-leading-cells-shift-locations|accepted_fixed.
+- Rechecked authorized PyYAML verification: all ten create-skill tests pass using
+  project-local .skill-test-venv Python3.11/PyYAML6.0.3. No global changes.
+- Four reader tests, 33 installer tests and source validation pass; no formatter or
+  standalone typecheck available. Direct Python3.11/docx pairing and rendering
+  remain unverified. Final consistency/authorized story commit pending.
+- Next US-007: Context7 verified python-pptx public layout/placeholder, geometry,
+  text/image/chart APIs. Existing soffice/pdftoppm wrappers are available; use an
+  explicit project-local LibreOffice profile if rendering, avoiding default /tmp.

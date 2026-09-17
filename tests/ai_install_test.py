@@ -425,8 +425,8 @@ class InstallTest(unittest.TestCase):
         manifest = json.loads((ROOT / '.agents/plugins/marketplace.json').read_text())
         plugins = dict(m.local_plugins(ROOT, manifest))
         skills = plugins['researching'] / 'skills'
-        self.assertEqual([p.parent.name for p in skills.glob('*/SKILL.md')],
-                         ['search-web'])
+        self.assertEqual({p.parent.name for p in skills.glob('*/SKILL.md')},
+                         {'search-web', 'read-docx'})
         source = skills / 'search-web'
         self.assertEqual({p.relative_to(source).as_posix()
                           for p in source.rglob('*') if p.is_file()},

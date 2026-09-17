@@ -28,6 +28,20 @@
       "rejected_count": 0,
       "last_validated_story": "US-002",
       "status": "active"
+    },
+    {
+      "id": "table-grid-coordinates-include-omissions",
+      "lens": "correctness",
+      "scope": [
+        "ai/plugins/researching/skills/read-docx/**",
+        "tests/read_docx_test.py"
+      ],
+      "guidance": "Use table grid offsets when reporting DOCX cell coordinates; fixture omitted leading cells and merged cells independently to avoid shifting evidence under the wrong heading.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-006",
+      "status": "active"
     }
   ],
   "suppressions": []
