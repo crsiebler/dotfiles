@@ -547,3 +547,106 @@
 - Final authorized consistency check/commit pending. US-014 must update final
   inventories and installer list (producing registration is missing from one prose
   list), coordinated plugin refresh/copies, separate setup and safe manual cleanup.
+
+## US-014 - Final documentation and requirement audit
+- Previous work progressed: US-013 committed542fad0. Exact prepared branch/HEAD
+  and unrelated scratch/environment rechecked. No installation/push/cleanup performed.
+- Runtime Codex/GPT-6/standard; documentation implementation, policy/activation
+  review standard. No implementation advisors. Native reviewer required for final
+  coordinated activation boundaries; expanded-initial initial pending, zero passes.
+- README/AGENTS/installation/removal guides now list seven producing skills,
+  create-skill in coding, four readers plus search-web in researching; distinguish
+  production/evidence/reporting and adequate native reads. Activation coordinates
+  three changed plugins/OpenCode copies, preserves custom versions, restarts/new
+  tasks, separates dependency setup and exact-path cleanup, forbids manual caches.
+- Read-only codex plugin/marketplace/add/upgrade help for installed0.153.4 verified
+  native command semantics: marketplace upgrade covers Git snapshots, not a promise
+  to refresh local checkout caches. No native plugin mutation was performed.
+- Inventory comparison caught previously omitted recover-ralph; corrected final
+  coding row. All five documented inventories now exactly match source discovery.
+- Checked51 local documentation link targets. Actual five-plugin manifest and exact
+  producing description verified. Compared all10 moved media files against prepared
+  baseline b9411de: identical bytes and Git modes; old coding source dirs absent.
+  Search found no active old media source paths in ai/scripts/tests/current guides.
+- Additional shell regressions pass: bash tests/ralph_model_test.sh,
+  bash tests/ralph_review_test.sh, bash tests/zsh_aliases_test.sh.
+  Source validation/whitespace pass; final full suite running after documentation.
+
+### Completion evidence by requirement
+- FR01–04/US001: manifest/plugin description/installer guard and generic loops;
+  installer/native plugin/audio tests in full suite; byte/mode comparison above;
+  final exact ownership inventories. Original media command identifiers preserved.
+- FR05–10/US002–013: all10 required skill/reference/script/requirements bundles,
+  relative-link/local-import/isolated execution contract tests; tested dependency
+  pins documented per bundle. No implicit package/model/provider installation.
+- FR11–14: isolated copies invoked from unrelated cwd, source/resource hash equality,
+  output collision/path/symlink cases, actual created artifacts reopened with
+  independent XML/library checks, dependency/input/writer/validation errors tested.
+  Rendering evidence distinguished from structural verification throughout.
+- FR15–17/US002: portable authoring/evaluation/schema/Markdown report/package helpers,
+  actual schema examples execute; no native agents/metrics/server assumptions.
+  Optional Claude adapters explicitly not bundled/auto-invoked; their scope documented.
+- FR18–23/US003–004: Pillow-only supplied/procedural GIF assembly, explicit encoding
+  policy, decoded per-frame timing/disposal/transparency/size tests. Actual resize
+  regression and wrong-sampler mutation establish pixel-edge behavior. Seven routing
+  scenarios cover supplied/procedural/AI pixel/illustration/missing provider; no live
+  generation claimed. Slack presets explicitly conditional, not verified limits.
+- FR24–26/US005/007/009/011: four original creators with format-specific contracts,
+  tested required features and executable recipes. Literal spreadsheet IDs/formula-like
+  strings/URLs preserved; caches/flags never presented as calculation. DOCX structure,
+  PPTX editable shapes/charts, XLSX data/caches/features and PDF pagination/fonts tested.
+  PPTX2-slide/PDF5-page visual fixtures inspected; DOCX rendering/XLSX calculation
+  remain optional and unperformed, not claimed passing.
+- FR27–30/US006/008/010/012: independent readers with source locations, explicit global
+  limits, unsupported/truncated reporting, unchanged-source evidence and relevant
+  fixtures: DOCX ordered blocks/headers/revisions/grid positions; PPTX notes/groups/
+  tables/caches; XLSX selected ranges/hidden spans/missing caches/bad dimension hint;
+  PDF selection/metadata/image-only/blank pages. Native simple reads permitted.
+- FR31: unchanged Apache licenses and upstream34040c9c568585f6929bedeaad110ad08f079624
+  provenance; modified notices on adapted prompts/schema/helpers. No separate upstream
+  NOTICE in selected bundles; no proprietary document code consulted/copied.
+- US013: all10 isolated bundle prerequisites/missing-package checks, five real
+  creations/inspections, four reads and skill package; full238-test suite passed with
+  one documented unrelated native strict-MCP capability skip. No artifact skips.
+- US014: inventories/activation/cleanup/docs and reviewed final evidence, followed
+  by final passing check/review/authorized commit. This last delivery gate is pending.
+- Common gates: exact branch throughout, user-approved implementation/story commits,
+  bounded native story reviews with same-session targeted fixes only, append-only
+  journal and valid bounded version1 memory. No configured formatter/standalone
+  typecheck exists; direct Python3.11 document-library execution unverified, syntax
+  parsed3.11 and actual dependency operations tested3.12.14. PyYAML tested3.11.
+- Delivered commits: US0012956fd6, US002132a25b, US003c395b4c, US00450de518,
+  US0051b1ec93, US006f9467b8, US0073453b7b, US0084e136ac, US0095f7a152,
+  US010a8b186f, US0117b37dcf, US012d118aca, US013542fad0.
+  US014 intended commit docs(US-014): document producing skills and coordinated activation.
+
+## US-014 - Final check result and staged review
+- Final full command with the documented document/YAML interpreter selections:
+  python3.11 -m unittest discover -s tests -p '*test*.py'
+  Result: 238 tests in 66.617s, OK (skipped=1). Same preexisting strict-MCP native
+  capability skip; all required artifact tests executed. Full output retained at
+  .skill-test-tmp/full-suite-final.log. No implementation changes after US-013.
+- Source validation, documentation inventories/links and shell regression checks
+  pass. No configured formatter/standalone typecheck available; not claimed passing.
+- Staged final documentation ready for native initial review. Candidate preserves
+  local scratch/environment untracked; final delivery requires passing review and
+  successful authorized US-014 commit. Archival/installation/push remain separate.
+
+## US-014 - Passing final review and delivery gate
+- Native /root/review_us001 returned complete valid initial JSON: pass, empty
+  findings/resolutions/learnings. Schema/verdict validated. One initial consumed;
+  no targeted needed. Memory remains valid version1 with three patterns and no
+  suppressions; no new accepted-fix event for this documentation story.
+- Final requirements audit above and final238-test result establish delivered
+  implementation scope; all14 stories have passing checks/reviews. Delivery is
+  finalized only by successful authorized US-014 Git commit containing this entry.
+  Exact final commit hash is reported by Git and the final user response; the
+  containing commit records the final plan completion marker and documentation.
+- No outstanding implementation blocker. Limitations: no standalone typecheck or
+  configured formatter; one unavailable native strict-MCP check; document libraries
+  executed under3.12.14 rather than3.11; no live AI generation, DOCX render or XLSX
+  recalculation. PPTX/PDF fixture rendering is evidence only for inspected fixtures.
+- No push, user-configuration installation, cleanup or archival performed. Project
+  .skill-test-venv and .skill-test-tmp remain untracked and preserved. Completed-run
+  archival requires its separately reviewed exact-path approval; active plan,
+  journal, memory and PRD remain intact.

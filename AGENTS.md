@@ -11,7 +11,16 @@ defines the native role contract.
 - Portable skills live in `ai/plugins/<plugin>/skills/<action>/`. The checkout-local
   `craft` marketplace at `.agents/plugins/marketplace.json` contains `coding`,
   `reporting`, `researching`, `delegating`, and `producing`.
-  `producing` owns the complete `create-audio` and `create-sprites` bundles.
+  `producing` owns `create-audio`, `create-sprites`, `create-gif`, `create-docx`,
+  `create-pptx`, `create-xlsx`, and `create-pdf`; `coding` owns `create-skill`.
+  `researching` owns `read-docx`, `read-pptx`, `read-xlsx`, and `read-pdf` alongside
+  web research. Reporting owns synthesis/communication, not file production.
+  Prefer adequate native tools for simple reads. All ten new bundles resolve their
+  own installed resources and document required/optional dependencies; dependency
+  setup is separately authorized and never performed by AI installation.
+  See [document verification](docs/document-skill-verification.md) for actual tested
+  environments and artifact/rendering limits. Document implementations are original;
+  only create-skill/create-gif adapt the attributed Apache upstream bundles.
 - `researching` provides provider-agnostic `search-web`; load its Exa MCP reference
   only when those tools are available and selected. Skill discovery is automatic.
 - The single harness-agnostic personal policy is `ai/AGENTS.md`. Installation
@@ -360,6 +369,15 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
    approve exact old installed paths before manual removal using that guide.
    Restart the harness and start a new Codex thread; never delete plugin caches
    manually or assume OpenCode copies were automatically removed.
+
+9. For producing/document activation, preserve customized copies and coordinate
+   `coding`, `researching`, and `producing` refresh/copies with separate installation
+   authorization. Restart the harness and use a new Codex task to verify unique
+   skill discovery. Audio/sprite identifiers are unchanged: never remove active
+   same-named OpenCode copies merely because source ownership moved. Follow
+   [rollout cleanup](docs/remove-old-ai-files.md#producing-and-document-rollout),
+   retain backups and obtain exact-path approval for obsolete copies. Never manually
+   delete caches; native plugin replacement requires its own reviewed scope.
 
 **Process for future iterations:**
 - Keep AI and old `.env` backup removal manual; limit `make clean` to `.zshrc` backups.

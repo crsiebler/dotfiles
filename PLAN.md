@@ -9,7 +9,7 @@
   create-skill/create-gif adaptations, eight original document skills, tests, and docs.
 - Non-goals: PRD section 6; no proprietary Anthropic document sources, general Office
   editing, OCR, macro execution, automatic conversion, new providers, or installation.
-- Current status: execution authorized; US-001–US-013 delivered after their story commits. PRD remains the
+- Current status: complete; US-001–US-014 delivered through their authorized story commits. PRD remains the
   requirements source; this checklist owns implementation completion status.
 - Working branch: `feat/producing-and-document-skills`, prepared with the committed
   plan and PRD before execution.
@@ -272,7 +272,7 @@ Each story inherits these requirements in addition to its own criteria:
 - [ ] Run complete Python regression suite and make validate-ai; common gates pass.
 
 ### US-014 — Finalize documentation and activation instructions
-- [ ] Story complete
+- [x] Story complete
 - Priority: 14
 - Depends on: US-013
 - Requirements: PRD US-014; all final ownership and delivery criteria.
@@ -328,7 +328,7 @@ Each story inherits these requirements in addition to its own criteria:
 - No implicit push, external post, sensitive operation, or installation. Planning
   creates neither execution journal nor memory. Native Goal continuation does not
   introduce Ralph's external iteration loop or new compaction hooks.
-- [ ] Final report lists actual commits, checks/reviews, delivered scope, and gaps.
+- [x] Final report lists actual commits, checks/reviews, delivered scope, and gaps.
 - After all stories pass and are committed, offer separately authorized archival
   using the installed references/completed-run-archive.md. Never reset active state
   or commit archives under story-commit authorization alone.
