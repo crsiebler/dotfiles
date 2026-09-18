@@ -217,6 +217,38 @@
                 "headerTimeout": 600000,
                 "timeout": false
             }
+        },
+        "bonsai": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "PrismML Bonsai Local",
+            "options": {
+                "baseURL": "http://127.0.0.1:8081/v1",
+                "apiKey": "none",
+                "timeout": false
+            },
+            "models": {
+                "bonsai-2-27b": {
+                    "name": "Ternary Bonsai 2 27B PQ2_0",
+                    "limit": {
+                        "context": 65536,
+                        "output": 8192
+                    },
+                    "modalities": {
+                        "input": [
+                            "text"
+                        ],
+                        "output": [
+                            "text"
+                        ]
+                    },
+                    "tool_call": true,
+                    "reasoning": true,
+                    "interleaved": {
+                        "field": "reasoning_content"
+                    },
+                    "temperature": true
+                }
+            }
         }
     }
 }
