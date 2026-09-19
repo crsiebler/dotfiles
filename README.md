@@ -443,6 +443,10 @@ sh "$helper" --harness opencode fetch cli-developer
 sh "$helper" help
 ```
 
+`resolve-review-feedback` combines feedback assessment and verified resolution
+preparation. Analysis-only requests stop at findings; GitHub operations follow
+its bundled reference and exact-preview approval protocol.
+
 ## Removing backup files
 
 1. Verify the installed configuration and retain backups needed for rollback.
@@ -474,3 +478,11 @@ sh "$helper" help
    unchanged; do not delete active same-named OpenCode copies. Review exact obsolete
    paths separately under the [rollout cleanup steps](docs/remove-old-ai-files.md#producing-and-document-rollout).
    Never delete plugin caches manually or discard backups before verification.
+
+9. For the combined `resolve-review-feedback` skill, preserve customized copies,
+   separately authorize coding plugin refresh or OpenCode installation, restart,
+   and verify the combined workflow. Approve exact obsolete
+   `analyze-review-feedback` paths before removal; retain the active
+   `resolve-review-feedback` copy and rollback backups. Follow the
+   [migration steps](docs/remove-old-ai-files.md#combined-review-feedback-skill)
+   and never delete plugin caches manually.

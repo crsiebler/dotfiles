@@ -52,7 +52,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `analyze-review-feedback`, `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill` |
+| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | `delegating` | `use-subagents` |
@@ -62,6 +62,16 @@ Use the skill identifier actually advertised by the harness; do not guess Codex
 namespace syntax or cached installation paths. Resolve bundled resources from
 the loaded skill location. Marketplace authentication policy is `ON_USE`, not an
 instruction to log in during installation.
+
+### Review feedback consolidation
+
+`resolve-review-feedback` now owns assessment and resolution preparation.
+Analysis-only requests return findings; resolution requests verify evidence at
+the PR head before preparing exact write previews. Code implementation and
+pushes remain separately authorized work. GitHub details live in the bundled
+`references/github.md`; `analyze-review-feedback` is retired without an alias.
+Follow the [migration steps](remove-old-ai-files.md#combined-review-feedback-skill)
+for separately authorized activation and installed-copy cleanup.
 
 ### Producing and document skill activation
 
