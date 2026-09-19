@@ -9,6 +9,7 @@ and connection setup are separate, explicitly authorized operations.
 - [Sources and installed layout](#sources-and-installed-layout)
 - [Installation and merge behavior](#installation-and-merge-behavior)
 - [Connecting applications](#connecting-applications)
+- [Local Bonsai 2 installation and OpenCode setup](local-bonsai.md)
 - [Native agents and Ralph limitations](#native-agents-and-ralph-limitations)
 - [Validation and manual evaluation](#validation-and-manual-evaluation)
 - [Troubleshooting and rollback](#troubleshooting-and-rollback)
