@@ -432,6 +432,22 @@ class InstallTest(unittest.TestCase):
                           for p in source.rglob('*') if p.is_file()},
                          {'SKILL.md', 'references/exa.md'})
 
+    def test_review_feedback_skill_discovery_and_reference(self):
+        m = self.module()
+        manifest = json.loads((ROOT / '.agents/plugins/marketplace.json').read_text())
+        plugins = dict(m.local_plugins(ROOT, manifest))
+        skills = plugins['coding'] / 'skills'
+        self.assertFalse((skills / 'analyze-review-feedback').exists())
+        source = skills / 'resolve-review-feedback'
+        self.assertEqual({p.relative_to(source).as_posix()
+                          for p in source.rglob('*') if p.is_file()},
+                         {'SKILL.md', 'references/github.md'})
+        self.assertIn('(references/github.md)',
+                      (source / 'SKILL.md').read_text())
+        permissions = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
+        self.assertEqual(permissions['permission']['skill'],
+                         {'resolve-review-feedback': 'allow'})
+
     def test_isolated_install_merge_and_repeat(self):
         self.module()
         with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:

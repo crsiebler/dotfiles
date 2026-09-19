@@ -379,6 +379,14 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
    retain backups and obtain exact-path approval for obsolete copies. Never manually
    delete caches; native plugin replacement requires its own reviewed scope.
 
+10. For the combined `resolve-review-feedback` skill, preserve customized copies,
+    separately authorize coding plugin refresh or OpenCode installation, restart,
+    and verify assessment plus resolution preparation. Approve exact obsolete
+    `analyze-review-feedback` installed paths before removal; preserve the active
+    `resolve-review-feedback` copy and needed rollback backups. Follow the
+    [migration steps](docs/remove-old-ai-files.md#combined-review-feedback-skill).
+    Never delete plugin caches manually; source retirement is not installed cleanup.
+
 **Process for future iterations:**
 - Keep AI and old `.env` backup removal manual; limit `make clean` to `.zshrc` backups.
 - Always update both README.md and AGENTS.md to document the backup and cleanup process step-by-step so code and docs remain in sync.

@@ -119,6 +119,23 @@ Skill cleanup is separate from command cleanup. Preserve `/review-pr` unchanged.
    `search-web` discovery and absence of unwanted duplicates before discarding
    backups. Updating checkout sources alone does not clean installed copies.
 
+### Combined review feedback skill
+
+1. Preserve customized `analyze-review-feedback` and `resolve-review-feedback`
+   copies, including references, outside discovery roots before activation.
+2. With separate installation authorization, refresh `coding@craft` through
+   native Codex plugin management or copy OpenCode skills using the documented
+   installer. The source merge does not update already loaded instructions.
+3. Restart the selected harness and start a new Codex task. Verify that
+   `resolve-review-feedback` advertises both assessment and resolution, and its
+   bundled `references/github.md` loads. Keep the active same-named skill.
+4. Inspect old `analyze-review-feedback` copies in each discovery root, including
+   `$opencode_root/skills/analyze-review-feedback` and standalone user copies.
+   Obtain exact-path removal approval after preserving customizations; use the
+   manual process above. No compatibility alias or automatic cleanup is provided.
+5. Verify unique discovery after cleanup and retain needed rollback backups.
+   Never delete plugin caches manually or remove the active marketplace.
+
 ### Producing and document rollout
 
 1. Preserve customized installed media, skill-authoring and document bundles outside

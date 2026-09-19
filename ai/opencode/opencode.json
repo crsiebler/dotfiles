@@ -177,7 +177,6 @@
         "jam_*": "allow",
         "elevenlabs_*": "ask",
         "skill": {
-            "analyze-review-feedback": "allow",
             "resolve-review-feedback": "allow"
         }
     },
