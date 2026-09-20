@@ -1,0 +1,27 @@
+{
+  "expectations": [
+    {
+      "text": "Preserves plan-only and no-live scope",
+      "passed": true,
+      "evidence": "response.md: No live API calls, installs, or implementation"
+    },
+    {
+      "text": "Uses project SDK rather than fixed upstream imports",
+      "passed": true,
+      "evidence": "response.md: pinned SDK"
+    },
+    {
+      "text": "Specifies bounded pagination and stderr",
+      "passed": true,
+      "evidence": "response.md: opaque next_cursor"
+    },
+    {
+      "text": "Plans protocol and packaged-entry validation",
+      "passed": true,
+      "evidence": "response.md: initializes the compiled entry"
+    }
+  ],
+  "notes": [
+    "Same-context manual planning response by the authoring assistant; no independent agent, server implementation, or live execution. No baseline or causal improvement measurement."
+  ]
+}

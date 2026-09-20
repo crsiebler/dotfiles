@@ -12,7 +12,8 @@ defines the native role contract.
   `craft` marketplace at `.agents/plugins/marketplace.json` contains `coding`,
   `reporting`, `researching`, `delegating`, and `producing`.
   `producing` owns `create-audio`, `create-sprites`, `create-gif`, `create-docx`,
-  `create-pptx`, `create-xlsx`, and `create-pdf`; `coding` owns `create-skill`.
+  `create-pptx`, `create-xlsx`, and `create-pdf`; `coding` owns `create-skill`
+  and `create-mcp-server`.
   `researching` owns `read-docx`, `read-pptx`, `read-xlsx`, and `read-pdf` alongside
   web research. Reporting owns synthesis/communication, not file production.
   Prefer adequate native tools for simple reads. All ten new bundles resolve their
@@ -20,7 +21,9 @@ defines the native role contract.
   setup is separately authorized and never performed by AI installation.
   See [document verification](docs/document-skill-verification.md) for actual tested
   environments and artifact/rendering limits. Document implementations are original;
-  only create-skill/create-gif adapt the attributed Apache upstream bundles.
+  create-skill/create-gif and create-mcp-server adapt attributed Apache upstream
+  bundles. create-mcp-server is instruction-only, with no runtime dependencies;
+  see [MCP skill verification](docs/create-mcp-server-verification.md).
 - `researching` provides provider-agnostic `search-web`; load its Exa MCP reference
   only when those tools are available and selected. Skill discovery is automatic.
 - The single harness-agnostic personal policy is `ai/AGENTS.md`. Installation

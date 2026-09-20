@@ -1,0 +1,19 @@
+{
+  "runtime": "Codex desktop, authoring session",
+  "model": "GPT-6 (runtime system identity); exact serving identifier unavailable",
+  "method": "Same-context sequential manual planning evaluations; non-blind self-review",
+  "baseline": null,
+  "timing": null,
+  "tokens": null,
+  "implementation_checks": "Not run: these are planning responses, not generated servers",
+  "source_sha256": {
+    "LICENSE.txt": "bc6b3af2f331cbc7fb0da1344efb2cbe5877a31498b4d70dbc7000f3405a1362",
+    "SKILL.md": "0967e7e86025ada605b71b4d3d16728a28247d77b564f0d5ff4929628240e61a",
+    "references/design.md": "fac2b59ab44852287b175c3edb0f6eed8c357512b9e175913512c1fdfb05e6bb",
+    "references/evaluation.md": "43a7e66e14ef360d3084482baad4d957bfcc09d0da211516bfa5d9e57f21034d",
+    "references/provenance.md": "5c445b7e0b4d40555b6deaafbf1b65fb5ee702daaa0d674b87d8ed575ee8618d",
+    "references/python.md": "900209c0816ddefe8e91d3004d210c4be98a1e8cda37d347cbffbf2b9404f316",
+    "references/typescript.md": "0d0c4f5374924df198b307ed7f7d386603b20d29abf1ec585c6d6c029239f986",
+    "references/verification.md": "144999d2ee6bbfe4fff4886973729717a0a5fbf332088107bd17ab7bde5ec0de"
+  }
+}

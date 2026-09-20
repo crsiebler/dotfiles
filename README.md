@@ -41,7 +41,7 @@ The five checkout-local `craft` plugins are `coding`, `reporting`, `researching`
 | Purpose | Plugin and skills |
 | --- | --- |
 | Creative assets and document files | `producing`: `create-audio`, `create-sprites`, `create-gif`, `create-docx`, `create-pptx`, `create-xlsx`, `create-pdf` |
-| Skill authoring and evaluation | `coding`: `create-skill`, alongside the existing development workflows |
+| Skill and MCP server authoring | `coding`: `create-skill`, `create-mcp-server`, alongside the existing development workflows |
 | Research and document evidence | `researching`: `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | Report content and communication | `reporting`: existing assessment/progress/status workflows |
 
@@ -52,6 +52,8 @@ Dependency setup is separately authorized and is never part of AI installation.
 See [verification and tested runtimes](docs/document-skill-verification.md) and
 [coordinated activation](docs/ai-configuration.md#producing-and-document-skill-activation).
 `search-web` retains conditional Exa MCP guidance.
+`create-mcp-server` adapts the Apache-2.0 mcp-builder guidance for project-scoped
+MCP development. It is instruction-only; see [verification](docs/create-mcp-server-verification.md).
 The single harness-agnostic personal policy, [`ai/AGENTS.md`](ai/AGENTS.md), is
 copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
 [`AGENTS.md`](AGENTS.md) remains separate, repository-only guidance.

@@ -1,0 +1,27 @@
+{
+  "expectations": [
+    {
+      "text": "Respects older SDK and distinguishes FastMCP",
+      "passed": true,
+      "evidence": "response.md: version-specific types/decorators"
+    },
+    {
+      "text": "Preserves auth-edit restriction",
+      "passed": true,
+      "evidence": "response.md: Do not modify existing authentication"
+    },
+    {
+      "text": "Handles tenant boundaries",
+      "passed": true,
+      "evidence": "response.md: tenant A cannot access B"
+    },
+    {
+      "text": "Prevents blind refund retry",
+      "passed": true,
+      "evidence": "response.md: ambiguous timeout must not become a blind second refund"
+    }
+  ],
+  "notes": [
+    "Same-context manual planning response by the authoring assistant; no independent agent, server implementation, or live execution. No baseline or causal improvement measurement."
+  ]
+}

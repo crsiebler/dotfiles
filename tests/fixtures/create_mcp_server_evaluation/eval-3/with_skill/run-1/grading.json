@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "text": "Rejects adjacent connection trigger",
+      "passed": true,
+      "evidence": "response.md: not a create-mcp-server trigger"
+    },
+    {
+      "text": "Does not scaffold",
+      "passed": true,
+      "evidence": "response.md: Do not scaffold a wrapper"
+    },
+    {
+      "text": "Protects token",
+      "passed": true,
+      "evidence": "response.md: secret references"
+    }
+  ],
+  "notes": [
+    "Same-context manual planning response by the authoring assistant; no independent agent, server implementation, or live execution. No baseline or causal improvement measurement."
+  ]
+}
