@@ -240,7 +240,7 @@ to write external state.
 | `context7` | Enabled globally | `CONTEXT7_API_KEY`; hosted Context7 MCP |
 | `jira` | Disabled | Atlassian Rovo v2 OAuth; `ATLASSIAN_CLOUD_ID` is site context |
 | `postgresql` | Disabled | Project least-privilege database URI and built local Node `mcp-suite` server |
-| `MCP_DOCKER` | Disabled | Docker MCP Toolkit gateway; configure trusted servers or a profile in Docker Desktop |
+| `docker` | Disabled | Docker MCP Toolkit gateway; configure trusted servers or a profile in Docker Desktop |
 
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
 Installation preserves unrelated installed entries, so older definitions may
@@ -359,7 +359,7 @@ default. Preserve approval prompts and never dump environment values or connecti
 strings into logs. Configuration alone does not establish read-only enforcement.
 
 **Docker MCP Toolkit:** Both configurations expose the Docker MCP Toolkit gateway
-as the disabled `MCP_DOCKER` stdio connection. Docker Desktop's MCP Toolkit must
+as the disabled `docker` stdio connection. Docker Desktop's MCP Toolkit must
 be configured with the intended servers or profile before enabling it. The Codex
 entry accommodates the gateway's documented startup time with a 60-second
 timeout, and all Docker-provided tools continue to require approval in OpenCode

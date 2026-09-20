@@ -34,7 +34,7 @@ CODEX = ROOT / 'ai/codex/config.toml'
 OPENCODE = ROOT / 'ai/opencode/opencode.json'
 EXAMPLE = ROOT / 'env/.env.example'
 GLOBAL = {'github', 'exa', 'context7'}
-OPT_IN = {'jira', 'postgresql', 'MCP_DOCKER'}
+OPT_IN = {'jira', 'postgresql', 'docker'}
 POSTGRESQL_PATH = (
     '/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js'
 )
@@ -136,7 +136,7 @@ class MCPConfigurationTest(unittest.TestCase):
     def test_docker_mcp_gateway_is_disabled_and_uses_stdio(self):
         for harness in self.servers:
             with self.subTest(harness=harness):
-                server = self.servers[harness]['MCP_DOCKER']
+                server = self.servers[harness]['docker']
                 self.assertIs(server['enabled'], False)
                 if harness == 'codex':
                     self.assertEqual(server['command'], 'docker')

@@ -100,7 +100,7 @@ class MCPPermissionsTest(unittest.TestCase):
             self.assertIs(self.opencode['mcp'][server]['enabled'], False)
             self.assertEqual(self.permission(server, 'any_tool'),
                              'ask' if server == 'elevenlabs' else 'allow')
-        self.assertEqual(self.permission('MCP_DOCKER', 'any_tool'), 'ask')
+        self.assertEqual(self.permission('docker', 'any_tool'), 'ask')
 
 
 if __name__ == '__main__':
