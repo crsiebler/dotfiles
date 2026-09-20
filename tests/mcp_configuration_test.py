@@ -34,7 +34,7 @@ CODEX = ROOT / 'ai/codex/config.toml'
 OPENCODE = ROOT / 'ai/opencode/opencode.json'
 EXAMPLE = ROOT / 'env/.env.example'
 GLOBAL = {'github', 'exa', 'context7'}
-OPT_IN = {'jira', 'postgresql'}
+OPT_IN = {'jira', 'postgresql', 'MCP_DOCKER'}
 POSTGRESQL_PATH = (
     '/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js'
 )
@@ -132,6 +132,25 @@ class MCPConfigurationTest(unittest.TestCase):
                 self.assertEqual(parse_qs(exa.query), {'tools': [
                     'web_search_exa,web_fetch_exa,agent_run,web_search_advanced_exa'
                 ]})
+
+    def test_docker_mcp_gateway_is_disabled_and_uses_stdio(self):
+        for harness in self.servers:
+            with self.subTest(harness=harness):
+                server = self.servers[harness]['MCP_DOCKER']
+                self.assertIs(server['enabled'], False)
+                if harness == 'codex':
+                    self.assertEqual(server['command'], 'docker')
+                    self.assertEqual(server['args'], [
+                        'mcp', 'gateway', 'run',
+                    ])
+                    self.assertEqual(server['startup_timeout_sec'], 60)
+                    self.assertEqual(server['default_tools_approval_mode'],
+                                     'prompt')
+                else:
+                    self.assertEqual(server['type'], 'local')
+                    self.assertEqual(server['command'], [
+                        'docker', 'mcp', 'gateway', 'run',
+                    ])
 
     def test_authorization_prompts_cannot_be_overridden(self):
         self.assertEqual(self.codex['approval_policy'], 'on-request')

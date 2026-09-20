@@ -83,9 +83,20 @@
             "environment": {
                 "POSTGRESQL_CONNECTION_STRING": "{env:POSTGRESQL_CONNECTION_STRING}"
             }
+        },
+        "MCP_DOCKER": {
+            "command": [
+                "docker",
+                "mcp",
+                "gateway",
+                "run"
+            ],
+            "enabled": false,
+            "type": "local"
         }
     },
     "permission": {
+        "MCP_DOCKER_*": "ask",
         "github_*": "ask",
         "github_get_commit": "allow",
         "github_get_file_contents": "allow",
