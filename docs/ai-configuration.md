@@ -270,12 +270,13 @@ and approves those exact tools. Neither relies on broad `get_*`/`search_*` patte
 or server annotations to automatically approve newly introduced tools.
 
 This policy does not enable disabled servers. Browser/audio connections remain
-OpenCode-only; no new Codex connections are installed. The eight inspection agents
-and `ralph-reviewer` retain their narrower permissions. Project/runtime overrides
-can still change effective behavior and need separate inspection. MCP rules do not
-control `git push` or `gh` through shell tools. Existing user-authorization rules
-for external actions and `/review-pr --post` remain in force even when a browser
-tool itself needs no permission dialog. Research calls may consume service quotas.
+OpenCode-only; the disabled `docker` connection is available in both harnesses.
+The eight inspection agents and `ralph-reviewer` retain their narrower
+permissions. Project/runtime overrides can still change effective behavior and
+need separate inspection. MCP rules do not control `git push` or `gh` through
+shell tools. Existing user-authorization rules for external actions and
+`/review-pr --post` remain in force even when a browser tool itself needs no
+permission dialog. Research calls may consume service quotas.
 
 Rovo tool discovery varies by tenant and authentication. The exact names cover
 the [v2 catalog](https://developer.atlassian.com/cloud/rovo-mcp/guides/supported-tools/)
