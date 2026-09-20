@@ -52,7 +52,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill` |
+| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | `delegating` | `use-subagents` |
@@ -642,3 +642,11 @@ Preserve approval rules; do not broaden permissions as an automatic rollback ste
 For individually approved cleanup, follow [manual removal](remove-old-ai-files.md).
 `make clean` removes `.zshrc` backups only; AI cleanup remains manual. Never
 delete an entire configuration root to remove backups.
+
+### MCP server authoring
+
+`coding:create-mcp-server` supports custom MCP design, implementation, and
+verification using project-selected SDKs. It does not connect existing services
+or install itself. Its references and Apache license ship within the skill.
+See [verification and limits](create-mcp-server-verification.md). Source discovery
+is automatic; installed copies/plugin refresh remain separately authorized.

@@ -1,0 +1,48 @@
+{
+  "skill_name": "create-mcp-server",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Plan only: add a local TypeScript MCP to an existing monorepo that searches support tickets and fetches a ticket by ID. SDK dependencies are installed; do not install or call the live API.",
+      "expected_output": "A bounded planning response or non-trigger disposition, not runnable server code.",
+      "expectations": [
+        "Preserves plan-only and no-live scope",
+        "Uses project SDK rather than fixed upstream imports",
+        "Specifies bounded pagination and stderr",
+        "Plans protocol and packaged-entry validation"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Plan only: design a Python remote MCP for two customer tenants. It searches invoices and creates refunds; retries must not duplicate refunds. Existing project uses an older official SDK. No deployment or auth edits are authorized.",
+      "expected_output": "A bounded planning response or non-trigger disposition, not runnable server code.",
+      "expectations": [
+        "Respects older SDK and distinguishes FastMCP",
+        "Preserves auth-edit restriction",
+        "Handles tenant boundaries",
+        "Prevents blind refund retry"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Connect OpenCode to the existing official Atlassian Rovo MCP using my token. Do not build a server.",
+      "expected_output": "A bounded planning response or non-trigger disposition, not runnable server code.",
+      "expectations": [
+        "Rejects adjacent connection trigger",
+        "Does not scaffold",
+        "Protects token"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Held-out planning case: design a read-only MCP tool that sends a supplied code diff to a model gateway and returns review findings. Do not read files automatically, modify code, or make paid calls.",
+      "expected_output": "A bounded planning response or non-trigger disposition, not runnable server code.",
+      "expectations": [
+        "Separates inference gateway from MCP",
+        "Preserves supplied-input/no-mutation boundary",
+        "Accounts for inference effects",
+        "Uses a suitable review rubric"
+      ]
+    }
+  ]
+}

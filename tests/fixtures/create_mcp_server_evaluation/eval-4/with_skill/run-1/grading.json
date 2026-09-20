@@ -1,0 +1,27 @@
+{
+  "expectations": [
+    {
+      "text": "Separates inference gateway from MCP",
+      "passed": true,
+      "evidence": "response.md: upstream inference service"
+    },
+    {
+      "text": "Preserves supplied-input/no-mutation boundary",
+      "passed": true,
+      "evidence": "response.md: Do not auto-read a workspace"
+    },
+    {
+      "text": "Accounts for inference effects",
+      "passed": true,
+      "evidence": "response.md: may cost money"
+    },
+    {
+      "text": "Uses a suitable review rubric",
+      "passed": true,
+      "evidence": "response.md: not exact prose matching"
+    }
+  ],
+  "notes": [
+    "Same-context manual planning response by the authoring assistant; no independent agent, server implementation, or live execution. No baseline or causal improvement measurement."
+  ]
+}
