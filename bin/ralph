@@ -31,7 +31,7 @@ MODELS = {
         "gpt-5.3-codex-spark", "gpt-5.4", "gpt-5.4-fast", "gpt-5.4-mini",
         "gpt-5.4-mini-fast", "gpt-5.5", "gpt-5.5-fast", "gpt-5.6-luna",
         "gpt-5.6-luna-fast", "gpt-5.6-sol", "gpt-5.6-sol-fast",
-        "gpt-5.6-terra", "gpt-5.6-terra-fast")
+        "gpt-5.6-terra", "gpt-5.6-terra-fast", "gpt-6-astra")
 }
 HELP = """Usage: ralph [options]
   --max-iterations N     Sessions this invocation (1-999999999; default 10)
@@ -41,7 +41,7 @@ HELP = """Usage: ralph [options]
   --resume              Approve reconciled interrupted/blocked work; never reset counts
   --status              Read-only diagnosis; cannot combine with execution options
   --mode MODE           fast, standard, deep (default standard)
-  --model MODEL         Allowlisted OpenCode model (default openai/gpt-5.6-sol-fast)
+  --model MODEL         Allowlisted OpenCode model (default openai/gpt-6-astra)
   -h, --help            Show help
 
 Invoking Ralph for execution grants routine scoped implementation, needed dependencies
@@ -86,7 +86,7 @@ def options(args):
             raise SystemExit(0)
         return dict(status=True)
     values = dict(max_iterations=10, max_story_retries=None, iteration_timeout=0,
-                  mode="standard", model="openai/gpt-5.6-sol-fast", resume=False,
+                  mode="standard", model="openai/gpt-6-astra", resume=False,
                   model_source="default")
     while args:
         flag = args.pop(0)
