@@ -104,7 +104,8 @@
             "environment": {
                 "AI_GATEWAY_API_KEY": "{env:AI_GATEWAY_API_KEY}",
                 "JEV_TIMEOUT_MS": "30000"
-            }
+            },
+            "timeout": 60000
         }
     },
     "permission": {

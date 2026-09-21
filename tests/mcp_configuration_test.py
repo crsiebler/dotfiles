@@ -268,6 +268,19 @@ class MCPConfigurationTest(unittest.TestCase):
         fake.chmod(0o700)
         return capture
 
+    def test_jev_client_timeouts_exceed_server_deadline(self):
+        for harness in self.servers:
+            with self.subTest(harness=harness):
+                server = self.servers[harness]['jev']
+                if harness == 'codex':
+                    timeout_ms = server['tool_timeout_sec'] * 1000
+                    environment = server['env']
+                else:
+                    timeout_ms = server.get('timeout', 5000)
+                    environment = server['environment']
+                self.assertEqual(timeout_ms, 60000)
+                self.assertGreater(timeout_ms, int(environment['JEV_TIMEOUT_MS']))
+
     def test_jev_local_launcher_and_secret_transport(self):
         entry = '/Repositories/mcp-suite/servers/jev/dist/servers/jev/src/index.js'
         home = self.scratch / 'home with spaces ;$(not-a-command)'

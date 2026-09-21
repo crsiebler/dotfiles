@@ -678,7 +678,10 @@ Codex forwards `HOME` and that key through `env_vars`, expanding the quoted path
 with `sh -c`/`exec node`. OpenCode uses `{env:HOME}` and `{env:AI_GATEWAY_API_KEY}`
 substitution. Keys are never command arguments; neither launcher loads `.env`.
 GUI applications may not inherit shell exports. Both set `JEV_TIMEOUT_MS=30000`;
-Codex's tool timeout is 60 seconds. Missing/blank keys are rejected by the server.
+OpenCode's `timeout=60000` and Codex's `tool_timeout_sec=60` both allow 60
+seconds, exceeding the server's 30-second evaluation deadline. Keep client
+timeouts above that deadline when changing these settings. Missing/blank keys
+are rejected by the server.
 
 After separately installing source configuration and preparing the server/key,
 enable `mcp.jev.enabled` in trusted OpenCode project configuration or
