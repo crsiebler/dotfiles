@@ -141,3 +141,11 @@ default_tools_approval_mode = "prompt"
 # execute_query accepts arbitrary SQL and must continue to prompt.
 [mcp_servers.postgresql.tools]
 check_dangerous_operations_allowed = { approval_mode = "approve" }
+
+[mcp_servers.docker]
+# Docker MCP Toolkit gateway; enable only after configuring a trusted profile.
+command = "docker"
+args = ["mcp", "gateway", "run"]
+startup_timeout_sec = 60
+enabled = false
+default_tools_approval_mode = "prompt"

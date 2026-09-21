@@ -240,6 +240,7 @@ to write external state.
 | `context7` | Enabled globally | `CONTEXT7_API_KEY`; hosted Context7 MCP |
 | `jira` | Disabled | Atlassian Rovo v2 OAuth; `ATLASSIAN_CLOUD_ID` is site context |
 | `postgresql` | Disabled | Project least-privilege database URI and built local Node `mcp-suite` server |
+| `docker` | Disabled | Docker MCP Toolkit gateway; configure trusted servers or a profile in Docker Desktop |
 
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
 Installation preserves unrelated installed entries, so older definitions may
@@ -247,8 +248,8 @@ remain until individually reviewed and removed with approval. See
 [manual cleanup](remove-old-ai-files.md#4-review-old-codex-agents-and-configuration).
 
 OpenCode additionally retains disabled optional Chrome DevTools, Playwright, Jam,
-and ElevenLabs connections. Their presence does not authorize starting them or
-downloading their runtime packages.
+ElevenLabs, and Docker MCP Toolkit connections. Their presence does not authorize
+starting them or downloading their runtime packages.
 
 ### Tool approval policy
 
@@ -269,12 +270,13 @@ and approves those exact tools. Neither relies on broad `get_*`/`search_*` patte
 or server annotations to automatically approve newly introduced tools.
 
 This policy does not enable disabled servers. Browser/audio connections remain
-OpenCode-only; no new Codex connections are installed. The eight inspection agents
-and `ralph-reviewer` retain their narrower permissions. Project/runtime overrides
-can still change effective behavior and need separate inspection. MCP rules do not
-control `git push` or `gh` through shell tools. Existing user-authorization rules
-for external actions and `/review-pr --post` remain in force even when a browser
-tool itself needs no permission dialog. Research calls may consume service quotas.
+OpenCode-only; the disabled `docker` connection is available in both harnesses.
+The eight inspection agents and `ralph-reviewer` retain their narrower
+permissions. Project/runtime overrides can still change effective behavior and
+need separate inspection. MCP rules do not control `git push` or `gh` through
+shell tools. Existing user-authorization rules for external actions and
+`/review-pr --post` remain in force even when a browser tool itself needs no
+permission dialog. Research calls may consume service quotas.
 
 Rovo tool discovery varies by tenant and authentication. The exact names cover
 the [v2 catalog](https://developer.atlassian.com/cloud/rovo-mcp/guides/supported-tools/)
@@ -356,6 +358,16 @@ responsibility, not guarantees supplied by these dotfiles. Use a project-specifi
 least-privilege database identity, not a superuser or production connection by
 default. Preserve approval prompts and never dump environment values or connection
 strings into logs. Configuration alone does not establish read-only enforcement.
+
+**Docker MCP Toolkit:** Both configurations expose the Docker MCP Toolkit gateway
+as the disabled `docker` stdio connection. Docker Desktop's MCP Toolkit must
+be configured with the intended servers or profile before enabling it. The Codex
+entry accommodates the gateway's documented startup time with a 60-second
+timeout, and all Docker-provided tools continue to require approval in OpenCode
+and Codex.
+The gateway can manage server lifecycle and credentials for the configured
+profile; configuration alone does not authorize Docker lifecycle operations or
+access to host resources.
 
 ## Native agents and Ralph limitations
 
