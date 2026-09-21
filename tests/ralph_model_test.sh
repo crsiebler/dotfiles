@@ -136,7 +136,7 @@ if grep -Ei -- 'auto.approval|--auto|bypass|full-auto|dangerously' "$TEST_DIR/op
 fi
 write_plan
 run_ralph --max-iterations 1 >/dev/null
-grep -q 'Model: openai/gpt-5.6-sol-fast' "$TEST_DIR/opencode.args" || fail 'default model changed'
+grep -q 'Model: openai/gpt-6-astra' "$TEST_DIR/opencode.args" || fail 'default model changed'
 grep -q 'Model source: default' "$TEST_DIR/opencode.args" || fail 'default source missing'
 for mode in fast deep; do
   write_plan
