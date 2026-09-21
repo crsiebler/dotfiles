@@ -57,7 +57,7 @@ MCP development. It is instruction-only; see [verification](docs/create-mcp-serv
 The single harness-agnostic personal policy, [`ai/AGENTS.md`](ai/AGENTS.md), is
 copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
 [`AGENTS.md`](AGENTS.md) remains separate, repository-only guidance.
-GitHub, Exa, and Context7 are globally enabled; Jira/Rovo and PostgreSQL remain off.
+GitHub, Exa, and Context7 are globally enabled; Jira/Rovo, PostgreSQL, and Jev remain off.
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
 See the guide for credentials, project opt-in, profiles, and merge behavior.
 
@@ -122,6 +122,13 @@ exported `POSTGRESQL_CONNECTION_STRING`. Follow the upstream setup documentation
 to prepare Node and the built server; the dotfiles installer does not clone,
 build, or install `mcp-suite`. See the [connection guide](docs/ai-configuration.md#trusted-project-opt-in)
 for transport details and server-validation responsibilities.
+
+The local Jev MCP uses
+`$HOME/Repositories/mcp-suite/servers/jev/dist/servers/jev/src/index.js` and
+`AI_GATEWAY_API_KEY`. It is disabled by default and prompts for every evaluation,
+which sends supplied data through Vercel AI Gateway and may incur charges.
+Build it in `mcp-suite` before project opt-in; see the
+[Jev connection guide](docs/ai-configuration.md#jev-evaluation).
 
 ## OpenCode PR Review Command
 

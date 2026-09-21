@@ -142,6 +142,21 @@ default_tools_approval_mode = "prompt"
 [mcp_servers.postgresql.tools]
 check_dangerous_operations_allowed = { approval_mode = "approve" }
 
+[mcp_servers.jev]
+# Local Jev evaluation through Vercel AI Gateway; enable per trusted project.
+command = "sh"
+args = [
+    "-c",
+    'exec node "$HOME/Repositories/mcp-suite/servers/jev/dist/servers/jev/src/index.js"',
+]
+env_vars = ["HOME", "AI_GATEWAY_API_KEY"]
+tool_timeout_sec = 60
+enabled = false
+default_tools_approval_mode = "prompt"
+
+[mcp_servers.jev.env]
+JEV_TIMEOUT_MS = "30000"
+
 [mcp_servers.docker]
 # Docker MCP Toolkit gateway; enable only after configuring a trusted profile.
 command = "docker"
