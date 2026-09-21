@@ -240,6 +240,7 @@ to write external state.
 | `context7` | Enabled globally | `CONTEXT7_API_KEY`; hosted Context7 MCP |
 | `jira` | Disabled | Atlassian Rovo v2 OAuth; `ATLASSIAN_CLOUD_ID` is site context |
 | `postgresql` | Disabled | Project least-privilege database URI and built local Node `mcp-suite` server |
+| `jev` | Disabled | `AI_GATEWAY_API_KEY` and built local Node `mcp-suite` evaluation server |
 | `docker` | Disabled | Docker MCP Toolkit gateway; configure trusted servers or a profile in Docker Desktop |
 
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
@@ -662,3 +663,36 @@ verification using project-selected SDKs. It does not connect existing services
 or install itself. Its references and Apache license ship within the skill.
 See [verification and limits](create-mcp-server-verification.md). Source discovery
 is automatic; installed copies/plugin refresh remain separately authorized.
+
+## Jev evaluation
+
+Both source configurations include the disabled `jev` stdio connection at
+`$HOME/Repositories/mcp-suite/servers/jev/dist/servers/jev/src/index.js`.
+In that separate repository, prepare its locked dependencies and run
+`npm run build -- --server=jev`. Node must be available on the harness's `PATH`.
+The dotfiles installer does not clone, install dependencies, build, or evaluate Jev.
+No Docker, Vercel CLI or hosting deployment is needed.
+
+Privately export `AI_GATEWAY_API_KEY` into the environment launching the harness.
+Codex forwards `HOME` and that key through `env_vars`, expanding the quoted path
+with `sh -c`/`exec node`. OpenCode uses `{env:HOME}` and `{env:AI_GATEWAY_API_KEY}`
+substitution. Keys are never command arguments; neither launcher loads `.env`.
+GUI applications may not inherit shell exports. Both set `JEV_TIMEOUT_MS=30000`;
+OpenCode's `timeout=60000` and Codex's `tool_timeout_sec=60` both allow 60
+seconds, exceeding the server's 30-second evaluation deadline. Keep client
+timeouts above that deadline when changing these settings. Missing/blank keys
+are rejected by the server.
+
+After separately installing source configuration and preparing the server/key,
+enable `mcp.jev.enabled` in trusted OpenCode project configuration or
+`mcp_servers.jev.enabled` in trusted Codex project configuration. Preserve all
+approval rules: OpenCode `jev_*` asks and Codex defaults to `prompt`, with no
+read-tool exceptions. `jev_evaluate` sends supplied state externally and may incur
+charges; its read-only annotation does not mean that a call is free or private.
+Discovery does not make model calls. Live evaluation requires approved data/spend
+scope. See the mcp-suite setup and workflow guides for synthetic examples.
+
+Source validation and fake-Node launcher tests cover the path, environment-only
+key forwarding, exit status and approval defaults. They do not establish real
+client startup, account access, billing or model quality. This source change does
+not install configuration, read keys, or run live calls.

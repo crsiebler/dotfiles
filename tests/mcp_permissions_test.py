@@ -81,6 +81,7 @@ class MCPPermissionsTest(unittest.TestCase):
             'jira': ['executeWrite', 'executeDestructive', 'createJiraIssue',
                      'editJiraIssue', 'addTeamworkGraphContext'],
             'postgresql': ['execute_query'],
+            'jev': ['jev_evaluate'],
         }
         for server, names in mutations.items():
             for name in [*names, 'future_unknown_tool']:

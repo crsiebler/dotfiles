@@ -34,7 +34,7 @@ CODEX = ROOT / 'ai/codex/config.toml'
 OPENCODE = ROOT / 'ai/opencode/opencode.json'
 EXAMPLE = ROOT / 'env/.env.example'
 GLOBAL = {'github', 'exa', 'context7'}
-OPT_IN = {'jira', 'postgresql', 'docker'}
+OPT_IN = {'jira', 'postgresql', 'docker', 'jev'}
 POSTGRESQL_PATH = (
     '/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js'
 )
@@ -191,6 +191,8 @@ class MCPConfigurationTest(unittest.TestCase):
                     for key, value in server.get('environment',
                                                  server.get('env', {})).items():
                         allowed = {'ELEVENLABS_MCP_OUTPUT_MODE': 'files'}
+                        if name == 'jev':
+                            allowed['JEV_TIMEOUT_MS'] = '30000'
                         self.assertTrue(value == allowed.get(key) or
                                         re.fullmatch(r'\{env:[A-Z_]+\}', value)
                                         is not None,
@@ -212,7 +214,7 @@ class MCPConfigurationTest(unittest.TestCase):
         self.assertEqual(len(names), len(set(names)))
         self.assertTrue({
             'GITHUB_MCP_TOKEN', 'EXA_API_KEY', 'CONTEXT7_API_KEY',
-            'POSTGRESQL_CONNECTION_STRING',
+            'POSTGRESQL_CONNECTION_STRING', 'AI_GATEWAY_API_KEY',
         } <= set(names))
         self.assertFalse({
             'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_PROFILE',
@@ -265,6 +267,56 @@ class MCPConfigurationTest(unittest.TestCase):
         )
         fake.chmod(0o700)
         return capture
+
+    def test_jev_client_timeouts_exceed_server_deadline(self):
+        for harness in self.servers:
+            with self.subTest(harness=harness):
+                server = self.servers[harness]['jev']
+                if harness == 'codex':
+                    timeout_ms = server['tool_timeout_sec'] * 1000
+                    environment = server['env']
+                else:
+                    timeout_ms = server.get('timeout', 5000)
+                    environment = server['environment']
+                self.assertEqual(timeout_ms, 60000)
+                self.assertGreater(timeout_ms, int(environment['JEV_TIMEOUT_MS']))
+
+    def test_jev_local_launcher_and_secret_transport(self):
+        entry = '/Repositories/mcp-suite/servers/jev/dist/servers/jev/src/index.js'
+        home = self.scratch / 'home with spaces ;$(not-a-command)'
+        home.mkdir()
+        self.env['HOME'] = str(home)
+        secret = 'synthetic-jev-key-' + uuid.uuid4().hex
+        capture = self.fake_executable('node')
+        for harness in self.servers:
+            with self.subTest(harness=harness):
+                server = self.servers[harness]['jev']
+                self.assertIs(server['enabled'], False)
+                if harness == 'codex':
+                    self.assertEqual(server['command'], 'sh')
+                    self.assertEqual(server['args'], ['-c', f'exec node "$HOME{entry}"'])
+                    self.assertEqual(server['env_vars'], ['HOME', 'AI_GATEWAY_API_KEY'])
+                    self.assertEqual(server['tool_timeout_sec'], 60)
+                    command = ['/bin/sh', *server['args']]
+                    environment = {'AI_GATEWAY_API_KEY': secret, **server['env']}
+                else:
+                    self.assertEqual(server['command'], ['node', '{env:HOME}' + entry])
+                    self.assertEqual(server['environment'], {
+                        'AI_GATEWAY_API_KEY': '{env:AI_GATEWAY_API_KEY}',
+                        'JEV_TIMEOUT_MS': '30000',
+                    })
+                    command = [arg.replace('{env:HOME}', str(home))
+                               for arg in server['command']]
+                    environment = {key: value.replace('{env:AI_GATEWAY_API_KEY}', secret)
+                                   for key, value in server['environment'].items()}
+                result = self.run_isolated(command, environment | {'FAKE_EXIT': '17'})
+                self.assertEqual(result.returncode, 17)
+                record = json.loads(capture.read_text())
+                self.assertEqual(record['argv'], [str(home) + entry])
+                self.assertTrue(record['env'].get('AI_GATEWAY_API_KEY') == secret)
+                self.assertEqual(record['env'].get('JEV_TIMEOUT_MS'), '30000')
+                self.assertTrue(secret not in result.stdout + result.stderr)
+                self.assertTrue(all(secret not in arg for arg in command + record['argv']))
 
     def test_postgresql_launcher_secret_transport_and_exit_status(self):
         home = self.scratch / 'home with spaces ;$(not-a-command)&\'"*'
