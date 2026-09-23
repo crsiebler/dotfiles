@@ -206,9 +206,9 @@
         "jev_*": "ask"
     },
     "plugin": [
-        "@mohak34/opencode-notifier@0.1.15",
-        "opencode-dir@1.2.3",
-        "opencode-gpt-imagegen@0.1.9"
+        "@mohak34/opencode-notifier@0.3.0",
+        "opencode-dir@1.2.8",
+        "opencode-gpt-imagegen@0.1.12"
     ],
     "provider": {
         "mlx": {
