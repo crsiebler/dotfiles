@@ -483,6 +483,8 @@ class InstallTest(unittest.TestCase):
                 'shared': {'enabled': False}, 'github': {'enabled': True,
                     'headers': {'Authorization': 'Bearer {env:GITHUB_MCP_TOKEN}'}}}}))
             put('ai/opencode/astra.json', '{"model":"test/astra"}')
+            put('ai/opencode/sol.json', '{"model":"test/sol"}')
+            put('ai/opencode/opencode-notifier.json', '{"notification":true}')
             target = put('home/xdg/opencode/opencode.json', '{"custom":"preserved","mcp":{"private":{"token":"{env:SECRET}"}}}')
             old_role = put('home/xdg/opencode/agents/example.md', 'previous role')
             custom_role = put('home/xdg/opencode/agents/custom.md', 'keep custom')
@@ -531,6 +533,8 @@ class InstallTest(unittest.TestCase):
             self.assertEqual(len(list(target.parent.glob('opencode.json.backup.*'))), 1)
             self.assertEqual((target.parent / 'AGENTS.md').read_bytes(), instruction_bytes)
             self.assertEqual(json.loads((target.parent / 'astra.json').read_text())['model'], 'test/astra')
+            self.assertEqual(json.loads((target.parent / 'sol.json').read_text())['model'], 'test/sol')
+            self.assertTrue(json.loads((target.parent / 'opencode-notifier.json').read_text())['notification'])
             self.assertEqual(value['model'], 'test/model')
             self.assertIn('Managed scope:', result.stderr)
             self.assertNotIn(env['GITHUB_MCP_TOKEN'], target.read_text())

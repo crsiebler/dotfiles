@@ -1,7 +1,12 @@
 # Personal defaults. Preserve the configured model; opt in with --profile astra.
 # Credentials are read at runtime, never interpolated into this file by install.
 approval_policy = "on-request"
+model = "gpt-6-astra"
 sandbox_mode = "workspace-write"
+
+[agents]
+default_subagent_model = "gpt-6-luna"
+default_subagent_reasoning_effort = "high"
 
 [sandbox_workspace_write]
 network_access = false
@@ -55,7 +60,12 @@ query-docs = { approval_mode = "approve" }
 url = "https://mcp.exa.ai/mcp?tools=web_search_exa,web_fetch_exa,agent_run,web_search_advanced_exa"
 enabled = true
 env_http_headers = { "x-api-key" = "EXA_API_KEY" }
-enabled_tools = ["web_search_exa", "web_fetch_exa", "agent_run", "web_search_advanced_exa"]
+enabled_tools = [
+    "web_search_exa",
+    "web_fetch_exa",
+    "agent_run",
+    "web_search_advanced_exa",
+]
 default_tools_approval_mode = "prompt"
 
 [mcp_servers.exa.tools]

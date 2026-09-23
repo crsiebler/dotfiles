@@ -134,6 +134,13 @@ done
 if grep -Ei -- 'auto.approval|--auto|bypass|full-auto|dangerously' "$TEST_DIR/opencode.args"; then
   fail 'approval bypass in harness arguments/runtime'
 fi
+
+for model in openai/gpt-6-luna openai/gpt-6-sol; do
+  write_plan
+  run_ralph --model "$model" --max-iterations 1 >/dev/null
+  grep -qx -- "- Model: $model" "$TEST_DIR/opencode.args" || fail "model not passed through: $model"
+done
+
 write_plan
 run_ralph --max-iterations 1 >/dev/null
 grep -q 'Model: openai/gpt-6-astra' "$TEST_DIR/opencode.args" || fail 'default model changed'

@@ -1,6 +1,6 @@
 ---
 description: Bounded, read-only reviewer for Ralph staged-story iterations and targeted remediation verification.
-model: openai/gpt-5.6-luna
+model: openai/gpt-6-luna
 mode: subagent
 steps: 3
 temperature: 0.1
