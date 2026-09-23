@@ -523,7 +523,9 @@ def main():
         if harness == 'opencode' and (target / 'opencode.jsonc').exists() and args.target != 'validate':
             raise ValueError('opencode.jsonc already exists; reconcile it with opencode.json manually before installing')
         for file in [source / filename, *sorted(source.glob('*.config.toml')),
-                     *sorted(source.glob('tui.json')), *sorted(source.glob('astra.json'))]:
+                     *sorted(source.glob('tui.json')), *sorted(source.glob('astra.json')),
+                     *sorted(source.glob('sol.json')),
+                     *sorted(source.glob('opencode-notifier.json'))]:
             if args.target != 'validate':
                 check_prompt_conflicts(load_config(target / file.name), load_config(source / filename))
             content = file.read_bytes() if args.target == 'validate' else config_bytes(target / file.name, file)

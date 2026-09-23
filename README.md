@@ -255,7 +255,7 @@ sensitive actions still need separate approval.
 
 Modes are `fast` (minimal review for low-risk work), `standard` (risk-based), and
 `deep` (bounded reviewer for every story). Optional story notes recommend agents,
-not mandatory delegation. OpenCode defaults to `openai/gpt-5.6-sol-fast`;
+not mandatory delegation. OpenCode defaults to `openai/gpt-6-astra`;
 `--model` must match the allowlist in `bin/ralph` and an available provider model.
 The interactive Astra profile does not expand Ralph's model allowlist.
 

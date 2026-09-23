@@ -24,7 +24,7 @@ and connection setup are separate, explicitly authorized operations.
 | `ai/AGENTS.md` | Single harness-agnostic personal policy; copied byte-for-byte to `AGENTS.md` in both user configuration roots |
 | `ai/codex/config.toml` | Managed Codex defaults and MCP connections |
 | `ai/codex/astra.config.toml` | Standalone opt-in model evaluation profile |
-| `ai/opencode/{opencode.json,tui.json,astra.json}` | OpenCode config, terminal UI, and opt-in model overlay |
+| `ai/opencode/{opencode.json,tui.json,astra.json,sol.json,opencode-notifier.json}` | OpenCode config, terminal UI, model overlays, and notifier settings |
 | `ai/codex/agents/*.toml` | 128 canonical custom-agent sources; all copied unchanged to Codex, Markdown generated for OpenCode |
 | `ai/plugins/coding/skills/prepare-implementation/references/story-execution.md`, `story-review.md` | Shared execution contract and canonical staged-review protocol/JSON schema for Ralph and Codex Goal |
 | `ai/opencode/agents/*.md` | Three native OpenCode-only agents: `sprite-artist`, `ralph`, and `ralph-reviewer`; copied unchanged |
