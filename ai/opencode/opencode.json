@@ -214,7 +214,6 @@
     },
     "plugin": [
         "@mohak34/opencode-notifier@0.3.0",
-        "opencode-dir@1.2.8",
         "opencode-gpt-imagegen@0.1.12"
     ],
     "provider": {
