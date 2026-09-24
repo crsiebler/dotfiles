@@ -16,6 +16,9 @@ RESTRICTED = {
     "security-auditor", "compliance-auditor", "agent-installer",
     "powershell-security-hardening", "story-reviewer",
 }
+ASTRA_AGENTS = {
+    "game-audio-engineer", "knowledge-synthesizer", "multi-agent-coordinator",
+}
 
 
 def markdown(path):
@@ -274,6 +277,12 @@ class AgentContractTest(unittest.TestCase):
         for path in sorted(CANONICAL.glob("*.toml")):
             data = tomllib.loads(path.read_text())
             self.assertTrue({"name", "description", "developer_instructions"} <= data.keys())
+            expected_model = "gpt-6-astra" if data["name"] in ASTRA_AGENTS else "gpt-6-luna"
+            self.assertEqual(expected_model, data.get("model"))
+            if data["name"] in ASTRA_AGENTS:
+                self.assertNotIn("model_reasoning_effort", data)
+            else:
+                self.assertEqual("high", data.get("model_reasoning_effort"))
             rows.append(data)
         reviewer = ROOT / "ai/opencode/agents/ralph-reviewer.md"
         native = {p.stem for p in reviewer.parent.glob("*.md")}
@@ -296,8 +305,7 @@ class AgentContractTest(unittest.TestCase):
             meta, rendered_body = markdown(self.output / f"{name}.md")
             self.assertEqual(body, rendered_body)
             expected = {"description": description, "mode": "subagent"}
-            if "model" in data:
-                expected["model"] = "openai/" + data["model"]
+            expected["model"] = "openai/" + data["model"]
             if "model_reasoning_effort" in data:
                 expected["options"] = {
                     "reasoningEffort": data["model_reasoning_effort"]
