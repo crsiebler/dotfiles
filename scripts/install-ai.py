@@ -540,6 +540,9 @@ def main():
                 plugin_retirement.prepare(installed['installed'])
         for path in skill_retirement.retired:
             say(f'Retire verified managed skill (with backup): {path}')
+        retired_names = {path.name for path in skill_retirement.retired}
+        for name in sorted(skill_retirement.pending - retired_names):
+            say(f'Pending CLI tracking cleanup: {name} (no installed tree remains)')
         for path in skill_retirement.conflicts:
             say(f'Preserving unverified or customized retired skill; reconcile manually: {path}')
         if plugin_retirement:

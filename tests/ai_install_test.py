@@ -9,6 +9,7 @@ import subprocess
 import sys
 import io
 import errno
+import hashlib
 from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import patch
 
@@ -730,6 +731,52 @@ else:
                 self.assertNotEqual(missing_renderer.returncode, 0)
                 self.assertIn('missing required source: scripts/render-agents.py',
                               missing_renderer.stderr)
+
+    def test_preview_reports_metadata_only_cleanup_without_writes_or_cli_calls(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
+            root = Path(directory)
+
+            def put(relative, text):
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text)
+                return path
+
+            for name in ('install-ai.py', 'ai_retirement.py'):
+                put(f'scripts/{name}', (ROOT / 'scripts' / name).read_text())
+            put('ai/AGENTS.md', 'Fixture instructions')
+            put('.agents/plugins/marketplace.json', '{"name":"craft","plugins":[]}')
+            tree = {'SKILL.md': hashlib.sha256(b'original').hexdigest()}
+            put('home/xdg/opencode/.install-ai-skills.json', json.dumps({
+                'version': 1, 'root': str(root.resolve()), 'kind': 'skills',
+                'entries': {name: [tree] for name in ('z-old', 'a-old', 'present')},
+            }))
+            put('home/xdg/opencode/skills/present/SKILL.md', 'original')
+            for cli in ('skills', 'codex'):
+                stub = put(f'fakebin/{cli}', f'#!{sys.executable}\n'
+                           'from pathlib import Path\n'
+                           'Path("unexpected-cli-call").write_text("called")\n'
+                           'raise SystemExit(99)\n')
+                stub.chmod(0o755)
+            env = dict(os.environ, HOME=str(root / 'home'),
+                       XDG_CONFIG_HOME=str(root / 'home/xdg'),
+                       CODEX_HOME=str(root / 'home/codex'),
+                       XDG_STATE_HOME=str(root / 'home/state'), PATH=str(root / 'fakebin'))
+            before = {p.relative_to(root): p.read_bytes()
+                      for p in root.rglob('*') if p.is_file()}
+            result = subprocess.run(
+                [sys.executable, '-B', str(root / 'scripts/install-ai.py'), 'all', '--preview'],
+                env=env, cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual([line for line in result.stdout.splitlines()
+                              if line.startswith('Pending CLI tracking cleanup:')], [
+                'Pending CLI tracking cleanup: a-old (no installed tree remains)',
+                'Pending CLI tracking cleanup: z-old (no installed tree remains)',
+            ])
+            self.assertIn('Retire verified managed skill (with backup):', result.stdout)
+            self.assertEqual(before, {p.relative_to(root): p.read_bytes()
+                                      for p in root.rglob('*') if p.is_file()})
+            self.assertFalse((root / 'unexpected-cli-call').exists())
 
     def test_symlink_parent_refused(self):
         m = self.module()

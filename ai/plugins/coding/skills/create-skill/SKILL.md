@@ -5,9 +5,6 @@ description: Author, adapt, and evaluate portable skills with representative tas
 
 # Create Skill
 
-Modified 2026-09-17 from Anthropic skill-creator, Apache-2.0; see
-[provenance](references/provenance.md) and [license](LICENSE.txt).
-
 Use the user's workflow and artifacts to define purpose, triggers, output, and
 success. Ask only for material missing information. Preserve the requested scope;
 creating a skill does not authorize its external effects, installation, or spending.
@@ -39,3 +36,6 @@ Follow [validation](references/validation.md) before delivering a bundle. Packag
 project copy only after validation; never overwrite an installed skill or existing
 output. [Optional Claude adapters](references/claude-adapters.md) are a separate,
 explicitly authorized workflow, never an automatic prerequisite or fallback.
+
+Modified 2026-09-17 from Anthropic skill-creator, Apache-2.0; see
+[provenance](references/provenance.md) and [license](LICENSE.txt).
