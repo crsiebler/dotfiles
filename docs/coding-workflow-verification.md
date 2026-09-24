@@ -3,7 +3,7 @@
 Status: source implementation through US-010 is committed at
 `305226d` on `refactor/coding-skills-for-ponytail`. US-011 live
 comparisons were waived by the user when requesting completion of US-011 and
-continuation to US-012. No live evaluations ran. US-012 source retirement is next;
+continuation to US-012. No live evaluations ran. US-012 removes the superseded source trees;
 installed activation remains separate. Closure is a user scope decision, not
 evidence that model behavior passed.
 
@@ -48,7 +48,8 @@ capture the skip reason. No dependencies were installed.
 
 No standalone repository typecheck or configured Markdown/JSON/TOML formatter is
 available. No live model comparison, paid evaluation, global installation,
-source-tree removal, or post-install discovery verification has been performed.
+or post-install discovery verification has been performed. US-012 source
+retirement is separately recorded below.
 
 ## Optional future evaluation proposal (not authorized or required for this delivery)
 
@@ -142,14 +143,39 @@ waiver, not completion of these proposed evaluations.
 ## Remaining delivery boundary
 
 The user authorized proceeding to US-012 after waiving live US-011 evaluations.
-The requested retirement covers exactly these repository source trees, with testing guidance already
+The source retirement removes exactly these repository source trees, with testing guidance already
 preserved in `develop-code`:
 
 - `ai/plugins/coding/skills/implement-feature/`
 - `ai/plugins/coding/skills/develop-with-tests/`
 - `ai/plugins/coding/skills/refactor-code/`
 
-Retain `review-code`. Final source discovery, consumer reconciliation, retirement
-preservation tests and activation/rollback documentation belong to that story.
+`review-code` is retained. Final source discovery, consumer reconciliation,
+retirement preservation tests and activation/rollback documentation are checked
+in US-012. Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows).
 Installation/refresh, shared-root cleanup and fresh-session verification require
 separate activation authorization; never manually delete plugin caches.
+
+
+## US-012 source delivery audit
+
+- Final coding catalog: 13 current entry points. New catalog regression failed
+  with precisely the three old entries, then passed after their removal. All five
+  coding workflow contract tests pass, including isolated resource closure and
+  the preserved anti-pattern reference hash.
+- No active source consumers reference the retired identifiers. Remaining names
+  identify historical baseline artifacts or explicit migration/removal guidance.
+- Five plugin identities are unchanged. Marketplace/manifest, installer,
+  retirement engine and renderer sources match the prepared baseline; no new
+  ownership records or special-case cleanup logic were added.
+- Both renderer checks report 128 sources/rendered and zero writes. Native role
+  metadata remains unchanged; three native OpenCode-only roles remain intact.
+- README, repository AGENTS, configuration/authoring and removal guides describe
+  coordinated policy/roles/skills activation, shared-root effects, custom asset
+  preservation and separately approved rollback. New links/anchors resolve.
+- Live comparative outcomes remain unrun under the US-011 waiver. Installed
+  activation, unique live discovery and installed behavior remain unverified.
+
+The final regression result and staged review are recorded in the execution
+journal. The prior full-suite failure above remains an environment limitation,
+not evidence of a successful full run.

@@ -14,6 +14,18 @@ SKILLS = ROOT / 'ai/plugins/coding/skills'
 
 
 class CodingWorkflowContractTest(unittest.TestCase):
+    def test_final_coding_catalog_has_only_current_entry_points(self):
+        expected = {'develop-code', 'review-code', 'resolve-review-feedback',
+                    'format-code', 'run-tests', 'verify-interface', 'manage-changes',
+                    'write-requirements', 'prepare-implementation', 'map-codebase',
+                    'recover-ralph', 'create-skill', 'create-mcp-server'}
+        actual = {path.parent.name for path in SKILLS.glob('*/SKILL.md')}
+        self.assertEqual(actual, expected)
+        for path in SKILLS.glob('*/SKILL.md'):
+            header = path.read_text().split('---', 2)[1]
+            self.assertEqual(re.findall(r'^name: (.+)$', header, re.M),
+                             [path.parent.name])
+
     def test_review_copy_contains_reachable_scopes_and_local_resources(self):
         with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
             bundle = Path(directory) / 'review-code'

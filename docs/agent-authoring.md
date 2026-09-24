@@ -240,3 +240,15 @@ After installing updated assets, restart the target runtime and verify discovery
 
 Native format reference: [Codex agent role parser](https://github.com/openai/codex/blob/main/codex-rs/agent-roles/src/agent_role_config.rs)
 and [role discovery](https://github.com/openai/codex/blob/main/codex-rs/core/src/config/agent_roles.rs).
+
+
+## Activating the coding workflow revision
+
+Coordinate the six aligned role sources with `develop-code`, independent
+`review-code` and the slim personal policy. Preserve custom installed roles and
+merge the optional [project template](templates/code-repository-AGENTS.md) with
+actual project instructions. Native permissions, model metadata, counts and
+renderer ownership are unchanged. Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows)
+under separate installation authorization; a source commit does not refresh a
+running session. [Verification](coding-workflow-verification.md) records that live
+comparative model evaluation was waived, not passed.

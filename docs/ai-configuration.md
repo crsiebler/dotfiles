@@ -52,7 +52,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-with-tests`, `implement-feature`, `refactor-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
+| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | `delegating` | `use-subagents` |
@@ -62,6 +62,23 @@ Use the skill identifier actually advertised by the harness; do not guess Codex
 namespace syntax or cached installation paths. Resolve bundled resources from
 the loaded skill location. Marketplace authentication policy is `ON_USE`, not an
 instruction to log in during installation.
+
+### Coding workflow consolidation
+
+`develop-code` owns feature implementation, diagnosis/fixes and behavior-preserving
+refactors, with conditional architecture and testing references. `review-code`
+remains independently discoverable for local changes, PRs, components and bounded
+audits, with nine conditional review lenses. Helpers select project-native tools.
+The three old development bundles are retired without aliases.
+
+The [project guidance template](templates/code-repository-AGENTS.md) is optional:
+merge verified project facts and commands into existing guidance; do not install
+it globally or replace a project's instructions blindly. The slimmer personal
+policy and six aligned native roles should activate with the updated coding
+bundle. Follow [coordinated activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows).
+[Verification](coding-workflow-verification.md) distinguishes static checks from
+the user-waived live evaluations; source delivery does not establish installed
+routing or behavioral quality.
 
 ### Review feedback consolidation
 

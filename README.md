@@ -459,6 +459,11 @@ sh "$helper" --harness opencode fetch cli-developer
 sh "$helper" help
 ```
 
+`develop-code` unifies feature work, diagnosis/fixes and refactoring;
+`review-code` independently handles read-only reviews through four scopes and nine
+conditional lenses. Adopt the [project guidance template](docs/templates/code-repository-AGENTS.md)
+by merging verified local facts. See [source verification and evaluation limits](docs/coding-workflow-verification.md).
+
 `resolve-review-feedback` combines feedback assessment and verified resolution
 preparation. Analysis-only requests stop at findings; GitHub operations follow
 its bundled reference and exact-preview approval protocol.
@@ -513,3 +518,11 @@ for ownership, shared-directory scope, and preserved conflicts.
    `resolve-review-feedback` copy and rollback backups. Follow the
    [migration steps](docs/remove-old-ai-files.md#combined-review-feedback-skill)
    and never delete plugin caches manually.
+
+10. For consolidated coding workflows, preserve old development skills and needed
+    policy/role backups, preview managed retirement, and separately authorize
+    coordinated coding-plugin, personal-policy and native-role activation. Verify
+    `develop-code` and independent `review-code` in a fresh task. Shared-root
+    retirement affects other harnesses; customized/unverified/symlinked copies
+    require separate exact-path reconciliation. Retain rollback archives and never
+    delete caches manually. Follow the [activation and rollback steps](docs/remove-old-ai-files.md#consolidated-coding-workflows).

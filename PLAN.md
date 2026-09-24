@@ -22,7 +22,8 @@
   deletions, evaluations with spending/delegation, and other sensitive operations
   require applicable approval.
 - Delivery: one explicitly authorized commit per verified, reviewed story.
-- Current status: US-001 through US-010 delivered; US-011 evaluations waived by user; US-012 pending. Prior run
+- Current status: All source stories delivered; US-011 live evaluations waived by user.
+  Installation and live discovery remain separately authorized future work. Prior run
   archived under `archive/2026-09-24-producing-and-document-skills/`.
 - Preparation baseline is committed at a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9;
   execution began with a clean worktree. Preserve any subsequent unrelated work.
@@ -274,7 +275,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Affected static tests and common gates pass; limitations are explicit.
 
 ### US-012 - Retire superseded sources and document activation
-- [ ] Story complete
+- [x] Story complete
 - Priority: 12
 - Depends on: US-011
 - PRD: US-012; FR-11.
@@ -338,7 +339,7 @@ Every story inherits these requirements; specific checks below supplement them.
   provisional marker and append the exact blocker under the shared procedure.
 - No implicit push, external post, installation, sensitive operation, or additional
   delegation. Native Goal continuation does not introduce Ralph loops or hooks.
-- [ ] Final report lists actual delivered scope, commits, checks/reviews, unresolved
+- [x] Final report lists actual delivered scope, commits, checks/reviews, unresolved
   evaluation/activation gaps, and any remaining limitations.
 - After delivery, archival is separately approved under the applicable completed-run
   procedure. Do not reset journals, remove active state, or commit archives under

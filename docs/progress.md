@@ -527,3 +527,40 @@
 ```
 
 - Intended commit docs(US-011): record user waiver of live evaluations. Completion marker means administratively closed under revised scope. Commit pending under existing authority; US-012 next.
+
+## US-012 candidate - source retirement and activation documentation
+
+- User continuation after US-011 waiver authorizes the exact PLAN trees: ai/plugins/coding/skills/implement-feature/, develop-with-tests/, refactor-code/. Removed only their four tracked files. Preserved review-code and byte-identical relocated anti-pattern reference. Prior sources remain recoverable from Git. US-011 closure commit 69843a8.
+- Added meaningful final source-catalog regression: failed with exactly the three obsolete entries before removal, then all five coding_workflow_contract_test.py cases passed. No installer/retirement code changed; generic directory discovery already handles removals. Five plugin identities and 128 canonical/three native-only roles preserved.
+- Updated README, root AGENTS, configuration/authoring/removal guides and verification record. Coordinated policy/role/plugin activation, selected private/shared root effects, customized/unverified/symlink preservation, exact-path manual reconciliation, backups, native plugin management and rollback documented. No user configuration installation/cleanup performed.
+- Final requirements audit in docs/coding-workflow-verification.md. Remaining old identifiers are historical baseline evidence or retirement guidance, not active source consumers. New documentation links/anchors resolve. Marketplace, coding manifest, installer, retirement engine and renderer bytes match prepared baseline.
+- Checks passed: make validate-ai; git diff --check; coding_workflow_contract_test.py (5); both renderer --check variants (128 sources/rendered, zero writes); bash tests/ralph_review_test.sh; bash tests/ralph_model_test.sh; bash tests/zsh_aliases_test.sh.
+- Full regression repeated after source removal: TMPDIR="$PWD/tests" SKILL_TEST_PYTHON=/Users/corysiebler/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 python3.11 -m unittest discover -s tests -p '*test*.py': 262 tests in 70.569s, exit 1, same seven PyYAML-dependent failures and one skip. Other tests, including installer and generic retirement preservation cases, reported no failures. Full suite is not green. Same unchanged-source environment gap as US-010; no dependency installed or assertions weakened.
+- No configured Python/Markdown/JSON/TOML formatter or standalone typecheck found; unavailable, not passing. No browser/product UI work. Live evaluation waived by user, not passed; installed discovery remains pending separately authorized activation.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. No advisors needed for bounded source retirement. Native story-reviewer required for test-sensitive migration; expanded-initial initial attempt 1. Existing memory validated and unchanged, no suppressions.
+- Intended commit feat(US-012): retire superseded coding skills and document activation. Commit pending under standing user authorization.
+
+## US-012 finalization
+
+- Native story-reviewer session `/root/review_us012_attempt1`, expanded-initial initial attempt 1, reviewed the immutable staged candidate with complete supplied protocol. Schema-valid pass, no findings; initial consumed, targeted unused. Memory unchanged.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": ["Do not broaden this review into earlier stories or live model evaluation."]
+  },
+  "residual_risks": [
+    "Installed activation, fresh-session discovery, and installed behavior remain unverified; the packet records live evaluation as waived."
+  ],
+  "learning_candidates": []
+}
+```
+
+- US-012 source criteria satisfied; required affected checks and staged review passed. Known full-suite PyYAML environment failures and unavailable formatter/typecheck remain disclosed. Live evaluations were waived under the user revision, not executed; no global activation or installed discovery claims.
+- Provisional completion and final report checklist updated. Intended feat(US-012): retire superseded coding skills and document activation; commit pending under standing user authority. All source stories complete on successful commit, with US-011 administratively closed by waiver. No archive, push or installation performed.
