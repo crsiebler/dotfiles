@@ -573,3 +573,12 @@ Earlier read-only consultations with `prompt-engineer`, `architect-reviewer`, an
 `code-reviewer` informed this draft. Their recommendations were advisory, not test
 results. Later user decisions supersede the initial proposal to merge review into
 development and the proposal to expand global coding policy.
+
+## Approved scope revision
+
+The user requested closing US-011 and proceeding to US-012 after the evaluation
+implications were explained. Live comparative evaluations are waived for this
+delivery; their unrun specifications are not observed results or evidence of
+model quality. US-012 may proceed on source checks and staged review. Its three
+listed source-tree removals are within the requested continuation. Installation
+and post-install discovery remain separate, unauthorized operations.

@@ -22,7 +22,7 @@
   deletions, evaluations with spending/delegation, and other sensitive operations
   require applicable approval.
 - Delivery: one explicitly authorized commit per verified, reviewed story.
-- Current status: US-001 through US-010 delivered; US-011 and US-012 pending. Prior run
+- Current status: US-001 through US-010 delivered; US-011 evaluations waived by user; US-012 pending. Prior run
   archived under `archive/2026-09-24-producing-and-document-skills/`.
 - Preparation baseline is committed at a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9;
   execution began with a clean worktree. Preserve any subsequent unrelated work.
@@ -250,7 +250,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Story execution/blocker and Ralph review checks plus common gates pass.
 
 ### US-011 - Evaluate discovery and engineering outcomes
-- [ ] Story complete
+- [x] Story complete (live evaluations waived by user)
 - Priority: 11
 - Depends on: US-003, US-005, US-006, US-007, US-008, US-009, US-010
 - PRD: US-011; Section 8 and FR-11.
@@ -258,6 +258,8 @@ Every story inherits these requirements; specific checks below supplement them.
 - Paths: coding evaluation/contract fixtures, proposed
   `docs/coding-workflow-verification.md`; existing create-skill evaluation helpers
   only if suitable and authorized.
+- User scope revision: close US-011 without live evaluations and proceed to US-012.
+  Evaluation criteria below are waived, not passed; retain unrun results and evidence limits.
 - Advisors: none unless evaluation scope explicitly authorizes independent graders.
 - [ ] Finalize agreed runtime/model, repetitions, held-out cases, grading criteria,
   spending/delegation scope, and baseline/candidate isolation before live runs.
@@ -297,7 +299,8 @@ Every story inherits these requirements; specific checks below supplement them.
 
 - Prepared branch and implementation authorization are established above.
   Execution and per-story commit authorization are established above.
-- Agree evaluation scope before US-011; approve source deletions before US-012.
+- User waived US-011 live evaluations and authorized proceeding with US-012,
+  including its three listed source-tree removals.
   Global activation remains a separate operation after source delivery.
 - Installed planning instructions may be older than the checked-in archival-policy
   revision. Source edits do not establish refreshed live discovery; do not install

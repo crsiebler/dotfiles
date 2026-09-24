@@ -506,3 +506,24 @@
 ```
 
 - US-010 changed-contract criteria passed; broad baseline environment limitation remains explicit. Provisional completion under existing commit authority. Intended feat(US-010): integrate coding helpers and execution handoff. Separate untracked US-011 proposal is excluded from this story commit.
+
+## 2026-09-24 - US-011 preparation and authorization checkpoint
+
+- US-010 commit succeeded: 305226d. US-001 through US-010 now delivered on the recorded prepared branch. PLAN completion markers reflect ten completed stories.
+- Prepared docs/coding-workflow-verification.md with actual source evidence, broad-suite limitations and a concrete proposed comparative evaluation scope. Verified document links, all 38 baseline SHA-256 hashes against a6c3b8f, 27 unrun scenarios and empty observed results. Six visible reserved cases are not blind holdouts.
+- Proposal: native fresh Codex subagents, gpt-6-sol medium, one run per variant for each of 27 scenarios, maximum 54 sessions, at most two concurrently, no further delegation or independent model graders; parent evidence grading. Existing account usage only, no paid external services. Behavioral per-session limits are not a hard token/dollar cap. No launch until user agrees runtime/model, scope and thresholds.
+- Candidate evaluation catalog would omit old development entries only in project-local evaluation copies; repository trees retained. Ambient installed skill/context contamination must be checked and prevents claims of isolated/native installed discovery. Required unavailable capabilities remain incomplete; no simulated gate success.
+- US-011 remains pending, no staged review or story commit attempted. The proposal is an uncommitted preparation artifact; journal checkpoint is also uncommitted. No live model evaluations/results fabricated. US-012 remains dependent on US-011 and exact source-tree deletion approval. Activation remains separately authorized.
+- User execution and story-commit authority is preserved. Remaining decision is evaluation scope, not repeat implementation/commit permission. PLAN US-011 explicitly requires agreed runtime/model, repetitions, held-out cases, grading criteria and spending/delegation scope before live runs.
+
+## US-011 user scope revision and closure
+
+- User explicitly requested: "Mark as complete and proceed to US-012" after being told that US-011 is the evaluation gate and could lead to fixes. This waives live comparative evaluation for delivery; it does not authorize fabricated passing results. PLAN and PRD record this revision; 27 scenarios remain unrun and results empty.
+- The continuation authorizes US-012's specifically listed implement-feature, develop-with-tests and refactor-code source-tree removals. No installed cleanup or activation authorized.
+- US-011 changes are documentation/evidence bookkeeping only. Standard mode trivial self-review, CodexGoalMarkdown expanded-initial initial, no native session needed. Reviewed staged-intended diff for scope and honest provenance. make validate-ai and git diff --check passed. Typecheck/formatter unavailable as previously recorded. No live evaluations or new dependency install. No memory changes.
+
+```json
+{"verdict":"pass","pass_type":"initial","findings":[],"resolved_findings":[],"executor_feedback":{"priority_order":[],"recommended_checks":[],"avoid":[]},"residual_risks":["Live model behavior remains unevaluated under explicit user waiver; closure is not a passing evaluation."],"learning_candidates":[]}
+```
+
+- Intended commit docs(US-011): record user waiver of live evaluations. Completion marker means administratively closed under revised scope. Commit pending under existing authority; US-012 next.
