@@ -33,6 +33,15 @@ security/privacy, data/state, reliability, performance, testing quality,
 accessibility, and operability/dependencies. Do not launch an agent or tool per
 concern or load unrelated guidance merely to fill a checklist.
 
+Load the matching bundled lens only when its trigger is present. Every lens
+inherits the read-only boundary and evidence/findings contract above.
+
+| Trigger | Lens |
+| --- | --- |
+| Responsibility, coupling, complexity or maintenance cost | [Architecture and maintainability](references/lenses/architecture-and-maintainability.md) |
+| Public behavior, interfaces, schemas or supported versions | [Compatibility](references/lenses/compatibility.md) |
+| Tests, doubles, coverage claims or regression sensitivity | [Testing quality](references/lenses/testing-quality.md) |
+
 ## Findings and coverage
 
 Report evidenced defects first. Each needs a verified location when available,

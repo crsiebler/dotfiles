@@ -250,3 +250,37 @@
 - No findings or memory promotion. All story criteria met; typecheck/formatter and live evaluation limits retained. Existing execution/commit authority applies.
 - Commit status pending; intended feat(US-004): establish independent review scopes and evidence contract.
 ---
+
+## 2026-09-24 - US-005 candidate
+
+- Added conditional architecture/maintainability, compatibility and testing-quality lenses; root links by actual risk trigger. Covers semantic/cognitive/control-flow/state/coupling complexity, project metric limits, preserved interfaces/errors/lifecycle and meaningful test adequacy. No scope, role permission or executable-tool changes.
+- Added unrun mock-only review scenario; existing interface/complexity/replacement cases cover other counterexamples. JSON parsed by construction; live evaluations remain pending.
+- Checks: coding_workflow_contract_test passed 4 (isolated bundle and link checks include new references); make validate-ai passed; git diff --check passed. Typecheck unavailable, no configured Markdown/JSON formatter; optional PyYAML validation still unavailable. No UI.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. No advisors. Trivial documentation/declarative scope: self-review, expanded-initial, initial attempt 1; inspect all staged paths, not an independent review.
+- Intended commit feat(US-005): add maintainability compatibility and testing lenses. Commit pending; existing execution/commit authorization applies.
+---
+
+## 2026-09-24 - US-005 finalization
+
+- Self-review expanded-initial initial attempt 1 inspected inventory and all six staged paths; correctness/QA criteria met, no findings. Session not applicable; targeted unused; no memory promotion.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [
+    "Source guidance and scenario specification only; live evaluation remains unrun."
+  ],
+  "learning_candidates": []
+}
+```
+
+- Commit pending; intended feat(US-005): add maintainability compatibility and testing lenses. Required source/resource checks pass; typecheck/formatter unavailable as above.
+---

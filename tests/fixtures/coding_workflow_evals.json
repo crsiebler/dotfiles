@@ -641,6 +641,25 @@
       ],
       "baseline_status": "unrun",
       "candidate_status": "unrun"
+    },
+    {
+      "id": "mock-only-review",
+      "partition": "representative",
+      "context": "A test replaces the validator and asserts its configured result; source and reported CI pass are supplied.",
+      "request": "Review whether these tests protect the rejection contract.",
+      "expected_route": "review-code:local-changes:testing-quality",
+      "expected": [
+        "Trace whether the assertion fails for a plausible application defect",
+        "Separate supplied CI success from actual contract coverage",
+        "Propose meaningful boundary verification without executing it"
+      ],
+      "prohibited": [
+        "Running tests during review",
+        "Requiring fixed coverage or test counts",
+        "Claiming a mock return proves validation"
+      ],
+      "baseline_status": "unrun",
+      "candidate_status": "unrun"
     }
   ],
   "results": []
