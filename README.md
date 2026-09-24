@@ -15,7 +15,8 @@ A collection of configuration files for storing user preferences and preserving 
 - Shell setup: Zsh, Oh My Zsh, standard Unix tools, and `python3` for environment synchronization.
 - AI installer: Python 3.11+ (`PYTHON` defaults to `python3.11`).
 - Codex installation: Codex CLI **0.153.4**.
-- OpenCode skill installation: the `skills` CLI already on `PATH`, plus OpenCode to use the result.
+- AI installation/skill retirement: the `skills` CLI already on `PATH`; retirement
+  requires tested version 1.5.24. OpenCode is needed to use its installed skills.
 - Source validation and agent rendering: Python 3.11+. Ralph requires Python 3.11+, POSIX, and Git;
   its review regression test also uses Ruby to validate native reviewer YAML.
 
@@ -33,6 +34,7 @@ make validate-ai       # Local source validation only; no harness or MCP starts
 make install-codex     # Codex configuration, local plugins, native roles
 make install-opencode  # OpenCode configuration, copied skills, agents, commands
 make install-ai        # Both AI harnesses; no shell/env/git setup or binaries
+make preview-ai-cleanup # Read-only retirement preview; AI_TARGET=opencode or codex
 ```
 
 The five checkout-local `craft` plugins are `coding`, `reporting`, `researching`,
@@ -458,11 +460,20 @@ its bundled reference and exact-preview approval protocol.
 
 ## Removing backup files
 
+AI installation now reconciles verified retired repository-owned skills after
+installing replacements. Codex keeps native `craft` plugins and their Desktop
+presentation; OpenCode uses the `skills` CLI. See [automatic retirement](docs/remove-old-ai-files.md#automatic-managed-retirement)
+for ownership, shared-directory scope, and preserved conflicts.
+
 1. Verify the installed configuration and retain backups needed for rollback.
 2. Review adjacent `.backup.<timestamp>` files and changed OpenCode skill assets
    under `.install-ai-backups/<timestamp>/skills/` in the configuration root.
    The broad installer backs up `.zshrc`. Existing `.env` files are synchronized
    by appending missing keys/exports without creating backups.
+   Retirement archives are under `.install-ai-backups/<timestamp>/retired/`;
+   native plugin source snapshots are under `.install-ai-backups/plugin-sources/`.
+   Inspect the preview before installation, verify discovery afterward, and retain
+   these archives until rollback is no longer needed. Delete only approved backups.
 3. After reviewing all matching `.zshrc` backups, run `make clean` to remove
    only `$HOME/.zshrc.backup.*`. It preserves active files, existing `.env`
    backups, and all AI configuration/backups.
@@ -489,9 +500,11 @@ its bundled reference and exact-preview approval protocol.
    Never delete plugin caches manually or discard backups before verification.
 
 9. For the combined `resolve-review-feedback` skill, preserve customized copies,
-   separately authorize coding plugin refresh or OpenCode installation, restart,
-   and verify the combined workflow. Approve exact obsolete
-   `analyze-review-feedback` paths before removal; retain the active
+    separately authorize coding plugin refresh or OpenCode installation, restart,
+    and verify the combined workflow. Installation automatically archives/removes
+    verified historical `analyze-review-feedback` copies, including the shared
+    `~/.agents/skills` copy. Unverified/customized copies are reported and preserved
+    for separately approved manual reconciliation. Retain the active
    `resolve-review-feedback` copy and rollback backups. Follow the
    [migration steps](docs/remove-old-ai-files.md#combined-review-feedback-skill)
    and never delete plugin caches manually.

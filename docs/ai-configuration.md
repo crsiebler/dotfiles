@@ -168,7 +168,9 @@ make install-ai
 
 Python 3.11+ is required for validation, rendering, and installation; Make defaults
 to `python3.11`. Codex installation requires exactly CLI 0.153.4.
-OpenCode skill installation requires `skills` on `PATH`. Missing prerequisites
+All AI installation targets require `skills` on `PATH` for standalone retirement.
+When retirement is planned, CLI 1.5.24 is required for its tested scoped-removal
+contract. Preview does not require or run either CLI. Missing prerequisites
 are blockers: no `npx` bootstrap, login, dependency installation, or binary install
 is performed by these targets.
 
@@ -177,6 +179,55 @@ and adds `coding@craft`, `reporting@craft`, `researching@craft`,
 `delegating@craft`, and `producing@craft`. OpenCode uses local `skills add` copies
 rather than symlinks.
 The checkout must remain available for subsequent local marketplace refreshes.
+
+### Managed retirement
+
+`make preview-ai-cleanup` previews all targets without writes or native CLI calls;
+use `AI_TARGET=opencode` or `AI_TARGET=codex` to narrow it. Native plugin candidates
+come from ownership records in preview; actual registrations are checked during
+installation. Normal installation performs retirement after replacement installation.
+
+`scripts/ai_retirement.py` owns versioned `.install-ai-skills.json` and
+`.install-ai-plugins.json` inventories in the relevant configuration root. Missing
+inventories bootstrap conservatively; malformed or foreign-checkout inventories
+block rather than being overwritten. Skills are tracked by complete tree hashes,
+so removal of a bundle retires its skills while moves between bundles preserve
+current names. Inventories record verified standalone copies, not arbitrary files.
+Expected skill copies account for the Skills CLI's exclusions (`metadata.json`
+entries and `.git`, `__pycache__`, and `__pypackages__` directories). Installed
+trees and retirement ownership checks remain exact; extra installed files are
+not ignored. Generated source caches therefore do not cause false verification
+failures, while customized installed trees remain protected.
+
+Skill cleanup covers the selected private skill root and `$HOME/.agents/skills`.
+For `all`, the private root is OpenCode's; Codex-only uses `$CODEX_HOME/skills`.
+Shared cleanup affects every harness reading that root. Other private roots,
+project-local copies, custom discovery paths, and unrelated skills are preserved.
+Only exact previously recorded trees or explicit historical migration fingerprints
+qualify. `analyze-review-feedback` has a verified migration fingerprint;
+unrecorded `use-exa` versions and older names still need manual reconciliation.
+Modified or symlinked candidates are reported and left in place.
+
+Retired trees are copied to `.install-ai-backups/<timestamp>/retired/`, verified,
+then removed at their exact paths before scoped `skills remove` reconciles CLI
+tracking. This ordering avoids the CLI retaining an obsolete shared directory
+because another harness discovers it. Other-agent copies can legitimately retain
+CLI tracking. Existing CLI lock metadata is validated and backed up before removal;
+an absolute `XDG_STATE_HOME` override is respected. Pending ownership is saved before removal so a failed CLI call can
+be retried; a successful exit alone does not prove files were removed.
+
+Codex keeps native Craft plugins and their Desktop marketplace presentation.
+Only previously recorded plugin IDs absent from the current marketplace qualify
+for native `codex plugin remove`, after checking the registered local source.
+The installer preserves source snapshots under `.install-ai-backups/plugin-sources/`
+and archives any existing matching native cache subtree before native removal.
+It never deletes caches itself or removes the active marketplace. Previously
+unrecorded plugin registrations are not inferred to be installer-owned.
+
+Installation is still not transactional: failure may leave completed writes or
+archival in place. Preserve inventories and backups, correct the reported blocker,
+then rerun. Source updates alone do not execute cleanup. Restart the harness and
+verify discovery after installation; backup deletion remains separately approved.
 
 Managed JSON/TOML keys override existing values; unrelated keys survive.
 Arrays are replaced rather than unioned. MCP transport changes remove incompatible
@@ -214,7 +265,7 @@ are not preserved in the installed merged file. Changed files receive adjacent
 timestamped backups. User-level `AGENTS.md` and same-name shipped agents/commands
 are replaced, not prose-merged. Changed OpenCode skill files are backed up under
 `.install-ai-backups/<timestamp>/skills/`. Unrelated files and stale assets are
-not removed automatically.
+not removed automatically, except verified managed retirements described above.
 
 Writes use per-file atomic replacement, but installation is not a whole-operation
 transaction. A later native CLI failure can leave earlier files installed. Native

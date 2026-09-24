@@ -1,5 +1,6 @@
 """Offline native Codex plugin contract test; never starts a model or MCP."""
 import json
+import importlib.util
 import os
 from pathlib import Path
 import shutil
@@ -47,6 +48,25 @@ class NativePluginTest(unittest.TestCase):
             self.assertEqual({p['pluginId'] for p in listing['installed']},
                              {p['name'] + '@' + manifest['name'] for p in manifest['plugins']})
             self.assertTrue(all(p['source']['source'] == 'local' for p in listing['installed']))
+            spec = importlib.util.spec_from_file_location('retirement', ROOT / 'scripts/ai_retirement.py')
+            assert spec and spec.loader
+            retirement = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(retirement)
+            desired = [(p['name'], root / p['source']['path']) for p in manifest['plugins']]
+            manager = retirement.Plugins(root, home / 'codex', manifest['name'], desired)
+            manager.prepare(listing['installed'])
+            manager.record()
+            removed, retained = desired[-1], desired[:-1]
+            manifest['plugins'] = manifest['plugins'][:-1]
+            (root / '.agents/plugins/marketplace.json').write_text(json.dumps(manifest))
+            run('plugin', 'marketplace', 'add', str(root))
+            manager = retirement.Plugins(root, home / 'codex', manifest['name'], retained)
+            manager.prepare(json.loads(run('plugin', 'list', '--marketplace', manifest['name'], '--json'))['installed'])
+            manager.apply(lambda argv: run(*argv[1:]))
+            manager.record()
+            after = json.loads(run('plugin', 'list', '--marketplace', manifest['name'], '--json'))
+            self.assertNotIn(removed[0] + '@' + manifest['name'], {p['pluginId'] for p in after['installed']})
+            self.assertEqual(len(after['installed']), len(retained))
 
 
 if __name__ == '__main__':

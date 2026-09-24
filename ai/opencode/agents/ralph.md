@@ -1,6 +1,7 @@
 ---
 description: "Autonomous one-story-at-a-time Ralph coding agent."
 mode: "primary"
+hidden: true
 ---
 
 # Ralph Execution Adapter

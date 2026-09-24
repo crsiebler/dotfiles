@@ -64,6 +64,16 @@ defines the native role contract.
   AI configuration only. They require explicit installation authorization. No
   logins, dependency bootstrap, shell setup, or binary installation are included.
   Missing `skills` is a blocker, not permission to download it with `npx`.
+  All installation targets require `skills`; retirement requires the tested CLI
+  1.5.24. Authorized installation includes automatic retirement of verified managed
+  skills in the selected private root and shared `~/.agents/skills`, affecting all
+  harnesses reading that shared root. `all` uses OpenCode's private root for skills;
+  Codex-only uses its private root, while retaining native plugin installation.
+  `make preview-ai-cleanup` (optional `AI_TARGET=opencode|codex`) is read-only and
+  does not invoke either CLI. Inventories bind to the checkout; never hand-edit
+  them to manufacture ownership. Preserve unverified/customized/symlinked assets.
+  Native removal is limited to previously recorded plugins removed from the
+  current marketplace; preserve current Craft bundles and unrelated plugins.
 - `make install` additionally modifies shell/env/global Git and uses sudo for
   Ralph; it installs OpenCode but not Codex or global subagents. Never use it as
   a validation command.
@@ -353,6 +363,10 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
    under `.install-ai-backups/<timestamp>/skills/` in the configuration root.
    The broad installer backs up `.zshrc`. Existing `.env` files are synchronized
    by appending missing keys/exports without creating backups.
+   Preview managed retirement before installation; afterward verify discovery and
+   retain `.install-ai-backups/<timestamp>/retired/` archives plus
+   `.install-ai-backups/plugin-sources/` snapshots. Remove only individually
+   approved backups after rollback is no longer needed. `make clean` preserves them.
 3. With explicit approval covering all matching `.zshrc` backups, `make clean`
    removes only `$HOME/.zshrc.backup.*`. It preserves active files, existing
    `.env` backups, and all AI configuration/backups.
@@ -386,8 +400,10 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 
 10. For the combined `resolve-review-feedback` skill, preserve customized copies,
     separately authorize coding plugin refresh or OpenCode installation, restart,
-    and verify assessment plus resolution preparation. Approve exact obsolete
-    `analyze-review-feedback` installed paths before removal; preserve the active
+    and verify assessment plus resolution preparation. Authorized installation now
+    archives/removes exact historical `analyze-review-feedback` trees automatically,
+    including shared global copies. Unverified versions/customizations still need
+    exact-path reconciliation approval; preserve the active
     `resolve-review-feedback` copy and needed rollback backups. Follow the
     [migration steps](docs/remove-old-ai-files.md#combined-review-feedback-skill).
     Never delete plugin caches manually; source retirement is not installed cleanup.

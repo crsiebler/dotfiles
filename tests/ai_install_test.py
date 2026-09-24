@@ -9,6 +9,7 @@ import subprocess
 import sys
 import io
 import errno
+import hashlib
 from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import patch
 
@@ -417,8 +418,7 @@ class InstallTest(unittest.TestCase):
         m.install_skills(list(plugins.items()), calls.append)
         self.assertEqual(len(calls), 5)
         self.assertIn(str(source / 'skills'), [call[2] for call in calls])
-        with self.assertRaisesRegex(ValueError, 'expected five plugin manifests'):
-            m.local_plugins(ROOT, dict(manifest, plugins=manifest['plugins'][:4]))
+        self.assertEqual(len(m.local_plugins(ROOT, dict(manifest, plugins=manifest['plugins'][:4]))), 4)
 
     def test_research_skill_discovery_and_bundled_reference(self):
         m = self.module()
@@ -458,6 +458,7 @@ class InstallTest(unittest.TestCase):
                 path.write_text(text)
                 return path
             put('scripts/install-ai.py', (ROOT / 'scripts/install-ai.py').read_text())
+            put('scripts/ai_retirement.py', (ROOT / 'scripts/ai_retirement.py').read_text())
             put('scripts/render-agents.py', (ROOT / 'scripts/render-agents.py').read_text())
             role = put('ai/codex/agents/example.toml',
                        'name = "example"\ndescription = "Fixture"\n'
@@ -479,6 +480,8 @@ class InstallTest(unittest.TestCase):
                 plugins.append({'name': name, 'source': {'source': 'local', 'path': f'ai/plugins/{name}'},
                                 'policy': {'authentication': 'ON_USE'}})
             put('.agents/plugins/marketplace.json', json.dumps({'name': 'craft', 'plugins': plugins}))
+            put('ai/plugins/coding/skills/coding/scripts/__pycache__/helper.pyc', 'generated cache')
+            put('ai/plugins/coding/skills/coding/metadata.json', '{"installer":"metadata"}')
             put('ai/opencode/opencode.json', json.dumps({'model': 'test/model', 'mcp': {
                 'shared': {'enabled': False}, 'github': {'enabled': True,
                     'headers': {'Authorization': 'Bearer {env:GITHUB_MCP_TOKEN}'}}}}))
@@ -490,7 +493,14 @@ class InstallTest(unittest.TestCase):
             custom_role = put('home/xdg/opencode/agents/custom.md', 'keep custom')
             old_skill = put('home/xdg/opencode/skills/use-exa/SKILL.md', 'old installed skill')
             external_skill = put('home/.agents/skills/prd/SKILL.md', 'unmanaged external skill')
-            fake = put('fakebin/skills', '#!/bin/sh\nexit 0\n')
+            fake = put('fakebin/skills', f'#!{sys.executable}\n' + '''import os, sys, shutil
+from pathlib import Path
+if sys.argv[1] == 'add':
+    target = Path(os.environ['XDG_CONFIG_HOME']) / 'opencode/skills'
+    for source in Path(sys.argv[2]).iterdir():
+        shutil.copytree(source, target / source.name, dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns('metadata.json', '.git', '__pycache__', '__pypackages__'))
+''')
             fake.chmod(0o755)
             early_codex = put('fakebin/codex', '#!/bin/sh\nprintf "codex-cli 0.153.4\\n"\n')
             early_codex.chmod(0o755)
@@ -540,7 +550,7 @@ class InstallTest(unittest.TestCase):
             self.assertNotIn(env['GITHUB_MCP_TOKEN'], target.read_text())
             self.assertEqual(old_skill.read_text(), 'old installed skill')
             self.assertEqual(external_skill.read_text(), 'unmanaged external skill')
-            self.assertNotIn('retired', result.stdout + result.stderr)
+            self.assertNotIn('Retire verified managed skill', result.stdout)
             self.assertNotIn('move them', result.stdout + result.stderr)
             self.assertTrue((target.parent / 'agents/example.md').is_file(),
                             'OpenCode roles must come from the renderer')
@@ -568,12 +578,18 @@ class InstallTest(unittest.TestCase):
             self.assertFalse((root / 'home/codex').exists(),
                              'validation must not write harness configuration')
             fake_codex = put('fakebin/codex', f'#!{sys.executable}\n' + '''import sys
+import json
+from pathlib import Path
 if sys.argv[1:] == ['--version']:
     print('codex-cli 0.153.4')
 elif sys.argv[1:4] == ['plugin', 'marketplace', 'list']:
     print('{"marketplaces": []}')
 else:
-    print('{"installed": [], "available": []}')
+    manifest = json.loads(Path('.agents/plugins/marketplace.json').read_text())
+    print(json.dumps({'installed': [
+        {'pluginId': p['name'] + '@craft', 'source': {'source': 'local',
+         'path': str(Path(p['source']['path']).resolve())}}
+        for p in manifest['plugins']], 'available': []}))
 ''')
             fake_codex.chmod(0o755)
             working_codex = fake_codex.read_text()
@@ -652,6 +668,37 @@ else:
                             self.assertEqual(backup.read_bytes(), instruction_bytes)
             self.assertFalse((root / 'home/.codex').exists())
             self.assertFalse((root / 'home/.config/opencode').exists())
+            # Removed source bundles retire only their recorded skill trees.
+            manifest_path = root / '.agents/plugins/marketplace.json'
+            manifest_path.write_text(json.dumps({'name': 'craft', 'plugins': plugins[:-1]}))
+            before_home = {p.relative_to(root / 'home'): p.read_bytes()
+                           for p in (root / 'home').rglob('*') if p.is_file()}
+            preview = subprocess.run(
+                [sys.executable, str(root / 'scripts/install-ai.py'), 'opencode', '--preview'],
+                env=dict(env, PATH=''), cwd=root, capture_output=True, text=True)
+            self.assertEqual(preview.returncode, 0, preview.stderr)
+            self.assertIn('Retire verified managed skill', preview.stdout)
+            self.assertEqual(before_home, {p.relative_to(root / 'home'): p.read_bytes()
+                                          for p in (root / 'home').rglob('*') if p.is_file()})
+            fake.write_text('#!/bin/sh\nif [ "$1" = "--version" ]; then printf "1.5.24\\n"; fi\nexit 0\n')
+            cleanup = subprocess.run(
+                [sys.executable, str(root / 'scripts/install-ai.py'), 'opencode'],
+                env=env, cwd=root, capture_output=True, text=True)
+            self.assertEqual(cleanup.returncode, 0, cleanup.stderr)
+            self.assertFalse((target.parent / 'skills/producing').exists())
+            self.assertTrue(list(target.parent.glob('.install-ai-backups/*/retired/opencode/producing/SKILL.md')))
+            self.assertTrue((target.parent / 'skills/coding/SKILL.md').exists())
+            self.assertEqual(external_skill.read_text(), 'unmanaged external skill')
+            installed_skill = target.parent / 'skills/coding/SKILL.md'
+            original = installed_skill.read_bytes()
+            installed_skill.write_text('damaged fixture')
+            verification_failure = subprocess.run(
+                [sys.executable, str(root / 'scripts/install-ai.py'), 'opencode'],
+                env=env, cwd=root, capture_output=True, text=True)
+            self.assertNotEqual(verification_failure.returncode, 0)
+            self.assertIn('verifying installed skills: installed skill not verified: coding',
+                          verification_failure.stderr)
+            installed_skill.write_bytes(original)
             # A source collision must fail before any destination changes, even
             # in validate mode; use different casing for cross-platform safety.
             put('ai/opencode/agents/Example.md', 'colliding native source')
@@ -684,6 +731,52 @@ else:
                 self.assertNotEqual(missing_renderer.returncode, 0)
                 self.assertIn('missing required source: scripts/render-agents.py',
                               missing_renderer.stderr)
+
+    def test_preview_reports_metadata_only_cleanup_without_writes_or_cli_calls(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
+            root = Path(directory)
+
+            def put(relative, text):
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text)
+                return path
+
+            for name in ('install-ai.py', 'ai_retirement.py'):
+                put(f'scripts/{name}', (ROOT / 'scripts' / name).read_text())
+            put('ai/AGENTS.md', 'Fixture instructions')
+            put('.agents/plugins/marketplace.json', '{"name":"craft","plugins":[]}')
+            tree = {'SKILL.md': hashlib.sha256(b'original').hexdigest()}
+            put('home/xdg/opencode/.install-ai-skills.json', json.dumps({
+                'version': 1, 'root': str(root.resolve()), 'kind': 'skills',
+                'entries': {name: [tree] for name in ('z-old', 'a-old', 'present')},
+            }))
+            put('home/xdg/opencode/skills/present/SKILL.md', 'original')
+            for cli in ('skills', 'codex'):
+                stub = put(f'fakebin/{cli}', f'#!{sys.executable}\n'
+                           'from pathlib import Path\n'
+                           'Path("unexpected-cli-call").write_text("called")\n'
+                           'raise SystemExit(99)\n')
+                stub.chmod(0o755)
+            env = dict(os.environ, HOME=str(root / 'home'),
+                       XDG_CONFIG_HOME=str(root / 'home/xdg'),
+                       CODEX_HOME=str(root / 'home/codex'),
+                       XDG_STATE_HOME=str(root / 'home/state'), PATH=str(root / 'fakebin'))
+            before = {p.relative_to(root): p.read_bytes()
+                      for p in root.rglob('*') if p.is_file()}
+            result = subprocess.run(
+                [sys.executable, '-B', str(root / 'scripts/install-ai.py'), 'all', '--preview'],
+                env=env, cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual([line for line in result.stdout.splitlines()
+                              if line.startswith('Pending CLI tracking cleanup:')], [
+                'Pending CLI tracking cleanup: a-old (no installed tree remains)',
+                'Pending CLI tracking cleanup: z-old (no installed tree remains)',
+            ])
+            self.assertIn('Retire verified managed skill (with backup):', result.stdout)
+            self.assertEqual(before, {p.relative_to(root): p.read_bytes()
+                                      for p in root.rglob('*') if p.is_file()})
+            self.assertFalse((root / 'unexpected-cli-call').exists())
 
     def test_symlink_parent_refused(self):
         m = self.module()

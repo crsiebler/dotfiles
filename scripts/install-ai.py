@@ -9,6 +9,7 @@ import argparse
 import copy
 import datetime
 import errno
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -88,8 +89,12 @@ def operation(argv: list[str]) -> str:
             return 'registering local marketplace'
         if argv[1:3] == ['plugin', 'add'] and re.fullmatch(r'[a-z0-9-]+@[a-z0-9-]+', argv[-1]):
             return f'installing {argv[-1]}'
+        if argv[1:3] == ['plugin', 'remove']:
+            return 'removing retired managed plugin'
         return 'listing plugins'
     if argv[0] == 'skills':
+        if argv[1] == 'remove':
+            return 'removing retired managed skill'
         return PROGRESS.phase if PROGRESS.phase.startswith('installing skills bundle ') else 'installing skills'
     return 'checking/rendering agents from ai/codex/agents'
 
@@ -268,8 +273,6 @@ def local_plugins(root, manifest):
             skills.add(file.parent.name)
         names.add(plugin_name)
         result.append((plugin_name, path))
-    if len(result) != 5:
-        raise ValueError('expected five plugin manifests')
     return result
 
 
@@ -476,12 +479,13 @@ def check_agent_sources(root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('target', choices=['all', 'codex', 'opencode', 'validate'])
+    parser.add_argument('--preview', action='store_true', help='show retirement plan without writes')
     args = parser.parse_args()
     PROGRESS.phase = 'checking prerequisites'
     targets = ['codex', 'opencode'] if args.target in ('all', 'validate') else [args.target]
-    if args.target != 'validate':
+    if args.target != 'validate' and not args.preview:
         say('Checking installer prerequisites...')
-        dependencies = (['codex'] if 'codex' in targets else []) + (['skills'] if 'opencode' in targets else [])
+        dependencies = (['codex'] if 'codex' in targets else []) + ['skills']
         for tool in dependencies:
             if not shutil.which(tool):
                 raise ValueError(f'{tool} is required on PATH; install it explicitly (no network bootstrap)')
@@ -491,14 +495,67 @@ def main():
     native_agents = check_agent_sources(ROOT)
     manifest = load_config(ROOT / '.agents/plugins/marketplace.json')
     plugins = local_plugins(ROOT, manifest)
+    common_instructions = ROOT / 'ai/AGENTS.md'
+    if not common_instructions.is_file():
+        raise ValueError('missing required source: ai/AGENTS.md')
+    retirement = None
+    skill_retirement = None
+    plugin_retirement = None
+    desired = {}
+    skill_target = Path.home()
+    if args.target != 'validate':
+        spec = importlib.util.spec_from_file_location('ai_retirement', ROOT / 'scripts/ai_retirement.py')
+        assert spec and spec.loader
+        retirement = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(retirement)
+        skill_target = (Path(os.environ.get('XDG_CONFIG_HOME', Path.home() / '.config')) / 'opencode'
+                        if 'opencode' in targets else Path(os.environ.get('CODEX_HOME', Path.home() / '.codex')))
+        if not skill_target.is_absolute():
+            raise ValueError('CODEX_HOME and XDG_CONFIG_HOME must be absolute paths when set')
+        desired = {p.parent.name: retirement.skill_copy_fingerprint(p.parent)
+                   for _, source in plugins for p in (source / 'skills').glob('*/SKILL.md')}
+        skill_retirement = retirement.Skills(
+            ROOT, skill_target, Path.home() / '.agents/skills', desired,
+            agent='opencode' if 'opencode' in targets else 'codex',
+            lock_path=(Path(os.environ['XDG_STATE_HOME']) / 'skills/.skill-lock.json'
+                       if os.environ.get('XDG_STATE_HOME') else None))
+        skill_retirement.prepare()
+        if skill_retirement.pending and not args.preview:
+            if run(['skills', '--version']).strip() != '1.5.24':
+                raise ValueError('Skills CLI 1.5.24 required for scoped retirement; preview and reconcile the CLI version')
+        if 'codex' in targets:
+            plugin_target = Path(os.environ.get('CODEX_HOME', Path.home() / '.codex'))
+            if not plugin_target.is_absolute():
+                raise ValueError('CODEX_HOME must be absolute')
+            retirement.safe(plugin_target)
+            plugin_retirement = retirement.Plugins(ROOT, plugin_target, manifest['name'], plugins)
+            if args.preview:
+                plugin_retirement.prepare(None)
+            else:
+                PROGRESS.destination_preflight = True
+                plugin_target.mkdir(parents=True, exist_ok=True)
+                check_plugins(ROOT, manifest['name'], plugins)
+                installed = parse_json(run(['codex', 'plugin', 'list', '--marketplace',
+                                            manifest['name'], '--json']), 'CLI JSON while listing plugins')
+                plugin_retirement.prepare(installed['installed'])
+        for path in skill_retirement.retired:
+            say(f'Retire verified managed skill (with backup): {path}')
+        retired_names = {path.name for path in skill_retirement.retired}
+        for name in sorted(skill_retirement.pending - retired_names):
+            say(f'Pending CLI tracking cleanup: {name} (no installed tree remains)')
+        for path in skill_retirement.conflicts:
+            say(f'Preserving unverified or customized retired skill; reconcile manually: {path}')
+        if plugin_retirement:
+            for identifier in plugin_retirement.retired:
+                say(f'Retire previously managed Codex plugin: {identifier}')
+        if args.preview:
+            say(f'Preview: {len(plugins)} current bundles; no installation or cleanup performed.')
+            return
     plans = []
     inventories = []
     skill_backups = []
     home = Path.home()
     codex_home = Path(os.environ.get('CODEX_HOME', home / '.codex'))
-    common_instructions = ROOT / 'ai/AGENTS.md'
-    if not common_instructions.is_file():
-        raise ValueError('missing required source: ai/AGENTS.md')
     instructions = common_instructions.read_bytes()
     for harness in targets:
         PROGRESS.phase = f'preparing {harness}'
@@ -598,11 +655,28 @@ def main():
         PROGRESS.phase = f'installing Codex plugins; config {codex_home / "config.toml"}'
         with_native_backup(codex_home / 'config.toml',
                            lambda: install_plugins(ROOT, manifest['name'], plugins))
+        assert plugin_retirement is not None
+        plugin_retirement.verify(run)
     if 'opencode' in targets:
+        assert retirement is not None
         for path, content in skill_backups:
             PROGRESS.phase = f'backing up skill asset {display_path(path)}'
             write_managed(path, content)
         install_skills(plugins)
+        PROGRESS.phase = 'verifying installed skills'
+        # A successful CLI exit is insufficient: verify the actual installed
+        # trees before retiring any old instructions or recording ownership.
+        for name, expected in desired.items():
+            paths = [skill_target / 'skills' / name, Path.home() / '.agents/skills' / name]
+            if not any(p.exists() and retirement.fingerprint(p) == expected for p in paths):
+                raise ValueError(f'installed skill not verified: {name}')
+    PROGRESS.phase = 'reconciling retired managed skills/plugins'
+    assert skill_retirement is not None
+    skill_retirement.apply(run)
+    skill_retirement.record()
+    if plugin_retirement:
+        with_native_backup(codex_home / 'config.toml', lambda: plugin_retirement.apply(run))
+        plugin_retirement.record()
     say(f'Completed {PROGRESS.plugins} plugins and {PROGRESS.bundles} skill bundles.')
     say('AI configuration installed. Restart the selected harness. No authentication performed.')
 
