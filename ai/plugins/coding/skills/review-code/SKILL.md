@@ -44,6 +44,9 @@ inherits the read-only boundary and evidence/findings contract above.
 | Untrusted inputs, authority boundaries or sensitive information | [Security and privacy](references/lenses/security-and-privacy.md) |
 | Persistence, invariants, precision, ordering or concurrent mutation | [Data and state](references/lenses/data-and-state.md) |
 | Timeouts, retries, cancellation, cleanup or partial failure | [Reliability](references/lenses/reliability.md) |
+| Workload, query cost, blocking or resource growth | [Performance](references/lenses/performance.md) |
+| UI semantics, focus, keyboard behavior or user feedback | [Accessibility](references/lenses/accessibility.md) |
+| Diagnostics, configuration, packaging, dependencies or rollout | [Operability and dependencies](references/lenses/operability-and-dependencies.md) |
 
 ## Findings and coverage
 

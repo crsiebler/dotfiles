@@ -318,3 +318,37 @@
 
 - All US-006 criteria satisfied by references, conditional routing, existing no-mutation scenario specifications and passing source/resource checks. Commit pending; intended feat(US-006): add security state and reliability review lenses. Typecheck and formatter unavailable.
 ---
+
+## 2026-09-24 - US-007 candidate
+
+- Added conditional performance, accessibility and operability/dependency lenses. Covers workload/query/resource costs, semantics/focus/errors, evidence limits, diagnostics/configuration/shutdown, rollout/rollback, provenance/packaging and reproducibility; no automatic tools, installs or delegation.
+- Existing performance-accessibility and missing-tools scenarios specify source/runtime/browser provenance gaps; no live results added. Root routes all nine lenses independently by actual risk surface.
+- Checks: coding_workflow_contract_test passed 4 including copied reference closure; make validate-ai passed; git diff --check passed. Typecheck unavailable; no configured Markdown formatter. Optional PyYAML limitation unchanged. No product UI or browser check required for these instructions.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. No advisors. Self-review chosen for trivial documentation-only references; expanded-initial initial attempt 1. Existing root read-only scope preserved, no permission/protocol/tool code modified.
+- Intended commit feat(US-007): add performance accessibility and operations lenses; pending under existing authority.
+---
+
+## 2026-09-24 - US-007 finalization
+
+- Self-review expanded-initial initial attempt 1 inspected inventory and all five staged paths; all scope criteria met, no findings. Session not applicable; targeted unused; no memory promotion.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [
+    "No measured workload, rendered UI or operational behavior was evaluated by these source checks."
+  ],
+  "learning_candidates": []
+}
+```
+
+- Source/resource checks passed, typecheck/formatter unavailable. Commit pending; intended feat(US-007): add performance accessibility and operations lenses.
+---

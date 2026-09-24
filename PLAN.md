@@ -185,7 +185,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Conditional references and no-mutation scenarios validate; common gates pass.
 
 ### US-007 - Add performance, accessibility, and operations lenses
-- [ ] Story complete
+- [x] Story complete
 - Priority: 7
 - Depends on: US-004
 - PRD: US-007; FR-6.
