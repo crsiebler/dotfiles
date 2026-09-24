@@ -170,7 +170,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Wire conditional loading and verify fixture/resource coverage; common gates pass.
 
 ### US-006 - Add security, data/state, and reliability lenses
-- [ ] Story complete
+- [x] Story complete
 - Priority: 6
 - Depends on: US-004
 - PRD: US-006; FR-6.

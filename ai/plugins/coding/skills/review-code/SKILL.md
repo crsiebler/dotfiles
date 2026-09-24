@@ -41,6 +41,9 @@ inherits the read-only boundary and evidence/findings contract above.
 | Responsibility, coupling, complexity or maintenance cost | [Architecture and maintainability](references/lenses/architecture-and-maintainability.md) |
 | Public behavior, interfaces, schemas or supported versions | [Compatibility](references/lenses/compatibility.md) |
 | Tests, doubles, coverage claims or regression sensitivity | [Testing quality](references/lenses/testing-quality.md) |
+| Untrusted inputs, authority boundaries or sensitive information | [Security and privacy](references/lenses/security-and-privacy.md) |
+| Persistence, invariants, precision, ordering or concurrent mutation | [Data and state](references/lenses/data-and-state.md) |
+| Timeouts, retries, cancellation, cleanup or partial failure | [Reliability](references/lenses/reliability.md) |
 
 ## Findings and coverage
 

@@ -284,3 +284,37 @@
 
 - Commit pending; intended feat(US-005): add maintainability compatibility and testing lenses. Required source/resource checks pass; typecheck/formatter unavailable as above.
 ---
+
+## 2026-09-24 - US-006 candidate
+
+- Added conditional security/privacy, data/state and reliability lens references. Covers input/authority/sink tracing, sensitive-data lifecycle, transactional/concurrent invariants, precision, evolution, retries, idempotency, cancellation, cleanup and recovery. These are read-only inspection questions, not changed authorization or security enforcement.
+- Existing security-pr, bounded-audit, retry-cancellation and embedded-instructions scenarios specify evidence and no-mutation expectations; model runs remain unrun. No role metadata, production logic, infrastructure or executable tests changed.
+- Checks: coding_workflow_contract_test passed 4; make validate-ai passed; git diff --check passed. Root links and every bundled local reference checked from isolated copy. Typecheck unavailable; no configured Markdown formatter; optional PyYAML helper unavailable. No browser scope.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. No advisors. Review: self for trivial documentation-only conditional references, expanded-initial initial attempt 1, no independent review claim. Security topics do not themselves authorize operations.
+- Intended commit feat(US-006): add security state and reliability review lenses; pending. Existing execution/commit authorization retained.
+---
+
+## 2026-09-24 - US-006 finalization
+
+- Self-review expanded-initial initial attempt 1 inspected inventory and all five staged files against scope; no findings. Session not applicable, targeted unused, no memory promotion.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [
+    "Static review guidance does not prove enforcement or live review behavior."
+  ],
+  "learning_candidates": []
+}
+```
+
+- All US-006 criteria satisfied by references, conditional routing, existing no-mutation scenario specifications and passing source/resource checks. Commit pending; intended feat(US-006): add security state and reliability review lenses. Typecheck and formatter unavailable.
+---
