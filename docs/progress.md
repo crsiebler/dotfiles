@@ -215,3 +215,38 @@
 - No reusable memory promotion for this local wording correction. All US-003 criteria satisfied. Typecheck/formatter unavailable as recorded. Final branch/staged consistency and diff checks required before commit.
 - Commit status pending; intended feat(US-003): add conditional architecture decision guidance.
 ---
+
+## 2026-09-24 - US-004 candidate
+
+- Reworked review-code discovery/root and added four bundled scopes: local, PR/branch/release, existing component, bounded audit. Findings distinguish attribution, evidence and optional simplifications; review forbids execution/mutation/posting. Dedicated staged/PR/feedback owners remain separate.
+- Added isolated review-copy resource test. Before implementation 1/4 tests failed for absent scope links; after implementation all 4 pass. Existing evaluation fixture already covers each scope, missing evidence, injection, security and release variants; no model results fabricated.
+- Checks: python3.11 -m unittest discover -s tests -p 'coding_workflow_contract_test.py' passed 4; make validate-ai passed; python3.11 tests/story_execution_test.py passed 11; python3.11 tests/story_blocker_test.py passed 6; bash tests/ralph_review_test.sh passed; git diff --check passed. Typecheck unavailable; no configured Markdown/Python formatter. Browser not applicable. Optional PyYAML helper limitation remains, no installation.
+- Runtime: Codex desktop, standard mode, CodexGoalMarkdown; exact model/source and iteration limit unknown. No advisors. Native review required for test-sensitive routing/scope change: story-reviewer, expanded-initial, initial, attempt 1. No staged protocol/role permission changes.
+- Intended commit feat(US-004): establish independent review scopes and evidence contract. Commit status pending; execution/commit authorization retained.
+---
+
+## 2026-09-24 - US-004 finalization
+
+- Native role story-reviewer; returned session handle `/root/review_us004_attempt1`, same worktree, US-004 attempt 1. Full protocol/schema supplied; expanded-initial initial pass consumed, targeted unused. Reviewer inspected staged evidence and returned schema-valid pass.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [
+    "Model evaluations are deferred to US-011 and are not claimed for this candidate."
+  ],
+  "learning_candidates": []
+}
+```
+
+- No findings or memory promotion. All story criteria met; typecheck/formatter and live evaluation limits retained. Existing execution/commit authority applies.
+- Commit status pending; intended feat(US-004): establish independent review scopes and evidence contract.
+---

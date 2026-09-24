@@ -14,6 +14,23 @@ SKILLS = ROOT / 'ai/plugins/coding/skills'
 
 
 class CodingWorkflowContractTest(unittest.TestCase):
+    def test_review_copy_contains_reachable_scopes_and_local_resources(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
+            bundle = Path(directory) / 'review-code'
+            shutil.copytree(SKILLS / 'review-code', bundle)
+            root = bundle / 'SKILL.md'
+            root_links = re.findall(r'\]\(([^)]+)\)', root.read_text())
+            scopes = {'local-changes', 'pull-request', 'component-review', 'codebase-audit'}
+            self.assertTrue({f'references/scopes/{name}.md' for name in scopes}
+                            .issubset(root_links))
+            for path in bundle.rglob('*.md'):
+                for link in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+                    if '://' in link or link.startswith('#'):
+                        continue
+                    target = (path.parent / link.split('#')[0]).resolve()
+                    self.assertTrue(target.is_relative_to(bundle.resolve()), link)
+                    self.assertTrue(target.is_file(), link)
+
     def test_development_bundle_has_unique_matching_metadata(self):
         source = SKILLS / 'develop-code/SKILL.md'
         self.assertTrue(source.is_file(), 'Missing unified development entry point')

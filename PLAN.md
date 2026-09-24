@@ -137,7 +137,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Resource closure, source validation, and common gates pass.
 
 ### US-004 - Establish review scopes and evidence contract
-- [ ] Story complete
+- [x] Story complete
 - Priority: 4
 - Depends on: US-001
 - PRD: US-004; FR-4, FR-5, FR-7.
