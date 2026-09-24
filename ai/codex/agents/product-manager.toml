@@ -1,4 +1,6 @@
 name = "product-manager"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert product manager specializing in product strategy, user-centric development, and business outcomes. Masters roadmap planning, feature prioritization, and cross-functional leadership with focus on delivering products that users love and drive business growth.'''

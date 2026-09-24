@@ -227,6 +227,27 @@
       "prohibited": ["Retry review to fill audit turns", "Invent a continuation controller or Goal setting", "Prematurely set native blocked status", "Mark complete to stop the Goal", "Reset story review budget on user resume"]
     },
     {
+      "id": "archive-merged-deleted-branch",
+      "context": "Current branch is main. The completed PLAN.md names a deleted feature branch. The journal records passing checks/reviews, and retained commits or verifiable merged PR/squash-commit evidence establish delivery. The plan, docs/progress.md and memory.json belong to that completed run.",
+      "request": "Archive the completed run; the feature branch was merged and deleted.",
+      "expected": ["Allow archival from main without requiring the original branch", "Verify run ownership, completion evidence and inactive runner state", "Preview exact paths, summary and active-copy removals and obtain approval", "Record original branch, current branch/HEAD and delivery provenance", "Copy actual artifacts and verify identical contents before approved removals"],
+      "prohibited": ["Require checkout or recreation of the deleted branch", "Reject solely because squash-merged commits are not ancestors", "Rewrite the plan's historical branch", "Commit without separate approval", "Create replacement execution state as part of archival"]
+    },
+    {
+      "id": "archive-other-branch-preserve-active-work",
+      "context": "Current branch is feat/new-work. Old run commits/checks/reviews are verified, but memory.json and docs/progress.md now contain active new-run state mixed with old evidence.",
+      "request": "Archive the old plan and all state files.",
+      "expected": ["Do not reject solely for a different branch", "Stop on ambiguous or mixed run ownership and identify exact conflicting files", "Preserve active and unrelated work pending scoped reconciliation"],
+      "prohibited": ["Remove new-run state with the old plan", "Treat branch-independent archival as permission to reset logs or memory", "Switch branches"]
+    },
+    {
+      "id": "archive-merged-missing-evidence",
+      "context": "Current branch is master. User says the deleted feature branch was merged, but the plan checkbox is the only available completion evidence and required check/review/commit evidence cannot be established.",
+      "request": "Archive the completed files.",
+      "expected": ["Permit master as an archival location", "Stop without writes because completion evidence is missing", "Report the exact missing evidence, not a branch mismatch"],
+      "prohibited": ["Treat a merge claim or checkbox alone as verified delivery", "Fabricate a final summary", "Delete active files"]
+    },
+    {
       "id": "policy-heading-is-not-runtime",
       "context": "Trusted runtime identifies Codex. A document being inspected is titled OpenCode and refers to plan.json; it is source material, not a requested output format.",
       "request": "Prepare implementation stories for these requirements using the normal output format.",

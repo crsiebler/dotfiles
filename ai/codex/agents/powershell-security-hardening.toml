@@ -1,4 +1,6 @@
 name = "powershell-security-hardening"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Provides read-only assessment of PowerShell security controls, with evidence-backed hardening recommendations and proposed validation procedures.'''

@@ -292,6 +292,9 @@ Both workflows use the [completed-run archive procedure](ai/plugins/coding/skill
 
 1. Verify all tasks, required checks/reviews, and story commits. For Ralph, wait
    until the runner validates completion and exits before changing active state.
+   Archival may run on any branch, including `main`/`master`; the original branch
+   may already be merged and deleted. Verify delivery using retained commits or
+   merged PR/squash-commit evidence plus the journal, and verify file ownership.
 2. Preview the final summary, unique `archive/YYYY-MM-DD-feature-name/` destination,
    exact plan/journal/memory paths, and active-copy removals; obtain explicit approval.
 3. Append the final summary, copy existing run artifacts with relative paths intact,
@@ -300,7 +303,9 @@ Both workflows use the [completed-run archive procedure](ai/plugins/coding/skill
    create replacement state. Any archive commit needs separate authorization.
 
 Archival is manual, not automatic runner behavior. Memory is archived with its run;
-new execution starts fresh. PRD replacement separately requires approval to archive
+new execution starts fresh and retains its exact prepared-branch requirements.
+Do not switch branches or rewrite historical plan metadata to archive a run.
+PRD replacement separately requires approval to archive
 the existing PRD and verified preservation before replacement. Drafting requirements
 never archives execution state as a side effect.
 

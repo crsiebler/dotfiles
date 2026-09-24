@@ -1,4 +1,6 @@
 name = "dx-optimizer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert developer experience optimizer specializing in build performance, tooling efficiency, and workflow automation. Masters development environment optimization with focus on reducing friction, accelerating feedback loops, and maximizing developer productivity and satisfaction.'''

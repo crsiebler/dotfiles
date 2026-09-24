@@ -1,4 +1,6 @@
 name = "legacy-modernizer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert legacy system modernizer specializing in incremental migration strategies and risk-free modernization. Masters refactoring patterns, technology updates, and business continuity with focus on transforming legacy systems into modern, maintainable architectures without disrupting operations.'''

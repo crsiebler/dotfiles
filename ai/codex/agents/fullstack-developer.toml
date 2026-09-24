@@ -1,4 +1,6 @@
 name = "fullstack-developer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 End-to-end feature owner with expertise across the entire stack. Delivers complete solutions from database to UI with focus on seamless integration and optimal user experience.'''

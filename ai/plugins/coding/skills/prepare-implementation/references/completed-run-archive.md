@@ -9,17 +9,25 @@ granted by planning, story execution, or story-commit approval.
 
 1. Verify every story/task is complete, required checks and reviews passed, and
    required story commits succeeded using actual Git and journal evidence. A
-   checkbox, `passes: true`, or process exit alone is insufficient. If evidence is
-   missing or the run is unfinished, stop without archiving or replacing its plan.
+   checkbox, `passes: true`, or process exit alone is insufficient. After a merge,
+   use retained commits or verifiable merged PR/squash-commit evidence together
+   with the journal to establish delivery. The original branch need not exist;
+   its deletion or lack of ancestry after a squash merge is not itself a blocker.
+   Do not rewrite the plan's historical branch or invent missing commit evidence.
+   If completion evidence is missing or the run is unfinished, stop without
+   archiving or replacing its plan.
 2. For Goal, wait until the final story commit succeeds. For Ralph, additionally
    wait until the runner validates completion and exits; leave root `plan.json`
    and the final candidate unchanged until then. Stop files, unresolved runner
    state, or active processes block archival pending human reconciliation.
-3. Inspect the exact worktree, branch, HEAD, state-file ownership, and changes.
-   Require the plan's exact existing branch, not detached HEAD or main/master;
-   never create or switch branches. Preserve unrelated work. Preview a final
-   journal summary, all source and destination paths, removal of the active copies,
-   and whether a separate archive
+3. Inspect the exact worktree, current branch (or detached HEAD), HEAD commit,
+   state-file ownership, and changes. Completed-run archival is permitted on any
+   branch, including main/master or a different feature branch, without requiring
+   the plan's original branch to exist or be checked out. Branch identity is
+   provenance, not an archival gate; never create or switch branches for archival.
+   Verify the files belong to the completed run, not another active run, and
+   preserve unrelated work. Preview a final journal summary, all source and
+   destination paths, removal of the active copies, and whether a separate archive
    commit is requested. Obtain explicit approval before any archival writes.
 4. Recheck that the approved evidence and paths have not materially changed. Use a
    unique project-local `archive/YYYY-MM-DD-feature-name/` destination; never
@@ -31,7 +39,9 @@ After approval, append the final summary to `docs/progress.md`: feature/task sou
 actual story commits, checks/review outcomes, remaining limitations, and archival
 approval/destination. This permitted checkpoint may create the journal if absent;
 never fabricate missing execution evidence. This is post-run finalization, not an
-extra story bookkeeping commit.
+extra story bookkeeping commit. Record the original plan branch, current archival
+branch/HEAD, and any merged-delivery evidence used when the original commits are
+unavailable.
 
 Copy the actual task source and existing state together, preserving relative paths:
 
@@ -60,6 +70,10 @@ Leave PRDs, unrelated files, and all Ralph ledger/lock/stop/outcome controls int
 Archival does not reset runner state or authorize reuse of a completed Ralph
 worktree; new Ralph runs still need their own valid prepared worktree and plan.
 PRD replacement uses the separate requirements preservation guard.
+
+This branch-independent permission applies only to completed-run archival. New
+implementation or resumed execution still requires its exact prepared branch and
+all existing execution guards; archival approval does not grant execution authority.
 
 Report archived paths, verification, removed active paths, and any partial work.
 Commit only with separate explicit authorization, following repository checks and

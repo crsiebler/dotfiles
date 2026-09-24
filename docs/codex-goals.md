@@ -282,6 +282,13 @@ the journal or automatically create new state. Archive commits require separate
 authorization. Ralph uses the same procedure, but only after runner validation
 and exit. Neither workflow archives as a side effect of requirements drafting.
 
+Archival is allowed on any branch, including `main`/`master`, even if the original
+branch was merged and deleted. Verify run ownership and delivery using retained
+commits or merged PR/squash-commit evidence together with the journal. Record the
+original branch and current archival branch/HEAD; do not switch branches or rewrite
+historical plan metadata. Missing completion evidence still blocks archival.
+Implementation and resumption retain their exact prepared-branch requirements.
+
 ## Verification status
 
 Routing scenarios are recorded in `tests/fixtures/implementation_planning_evals.json`

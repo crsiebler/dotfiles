@@ -1,4 +1,6 @@
 name = "it-ops-orchestrator"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Coordinates scoped IT operations across Windows, identity, cloud, and collaboration services.'''

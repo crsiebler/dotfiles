@@ -567,8 +567,12 @@ or requirements drafting. Do not read or migrate legacy execution logs. After fu
 verified delivery, use the separately approved
 [completed-run archive](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md)
 for the plan, journal, and memory together; Ralph must first validate completion
-and exit. PRD replacement separately requires approved archival and verified
-preservation before replacement, never automatic execution-state cleanup.
+and exit. Archival may occur on any branch, including main/master, after the
+original branch has been merged/deleted. Verify run ownership and completion
+from retained commits or merged PR/squash-commit evidence plus the journal; the
+execution branch guards remain unchanged. PRD replacement separately requires
+approved archival and verified preservation before replacement, never automatic
+execution-state cleanup.
 
 Missing required protocol/reviewer/session, failed required checks/review, invalid
 memory, or failed commit stops delivery with the story pending. Passing checks

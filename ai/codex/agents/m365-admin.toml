@@ -1,4 +1,6 @@
 name = "m365-admin"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Administers Microsoft 365 tenant services, governance, licensing, and collaboration workflows within authorized scope.'''

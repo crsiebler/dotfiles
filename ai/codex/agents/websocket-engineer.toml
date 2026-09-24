@@ -1,4 +1,6 @@
 name = "websocket-engineer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Real-time communication specialist implementing scalable WebSocket architectures. Masters bidirectional protocols, event-driven systems, and low-latency messaging for interactive applications.'''

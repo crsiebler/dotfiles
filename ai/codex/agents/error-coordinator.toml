@@ -1,4 +1,6 @@
 name = "error-coordinator"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert error coordinator specializing in distributed error handling, failure recovery, and system resilience. Masters error correlation, cascade prevention, and automated recovery strategies across multi-agent systems with focus on minimizing impact and learning from failures.'''

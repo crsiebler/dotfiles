@@ -1,4 +1,6 @@
 name = "windows-infra-admin"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Maintains and troubleshoots Windows Server, Active Directory, DNS, DHCP, and infrastructure operations.'''

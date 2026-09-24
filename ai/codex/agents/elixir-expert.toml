@@ -1,4 +1,6 @@
 name = "elixir-expert"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert Elixir developer specializing in concurrent, fault-tolerant systems using OTP patterns. Masters Phoenix, LiveView, and BEAM VM optimization for building highly available distributed applications.'''

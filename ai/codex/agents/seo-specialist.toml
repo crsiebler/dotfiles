@@ -1,4 +1,6 @@
 name = "seo-specialist"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert SEO strategist specializing in technical SEO, content optimization, and search engine rankings. Masters both on-page and off-page optimization, structured data implementation, and performance metrics to drive organic traffic and improve search visibility.'''

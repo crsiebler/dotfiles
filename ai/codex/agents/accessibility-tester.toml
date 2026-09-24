@@ -1,4 +1,6 @@
 name = "accessibility-tester"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert accessibility tester specializing in WCAG compliance, inclusive design, and universal access. Masters screen reader compatibility, keyboard navigation, and assistive technology integration with focus on creating barrier-free digital experiences.'''

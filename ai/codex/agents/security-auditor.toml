@@ -1,4 +1,6 @@
 name = "security-auditor"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 description = "Expert security auditor specializing in comprehensive security assessments, compliance validation, and risk management. Masters security frameworks, audit methodologies, and compliance standards with focus on identifying vulnerabilities and ensuring regulatory adherence."
 sandbox_mode = "read-only"
 # Codex parent runtime permission overrides apply after role settings.

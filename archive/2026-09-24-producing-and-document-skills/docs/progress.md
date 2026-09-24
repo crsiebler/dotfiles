@@ -650,3 +650,31 @@
   .skill-test-venv and .skill-test-tmp remain untracked and preserved. Completed-run
   archival requires its separately reviewed exact-path approval; active plan,
   journal, memory and PRD remain intact.
+
+## 2026-09-24 - Completed-run archival
+
+- Task source: PLAN.md, producing and document skills, US-001 through US-014.
+- Original branch: feat/producing-and-document-skills. Archival branch: main;
+  HEAD cb49f230b0f0a77ab8633e5d45f2092ebbbca0e1. No branch switch performed.
+- Delivery provenance: retained story commits US-001 2956fd6, US-002 132a25b,
+  US-003 c395b4c, US-004 50de518, US-005 1b1ec93, US-006 f9467b8,
+  US-007 3453b7b, US-008 4e136ac, US-009 5f7a152, US-010 a8b186f,
+  US-011 7b37dcf, US-012 d118aca, US-013 542fad0, US-014 bb8b0df.
+  Main contains squash commit 1e26763 (PR #49). Before this appended summary,
+  all three active artifacts matched the retained branch and squash-commit copies.
+- Completion evidence: the journal records passing checks and reviews for all
+  stories. Final recorded regression result: 238 tests, OK, one documented
+  preexisting native strict-MCP capability skip; source and shell checks passed.
+  These are historical results, not tests rerun during archival.
+- Remaining limitations: no standalone typecheck or configured formatter;
+  document dependencies tested under Python 3.12.14 rather than 3.11; no live AI
+  generation, DOCX rendering, or XLSX recalculation. Retain prior review/session
+  history and limitations verbatim; archival does not re-certify that history.
+- Approval: user explicitly requested archival after preview of the three exact
+  sources/destinations and active-copy removal, then reaffirmed after revising
+  the branch-independent archival policy. No archive commit authorized.
+- Destination: archive/2026-09-24-producing-and-document-skills/ with PLAN.md,
+  docs/progress.md, and memory.json preserved at their relative paths. Copy and
+  byte/hash verification must succeed before removing each approved active copy.
+- PRDs, unrelated changes, and runner controls are preserved. No Ralph task source
+  or control file was found; this completed run used the CodexGoalMarkdown adapter.
