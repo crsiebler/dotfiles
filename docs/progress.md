@@ -470,3 +470,39 @@
 
 - All US-009 criteria met. Typecheck/formatter unavailable, no live routing claims. Commit pending; intended feat(US-009): align specialist roles with scoped coding methods.
 ---
+
+## 2026-09-24 - US-010 candidate
+
+- Generalized run-tests and format-code entry discovery to project-native tools across languages, retaining conditional existing adapters. Both preserve caller scope, unavailable-tool reporting, and independent review boundaries.
+- Added an optional advertised develop-code method handoff after executor guards. Executor retains all state, authorization, review, recovery, and finalization ownership. Removing the inserted paragraph reproduces HEAD's execution reference byte-for-byte; no existing protocol text changed.
+- Inventoried remaining old development identifiers: only superseded skill trees and docs/ai-configuration.md inventory remain, intentionally deferred to approved US-012 retirement.
+- Passed: story_execution_test.py (11), story_blocker_test.py (6), ralph_review_test.sh, coding_workflow_contract_test.py (4), make validate-ai, git diff --check, isolated helper resource-link closure, and exact execution-contract comparison.
+- Broader regression: TMPDIR="$PWD/tests" SKILL_TEST_PYTHON=/Users/corysiebler/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 python3.11 -m unittest discover -s tests -p '*test*.py' ran 261 tests in 71.463 seconds, exit 1, seven failures and one skip. Five create_skill_test cases and two document_skills_contract_test checks fail because PyYAML is unavailable (helper exit 3). These test/helper sources are unchanged from the prepared baseline; docs/create-mcp-server-verification.md already records the same missing dependency. No install performed. This is not a passing full-suite claim. Skip reason not captured by the nonverbose run.
+- No standalone typecheck or configured Markdown formatter. Prose-only edits use existing protocol/source/resource checks. No browser/UI work, live model evaluations, or installed-copy changes.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. No advisor. Native staged story-reviewer required for execution handoff, expanded-initial initial attempt 1, with existing standalone-policy parity memory and no suppressions.
+- Intended commit feat(US-010): integrate coding helpers and execution handoff, under existing execution/commit authority; pending review and finalization.
+
+## 2026-09-24 - US-010 finalization
+
+- Native story-reviewer session `/root/review_us010_attempt1`, expanded-initial initial, attempt 1, received the complete installed protocol and returned schema-valid pass. Initial consumed, targeted unused. No memory change.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": ["Keep follow-up review scoped to this handoff and the two helper routing changes."]
+  },
+  "residual_risks": [
+    "A typecheck and Markdown formatter were unavailable; the packet reports the focused protocol and common checks passed.",
+    "The broad suite had seven failures attributed to missing PyYAML in an unchanged helper and tests; this does not establish a regression in the reviewed scope."
+  ],
+  "learning_candidates": []
+}
+```
+
+- US-010 changed-contract criteria passed; broad baseline environment limitation remains explicit. Provisional completion under existing commit authority. Intended feat(US-010): integrate coding helpers and execution handoff. Separate untracked US-011 proposal is excluded from this story commit.

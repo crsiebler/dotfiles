@@ -22,7 +22,7 @@
   deletions, evaluations with spending/delegation, and other sensitive operations
   require applicable approval.
 - Delivery: one explicitly authorized commit per verified, reviewed story.
-- Current status: implementation authorized; all stories pending. Prior run
+- Current status: US-001 through US-010 delivered; US-011 and US-012 pending. Prior run
   archived under `archive/2026-09-24-producing-and-document-skills/`.
 - Preparation baseline is committed at a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9;
   execution began with a clean worktree. Preserve any subsequent unrelated work.
@@ -233,7 +233,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Agent contracts and both renderer checks pass; common gates satisfied.
 
 ### US-010 - Integrate helper routing and execution handoffs
-- [ ] Story complete
+- [x] Story complete
 - Priority: 10
 - Depends on: US-002, US-004, US-008, US-009
 - PRD: US-010; FR-10.
