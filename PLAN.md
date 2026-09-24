@@ -102,7 +102,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Source/fixture parsing and common verification requirements satisfied.
 
 ### US-002 - Add unified development and testing workflow
-- [ ] Story complete
+- [x] Story complete
 - Priority: 2
 - Depends on: US-001
 - PRD: US-002; FR-1 and FR-3.

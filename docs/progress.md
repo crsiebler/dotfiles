@@ -90,3 +90,46 @@
 - All US-001 criteria satisfied by ownership map, consumer/invariant inventory, unrun positive/negative specifications and immutable baseline evidence.
 - Commit status: pending (not yet delivered); intended message `feat(US-001): map coding workflow ownership and evaluation baseline`. Next story after successful commit: US-002.
 ---
+
+## 2026-09-24 - US-002 candidate
+
+- Implemented unified develop-code root with feature, causal bugfix, refactor and testing-strategy references. Copied the complete testing anti-pattern reference byte-for-byte. Old skill trees remain intact until US-012; discovery overlap is temporary, not final activation.
+- Added tests/coding_workflow_contract_test.py for unique matching metadata, reference closure/reachability from an isolated project-local copy, and baseline testing-reference preservation. Three tests first failed because the bundle/reference was absent; all three passed after implementation. These are structural regressions, not model-behavior evidence or brittle prose checks.
+- Checks: python3.11 -m unittest discover -s tests -p 'coding_workflow_contract_test.py' passed 3 tests; make validate-ai passed; git diff --check passed. No standalone typecheck or configured Markdown/Python formatter found. No browser scope.
+- Optional create-skill helper check could not run: PyYAML absent in python3.11, system python3 and bundled Python; validate under python3.11 exited 3 for the same missing dependency. No installation or packaging attempted. Required repository-native source validation and independent bundle tests passed; portable helper validation remains unavailable, not passing. Live evaluations deferred to separately scoped US-011.
+- Runtime: Codex desktop; standard mode, CodexGoalMarkdown; exact model/source and iteration limit unknown. Implementation risk standard; staged review classified test-sensitive because new resource-contract tests and executable agent instructions require native review.
+- Advisors: none. Native staged reviewer required: story-reviewer, expanded-initial, initial, attempt 1. Review packet will embed the complete installed protocol. No passes consumed yet.
+- Intended commit message: feat(US-002): add unified development and testing workflow.
+- Commit status: pending (not yet delivered). User execution and per-story commit authorization retained. Separate deletion/evaluation/installation authority unchanged.
+---
+
+## 2026-09-24 - US-002 finalization
+
+- Native role selected through agent_type: story-reviewer. Returned runtime session handle: `/root/review_us002_attempt1` (runtime exposes canonical agent name, no separate opaque ID). Story US-002, attempt 1, initial pass; same worktree.
+- Full protocol/schema embedded in packet. One-word transcription correction in Learning Discipline (to/in) sent within the same live initial pass; no candidate mutation or additional pass.
+- Reviewer read authoritative staged evidence and returned schema-valid pass with no findings. Initial consumed; targeted unused.
+- Exact review result:
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": [
+      "Keep model behavior and live activation claims within separately scoped US-011; the reported checks establish source and bundle contracts only."
+    ]
+  },
+  "residual_risks": [
+    "The optional create-skill helper validation was unavailable because PyYAML is missing; no dependency was installed. Live evaluations remain deferred to US-011."
+  ],
+  "learning_candidates": []
+}
+```
+
+- No accepted-fix learning or suppression warranted; memory remains absent. All scoped criteria met; portable helper/model-evaluation limitations retained above. Typecheck unavailable, no configured formatter.
+- Commit status: pending (not yet delivered); intended `feat(US-002): add unified development and testing workflow`. Next eligible story after successful commit: US-003.
+---
