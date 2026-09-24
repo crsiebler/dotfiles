@@ -12,21 +12,20 @@
 - Non-goals: PRD section 7; no installation, automatic retirement, deployments,
   external posts, renderer redesign, broad agent rewrite, or altered review gates.
 - Base branch: `main`; planning baseline cb49f230b0f0a77ab8633e5d45f2092ebbbca0e1.
-- Working branch: **not prepared**. Select and record an exact existing non-main,
-  non-master branch with an existing commit before execution. This is a blocker;
-  the executor must not create/switch branches or silently infer a branch name.
+- Working branch: `refactor/coding-skills-for-ponytail`, prepared and selected by
+  the user; verified at existing commit a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9.
 - Format: explicitly continued Markdown PLAN.md workflow; CodexGoalMarkdown adapter
   for later authorized execution. Planning occurred in OpenCode, not a Codex Goal.
 - Mode: standard; use the shared risk-based advisor/self/native-review budgets.
-- Authorization: planning and completed-run archival only. Implementation and
-  per-story commits are pending; installation, source deletions, evaluations with
-  spending/delegation, and other sensitive operations require applicable approval.
+- Authorization: plan branch update and implementation granted on 2026-09-24.
+  Execution and per-story commits explicitly authorized on 2026-09-24. Installation, source
+  deletions, evaluations with spending/delegation, and other sensitive operations
+  require applicable approval.
 - Delivery: one explicitly authorized commit per verified, reviewed story.
-- Current status: prepared; all stories pending. No execution journal or memory
-  created. Prior run archived under `archive/2026-09-24-producing-and-document-skills/`.
-- Preserve existing uncommitted PRD and archival-policy edits plus archive changes.
-  Reconcile/stage that preparation baseline only under explicit authority before
-  story execution; do not silently include it in an implementation story commit.
+- Current status: implementation authorized; all stories pending. Prior run
+  archived under `archive/2026-09-24-producing-and-document-skills/`.
+- Preparation baseline is committed at a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9;
+  execution began with a clean worktree. Preserve any subsequent unrelated work.
 
 ## Common acceptance and verification requirements
 
@@ -84,7 +83,7 @@ Every story inherits these requirements; specific checks below supplement them.
 ## Ordered stories
 
 ### US-001 - Map ownership and define baseline evaluations
-- [ ] Story complete
+- [x] Story complete
 - Priority: 1
 - Depends on: none
 - PRD: US-001; FR-8 through FR-11 and evaluation section.
@@ -296,10 +295,8 @@ Every story inherits these requirements; specific checks below supplement them.
 
 ## Execution blockers and handoff
 
-- Prepare an exact non-main/non-master working branch and record it through a scoped
-  plan update. Execution and per-story commit authorization are not yet granted.
-- Reconcile the uncommitted preparation/archive/policy baseline without discarding
-  or silently absorbing it into story changes. Do not commit without approval.
+- Prepared branch and implementation authorization are established above.
+  Execution and per-story commit authorization are established above.
 - Agree evaluation scope before US-011; approve source deletions before US-012.
   Global activation remains a separate operation after source delivery.
 - Installed planning instructions may be older than the checked-in archival-policy
