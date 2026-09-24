@@ -133,3 +133,85 @@
 - No accepted-fix learning or suppression warranted; memory remains absent. All scoped criteria met; portable helper/model-evaluation limitations retained above. Typecheck unavailable, no configured formatter.
 - Commit status: pending (not yet delivered); intended `feat(US-002): add unified development and testing workflow`. Next eligible story after successful commit: US-003.
 ---
+
+## 2026-09-24 - US-003 candidate
+
+- Added conditional architecture-decisions reference and root trigger: material interface, responsibility, dependency, persistence, concurrency, trust-boundary or performance choices. Includes reuse order, theory as decision questions, useful single-adapter and unsafe replacement examples, proportional ADRs, workload evidence and reversal criteria.
+- Added one unrun representative architecture evaluation scenario; immutable baseline untouched, all model results still empty. Existing bundle-closure test traverses the new reference from an isolated copy.
+- Checks: python3.11 -m unittest discover -s tests -p 'coding_workflow_contract_test.py' passed 3; make validate-ai passed; git diff --check passed. JSON remains generated with two-space indentation. Typecheck unavailable; no configured Markdown/JSON formatter. Optional PyYAML helper limitation unchanged; no browser or live evaluations.
+- Runtime: Codex desktop, standard mode, CodexGoalMarkdown; exact model/source and iteration limit unknown. Advisors: optional architect-reviewer skipped; requirements and contract counterexamples sufficient for this bounded guidance change.
+- Review selection: self, trivial documentation/declarative change with no executable test or tool changes; expanded-initial, initial, attempt 1. Inspect all four staged files under the shared protocol, no independent-review claim.
+- Intended commit: feat(US-003): add conditional architecture decision guidance. Commit status pending (not delivered); existing execution/commit authorization retained.
+---
+
+## 2026-09-24 - US-003 self-review initial
+
+- Reviewed all staged paths. One fixture intent ambiguity requires correction; no architecture-content findings.
+
+```json
+{
+  "verdict": "changes_requested",
+  "pass_type": "initial",
+  "findings": [
+    {
+      "id": "architecture-eval-implementation-intent",
+      "severity": "medium",
+      "lens": "qa",
+      "title": "Make the implementation request explicit",
+      "body": "The new scenario says Design while expecting develop-code:feature, which can reward routing a planning-only request into implementation. The skill explicitly excludes standalone planning.",
+      "path": "tests/fixtures/coding_workflow_evals.json",
+      "line": 630,
+      "acceptance_criterion": "Architecture evaluation fixture remains consistent with planning-only scope",
+      "remediation": "Request implementation explicitly in this positive case; retain the separate planning-only negative case.",
+      "verification": "Parse the fixture and inspect positive/negative requests and expected routes.",
+      "confidence": "high"
+    }
+  ],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [
+      "architecture-eval-implementation-intent"
+    ],
+    "recommended_checks": [
+      "Inspect positive/negative intent and parse fixture"
+    ],
+    "avoid": []
+  },
+  "residual_risks": [
+    "Live model evaluation remains unrun."
+  ],
+  "learning_candidates": []
+}
+```
+---
+
+## 2026-09-24 - US-003 targeted self-review and finalization
+
+- Same self-review context, expanded-initial, targeted; one initial and one targeted pass consumed. Accepted_fixed architecture-eval-implementation-intent. Inspected only fixture remediation and its routing implications; no regressions found.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "targeted",
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "architecture-eval-implementation-intent",
+      "evidence": "Staged positive request now explicitly says Implement; existing planning-only negative case is unchanged. Fixture parses and all 3 bundle tests pass."
+    }
+  ],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [
+    "Model behavior remains unrun."
+  ],
+  "learning_candidates": []
+}
+```
+
+- No reusable memory promotion for this local wording correction. All US-003 criteria satisfied. Typecheck/formatter unavailable as recorded. Final branch/staged consistency and diff checks required before commit.
+- Commit status pending; intended feat(US-003): add conditional architecture decision guidance.
+---

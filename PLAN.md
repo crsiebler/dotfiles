@@ -121,7 +121,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Meaningful resource/metadata/independent-bundle checks and common gates pass.
 
 ### US-003 - Add conditional architecture decision guidance
-- [ ] Story complete
+- [x] Story complete
 - Priority: 3
 - Depends on: US-002
 - PRD: US-003; FR-2.

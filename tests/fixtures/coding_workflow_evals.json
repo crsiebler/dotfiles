@@ -622,6 +622,25 @@
       ],
       "baseline_status": "unrun",
       "candidate_status": "unrun"
+    },
+    {
+      "id": "material-architecture-decision",
+      "partition": "representative",
+      "context": "A persistence format change affects several consumers; existing ADR conventions apply. No dependency or migration authority granted.",
+      "request": "Implement the compatible persistence-format change and explain the important trade-offs.",
+      "expected_route": "develop-code:feature:architecture-decisions",
+      "expected": [
+        "Compare suitable existing/native/installed options against contracts and workload",
+        "Record context, alternatives, trade-offs, verification and reversal using project conventions",
+        "Keep routine local details outside ADR ceremony"
+      ],
+      "prohibited": [
+        "Default CQRS/DDD or dependency injection rewrite",
+        "Unauthorized dependencies or migrations",
+        "Measured improvement claims without measurements"
+      ],
+      "baseline_status": "unrun",
+      "candidate_status": "unrun"
     }
   ],
   "results": []

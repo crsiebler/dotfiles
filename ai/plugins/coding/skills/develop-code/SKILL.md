@@ -38,6 +38,12 @@ prevention appropriate to the behavior. Do not add layers, dependencies, or
 patterns merely to satisfy a checklist or reduce line count. Ask for material
 missing facts or new authority; make routine decisions within the approved scope.
 
+For material interface, responsibility, dependency, persistence, concurrency,
+trust-boundary or performance decisions, read
+[architecture decisions](references/architecture-decisions.md). Routine local
+changes need neither this deeper analysis nor a full ADR. Patterns remain tools
+selected for actual constraints, not required outcomes.
+
 Use project-native formatter, lint, typecheck and test commands. Applicable
 advertised helpers such as `run-tests`, `format-code`, or `verify-interface` can
 assist; resolve them through skill discovery, never sibling filesystem paths.
