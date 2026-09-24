@@ -2,7 +2,13 @@ FILES = aliases/.aliases aliases/.docker_aliases aliases/.git_aliases aliases/.n
 PYTHON ?= python3.11
 .DEFAULT_GOAL := install
 
-.PHONY: install install-zsh-extensions install-ai install-codex install-opencode validate-ai clean sync-env
+.PHONY: install install-zsh-extensions install-ai install-codex install-opencode preview-ai-cleanup validate-ai clean sync-env
+
+# AI installation reconciles verified retired skills after installing replacements.
+# Override AI_TARGET=opencode or codex to preview one harness.
+AI_TARGET ?= all
+preview-ai-cleanup:
+	@$(PYTHON) scripts/install-ai.py $(AI_TARGET) --preview
 
 install-ai:
 	@$(PYTHON) scripts/install-ai.py all

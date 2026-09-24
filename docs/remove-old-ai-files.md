@@ -58,6 +58,30 @@ used `ai/shared/instructions/personal.md` concatenated with `ai/codex/AGENTS.md`
 unchanged to both destinations. Do not delete active user instruction files or
 the separate repository-root `AGENTS.md` as cleanup.
 
+## Automatic managed retirement
+
+1. Run `make preview-ai-cleanup`, optionally with `AI_TARGET=opencode` or `codex`.
+   It reads source/ownership inventories and local skill trees without writing or
+   running native CLIs. Native plugin registration checks occur during installation.
+2. An authorized `make install-opencode`, `make install-codex`, or `make install-ai`
+   installs current content and reconciles verified retirements. Keep native Craft
+   plugins for Codex/Desktop; current bundles are not converted to standalone skills.
+3. Skill retirement includes the selected private root and shared
+   `$HOME/.agents/skills`. For `all`, OpenCode owns the private skill cleanup.
+   Other private roots and project-local copies remain outside automatic cleanup.
+   Inventory tree fingerprints establish ownership; names alone do not. The
+   historical `analyze-review-feedback` migration is included. Unknown legacy
+   versions, customized trees, and symlinks are reported and preserved.
+4. Inspect `.install-ai-backups/<timestamp>/retired/` for verified skill archives
+   and native plugin cache backups; retained plugin sources live under
+   `.install-ai-backups/plugin-sources/`. Scoped `skills remove` reconciles metadata
+   after exact-path archival. Native plugin removal uses Codex's own CLI only for
+   previously recorded IDs now absent from the marketplace, with matching sources.
+5. Restart and verify discovery. Preserve ownership inventories and backups for
+   retries/rollback; malformed inventories block. Do not edit inventories to claim
+   unrelated installations. Backups require separate deletion approval and are never
+   removed by `make clean`. Follow the manual procedure below for preserved conflicts.
+
 ## 3. Remove selected old skills
 
 These names were previously supplied by this repository:
@@ -130,9 +154,11 @@ Skill cleanup is separate from command cleanup. Preserve `/review-pr` unchanged.
    `resolve-review-feedback` advertises both assessment and resolution, and its
    bundled `references/github.md` loads. Keep the active same-named skill.
 4. Inspect old `analyze-review-feedback` copies in each discovery root, including
-   `$opencode_root/skills/analyze-review-feedback` and standalone user copies.
-   Obtain exact-path removal approval after preserving customizations; use the
-   manual process above. No compatibility alias or automatic cleanup is provided.
+    `$opencode_root/skills/analyze-review-feedback` and standalone user copies.
+    Authorized installation automatically archives/removes copies matching the
+    checked historical fingerprint in its cleanup roots. Obtain exact-path removal
+    approval for remaining customized/unverified copies after preserving them;
+    use the manual process above. No compatibility alias is provided.
 5. Verify unique discovery after cleanup and retain needed rollback backups.
    Never delete plugin caches manually or remove the active marketplace.
 
