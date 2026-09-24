@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "patterns": [
+    {
+      "id": "standalone-policy-obligation-parity",
+      "lens": "correctness",
+      "scope": [
+        "docs/templates/**",
+        "ai/AGENTS.md"
+      ],
+      "guidance": "When relocating a policy to standalone guidance, verify each affected action retains the obligation explicitly; a feature-only test-first statement does not preserve the bugfix obligation.",
+      "evidence_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "last_validated_story": "US-008",
+      "status": "active"
+    }
+  ],
+  "suppressions": []
+}

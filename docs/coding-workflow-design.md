@@ -163,3 +163,24 @@ walkthroughs, live model behavior and post-install discovery. Never infer live
 behavior from fixture parsing or prompt wording. Unknown measurements stay null.
 Unauthorized mutation, fabricated evidence or required-review bypass blocks
 promotion; comparative quality thresholds remain unagreed until authorized.
+
+## US-008 obligation reconciliation
+
+The [portable template](templates/code-repository-AGENTS.md) now supplies the
+project-owned guidance mapped above, without Craft identifiers or dependencies.
+This is source delivery only; no installed policy or project AGENTS was replaced.
+
+| Map rows | Implemented destination |
+| --- | --- |
+| CS-01, CS-03, CS-04, T-02, T-04, T-05 | Template Commands and environments / Verification discipline; development testing-strategy reference; existing formatter/test helpers |
+| CS-02, CS-05 through CS-09 | Template Engineering principles / Contracts and decisions; development root and conditional architecture-decisions reference |
+| CS-10 through CS-12 | Personal Task Scope and Guidance retained globally; template Engineering principles and action-specific development references |
+| T-01 | Template Feature, fix and refactor methods; development feature/bugfix and testing-strategy references |
+| T-03 | Template refactor method; development refactor action and compatibility characterization guidance |
+| T-06 | Personal truthful-evidence/preservation rule retained; template Verification discipline and development testing strategy/anti-patterns |
+
+Communication Style, Git Workflow, Boundaries and Tool Usage remain byte-identical
+to the baseline sections. Installation continues copying personal policy bytes
+without concatenation or template injection. Template adoption is manual: verify
+facts/commands, preserve and merge local rules, link existing guides, remove
+inapplicable sections and scope code guidance in mixed-purpose repositories.

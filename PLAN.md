@@ -200,7 +200,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Resource/routing and evidence-provenance cases validate; common gates pass.
 
 ### US-008 - Publish project guidance and refine personal policy
-- [ ] Story complete
+- [x] Story complete
 - Priority: 8
 - Depends on: US-001, US-003, US-004
 - PRD: US-008; FR-8.

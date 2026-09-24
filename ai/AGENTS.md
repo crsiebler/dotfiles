@@ -10,34 +10,20 @@
 - Report actual changes, verification results, and unresolved limitations. Never
   invent measurements, citations, completed work, or successful tool calls.
 
-## Coding Standards
+## Task Scope and Guidance
 
-- Always run the project's typecheck before committing. If unavailable, report it
-  explicitly; do not claim an unavailable check passed.
-- Follow the language's idioms, existing project architecture, package manager,
-  and configured lint/format rules.
-- Automatically run the project's configured language formatters on changed
-  files after editing and before final verification or committing. Use existing
-  project commands and configuration; avoid unrelated formatting changes.
-- If a required formatter is unavailable, report the limitation. Do not install
-  tools or change formatting configuration without authorization.
-- Keep files focused, cohesive, and readable. Create or extract modules when
-  responsibilities diverge or a file becomes difficult to understand.
-- Aim for roughly 300 lines or fewer in handwritten implementation files. At
-  500 lines, assess whether responsibilities should be separated. These are review
-  thresholds, not hard limits; follow project-specific limits where defined.
-- Allow justified exceptions for generated code, declarative data, fixtures, and
-  other naturally large artifacts. Do not split cohesive code solely to meet a
-  line count or introduce unrelated refactors when touching a large existing file.
-- Let the language's formatter and project configuration govern line width.
-- Prefer the smallest correct change. Do not add abstractions or patterns merely
-  because a specialist's reference lists them.
-- For implementation requests, complete the authorized work and appropriate
-  verification. Preserve explicit planning-only and read-only requests.
-- Use supplied context first, inspecting relevant files as needed. Do not map an
-  entire repository or load every reference before a small change.
-- Make routine decisions within scope. Ask when missing information materially
-  changes the outcome or the next action needs new authorization.
+- Complete authorized work and appropriate verification. Preserve explicit
+  planning-only, diagnosis-only and read-only boundaries.
+- Use supplied context first and inspect relevant artifacts proportionally.
+  Make routine scoped decisions; ask for facts or authority that materially
+  change the next action.
+- For coding tasks, follow project instructions and matching advertised skills:
+  `develop-code` for implementation/diagnosis/refactoring, `review-code` for
+  independent read-only assessment. Use other advertised capabilities when
+  relevant. Report missing required guidance; never claim an unavailable skill
+  was applied. Do not activate coding procedures for unrelated tasks.
+- Preserve existing work and truthful verification history. Never weaken
+  assertions, hide failures or discard work to manufacture passing evidence.
 
 ## Git Workflow
 
@@ -50,19 +36,6 @@
 **Footer (Optional):** Breaking changes (`BREAKING CHANGE:`) or issue tracking (`Fixes #123`).
 
 Commit only when explicitly requested or covered by the user's authorization.
-
-## Testing
-
-- Write meaningful failing tests before implementation for new behavior and bug fixes.
-- Run relevant tests when modifying logic; use integration tests for critical paths.
-- Preserve existing tests for behavior-preserving refactors; add characterization
-  tests when the relevant behavior is not covered.
-- For non-behavioral documentation or configuration changes, use appropriate
-  schema, lint, or build validation instead of low-value spelling tests.
-- Run required project checks. Broaden or repeat verification only after new
-  changes, failures, or unresolved concerns justify it.
-- Do not weaken assertions, hide failures, or discard existing work to reenact
-  test-first development. Report what was and was not verified.
 
 ## Boundaries
 

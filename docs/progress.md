@@ -352,3 +352,86 @@
 
 - Source/resource checks passed, typecheck/formatter unavailable. Commit pending; intended feat(US-007): add performance accessibility and operations lenses.
 ---
+
+## 2026-09-24 - US-008 candidate
+
+- Added standalone docs/templates/code-repository-AGENTS.md with verified-fact/command placeholders, manual merge/adoption and mixed-purpose scope, principles/contracts, feature/fix/refactor methods, verification/review/handoff. No personal skill dependency in template.
+- Replaced detailed Coding Standards/Testing sections of source ai/AGENTS.md with concise cross-domain scope/truthfulness and advertised-skill routing; relocated all 18 mapped obligations to template and development references. Added source-backed reconciliation table in docs/coding-workflow-design.md.
+- Checks: python3.11 -m unittest discover -s tests -p 'ai_install_test.py' passed 35 (isolated fixture/fake-CLI installation contracts, no global installation); make validate-ai passed; git diff --check passed. Inline parsed section comparison verified Communication Style, Git Workflow, Boundaries and Tool Usage byte-identical to immutable baseline; local design links resolve.
+- No new executable behavior or spelling tests. Existing installation suite establishes byte-copy behavior for source policy. Typecheck unavailable; no configured Markdown formatter. No UI. Optional PyYAML helper limitation unchanged; no dependencies installed.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. Advisors none. Native review selected for cross-file personal-policy obligation relocation, expanded-initial initial attempt 1; source only, no global installation or authorization-rule weakening.
+- Intended commit feat(US-008): publish portable project guidance and refine personal policy; pending under existing execution/commit authority.
+---
+
+## 2026-09-24 - US-008 initial review and remediation
+
+- Native role story-reviewer, runtime session `/root/review_us008_attempt1`; expanded-initial initial attempt 1. Complete schema-valid response:
+
+```json
+{
+  "verdict": "changes_requested",
+  "pass_type": "initial",
+  "findings": [
+    {
+      "id": "code-repository-template-fix-test-first",
+      "severity": "medium",
+      "lens": "correctness",
+      "title": "Require a failing regression before bug fixes",
+      "body": "The template\u2019s \u201cNew behavior\u201d guidance requires a meaningful failing test before implementation, but its separate \u201cFixes\u201d guidance only says to connect causal evidence to a sensitive regression and the repair. A project adopting this standalone template could miss the mapped T-01 requirement to establish that the regression fails for the defect before implementing a fix.",
+      "path": "docs/templates/code-repository-AGENTS.md",
+      "line": null,
+      "acceptance_criterion": "Relocate all coding-specific personal-policy obligations using the docs/coding-workflow-design.md map.",
+      "remediation": "In the Fixes guidance, explicitly require adding a meaningful regression reproducing the confirmed defect before implementation and confirming it fails for the intended reason.",
+      "verification": "Inspect the template\u2019s fix guidance and confirm it states the regression must fail for the intended reason before the repair; ensure the reconciliation table still maps T-01 to this guidance.",
+      "confidence": "high"
+    }
+  ],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [
+      "code-repository-template-fix-test-first"
+    ],
+    "recommended_checks": [
+      "Inspect the revised template fix guidance and T-01 reconciliation."
+    ],
+    "avoid": [
+      "Do not broaden the change into unrelated template or personal-policy edits."
+    ]
+  },
+  "residual_risks": [],
+  "learning_candidates": []
+}
+```
+
+- Disposition accepted_fixed: template fix method now explicitly requires a meaningful regression before implementation and confirmation of intended failure. T-01 mapping remains intact. Only the reported wording gap changed; existing-work/test-order preservation still applies.
+- Verification: inspected changed fix guidance and T-01 row, make validate-ai and git diff --check passed. Initial consumed; targeted follow-up in same actual session next.
+---
+
+## 2026-09-24 - US-008 finalization
+
+- Same actual native session `/root/review_us008_attempt1`, story-reviewer, expanded-initial targeted attempt 1; initial and targeted consumed. Schema-valid pass resolves the sole finding.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "targeted",
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "code-repository-template-fix-test-first",
+      "evidence": "The staged Fixes guidance now requires adding a meaningful regression before implementation and confirming it fails for the intended reason. The previously reviewed T-01 reconciliation maps the template\u2019s fix guidance to that obligation. The remediation preserves the surrounding regression and symptom-handling guidance."
+    }
+  ],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [],
+  "learning_candidates": []
+}
+```
+
+- Accepted fix verifies the standalone template explicitly retains failing-before-fix behavior, not just a cross-reference. Promoted bounded memory pattern `standalone-policy-obligation-parity`; event key `coding-workflows-and-review-architecture|US-008|standalone-policy-obligation-parity|code-repository-template-fix-test-first|accepted_fixed`, counted once. No suppression.
+- All US-008 criteria met; existing checks and unavailable typecheck/formatter recorded above. Commit pending; intended feat(US-008): publish portable project guidance and refine personal policy.
+---
