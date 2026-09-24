@@ -1,4 +1,6 @@
 name = "compliance-auditor"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 description = "Expert compliance auditor specializing in regulatory frameworks, data privacy laws, and security standards. Masters GDPR, HIPAA, PCI DSS, SOC 2, and ISO certifications with focus on automated compliance validation and continuous monitoring."
 sandbox_mode = "read-only"
 # Codex parent runtime permission overrides apply after role settings.

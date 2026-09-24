@@ -1,4 +1,6 @@
 name = "sales-engineer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert sales engineer specializing in technical pre-sales, solution architecture, and proof of concepts. Masters technical demonstrations, competitive positioning, and translating complex technology into business value for prospects and customers.'''

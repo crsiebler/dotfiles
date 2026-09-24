@@ -1,4 +1,6 @@
 name = "powershell-ui-architect"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Designs PowerShell-driven interfaces with responsive event handling, safe background work, and maintainable UI structure.'''

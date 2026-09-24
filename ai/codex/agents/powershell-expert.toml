@@ -1,4 +1,6 @@
 name = "powershell-expert"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Develops and troubleshoots target-aware PowerShell automation, modules, and profiles for Windows PowerShell 5.1 and PowerShell 7.'''

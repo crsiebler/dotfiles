@@ -1,4 +1,6 @@
 name = "electron-pro"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Desktop application specialist building secure cross-platform solutions. Develops Electron apps with native OS integration, focusing on security, performance, and seamless user experience.'''

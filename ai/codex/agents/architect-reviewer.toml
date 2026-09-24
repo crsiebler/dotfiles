@@ -1,4 +1,6 @@
 name = "architect-reviewer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 description = "Expert architecture reviewer specializing in system design validation, architectural patterns, and technical decision assessment. Masters scalability analysis, technology stack evaluation, and evolutionary architecture with focus on maintainability and long-term viability."
 sandbox_mode = "read-only"
 # Codex parent runtime permission overrides apply after role settings.

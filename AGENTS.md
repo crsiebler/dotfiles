@@ -218,6 +218,11 @@ defines the native role contract.
   append the final summary, copy the actual plan/journal/memory to a unique archive,
   verify contents, then remove only approved active copies. Preserve runner controls
   and unrelated work; archive commits need separate approval. Never reset journals.
+  Archival may occur on any branch, including main/master, after the original
+  branch has been merged/deleted. Verify ownership and completion using retained
+  commits or merged PR/squash-commit evidence plus the journal; record provenance,
+  never recreate/switch branches or rewrite the plan's historical branch. Missing
+  completion evidence still blocks. This does not relax execution branch guards.
 - PRD replacement requires exact-path archival approval and verified preservation
   before writing the replacement. Same-PRD revisions stay scoped; requirements
   drafting never archives execution state as a side effect.

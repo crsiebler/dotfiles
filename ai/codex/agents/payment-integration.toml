@@ -1,4 +1,6 @@
 name = "payment-integration"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert payment integration specialist mastering payment gateway integration, PCI compliance, and financial transaction processing. Specializes in secure payment flows, multi-currency support, and fraud prevention with focus on reliability, compliance, and seamless user experience.'''

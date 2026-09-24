@@ -1,4 +1,6 @@
 name = "story-reviewer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 description = "Bounded read-only staged-story reviewer for the shared implementation workflow, including targeted remediation verification."
 sandbox_mode = "read-only"
 # Parent runtime overrides and MCP approvals remain independent controls.

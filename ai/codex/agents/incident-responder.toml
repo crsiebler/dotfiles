@@ -1,4 +1,6 @@
 name = "incident-responder"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert incident responder specializing in security and operational incident management. Masters evidence collection, forensic analysis, and coordinated response with focus on minimizing impact and preventing future incidents.'''

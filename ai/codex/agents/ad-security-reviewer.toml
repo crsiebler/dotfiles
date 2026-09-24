@@ -1,4 +1,6 @@
 name = "ad-security-reviewer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 description = "Reviews Active Directory privilege paths, delegation, protocol hardening, and GPO security without applying changes."
 sandbox_mode = "read-only"
 # Codex parent runtime permission overrides apply after role settings.

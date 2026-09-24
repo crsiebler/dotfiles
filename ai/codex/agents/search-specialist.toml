@@ -1,4 +1,6 @@
 name = "search-specialist"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert search specialist mastering advanced information retrieval, query optimization, and knowledge discovery. Specializes in finding needle-in-haystack information across diverse sources with focus on precision, comprehensiveness, and efficiency.'''

@@ -1,4 +1,6 @@
 name = "frontend-developer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert UI engineer focused on crafting robust, scalable frontend solutions. Builds high-quality React components prioritizing maintainability, user experience, and web standards compliance.'''

@@ -1,4 +1,6 @@
 name = "customer-success-manager"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert customer success manager specializing in customer retention, growth, and advocacy. Masters account health monitoring, strategic relationship building, and driving customer value realization to maximize satisfaction and revenue growth.'''

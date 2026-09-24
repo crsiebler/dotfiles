@@ -1,4 +1,6 @@
 name = "cpp-pro"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert C++ developer specializing in modern C++20/23, systems programming, and high-performance computing. Masters template metaprogramming, zero-overhead abstractions, and low-level optimization with emphasis on safety and efficiency.'''

@@ -1,4 +1,6 @@
 name = "devops-incident-responder"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert incident responder specializing in rapid detection, diagnosis, and resolution of production issues. Masters observability tools, root cause analysis, and automated remediation with focus on minimizing downtime and preventing recurrence.'''

@@ -1,334 +1,345 @@
-# Implementation plan: Producing and document skills
+# Implementation plan: Coding workflows and review architecture
 
 ## Objective and context
 
-- Source: [PRD](tasks/prd-producing-and-document-skills.md), FR-01–FR-31 and US-001–US-014.
-- Objective: five native craft plugins with independently packaged media production,
-  original document creation/reading, and portable skill-authoring workflows.
-- Scope: producing registration, audio/sprite relocation, Apache-licensed
-  create-skill/create-gif adaptations, eight original document skills, tests, and docs.
-- Non-goals: PRD section 6; no proprietary Anthropic document sources, general Office
-  editing, OCR, macro execution, automatic conversion, new providers, or installation.
-- Current status: complete; US-001–US-014 delivered through their authorized story commits. PRD remains the
-  requirements source; this checklist owns implementation completion status.
-- Working branch: `feat/producing-and-document-skills`, prepared with the committed
-  plan and PRD before execution.
-- Mode: standard; risk classification selects the shared review budget per story.
-- Authorization: user approved implementation after the explicit request covering
-  all 14 stories and per-story commits. Dependency installation remains separate.
-- Delivery: one authorized commit per passing story; no implicit push or installation.
-- Adapter: CodexGoalMarkdown for later authorized Codex execution. This Markdown
-  choice does not start a Goal or Ralph run; Ralph requires its JSON adapter.
+- Requirements: [PRD](tasks/prd-coding-workflows-and-review-architecture.md),
+  FR-1 through FR-11 and US-001 through US-012.
+- Objective: independently discoverable development and read-only review workflows,
+  portable project guidance, concise personal policy, and aligned specialist roles.
+- Scope: consolidate three development skills into `develop-code`; expand
+  `review-code` with scopes/lenses; publish the project AGENTS template; align six
+  native agents, helpers, consumers, validation, and migration documentation.
+- Non-goals: PRD section 7; no installation, automatic retirement, deployments,
+  external posts, renderer redesign, broad agent rewrite, or altered review gates.
+- Base branch: `main`; planning baseline cb49f230b0f0a77ab8633e5d45f2092ebbbca0e1.
+- Working branch: **not prepared**. Select and record an exact existing non-main,
+  non-master branch with an existing commit before execution. This is a blocker;
+  the executor must not create/switch branches or silently infer a branch name.
+- Format: explicitly continued Markdown PLAN.md workflow; CodexGoalMarkdown adapter
+  for later authorized execution. Planning occurred in OpenCode, not a Codex Goal.
+- Mode: standard; use the shared risk-based advisor/self/native-review budgets.
+- Authorization: planning and completed-run archival only. Implementation and
+  per-story commits are pending; installation, source deletions, evaluations with
+  spending/delegation, and other sensitive operations require applicable approval.
+- Delivery: one explicitly authorized commit per verified, reviewed story.
+- Current status: prepared; all stories pending. No execution journal or memory
+  created. Prior run archived under `archive/2026-09-24-producing-and-document-skills/`.
+- Preserve existing uncommitted PRD and archival-policy edits plus archive changes.
+  Reconcile/stage that preparation baseline only under explicit authority before
+  story execution; do not silently include it in an implementation story commit.
 
-## Common implementation and verification contract
+## Common acceptance and verification requirements
 
-Each story inherits these requirements in addition to its own criteria:
+Every story inherits these requirements; specific checks below supplement them.
 
-- New skills contain matching SKILL.md frontmatter, scripts/, references/requirements.md,
-  authoring.md or reading.md, validation.md, and requirements.txt. Extra resources
-  must be justified and linked. Choose tested package constraints, not guessed pins.
-- Python 3.11+ baseline; resources resolve from the installed skill. Outputs and
-  temporary work remain project-local; inputs and installed resources are preserved.
-- Refuse accidental output collisions and escaping paths. Provide bounded output,
-  actionable dependency/input/generation/validation errors, and no implicit installs.
-- Creation helpers expose prerequisite checks, narrow generation, and artifact
-  inspection. Reading helpers expose prerequisite checks and source-located bounded
-  extraction. Document CLI/input/output contracts before implementing them; avoid
-  a universal document schema and sibling-skill Python imports.
-- Write meaningful failing tests for behavior changes. Use independent output
-  inspection, unchanged-input hashes, missing-dependency cases, invalid inputs,
-  path/symlink boundaries, and collision/failure tests where relevant.
-- Required source check: `make validate-ai`. Required final regression command:
+- Read applicable repository instructions and affected contracts. Use installed
+  skill-relative references; do not hardcode checkout or plugin-cache paths in
+  generated runtime instructions. Keep skill bundles independently usable.
+- Prose/configuration changes use source, structure, link, schema, and meaningful
+  contract validation. Add failing regressions before executable behavior changes;
+  do not manufacture test-first evidence for existing work or test prose spelling.
+- Required source check: `make validate-ai`. Diff check: `git diff --check`.
+- Focused Python checks use the existing pattern
+  `python3.11 -m unittest discover -s tests -p '<filename>'`.
+  Inspect each named suite before relying on its coverage.
+- Agent checks: `python3.11 tests/agent_contract_test.py` and
+  `python3.11 scripts/render-agents.py --harness opencode --check` plus
+  `python3.11 scripts/render-agents.py --harness codex --check` when roles change.
+- Protocol checks when affected: `python3.11 tests/story_execution_test.py`,
+  `python3.11 tests/story_blocker_test.py`, `bash tests/ralph_review_test.sh`.
+- Final relevant regression command:
   `python3.11 -m unittest discover -s tests -p '*test*.py'`.
-- Focused tests: use `python3.11 -m unittest discover -s tests -p '<test_filename>'`
-  for each named test below once created. New test paths are proposed, not existing
-  commands claimed to have passed. Reuse existing test patterns and fixtures.
-- Typecheck: no standalone repository target exists. Record unavailable explicitly;
-  source validation and tests are not a substitute claim of a passing typecheck.
-- Formatting/lint: no root pyproject.toml, Ruff, Prettier, or package.json configuration
-  was found during planning. Inspect applicable configuration again during execution;
-  run configured formatters on changed files before final verification. Report absent
-  configuration/tools; do not install or introduce configuration without authorization.
-- Run meaningful generation/extraction tests with dependencies available. Skips are
-  explicit gaps, not successful verification. Report optional renderers separately;
-  absent rendering must not become a claim of visual approval.
-- No product UI is planned. If the adapted evaluation viewer is changed, use
-  verify-interface for its browser behavior; unavailable required checks block delivery.
-- Recommended read-only advisor for Python helper stories: @python-pro, only when
-  useful and authorized under the shared budget (at most two advisors total per story).
-  Bounded question: format-specific correctness, dependency compatibility, or proposed
-  CLI/test contract. Executor owns edits/tests; advisor availability is checked at use.
-- Staged reviewer: native story-reviewer when required by the shared mode/risk budget.
-  No substitute reviewer or repeated fresh review sessions to bypass a blocker.
+  Missing optional dependencies/skips are recorded; distinguish unrelated baseline
+  gaps from required changed-contract checks. Do not install tools without approval.
+- Typecheck: no standalone repository target exists. Record it unavailable, never
+  as passing; source validation and relevant tests provide separate evidence.
+- Formatting/lint: no project Markdown/JSON formatter configuration was found.
+  Reinspect applicable configuration at execution; run configured formatters on
+  changed files before final verification and disclose missing tools/configuration.
+- No product UI is planned. If UI is introduced within approved scope, use
+  `verify-interface`; static instructions are not rendered/browser verification.
+- Preserve native role metadata, all five plugin identities, 128 canonical agents,
+  three OpenCode-only roles, byte/body rendering, permissions, and review contracts.
+- Static checks and manual walkthroughs are not model-behavior evaluations. Record
+  evidence provenance and unavailable live evaluation/activation independently.
+- Optional implementation advisors are read-only, at most two under the shared
+  budget. Suggestions below are not delegation authority or proof of availability.
+  The executor implements/tests. No agent per lens or automatic delegation chain.
+- Native staged reviewer: `story-reviewer` when the mode/risk budget requires it;
+  general reviewers are advisors only and cannot replace that gate.
 
-### Per-story execution checklist (apply to every story)
+### Shared execution checklist (applies to each story)
 
-- [ ] Verify execution/commit authorization, exact branch, instructions, and state.
-- [ ] Resolve this story's material gaps; research relevant library APIs with Context7.
-- [ ] Add failing behavioral tests, implement scoped changes, and update related docs.
-- [ ] Run configured formatting/lint, record unavailable typecheck, and run focused tests
-  plus source validation; perform applicable artifact/browser verification.
-- [ ] Stage only intended changes and follow the shared staged-review protocol.
-- [ ] Resolve findings and rerun affected checks; at most one targeted same-session pass.
-- [ ] Update validated memory and append progress; mark delivered only after the
-  authorized story commit succeeds. Do not check this reusable template as a batch
-  completion record; record each story's evidence in docs/progress.md.
+- [ ] Verify execution/commit authority, exact prepared branch, and existing state.
+- [ ] Inspect relevant code/contracts; implement only the story's scoped candidate.
+- [ ] Apply appropriate test-first or source validation and configured formatting.
+- [ ] Run required checks; record unavailable typecheck and other limitations.
+- [ ] Stage intended files and satisfy the mode-aware staged review contract.
+- [ ] Resolve actionable findings, rerun affected checks, and use at most one
+  targeted same-session follow-up where permitted.
+- [ ] Append progress, update only validated memory, finalize completion metadata,
+  and deliver through the authorized story commit. This reusable checklist is not
+  a substitute for individual story evidence in the journal.
 
 ## Ordered stories
 
-### US-001 — Register producing and relocate media skills
-- [x] Story complete
+### US-001 - Map ownership and define baseline evaluations
+- [ ] Story complete
 - Priority: 1
 - Depends on: none
-- Requirements: PRD US-001; FR-01–FR-04.
-- Benefit: users discover media workflows under their own craft.
-- Paths: .agents/plugins/marketplace.json, ai/plugins/producing/.codex-plugin/plugin.json,
-  coding/producing skill directories, scripts/install-ai.py, .vscode/settings.json,
-  tests/ai_install_test.py, tests/plugin_test.py, audio tests, README.md, AGENTS.md,
-  docs/ai-configuration.md.
-- [ ] Manifest description is exactly “Creative asset and document production workflows.”
-- [ ] Move complete audio/sprite bundles, preserving bytes and file modes; retain names
-  and command references. No duplicate skills or old active source links remain.
-- [ ] Update exact-four guard and fixtures to five; retain generic installation loops.
-- [ ] Inventory docs and audio/editor import paths reflect the move immediately.
-- [ ] Focused installer/plugin/audio generation/audio service regressions pass;
-  common typecheck, formatting, source-validation, and review gates pass.
+- PRD: US-001; FR-8 through FR-11 and evaluation section.
+- Benefit: preserve obligations and establish observable migration criteria.
+- Paths: proposed `docs/coding-workflow-design.md`, existing source skills and
+  `ai/AGENTS.md`, `tests/fixtures/implementation_planning_evals.json`, proposed
+  `tests/fixtures/coding_workflow_evals.json`.
+- Advisors: optional @prompt-engineer; question: discovery boundaries and useful
+  held-out cases, without introducing unnecessary mandatory loading.
+- [ ] Map every moved policy obligation and old identifier to its new owner.
+- [ ] Inventory consumers and document preserved dedicated-review invariants.
+- [ ] Specify positive/negative discovery cases and evaluation evidence fields,
+  including noncoding tasks and read-only requests; mark results unrun.
+- [ ] Capture an immutable baseline by source revision/artifact references before
+  replacing instructions. Set runtime/budget/criteria only with authorization.
+- [ ] Source/fixture parsing and common verification requirements satisfied.
 
-### US-002 — Adapt create-skill
-- [x] Story complete
+### US-002 - Add unified development and testing workflow
+- [ ] Story complete
 - Priority: 2
 - Depends on: US-001
-- Requirements: PRD US-002; FR-05–FR-17, FR-31.
-- Benefit: assistants author and evaluate repository-conformant skills portably.
-- Paths: ai/plugins/coding/skills/create-skill/, tests/create_skill_test.py.
-- [ ] Import only the Apache skill-creator bundle from the inspected local clone;
-  retain license, applicable notices, upstream commit, and modified-file notices.
-- [ ] Portable authoring/evaluation uses project workspaces and installed resources;
-  preserve schema/report helpers without assuming native agents or token metrics.
-- [ ] Claude CLI adapters are optional, explicitly scoped, and never auto-invoked.
-  Document their dependencies separately; no automatic servers or global changes.
-- [ ] Validate packaging, local evaluation/report helpers, missing dependencies, and
-  writable-path boundaries. Browser-check any modified viewer using verify-interface.
-- [ ] Common verification and review gates pass.
+- PRD: US-002; FR-1 and FR-3.
+- Benefit: one development entry point selects feature, diagnosis/fix, or refactor.
+- Paths: new `ai/plugins/coding/skills/develop-code/`, existing
+  `develop-with-tests/references/testing-anti-patterns.md`, proposed
+  `tests/coding_workflow_contract_test.py`, `tests/plugin_test.py` as applicable.
+- Advisors: none by default.
+- [ ] Add root routing plus feature, bugfix, refactor, testing-strategy, and
+  anti-pattern references; preserve substantive existing testing guidance.
+- [ ] Preserve planning/diagnosis-only boundaries and actual test-order reporting.
+- [ ] Require causal evidence for fixes and compatibility evidence for refactors;
+  do not impose test-count ceilings or drop requested requirements.
+- [ ] Keep old bundles intact until the approved retirement story; document the
+  temporary source overlap rather than claim final unique discovery.
+- [ ] Meaningful resource/metadata/independent-bundle checks and common gates pass.
 
-### US-003 — Adapt GIF assembly and inspection
-- [x] Story complete
+### US-003 - Add conditional architecture decision guidance
+- [ ] Story complete
 - Priority: 3
-- Depends on: US-001
-- Requirements: PRD US-003; FR-05–FR-14, FR-18, FR-21–FR-23, FR-31.
-- Benefit: users generate correctly timed GIFs without needing an AI provider.
-- Paths: ai/plugins/producing/skills/create-gif/, tests/create_gif_test.py.
-- [ ] Preserve Apache license/provenance/notices; move execution helpers under scripts/.
-  Prefer Pillow; justify any retained ImageIO/NumPy dependency through actual usage.
-- [ ] Supplied frames and procedural graphics have documented CLI/contracts; explicit
-  timing, loop, palette, transparency/background, and aspect-preserving resize policies.
-- [ ] Tests prove duplicate/frame reduction preserves elapsed time, variable-duration
-  inspection sums decoded durations, and pixel-art sampling preserves intended edges.
-- [ ] Validate disposal/background behavior, actual size/format/loop metadata, invalid
-  inputs, output limits, and collisions. Account for encoded timing precision.
-- [ ] Conditional Slack reference separates presets from verified limits; common gates pass.
+- Depends on: US-002
+- PRD: US-003; FR-2.
+- Benefit: apply engineering theory without speculative architecture ceremony.
+- Paths: `develop-code/SKILL.md`, `develop-code/references/architecture-decisions.md`,
+  coding workflow evaluation/contract fixtures.
+- Advisors: optional @architect-reviewer; question: when a boundary or replacement
+  is justified and which invariants establish behavioral equivalence.
+- [ ] Cover reuse order, responsibilities, coupling, contracts, state, workload,
+  reversibility, and decision-triggered ADR guidance.
+- [ ] Include useful-abstraction and unsafe-shorter-replacement counterexamples.
+- [ ] Root loads guidance conditionally; routine local changes need no full ADR.
+- [ ] Resource closure, source validation, and common gates pass.
 
-### US-004 — Add AI-assisted GIF workflow
-- [x] Story complete
+### US-004 - Establish review scopes and evidence contract
+- [ ] Story complete
 - Priority: 4
-- Depends on: US-003
-- Requirements: PRD US-004; FR-19–FR-20.
-- Benefit: users can request original animated artwork when provider support exists.
-- Paths: create-gif/SKILL.md and references/, relevant routing fixtures under tests/.
-- [ ] Check active tool schemas; use create-sprites for pixel art and a suitable
-  available provider for other artwork. Never assume Codex has OpenCode image tools.
-- [ ] Distinguish static-image motion from articulated poses; inspect frame alignment,
-  style consistency, backgrounds, timing, and loop continuity before final delivery.
-- [ ] Evaluate supplied-assets, procedural, AI pixel-art, AI illustration, and absent-
-  provider scenarios. Non-AI paths remain usable; no automatic generation/spending.
-- [ ] Report instruction evaluations separately from authorized live generation;
-  common verification and review gates pass (typecheck unavailable for prose).
+- Depends on: US-001
+- PRD: US-004; FR-4, FR-5, FR-7.
+- Benefit: discover read-only assessment independently from development.
+- Paths: `review-code/SKILL.md`, `review-code/references/scopes/`, coding fixtures
+  and contract tests; read existing `/review-pr` and feedback skill for boundaries.
+- Advisors: optional @code-reviewer; question: mutation-free scope routing and
+  evidence requirements without duplicating native staged/PR schemas.
+- [ ] Provide local, PR/branch, component, and bounded audit scope references.
+- [ ] Cover release/cross-component variants and missing evidence; distinguish
+  introduced/exposed/pre-existing defects and optional maintenance suggestions.
+- [ ] Tests, edits, formatting, posting, and automatic fixes remain outside review.
+- [ ] Preserve feedback ownership, dedicated reviewer exclusions, and caller schemas.
+- [ ] Source/resource and applicable protocol checks plus common gates pass.
 
-### US-005 — Create DOCX documents
-- [x] Story complete
+### US-005 - Add maintainability, compatibility, and testing lenses
+- [ ] Story complete
 - Priority: 5
-- Depends on: US-001
-- Requirements: PRD US-005; FR-05–FR-14, FR-24, FR-26.
-- Benefit: users produce structured Word documents with explicit layout.
-- Paths: ai/plugins/producing/skills/create-docx/, tests/create_docx_test.py.
-- [ ] Original python-docx helpers/recipes cover headings/styles, paragraphs, tables,
-  inline images, sections, dimensions, margins, and page breaks.
-- [ ] Reopen outputs to verify Unicode content, styles, tables, image relationships,
-  and layout settings. Test missing dependencies and failed-output/input preservation.
-- [ ] Document tested recipes and font/rendering/template limitations without claiming
-  pagination verification from package checks alone; common gates pass.
+- Depends on: US-004
+- PRD: US-005; FR-6 and FR-7.
+- Benefit: assess reasoning/change cost without superficial size heuristics.
+- Paths: `review-code/references/lenses/{architecture-and-maintainability,compatibility,testing-quality}.md`,
+  review routing and evaluation fixtures.
+- Advisors: none by default.
+- [ ] Cover coupling, cohesion, semantic/cognitive/cyclomatic/state complexity and
+  duplicated rules; actual maintenance evidence determines findings.
+- [ ] Explain metric limitations, project thresholds, and prohibition on invented
+  scores or arbitrary extraction merely to lower a metric.
+- [ ] Preserve compatibility/error/lifecycle contracts and meaningful test adequacy.
+- [ ] Wire conditional loading and verify fixture/resource coverage; common gates pass.
 
-### US-006 — Read DOCX documents
-- [x] Story complete
+### US-006 - Add security, data/state, and reliability lenses
+- [ ] Story complete
 - Priority: 6
-- Depends on: US-005
-- Requirements: PRD US-006; FR-05–FR-14, FR-27–FR-30.
-- Benefit: assistants extract ordered Word content with useful source locations.
-- Paths: ai/plugins/researching/skills/read-docx/, tests/read_docx_test.py.
-- [ ] Research current ordered-block/header/footer APIs; define bounded extraction
-  with paragraph/table locations, headings, header/footer context, and omissions.
-- [ ] Tests cover interleaved paragraphs/tables, headers/footers, unsupported structures,
-  truncation, and unchanged source hashes; no tracked-change acceptance.
-- [ ] Skill is independent of create-docx at runtime; common gates pass.
+- Depends on: US-004
+- PRD: US-006; FR-6.
+- Benefit: inspect authority, invariants, concurrency, and failure transitions.
+- Paths: `review-code/references/lenses/{security-and-privacy,data-and-state,reliability}.md`,
+  review routing/evaluation fixtures.
+- Advisors: none by default; specialized advice only for a concrete material gap.
+- [ ] Cover trust boundaries, sensitive data, transactions, precision, races,
+  retries, idempotency, cancellation, cleanup, and evolution compatibility.
+- [ ] Require triggering paths and contract evidence; do not authorize active
+  testing, auth changes, migrations, or infrastructure operations.
+- [ ] Conditional references and no-mutation scenarios validate; common gates pass.
 
-### US-007 — Create PPTX presentations
-- [x] Story complete
+### US-007 - Add performance, accessibility, and operations lenses
+- [ ] Story complete
 - Priority: 7
-- Depends on: US-001
-- Requirements: PRD US-007; FR-05–FR-14, FR-24, FR-26.
-- Benefit: users produce editable slides with deliberate layouts.
-- Paths: ai/plugins/producing/skills/create-pptx/, tests/create_pptx_test.py.
-- [ ] Original python-pptx helpers/recipes cover slide geometry, inspected layouts and
-  placeholders, text, images, tables, and supported native charts.
-- [ ] Tests reopen outputs for slide count, content, chart data, and geometry;
-  template selection does not assume unexplained layout indices.
-- [ ] Document overflow/font-fit limits; inspect rendered slides where available for
-  clipping, overlap, readability, and consistency. Report unavailable rendering.
-- [ ] Common verification and review gates pass.
+- Depends on: US-004
+- PRD: US-007; FR-6.
+- Benefit: evaluate workload, user access, deployment, and dependency risks honestly.
+- Paths: `review-code/references/lenses/{performance,accessibility,operability-and-dependencies}.md`,
+  review routing/evaluation fixtures.
+- Advisors: none by default.
+- [ ] Cover resources/query cost, UI semantics/focus/errors, observability,
+  shutdown/configuration, rollout/rollback, packaging, and reproducibility.
+- [ ] Separate supplied rendered/runtime evidence from source inspection; no
+  automatic tools, browser actions, installs, or specialist delegation in review.
+- [ ] Resource/routing and evidence-provenance cases validate; common gates pass.
 
-### US-008 — Read PPTX presentations
-- [x] Story complete
+### US-008 - Publish project guidance and refine personal policy
+- [ ] Story complete
 - Priority: 8
-- Depends on: US-007
-- Requirements: PRD US-008; FR-05–FR-14, FR-27–FR-30.
-- Benefit: assistants analyze slide-located content without modifying presentations.
-- Paths: ai/plugins/researching/skills/read-pptx/, tests/read_pptx_test.py.
-- [ ] Research notes/chart/table APIs; extract supported text, notes, tables, and
-  chart values with slide selection, source locations, and bounded output.
-- [ ] Identify visual-only/unsupported content and truncation; fixtures verify notes,
-  tables, charts, selected slides, and preserved sources.
-- [ ] Skill runs without create-pptx imports; common gates pass.
+- Depends on: US-001, US-003, US-004
+- PRD: US-008; FR-8.
+- Benefit: portable project standards without engineering bloat in noncoding work.
+- Paths: `ai/AGENTS.md`, new `docs/templates/code-repository-AGENTS.md`,
+  `docs/coding-workflow-design.md`, relevant `tests/ai_install_test.py` contracts.
+- Advisors: none by default.
+- [ ] Publish the standalone template with verified-fact/command placeholders,
+  principles, contracts, methods, review, and handoff expectations.
+- [ ] Explain merge/adoption for existing and mixed-purpose projects; no global
+  installation, blind replacement, or mandatory personal skill names.
+- [ ] Relocate policy details using the obligation map; retain global authority,
+  privacy, preservation, and concise advertised-skill routing without weaker rules.
+- [ ] Validate byte-identical personal-policy installation contracts and common gates.
 
-### US-009 — Create XLSX workbooks
-- [x] Story complete
+### US-009 - Align six native specialist roles
+- [ ] Story complete
 - Priority: 9
-- Depends on: US-001
-- Requirements: PRD US-009; FR-05–FR-14, FR-24–FR-26.
-- Benefit: users obtain typed/formatted workbooks with trustworthy formula reporting.
-- Paths: ai/plugins/producing/skills/create-xlsx/, tests/create_xlsx_test.py.
-- [ ] Original XlsxWriter helpers/recipes cover sheets, explicit types/formats, tables,
-  filters, freeze panes, charts, and explicit formulas. No implicit string conversion.
-- [ ] Tests preserve leading zeros, formula-like strings, and literal URLs; check
-  sheet names, malformed rows, writer errors, truncation, and collisions.
-- [ ] Independently inspect formulas/caches/calculation settings; distinguish supplied
-  cached values from actual recalculation. Do not imply a calculation engine exists.
-- [ ] Common verification and review gates pass.
+- Depends on: US-003, US-005, US-006, US-007
+- PRD: US-009; FR-9.
+- Benefit: focused expertise reinforces methods without conflicting lifecycles.
+- Paths: `ai/codex/agents/{prompt-engineer,architect-reviewer,code-reviewer,refactoring-specialist,debugger,test-automator}.toml`,
+  `docs/agent-authoring.md`, `tests/fixtures/agent_evals.yml` if relevant.
+- Advisors: optional @architect-reviewer; question: conditional specialist detail
+  versus universal outcome claims and lifecycle duplication.
+- [ ] Align discovery descriptions and core role bodies using actual source evidence.
+- [ ] Remove unwarranted universal gains/framework/commit expectations; preserve
+  native metadata, read-only restrictions, domain knowledge, and independent use.
+- [ ] Document justified additional-role candidates without broad rewriting.
+- [ ] Agent contracts and both renderer checks pass; common gates satisfied.
 
-### US-010 — Read XLSX workbooks
-- [x] Story complete
+### US-010 - Integrate helper routing and execution handoffs
+- [ ] Story complete
 - Priority: 10
-- Depends on: US-009
-- Requirements: PRD US-010; FR-05–FR-14, FR-27–FR-30.
-- Benefit: assistants inspect precise workbook data without changing it.
-- Paths: ai/plugins/researching/skills/read-xlsx/, tests/read_xlsx_test.py.
-- [ ] Original openpyxl reader reports sheet/range coordinates, cell types, formulas,
-  cached values, hidden sheets/rows/columns, and explicit extraction limits.
-- [ ] Tests distinguish missing caches from calculated values; verify bounded ranges,
-  literal data, hidden content, and unchanged hashes. No save, recalculation, or refresh.
-- [ ] Skill runs without the creation skill; common gates pass.
+- Depends on: US-002, US-004, US-008, US-009
+- PRD: US-010; FR-10.
+- Benefit: new methods fit both harnesses without changing delivery controls.
+- Paths: `run-tests/SKILL.md`, `format-code/SKILL.md`, actual inventoried consumers,
+  `prepare-implementation/references/story-execution.md`, related tests.
+- Advisors: none by default.
+- [ ] Generalize helper entry descriptions while retaining conditional adapters
+  and project-native command selection; do not add runtime dependencies.
+- [ ] Update genuine consumers without cyclic loading, new schema ownership,
+  mandatory second reviews, or reviewer discovery dependencies.
+- [ ] Preserve profiles, packets, branch/authorization guards, sessions, budgets,
+  blocker/resume state, memory/journal ownership, and finalization rules.
+- [ ] Story execution/blocker and Ralph review checks plus common gates pass.
 
-### US-011 — Create PDFs
-- [x] Story complete
+### US-011 - Evaluate discovery and engineering outcomes
+- [ ] Story complete
 - Priority: 11
-- Depends on: US-001
-- Requirements: PRD US-011; FR-05–FR-14, FR-24, FR-26.
-- Benefit: users produce paginated documents with explicit fonts and layout.
-- Paths: ai/plugins/producing/skills/create-pdf/, tests/create_pdf_test.py.
-- [ ] Original ReportLab helpers/recipes cover headings, paragraphs, tables, images,
-  fonts, page breaks, and page numbers; pypdf supplies independent output inspection.
-- [ ] Tests cover escaped markup, multipage output, tables, oversized content,
-  missing fonts, page geometry, expected text, and failed publication.
-- [ ] Select an approved font fixture for glyph tests; distinguish glyph coverage,
-  extraction, pagination structure, and actual visual verification.
-- [ ] Common verification and review gates pass.
+- Depends on: US-003, US-005, US-006, US-007, US-008, US-009, US-010
+- PRD: US-011; Section 8 and FR-11.
+- Benefit: promotion decisions use actual evidence rather than shorter-prompt claims.
+- Paths: coding evaluation/contract fixtures, proposed
+  `docs/coding-workflow-verification.md`; existing create-skill evaluation helpers
+  only if suitable and authorized.
+- Advisors: none unless evaluation scope explicitly authorizes independent graders.
+- [ ] Finalize agreed runtime/model, repetitions, held-out cases, grading criteria,
+  spending/delegation scope, and baseline/candidate isolation before live runs.
+- [ ] Exercise PRD positive/negative cases with permitted harness capabilities;
+  include noncoding requests, review-mode discovery, unsafe simplification,
+  pre-existing edits, unavailable tools, and required-reviewer blockers.
+- [ ] Record exact provenance and observed artifacts; distinguish static checks,
+  manual walkthroughs, live model evaluations, and post-install verification.
+- [ ] Unauthorized mutation, fabricated evidence, or gate bypass blocks promotion.
+  Missing authorized evaluation capability keeps required criteria pending; do
+  not mark the story delivered by writing an unrun evaluation specification.
+- [ ] Affected static tests and common gates pass; limitations are explicit.
 
-### US-012 — Read PDFs
-- [x] Story complete
+### US-012 - Retire superseded sources and document activation
+- [ ] Story complete
 - Priority: 12
 - Depends on: US-011
-- Requirements: PRD US-012; FR-05–FR-14, FR-27–FR-30.
-- Benefit: assistants extract page-located evidence with honest completeness reports.
-- Paths: ai/plugins/researching/skills/read-pdf/, tests/read_pdf_test.py.
-- [ ] Research current pypdf extraction APIs; define page selection, metadata,
-  bounded text, and explicit missing-text/possible-scan indicators.
-- [ ] Tests cover multipage selection, image-only pages, malformed documents,
-  truncation, and unchanged sources. Empty extraction never implies empty content.
-- [ ] No OCR/table-reconstruction promise. pdfplumber remains an optional future
-  choice unless a justified, verified in-scope operation needs it; common gates pass.
+- PRD: US-012; FR-11.
+- Benefit: safe migration to unique final discovery with recoverable assets.
+- Paths: `ai/plugins/coding/skills/{implement-feature,develop-with-tests,refactor-code}/`,
+  README.md, AGENTS.md, docs/{ai-configuration,agent-authoring,remove-old-ai-files}.md,
+  affected `tests/{plugin,ai_install,ai_retirement}_test.py` and contract fixtures.
+- Advisors: none by default.
+- [ ] Obtain explicit approval for the exact three source-tree deletions. Retain
+  relocated testing content and `review-code`; reconcile all active consumers.
+- [ ] Keep plugin identities/counts and directory-based installation unchanged;
+  do not add permanent wrappers or manufactured ownership records.
+- [ ] Test intended final source discovery and generic retirement preservation of
+  custom/unverified/symlinked assets. Run final relevant regression checks.
+- [ ] Document coordinated activation, shared-root effects, backups, fresh-session
+  discovery, and rollback. Never manually delete caches or install for validation.
+- [ ] Live activation remains separately authorized and pending unless actually
+  performed; source delivery does not claim installed discovery has changed.
+- [ ] Final requirements audit and all common gates pass before authorized commit.
 
-### US-013 — Verify isolated packaging and integration
-- [x] Story complete
-- Priority: 13
-- Depends on: US-002, US-004, US-006, US-008, US-010, US-012
-- Requirements: PRD US-013; FR-04–FR-14, FR-31.
-- Benefit: users can invoke each installed skill independently of the checkout.
-- Paths: tests/document_skills_contract_test.py, tests/ai_install_test.py,
-  tests/plugin_test.py, affected skill references and package resources.
-- [ ] Copy each of the ten new skills into isolated project-local fixtures and invoke
-  helpers from unrelated working directories; dependencies are explicit, not inherited.
-- [ ] Verify resource/link closure, requirements, attribution, unique discovery, no
-  sibling imports, and unchanged installed resources. Include missing-package cases.
-- [ ] Resolve required dependency-test gaps; skips do not establish working generation.
-- [ ] Run complete Python regression suite and make validate-ai; common gates pass.
+## Execution blockers and handoff
 
-### US-014 — Finalize documentation and activation instructions
-- [x] Story complete
-- Priority: 14
-- Depends on: US-013
-- Requirements: PRD US-014; all final ownership and delivery criteria.
-- Benefit: users understand plugin ownership, prerequisites, and safe activation.
-- Paths: README.md, AGENTS.md, docs/ai-configuration.md, docs/remove-old-ai-files.md.
-- [ ] Inventory lists seven producing skills, create-skill in coding, and four readers
-  in researching. Explain production versus research/reporting and native simple reads.
-- [ ] Document coordinated Codex refresh and OpenCode copies, restart/new-thread steps,
-  preservation of custom copies, and separately authorized installation/cleanup.
-- [ ] Dependency setup is separate from AI installation; no manual plugin-cache deletion.
-- [ ] Check active links/paths, record actual final verification and limitations in
-  progress, and satisfy common gates. No global installation is a validation step.
-
-## Material gaps before or during execution
-
-- Prepared branch and implementation/per-story commit authorization are satisfied.
-- Required dependency installations need authorization; no environment was provisioned.
-- Verify upstream clone/commit and Apache notices before adapting either licensed skill.
-- Select tested dependency constraints, extraction schemas/limits, GIF dependency set,
-  licensed font fixtures, and available native renderers within the owning stories.
-- Use Context7 and official documentation for original helpers; never consult or copy
-  Anthropic's proprietary document implementations. No additional agent delegation
-  is granted by this plan alone.
+- Prepare an exact non-main/non-master working branch and record it through a scoped
+  plan update. Execution and per-story commit authorization are not yet granted.
+- Reconcile the uncommitted preparation/archive/policy baseline without discarding
+  or silently absorbing it into story changes. Do not commit without approval.
+- Agree evaluation scope before US-011; approve source deletions before US-012.
+  Global activation remains a separate operation after source delivery.
+- Installed planning instructions may be older than the checked-in archival-policy
+  revision. Source edits do not establish refreshed live discovery; do not install
+  during planning or claim the old installed copy was updated.
 
 ## Resume and delivery
 
-- For authorized execution, load the installed prepare-implementation skill and read
-  references/story-execution.md and references/story-review.md in full relative to
-  its reported base directory. Follow CodexGoalMarkdown. Stop if discovery, references,
-  or required native story-reviewer invocation is unavailable; do not guess paths.
-- Select the lowest-priority-number eligible incomplete story. Recheck the exact
-  prepared branch before writes, staging, and commits. Never create/switch branches
-  as part of this execution adapter or accept main/master/detached HEAD.
-- Read relevant latest worktree-root docs/progress.md entries and memory.json if
-  present. Keep this plan limited to requirements, completion, and concise status.
-  Append commands/results, review findings/dispositions, approvals, blockers, actual
-  runtime/model/mode, advisor use, reviewer session provenance, and commit outcomes
-  to docs/progress.md. Create it only at an authorized execution checkpoint.
+- For authorized execution, load the installed `prepare-implementation` skill and
+  read `references/story-execution.md` and `references/story-review.md` in full
+  relative to its advertised base. Follow CodexGoalMarkdown. Missing discovery,
+  required references, or native `story-reviewer` capability blocks execution;
+  do not substitute checkout paths, general reviewers, or weaker protocols.
+- Select the lowest numeric priority eligible incomplete story. Recheck the exact
+  prepared branch before writes, staging, and commits; never create/switch branches
+  or accept main/master/detached HEAD for implementation.
+- Read relevant latest worktree-root `docs/progress.md` entries and `memory.json`
+  when present. Keep this plan for scope, criteria, dependencies, concise status,
+  and completion only. Append actual commands/results, review findings/dispositions,
+  blockers, approvals, advisor use, commits, and resumption checkpoints to the
+  journal; create it only at a permitted execution checkpoint.
 - Missing memory is normal: use empty version-1 memory in process. Invalid memory
-  blocks without overwrite. Create/update bounded memory only after passing review,
-  retaining at most 20 patterns and 20 evidenced suppressions.
-- Apply shared fast/standard/deep risk budgets. Self-review is allowed only where
-  the budget permits and is not independent review. Native review uses story-reviewer,
-  the full shared JSON protocol, Review profile expanded-initial, and explicit Pass
-  type. Allow one initial and at most one targeted pass in the same actual native
-  session per attempt. Preserve reading/evidence recovery limits and coverage tracking.
-- Final blocked or malformed review stops delivery; preserve the candidate, findings,
-  and consumed passes. Resume only after verifying the required material resolution;
-  continuation, a new reviewer, or compaction does not reset review budgets.
-- Stage provisional completion only after checks/review pass. Delivery requires a
-  successful authorized per-story commit. On failed finalization restore only the
-  provisional completion marker and append the actual blocker; preserve other work.
-- No implicit push, external post, sensitive operation, or installation. Planning
-  creates neither execution journal nor memory. Native Goal continuation does not
-  introduce Ralph's external iteration loop or new compaction hooks.
-- [x] Final report lists actual commits, checks/reviews, delivered scope, and gaps.
-- After all stories pass and are committed, offer separately authorized archival
-  using the installed references/completed-run-archive.md. Never reset active state
-  or commit archives under story-commit authorization alone.
+  blocks without overwrite. Create/update it only after passing review; retain
+  at most 20 patterns and 20 evidenced suppressions. Do not reuse archived memory.
+- Apply shared fast/standard/deep budgets, default standard. Self-review is allowed
+  only by the risk budget and is not independent review. Native review requires
+  the full protocol/schema embedded in every invocation, packet preflight,
+  explicit `Review profile: expanded-initial` and `Pass type`, a fresh reviewer
+  session per story, and recorded actual role/session ID rather than just a label.
+- Permit one initial and at most one targeted pass in that same actual session
+  per attempt. Preserve bounded evidence recovery, findings, and consumed passes.
+  A final blocked/malformed review stops delivery; resumption requires verified
+  material resolution, not continuation, compaction, or reviewer replacement.
+- Stage provisional completion only after required checks/review pass. Delivery
+  requires the authorized story commit to succeed; on failure restore only the
+  provisional marker and append the exact blocker under the shared procedure.
+- No implicit push, external post, installation, sensitive operation, or additional
+  delegation. Native Goal continuation does not introduce Ralph loops or hooks.
+- [ ] Final report lists actual delivered scope, commits, checks/reviews, unresolved
+  evaluation/activation gaps, and any remaining limitations.
+- After delivery, archival is separately approved under the applicable completed-run
+  procedure. Do not reset journals, remove active state, or commit archives under
+  story-commit authorization alone.

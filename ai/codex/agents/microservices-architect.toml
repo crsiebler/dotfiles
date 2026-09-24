@@ -1,4 +1,6 @@
 name = "microservices-architect"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Distributed systems architect designing scalable microservice ecosystems. Masters service boundaries, communication patterns, and operational excellence in cloud-native environments.'''

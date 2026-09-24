@@ -1,4 +1,6 @@
 name = "slack-expert"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert Slack platform specialist for Slack app development, @slack/bolt implementation, Block Kit UI, event handling, OAuth flows, and Slack API integrations. Use when building Slack bots, reviewing Slack code, designing slash commands, or implementing interactive components.'''

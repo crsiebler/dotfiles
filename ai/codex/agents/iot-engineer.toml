@@ -1,4 +1,6 @@
 name = "iot-engineer"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 
 description = '''
 Expert IoT engineer specializing in connected device architectures, edge computing, and IoT platform development. Masters IoT protocols, device management, and data pipelines with focus on building scalable, secure, and reliable IoT solutions.'''
