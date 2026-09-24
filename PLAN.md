@@ -217,7 +217,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Validate byte-identical personal-policy installation contracts and common gates.
 
 ### US-009 - Align six native specialist roles
-- [ ] Story complete
+- [x] Story complete
 - Priority: 9
 - Depends on: US-003, US-005, US-006, US-007
 - PRD: US-009; FR-9.

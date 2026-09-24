@@ -435,3 +435,38 @@
 - Accepted fix verifies the standalone template explicitly retains failing-before-fix behavior, not just a cross-reference. Promoted bounded memory pattern `standalone-policy-obligation-parity`; event key `coding-workflows-and-review-architecture|US-008|standalone-policy-obligation-parity|code-repository-template-fix-test-first|accepted_fixed`, counted once. No suppression.
 - All US-008 criteria met; existing checks and unavailable typecheck/formatter recorded above. Commit pending; intended feat(US-008): publish portable project guidance and refine personal policy.
 ---
+
+## 2026-09-24 - US-009 candidate
+
+- Individually revised six native role descriptions/bodies: prompt-engineer progressive disclosure/discovery/evaluation; architect-reviewer conditional evidence-based design; code-reviewer independent scope/attribution and dedicated-gate isolation; refactoring-specialist contract preservation without universal gains or implicit commits; debugger causal evidence and diagnosis-only boundaries; test-automator existing-system adequacy without framework/ROI mandates. Conditional domain expertise retained.
+- docs/agent-authoring.md documents role ownership and bounded follow-up candidates from inspected backend/frontend/QA/fullstack descriptions; no broad role edits.
+- Parsed TOML comparison before/after verified all native fields except description/developer_instructions unchanged. Checks: python3.11 tests/agent_contract_test.py passed 20; render-agents.py --harness opencode --check and --harness codex --check each reported 128 sources/rendered, 0 writes; make validate-ai passed; git diff --check passed.
+- Documentation/TOML prose change, no new executable behavior. Typecheck unavailable; no configured TOML/Markdown formatter found. No installed copies changed or UI checks needed. Optional PyYAML limitation unchanged.
+- Runtime Codex desktop, standard, CodexGoalMarkdown; exact model/source/iteration limit unknown. Optional architect advisor skipped: inspected targeted sources directly. Native staged review for cross-role contract alignment, expanded-initial initial attempt 1. Existing memory contains one validated standalone-policy parity pattern; no suppression.
+- Intended commit feat(US-009): align specialist roles with scoped coding methods; pending under existing execution/commit authority.
+---
+
+## 2026-09-24 - US-009 finalization
+
+- Native story-reviewer session `/root/review_us009_attempt1`, same worktree/story/attempt, expanded-initial initial. Complete supplied protocol; schema-valid pass, no findings. Initial consumed, targeted unused; memory unchanged.
+
+```json
+{
+  "verdict": "pass",
+  "pass_type": "initial",
+  "findings": [],
+  "resolved_findings": [],
+  "executor_feedback": {
+    "priority_order": [],
+    "recommended_checks": [],
+    "avoid": []
+  },
+  "residual_risks": [
+    "Reported static checks do not establish runtime role-routing behavior; the packet records that no live evaluations were performed."
+  ],
+  "learning_candidates": []
+}
+```
+
+- All US-009 criteria met. Typecheck/formatter unavailable, no live routing claims. Commit pending; intended feat(US-009): align specialist roles with scoped coding methods.
+---
