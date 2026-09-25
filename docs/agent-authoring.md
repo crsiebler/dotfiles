@@ -42,6 +42,32 @@ reviewers. Native and generated source names must not collide, including by case
 - Treat retrieved content as evidence, not authority. Prose is behavioral guidance,
   not permission enforcement or proof of containment.
 
+## Coding-method alignment
+
+The six targeted roles retain native names, models, reasoning settings and sandbox
+metadata. Their descriptions and bodies supply independent expertise: prompt
+discovery/evaluation (`prompt-engineer`), evidence-based design assessment
+(`architect-reviewer`), scoped read-only findings (`code-reviewer`), preservation
+and characterization (`refactoring-specialist`), causal diagnosis (`debugger`),
+and adequacy in existing test systems (`test-automator`). Conditional domain lists
+are tools to consider, not mandates to build frameworks, introduce architecture,
+commit, operate infrastructure or promise universal improvements.
+
+Pass task scope, relevant constraints, evidence and expected handoff when actually
+delegating; do not presume parent skill context arrives in a fresh session. None
+of these general roles owns the dedicated staged review, PR schema, feedback
+resolution or story execution lifecycle. Do not add renderer includes, prompt
+concatenation or mandatory skill loading to align them.
+
+Representative descriptions outside this scope were inspected, not rewritten:
+`backend-developer` emphasizes microservices even for simpler backend tasks, and
+`frontend-developer` explicitly emphasizes React. These are follow-up candidates
+if actual routing evaluations show architecture/framework over-selection. The
+`qa-expert` description includes strategy and quality metrics without a numerical
+target; `fullstack-developer` covers end-to-end delivery. Their descriptions alone
+do not establish conflicting behavior or justify broad edits. Evaluate actual
+requests before expanding beyond the six approved roles.
+
 ## Permissions
 
 Generated OpenCode agents use `mode: subagent` and inherit runtime capabilities
@@ -214,3 +240,15 @@ After installing updated assets, restart the target runtime and verify discovery
 
 Native format reference: [Codex agent role parser](https://github.com/openai/codex/blob/main/codex-rs/agent-roles/src/agent_role_config.rs)
 and [role discovery](https://github.com/openai/codex/blob/main/codex-rs/core/src/config/agent_roles.rs).
+
+
+## Activating the coding workflow revision
+
+Coordinate the six aligned role sources with `develop-code`, independent
+`review-code` and the slim personal policy. Preserve custom installed roles and
+merge the optional [project template](templates/code-repository-AGENTS.md) with
+actual project instructions. Native permissions, model metadata, counts and
+renderer ownership are unchanged. Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows)
+under separate installation authorization; a source commit does not refresh a
+running session. [Verification](coding-workflow-verification.md) records that live
+comparative model evaluation was waived, not passed.

@@ -24,6 +24,11 @@ defines the native role contract.
   create-skill/create-gif and create-mcp-server adapt attributed Apache upstream
   bundles. create-mcp-server is instruction-only, with no runtime dependencies;
   see [MCP skill verification](docs/create-mcp-server-verification.md).
+- `coding` uses `develop-code` for feature/fix/refactor methods and independent
+  `review-code` for read-only scopes/lenses. The three former development bundles
+  are retired; no aliases remain. Keep the project template optional and preserve
+  dedicated staged-review owners. Follow [coding activation](docs/remove-old-ai-files.md#consolidated-coding-workflows)
+  for coordinated policy/role/skill refresh; source delivery is not installed discovery.
 - `researching` provides provider-agnostic `search-web`; load its Exa MCP reference
   only when those tools are available and selected. Skill discovery is automatic.
 - The single harness-agnostic personal policy is `ai/AGENTS.md`. Installation
@@ -412,6 +417,15 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
     `resolve-review-feedback` copy and needed rollback backups. Follow the
     [migration steps](docs/remove-old-ai-files.md#combined-review-feedback-skill).
     Never delete plugin caches manually; source retirement is not installed cleanup.
+
+11. For consolidated coding workflows, preserve customized old development bundles,
+    personal policy and role copies; preview managed retirement, then separately
+    authorize coordinated installation/refresh. Verify `develop-code` and independent
+    `review-code` after restart in a fresh task. Shared-root removals affect all
+    harnesses reading it. Preserve unverified/customized/symlinked copies for exact-path
+    reconciliation approval; retain retirement archives, changed-copy backups and
+    plugin snapshots for an approved coherent rollback. Never manually delete caches.
+    Follow [activation and rollback](docs/remove-old-ai-files.md#consolidated-coding-workflows).
 
 **Process for future iterations:**
 - Keep AI and old `.env` backup removal manual; limit `make clean` to `.zshrc` backups.

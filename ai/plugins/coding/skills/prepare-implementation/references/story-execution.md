@@ -152,6 +152,18 @@ verification, or the staged-review gate.
 
 ## Implementation and candidate state
 
+After the authorization, branch, dependency and state guards above pass, use the
+advertised `develop-code` skill when available for the selected story's feature,
+diagnosis/fix or refactor method. Resolve it through native skill discovery and
+its references relative to that installed bundle, never sibling/checkout paths.
+If it is unavailable, report that limitation and follow the project-required
+implementation method under this contract; never claim an unavailable skill ran.
+This optional method handoff does not weaken any required check or reviewer gate.
+This executor retains task selection, state, authorization, profiles, schemas,
+budgets, native session identity, blocker/recovery and commit finalization ownership.
+Generic development/review/helpers do not call back into orchestration, create
+execution state, add another review cycle or replace required dedicated reviewers.
+
 Implement only the selected story using existing patterns and minimal changes.
 Discover required formatter, typecheck, lint, and test commands from repository
 instructions, scripts, Makefile, and documentation. Follow test-first rules where

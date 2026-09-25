@@ -1,7 +1,7 @@
 # Manually remove old AI files
 
-The installer does not identify or remove previous installations. Use this guide
-to review old AI files yourself. `make clean` removes only `$HOME/.zshrc.backup.*`;
+The installer retires only verified managed assets under the ownership rules
+below. Use this guide to reconcile preserved or unverified old AI files. `make clean` removes only `$HOME/.zshrc.backup.*`;
 it does not remove existing `.env` backups, AI files, or AI backups.
 
 Run only commands for individually reviewed paths. Do not paste this document as
@@ -142,6 +142,48 @@ Skill cleanup is separate from command cleanup. Preserve `/review-pr` unchanged.
 4. Quit and restart the selected harness and start a new Codex thread. Verify
    `search-web` discovery and absence of unwanted duplicates before discarding
    backups. Updating checkout sources alone does not clean installed copies.
+
+### Consolidated coding workflows
+
+Source retirement removes `implement-feature`, `develop-with-tests` and
+`refactor-code` in favor of `develop-code`; keep `review-code`. The substantive
+testing anti-pattern reference is preserved byte-for-byte in the new bundle.
+No compatibility wrappers or new ownership fingerprints are installed.
+
+1. Inventory the selected harness's registered `coding@craft` source, private
+   skills and shared `~/.agents/skills`. Preserve customized old bundles, personal
+   policy and native role copies outside discovery roots. Retain the pre-change
+   source revision and existing installer backups for rollback.
+2. Run the read-only `make preview-ai-cleanup` with the intended `AI_TARGET` when
+   useful. Separately authorize `make install-codex`, `make install-opencode` or
+   `make install-ai` for coordinated coding-bundle, personal-policy and native-role
+   activation. No installation is implied by source retirement.
+3. Authorized installation uses the existing checkout-bound managed inventory to
+   archive/remove verified old skills in its selected private root and the shared
+   root. Shared removals affect every harness reading that root. Old copies without
+   matching recorded ownership, customized trees and symlinks are preserved for
+   reconciliation; do not manufacture inventory entries or infer ownership from
+   a matching name. Keep other private roots or custom discovery paths
+   outside the selected target unchanged unless separately authorized.
+4. For Codex, use supported native plugin management for `coding@craft`. If the
+   installed snapshot remains stale, preview exact native replacement actions and
+   obtain scoped approval. Never manually delete caches or remove the whole active
+   marketplace. For OpenCode, use the existing directory-based skill copies.
+5. Restart the harness and start a fresh task. Verify `develop-code`, its feature,
+   bugfix, refactor and testing references, independent `review-code` scopes/lenses,
+   and updated roles/personal policy. Check every active discovery root for old
+   development entries. Source checks do not prove this installed state.
+6. Preserve any remaining old installed tree, review its exact path and obtain
+   separate removal approval before manual reconciliation. Never remove the active
+   `develop-code` or `review-code` copy. Retain retirement archives under
+   `.install-ai-backups/<timestamp>/retired/`, changed-copy backups under `skills/`,
+   and plugin snapshots under `.install-ai-backups/plugin-sources/` until verified.
+7. To roll back, inspect those retained source/configuration backups, preview the
+   exact restore and native plugin/copy operations, then obtain scoped approval.
+   Restore a coherent policy/roles/skills set using supported installation methods;
+   restart and verify discovery again. Do not rewrite Git history, restore old
+   entries beside the new ones without reviewing duplicate discovery, or discard
+   customized assets. Backup deletion remains separately approved.
 
 ### Combined review feedback skill
 

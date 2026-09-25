@@ -12,21 +12,21 @@
 - Non-goals: PRD section 7; no installation, automatic retirement, deployments,
   external posts, renderer redesign, broad agent rewrite, or altered review gates.
 - Base branch: `main`; planning baseline cb49f230b0f0a77ab8633e5d45f2092ebbbca0e1.
-- Working branch: **not prepared**. Select and record an exact existing non-main,
-  non-master branch with an existing commit before execution. This is a blocker;
-  the executor must not create/switch branches or silently infer a branch name.
+- Working branch: `refactor/coding-skills-for-ponytail`, prepared and selected by
+  the user; verified at existing commit a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9.
 - Format: explicitly continued Markdown PLAN.md workflow; CodexGoalMarkdown adapter
   for later authorized execution. Planning occurred in OpenCode, not a Codex Goal.
 - Mode: standard; use the shared risk-based advisor/self/native-review budgets.
-- Authorization: planning and completed-run archival only. Implementation and
-  per-story commits are pending; installation, source deletions, evaluations with
-  spending/delegation, and other sensitive operations require applicable approval.
+- Authorization: plan branch update and implementation granted on 2026-09-24.
+  Execution and per-story commits explicitly authorized on 2026-09-24. Installation, source
+  deletions, evaluations with spending/delegation, and other sensitive operations
+  require applicable approval.
 - Delivery: one explicitly authorized commit per verified, reviewed story.
-- Current status: prepared; all stories pending. No execution journal or memory
-  created. Prior run archived under `archive/2026-09-24-producing-and-document-skills/`.
-- Preserve existing uncommitted PRD and archival-policy edits plus archive changes.
-  Reconcile/stage that preparation baseline only under explicit authority before
-  story execution; do not silently include it in an implementation story commit.
+- Current status: All source stories delivered; US-011 live evaluations waived by user.
+  Installation and live discovery remain separately authorized future work. Prior run
+  archived under `archive/2026-09-24-producing-and-document-skills/`.
+- Preparation baseline is committed at a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9;
+  execution began with a clean worktree. Preserve any subsequent unrelated work.
 
 ## Common acceptance and verification requirements
 
@@ -84,7 +84,7 @@ Every story inherits these requirements; specific checks below supplement them.
 ## Ordered stories
 
 ### US-001 - Map ownership and define baseline evaluations
-- [ ] Story complete
+- [x] Story complete
 - Priority: 1
 - Depends on: none
 - PRD: US-001; FR-8 through FR-11 and evaluation section.
@@ -103,7 +103,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Source/fixture parsing and common verification requirements satisfied.
 
 ### US-002 - Add unified development and testing workflow
-- [ ] Story complete
+- [x] Story complete
 - Priority: 2
 - Depends on: US-001
 - PRD: US-002; FR-1 and FR-3.
@@ -122,7 +122,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Meaningful resource/metadata/independent-bundle checks and common gates pass.
 
 ### US-003 - Add conditional architecture decision guidance
-- [ ] Story complete
+- [x] Story complete
 - Priority: 3
 - Depends on: US-002
 - PRD: US-003; FR-2.
@@ -138,7 +138,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Resource closure, source validation, and common gates pass.
 
 ### US-004 - Establish review scopes and evidence contract
-- [ ] Story complete
+- [x] Story complete
 - Priority: 4
 - Depends on: US-001
 - PRD: US-004; FR-4, FR-5, FR-7.
@@ -155,7 +155,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Source/resource and applicable protocol checks plus common gates pass.
 
 ### US-005 - Add maintainability, compatibility, and testing lenses
-- [ ] Story complete
+- [x] Story complete
 - Priority: 5
 - Depends on: US-004
 - PRD: US-005; FR-6 and FR-7.
@@ -171,7 +171,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Wire conditional loading and verify fixture/resource coverage; common gates pass.
 
 ### US-006 - Add security, data/state, and reliability lenses
-- [ ] Story complete
+- [x] Story complete
 - Priority: 6
 - Depends on: US-004
 - PRD: US-006; FR-6.
@@ -186,7 +186,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Conditional references and no-mutation scenarios validate; common gates pass.
 
 ### US-007 - Add performance, accessibility, and operations lenses
-- [ ] Story complete
+- [x] Story complete
 - Priority: 7
 - Depends on: US-004
 - PRD: US-007; FR-6.
@@ -201,7 +201,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Resource/routing and evidence-provenance cases validate; common gates pass.
 
 ### US-008 - Publish project guidance and refine personal policy
-- [ ] Story complete
+- [x] Story complete
 - Priority: 8
 - Depends on: US-001, US-003, US-004
 - PRD: US-008; FR-8.
@@ -218,7 +218,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Validate byte-identical personal-policy installation contracts and common gates.
 
 ### US-009 - Align six native specialist roles
-- [ ] Story complete
+- [x] Story complete
 - Priority: 9
 - Depends on: US-003, US-005, US-006, US-007
 - PRD: US-009; FR-9.
@@ -234,7 +234,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Agent contracts and both renderer checks pass; common gates satisfied.
 
 ### US-010 - Integrate helper routing and execution handoffs
-- [ ] Story complete
+- [x] Story complete
 - Priority: 10
 - Depends on: US-002, US-004, US-008, US-009
 - PRD: US-010; FR-10.
@@ -251,7 +251,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Story execution/blocker and Ralph review checks plus common gates pass.
 
 ### US-011 - Evaluate discovery and engineering outcomes
-- [ ] Story complete
+- [x] Story complete (live evaluations waived by user)
 - Priority: 11
 - Depends on: US-003, US-005, US-006, US-007, US-008, US-009, US-010
 - PRD: US-011; Section 8 and FR-11.
@@ -259,6 +259,8 @@ Every story inherits these requirements; specific checks below supplement them.
 - Paths: coding evaluation/contract fixtures, proposed
   `docs/coding-workflow-verification.md`; existing create-skill evaluation helpers
   only if suitable and authorized.
+- User scope revision: close US-011 without live evaluations and proceed to US-012.
+  Evaluation criteria below are waived, not passed; retain unrun results and evidence limits.
 - Advisors: none unless evaluation scope explicitly authorizes independent graders.
 - [ ] Finalize agreed runtime/model, repetitions, held-out cases, grading criteria,
   spending/delegation scope, and baseline/candidate isolation before live runs.
@@ -273,7 +275,7 @@ Every story inherits these requirements; specific checks below supplement them.
 - [ ] Affected static tests and common gates pass; limitations are explicit.
 
 ### US-012 - Retire superseded sources and document activation
-- [ ] Story complete
+- [x] Story complete
 - Priority: 12
 - Depends on: US-011
 - PRD: US-012; FR-11.
@@ -296,11 +298,10 @@ Every story inherits these requirements; specific checks below supplement them.
 
 ## Execution blockers and handoff
 
-- Prepare an exact non-main/non-master working branch and record it through a scoped
-  plan update. Execution and per-story commit authorization are not yet granted.
-- Reconcile the uncommitted preparation/archive/policy baseline without discarding
-  or silently absorbing it into story changes. Do not commit without approval.
-- Agree evaluation scope before US-011; approve source deletions before US-012.
+- Prepared branch and implementation authorization are established above.
+  Execution and per-story commit authorization are established above.
+- User waived US-011 live evaluations and authorized proceeding with US-012,
+  including its three listed source-tree removals.
   Global activation remains a separate operation after source delivery.
 - Installed planning instructions may be older than the checked-in archival-policy
   revision. Source edits do not establish refreshed live discovery; do not install
@@ -338,7 +339,7 @@ Every story inherits these requirements; specific checks below supplement them.
   provisional marker and append the exact blocker under the shared procedure.
 - No implicit push, external post, installation, sensitive operation, or additional
   delegation. Native Goal continuation does not introduce Ralph loops or hooks.
-- [ ] Final report lists actual delivered scope, commits, checks/reviews, unresolved
+- [x] Final report lists actual delivered scope, commits, checks/reviews, unresolved
   evaluation/activation gaps, and any remaining limitations.
 - After delivery, archival is separately approved under the applicable completed-run
   procedure. Do not reset journals, remove active state, or commit archives under
