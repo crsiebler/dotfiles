@@ -12,7 +12,7 @@ evidence that model behavior passed.
 Baseline: `a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9`.
 The [scenario fixture](../tests/fixtures/coding_workflow_evals.json) records
 38 baseline artifact SHA-256 hashes, 27 unrun scenarios, and an empty results array.
-The [execution journal](progress.md) contains per-story checks, reviews and
+The [archived execution journal](../archive/2026-09-24-coding-workflows-and-review-architecture/docs/progress.md) contains per-story checks, reviews and
 limitations. The [ownership map](coding-workflow-design.md) records policy parity.
 
 | Evidence | Observed result | Limit |

@@ -32,11 +32,18 @@ when writing tests, choosing doubles, or adding test utilities. Load only releva
 detail, not every action. Missing required references block the affected method;
 report the exact resource rather than claiming it was applied.
 
-Reuse suitable project patterns and make the smallest cohesive change that meets
-all requirements. Preserve validation, security, accessibility and data-loss
-prevention appropriate to the behavior. Do not add layers, dependencies, or
-patterns merely to satisfy a checklist or reduce line count. Ask for material
-missing facts or new authority; make routine decisions within the approved scope.
+For every development task, including routine local changes, consider suitable
+project code first, then the standard library, native platform/framework
+capabilities, installed dependencies, and minimal cohesive custom code. Check
+behavior, compatibility and lifecycle before reuse or replacement; this preference
+does not authorize new dependencies or replacing sound code merely because a
+built-in exists.
+
+Make the smallest cohesive change that meets all requirements. Preserve validation,
+security, accessibility and data-loss prevention appropriate to the behavior. Do
+not add layers, dependencies, or patterns merely to satisfy a checklist or reduce
+line count. Ask for material missing facts or new authority; make routine decisions
+within the approved scope.
 
 For material interface, responsibility, dependency, persistence, concurrency,
 trust-boundary or performance decisions, read
