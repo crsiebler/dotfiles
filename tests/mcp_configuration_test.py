@@ -34,7 +34,7 @@ CODEX = ROOT / 'ai/codex/config.toml'
 OPENCODE = ROOT / 'ai/opencode/opencode.json'
 EXAMPLE = ROOT / 'env/.env.example'
 GLOBAL = {'github', 'exa', 'context7'}
-OPT_IN = {'jira', 'postgresql', 'docker', 'jev'}
+OPT_IN = {'jira', 'postgresql', 'docker', 'jev', 'vercel'}
 POSTGRESQL_PATH = (
     '/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js'
 )
@@ -115,6 +115,7 @@ class MCPConfigurationTest(unittest.TestCase):
         endpoints = {
             'github': 'https://api.githubcopilot.com/mcp/',
             'context7': 'https://mcp.context7.com/mcp',
+            'vercel': 'https://mcp.vercel.com',
             'jira': 'https://mcp.atlassian.com/v2/mcp',
         }
         for harness, servers in self.servers.items():
@@ -154,7 +155,7 @@ class MCPConfigurationTest(unittest.TestCase):
 
     def test_authorization_prompts_cannot_be_overridden(self):
         self.assertEqual(self.codex['approval_policy'], 'on-request')
-        for name in {'github'} | OPT_IN:
+        for name in {'github', 'vercel'} | OPT_IN:
             with self.subTest(server=name):
                 server = self.servers['codex'][name]
                 self.assertEqual(server['default_tools_approval_mode'], 'prompt')

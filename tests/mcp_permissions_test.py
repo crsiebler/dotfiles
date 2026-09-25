@@ -82,6 +82,7 @@ class MCPPermissionsTest(unittest.TestCase):
                      'editJiraIssue', 'addTeamworkGraphContext'],
             'postgresql': ['execute_query'],
             'jev': ['jev_evaluate'],
+            'vercel': ['future_unknown_tool'],
         }
         for server, names in mutations.items():
             for name in [*names, 'future_unknown_tool']:

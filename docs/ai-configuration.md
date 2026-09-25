@@ -306,6 +306,7 @@ to write external state.
 | `github` | Enabled globally | `GITHUB_MCP_TOKEN`; hosted GitHub MCP |
 | `exa` | Enabled globally | `EXA_API_KEY`; hosted Exa MCP |
 | `context7` | Enabled globally | `CONTEXT7_API_KEY`; hosted Context7 MCP |
+| `vercel` | Disabled | Vercel MCP OAuth; hosted Vercel MCP |
 | `jira` | Disabled | Atlassian Rovo v2 OAuth; `ATLASSIAN_CLOUD_ID` is site context |
 | `postgresql` | Disabled | Project least-privilege database URI and built local Node `mcp-suite` server |
 | `jev` | Disabled | `AI_GATEWAY_API_KEY` and built local Node `mcp-suite` evaluation server |
@@ -327,6 +328,7 @@ starting them or downloading their runtime packages.
 | GitHub | Exact configured repository, commit, issue, PR, search, and review reads | Edits, comments/reactions, pushes, branches, merges, settings and other mutations; unknown tools |
 | Exa | Search, advanced search, fetch, and `agent_run` research | Other tools are denied/filtered, not merely prompted |
 | Context7 | `resolve-library-id` and `query-docs` | Other tools are denied/filtered |
+| Vercel | None | Every tool, including reads |
 | Jira/Rovo | Exact documented reads, searches, discovery, and `executeRead` | Writes, destructive operations, and unknown tools |
 | PostgreSQL | `check_dangerous_operations_allowed` | `execute_query` and unknown tools |
 | Chrome, Playwright, Jam | All tools when the connection is enabled | No MCP tool-level prompts |
@@ -364,7 +366,7 @@ can perform writes depending on server configuration; it always asks, even for
 Upstream tool changes require reviewing and updating the exact exceptions in both
 source configs. Static/fake tests do not prove live server behavior.
 
-### GitHub, Exa, and Context7
+### GitHub, Exa, Context7, and Vercel
 
 GitHub uses `https://api.githubcopilot.com/mcp/` with only
 `repos,issues,pull_requests` toolsets. Use a fine-grained PAT with one resource
@@ -389,6 +391,12 @@ Exa uses its hosted endpoint with search, fetch, advanced search, and agent-run
 tools; Context7 uses `https://mcp.context7.com/mcp`. The supplied environment keys
 are referenced by headers in both harness configurations. Successful source validation proves
 neither remote service access nor account quotas.
+
+Vercel uses the official hosted endpoint `https://mcp.vercel.com` and its MCP
+OAuth flow; no Vercel token is stored in either source configuration. The server
+can manage projects and deployments, so every Vercel tool retains an approval
+prompt in both harnesses. Authenticate through the harness after restarting it;
+configuration alone does not establish account access or authorize mutations.
 
 ### Trusted project opt-in
 
