@@ -564,3 +564,14 @@
 
 - US-012 source criteria satisfied; required affected checks and staged review passed. Known full-suite PyYAML environment failures and unavailable formatter/typecheck remain disclosed. Live evaluations were waived under the user revision, not executed; no global activation or installed discovery claims.
 - Provisional completion and final report checklist updated. Intended feat(US-012): retire superseded coding skills and document activation; commit pending under standing user authority. All source stories complete on successful commit, with US-011 administratively closed by waiver. No archive, push or installation performed.
+
+
+## Final archived run - coding workflows and review architecture
+
+- Task source: PLAN.md, CodexGoalMarkdown; original prepared branch `refactor/coding-skills-for-ponytail`, baseline `a6c3b8f2ec7ee0b231eeeef11342f17b617a23a9`.
+- Completed story commits: `2d3f223`, `b196845`, `2a6827f`, `c592baf`, `5362039`, `238ba5c`, `8dacf30`, `a013d39`, `972abf5`, `305226d`, `69843a8`, `e6a8427`. All 12 source stories are recorded complete. US-011's live model evaluation was explicitly waived by the user; no evaluation results were recorded or claimed.
+- Reviews: all 12 story reviews are recorded in this journal. US-008 resolved its one finding in the permitted same-session targeted review; other recorded reviews passed without findings.
+- Verification: relevant source, contract, agent rendering, installer, retirement and shell checks passed as detailed per story. Final broad suite ran 262 tests and exited 1 with seven failures caused by missing PyYAML in unchanged create-skill helper/tests, and one skip. No standalone typecheck or configured formatter was available.
+- Limitations: installed configuration was not refreshed; fresh-session discovery and live model behavior remain unverified. No installation, push during story execution, or cache cleanup was performed.
+- Delivery: PR [#61](https://github.com/crsiebler/dotfiles/pull/61) targeting `main` is open and unmerged. Archival branch `refactor/coding-skills-for-ponytail`, HEAD `e6a84272e8090eb3797a94a509f32da88f110b20`.
+- Archival approval: user approved archival on 2026-09-24. Destination: `archive/2026-09-24-coding-workflows-and-review-architecture/`. Archived the plan, this journal, and bounded memory; verified copies before removing active copies. Archive is uncommitted; no archive commit was requested.
