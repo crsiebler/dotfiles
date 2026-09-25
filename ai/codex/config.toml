@@ -56,6 +56,11 @@ default_tools_approval_mode = "prompt"
 resolve-library-id = { approval_mode = "approve" }
 query-docs = { approval_mode = "approve" }
 
+[mcp_servers.vercel]
+url = "https://mcp.vercel.com"
+enabled = false
+default_tools_approval_mode = "prompt"
+
 [mcp_servers.exa]
 url = "https://mcp.exa.ai/mcp?tools=web_search_exa,web_fetch_exa,agent_run,web_search_advanced_exa"
 enabled = true

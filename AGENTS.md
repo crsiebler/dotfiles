@@ -91,7 +91,7 @@ defines the native role contract.
   No CLI applications or Railway setup are included. AI-only targets stay separate.
   Before manual extension updates/removal, inspect existing copies, retain needed
   backups, and obtain scoped approval. `make clean` must not remove plugins/themes.
-- GitHub, Exa, Context7 are globally enabled. Jira/Rovo, PostgreSQL, and Jev require
+- GitHub, Exa, and Context7 are globally enabled. Vercel, Jira/Rovo, PostgreSQL, and Jev require
   trusted project opt-in. AWS/Elastic MCP definitions are intentionally absent.
   PostgreSQL uses the built local Node `mcp-suite` server documented in the
   installation guide, not Docker; installation does not clone/build/install it.

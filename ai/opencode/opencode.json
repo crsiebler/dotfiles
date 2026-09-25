@@ -31,6 +31,11 @@
             "type": "remote",
             "url": "https://mcp.context7.com/mcp"
         },
+        "vercel": {
+            "enabled": false,
+            "type": "remote",
+            "url": "https://mcp.vercel.com"
+        },
         "docker": {
             "command": [
                 "docker",
@@ -128,6 +133,7 @@
         "exa_web_search_advanced_exa": "allow",
         "exa_web_search_exa": "allow",
         "github_*": "ask",
+        "vercel_*": "ask",
         "github_get_commit": "allow",
         "github_get_file_contents": "allow",
         "github_get_label": "allow",
