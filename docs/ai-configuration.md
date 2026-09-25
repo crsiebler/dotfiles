@@ -334,7 +334,7 @@ starting them or downloading their runtime packages.
 | Chrome, Playwright, Jam | All tools when the connection is enabled | No MCP tool-level prompts |
 | ElevenLabs | None | Every tool, including reads |
 
-GitHub/Jira/PostgreSQL/Vercel use default `ask` in OpenCode and `prompt` in Codex, with
+GitHub/Jira/PostgreSQL use default `ask` in OpenCode and `prompt` in Codex, with
 exact read exceptions (`allow` / `approval_mode = "approve"`). Exa/Context7 use
 default deny plus exact allows in OpenCode; Codex filters them with `enabled_tools`
 and approves those exact tools. Neither relies on broad `get_*`/`search_*` patterns
