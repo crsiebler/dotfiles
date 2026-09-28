@@ -169,6 +169,17 @@ After running `make install-opencode` (also included in `make install`):
 
 By default, `/review-pr` generates a local review report only. When `--post` is provided, it previews the PR URL, review event, consolidated body, inline comment count, and exact `gh` command or API payload, then requires explicit confirmation before posting anything to GitHub.
 
+## Local Coding Model
+
+Bonsai 2 MLX is the sole configured local coding provider. See the
+[setup and verification guide](docs/local-bonsai.md) for the isolated runtime,
+64K starting context and `mlx-bonsai` Zsh shortcut. Select the base configuration's
+Bonsai provider through OpenCode's `/models` menu; no extra profile is required.
+Provisioning is separate from
+dotfiles installation. For cleanup, inspect exact old model paths, stop their
+users, remove only selected coding caches, and retain rollback configuration
+until verification. Preserve audio weights and shared environments.
+
 ## Audio Generation
 
 Agents use the shared `create-audio` skill and its bundled `create_audio.py`

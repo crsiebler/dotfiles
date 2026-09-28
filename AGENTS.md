@@ -107,6 +107,20 @@ defines the native role contract.
   narrower reviewer restrictions; never log tokens,
   connection strings, full authorization headers, or credential stores.
 
+## Local coding model
+
+Bonsai 2 MLX is the only local coding provider in `ai/opencode/opencode.json`.
+Runtime installation pins are documented in `docs/local-bonsai.md`; no separate
+local provider profile is needed. The `mlx-bonsai` function in
+`aliases/.aliases` invokes the
+uv-tool executable directly with weights in `~/Models/bonsai-2-mlx`; no Conda
+environment or checkout path is used. Follow `docs/local-bonsai.md`.
+Installation does not provision this runtime or download weights. Preserve the
+separate audio environment. For cleanup: inventory exact coding model paths,
+stop their users with authorization, remove only approved model directories,
+and retain needed rollback copies until the MLX integration is verified. Never
+delete a shared cache/environment wholesale. Keep README and this guide aligned.
+
 ## Review and Ralph boundaries
 
 - Keep GitHub PR review objectives, schemas, orchestration, and context gathering
