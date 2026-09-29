@@ -7,7 +7,7 @@ and connection setup are separate, explicitly authorized operations.
 ## Contents
 
 - [Sources and installed layout](#sources-and-installed-layout)
-- [Installation and merge behavior](#installation-and-merge-behavior)
+- [Installation and replacement behavior](#installation-and-replacement-behavior)
 - [Connecting applications](#connecting-applications)
 - [Local Bonsai 2 installation and OpenCode setup](local-bonsai.md)
 - [Native agents and Ralph limitations](#native-agents-and-ralph-limitations)
@@ -171,7 +171,7 @@ Verify account availability and the installed harness's profile/overlay help
 before activating these files. Installation does not prove model availability
 or make Astra Ralph-compatible.
 
-## Installation and merge behavior
+## Installation and replacement behavior
 
 From the checkout:
 
@@ -244,30 +244,29 @@ unrecorded plugin registrations are not inferred to be installer-owned.
 Installation is still not transactional: failure may leave completed writes or
 archival in place. Preserve inventories and backups, correct the reported blocker,
 then rerun. Source updates alone do not execute cleanup. Restart the harness and
-verify discovery after installation; backup deletion remains separately approved.
+verify discovery after installation; run backup cleanup only when rollback is no
+longer needed.
 
-Managed JSON/TOML keys override existing values; unrelated keys survive.
-Arrays are replaced rather than unioned. MCP transport changes remove incompatible
-local process fields when moving to remote transport and obsolete URL/header
-fields when moving to local transport. Changed local commands clear old process
-fields, and managed process environment maps are replaced atomically rather than
-accumulating old credentials. Environment references remain references; the
-installer does not substitute secret values into configuration.
-
-Remote endpoint changes also discard inherited OAuth, bearer-token environment
-bindings, and HTTP/header maps before applying the new managed bindings. Old
-credentials must not follow a connection name to a different URL.
+Managed JSON/TOML files replace installed files byte-for-byte. This applies to
+Codex `config.toml` and `astra.config.toml`, and OpenCode `opencode.json`,
+`tui.json`, `astra.json`, `sol.json`, and `opencode-notifier.json`.
+The repository is authoritative: installed-only providers, models, profiles,
+MCP settings, and custom overrides are removed from these files on installation.
+Keep desired settings and permission restrictions in the repository sources before
+installing. Environment references remain references; the installer does not
+substitute secret values into configuration.
 
 Before managed writes, installation accepts only the source's exact read-tool
 exceptions within protected MCP namespaces. It refuses other overlapping OpenCode
 allow rules (including inline agent permission/tool overrides), Codex overrides
 that bypass write prompts, and expanded research-tool allowlists. Reconcile those
-rules manually; errors do not print their values. Managed OpenCode namespace rules
-precede their exact exceptions; retained custom denies are ordered afterward.
+rules manually; errors do not print their values. Source OpenCode namespace rules
+retain their order before exact exceptions.
 An existing bare/trailing Exa or Context7 namespace deny requires reconciliation
 before adding exceptions, because it may be an intentional blanket restriction.
-Codex tool disables (`enabled = false`) survive merging; unsupported approval
-values such as `deny` are rejected instead of being silently replaced by approval.
+Installed-only Codex tool disables and custom OpenCode denies are not merged into
+the replacement; maintain required restrictions in the source. Unsupported Codex
+approval values such as `deny` still block installation during preflight.
 These checks also cover installed companion configs and Codex profiles, not
 arbitrary project configuration; inspect project-level overrides separately.
 
@@ -277,9 +276,14 @@ present; the installer will not choose between it and `opencode.json`. Native
 marketplace source collisions also require explicit reconciliation rather than
 silently repointing a registration.
 
-TOML is serialized into normalized formatting, so comments and original layout
-are not preserved in the installed merged file. Changed files receive adjacent
-timestamped backups. User-level `AGENTS.md` and same-name shipped agents/commands
+Source comments, formatting, and line endings are preserved. Changed files receive
+adjacent timestamped backups before replacement; identical files are not rewritten.
+Review installed files and retain any needed rollback copies outside cleanup
+locations. `make clean` removes recognized installer backups for both harnesses,
+including adjacent configuration/agent/command backups, timestamped skill and
+retirement archives, and hashed plugin source snapshots. It preserves active
+files, plugin caches, inventories, and unknown backup names. See the
+[cleanup steps](../README.md#removing-backup-files). User-level `AGENTS.md` and same-name shipped agents/commands
 are replaced, not prose-merged. Changed OpenCode skill files are backed up under
 `.install-ai-backups/<timestamp>/skills/`. Unrelated files and stale assets are
 not removed automatically, except verified managed retirements described above.
@@ -647,7 +651,7 @@ zsh -n aliases/.aliases zsh/.zshenv zsh/.zshrc
 
 There is no standalone repository typecheck target. `validate-ai` checks local
 plugin structure, JSON/TOML syntax, and both Python renderer targets without
-starting a harness or MCP. Python tests cover installer merging and backups,
+starting a harness or MCP. Python tests cover installer replacement and backups,
 environment sync, discovery, and an isolated native plugin contract. That native
 test skips when Codex is missing or not 0.153.4; report skips rather than claiming
 live compatibility. Ralph tests exercise runner/model and review contracts;
@@ -733,8 +737,9 @@ registration separately if needed. Installation may have partially completed.
 Preserve approval rules; do not broaden permissions as an automatic rollback step.
 
 For individually approved cleanup, follow [manual removal](remove-old-ai-files.md).
-`make clean` removes `.zshrc` backups only; AI cleanup remains manual. Never
-delete an entire configuration root to remove backups.
+`make clean` removes recognized shell and AI installer backups, preserving active
+files and inventories. Other AI cleanup remains manual. Never delete an entire
+configuration root to remove backups.
 
 ### MCP server authoring
 

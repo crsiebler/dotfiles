@@ -44,11 +44,9 @@ install: install-zsh-extensions
 	sudo chmod +x /usr/local/bin/ralph
 	@echo "Installed shell/env setup."
 
-# Only .zshrc backups; other configuration cleanup remains manual.
+# Remove recognized shell and AI installer backups, preserving active files.
 clean:
-	@case "$$HOME" in ""|/|[!/]*) printf '%s\n' 'HOME must be an absolute directory other than /.' >&2; exit 1 ;; esac
-	rm -f -- "$$HOME"/.zshrc.backup.*
-	@printf '%s\n' 'Removed .zshrc backups. Other files and backups were not changed.'
+	@$(PYTHON) scripts/clean-install-backups.py
 
 sync-env:
 	@python3 $(CURDIR)/scripts/sync-env.py

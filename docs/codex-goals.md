@@ -147,7 +147,7 @@ Targeted review under either profile retains at most two evidence-gathering turn
 and only prior findings and remediation regressions. The configurable reading
 budget is behavioral guidance, not an equivalent hard step cap or immutable sandbox/MCP
 restriction; parent runtime controls apply. See the
-[activation steps](ai-configuration.md#installation-and-merge-behavior) and the
+[activation steps](ai-configuration.md#installation-and-replacement-behavior) and the
 reviewer refresh guidance in that guide before starting a new review cycle.
 
 Validate the exact JSON response. Missing required protocol, reviewer, invocation

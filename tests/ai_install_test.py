@@ -17,19 +17,51 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class InstallTest(unittest.TestCase):
-    def test_exact_read_exceptions_and_denied_namespace_survive_reinstall(self):
+    def test_configuration_files_replace_exact_bytes_and_keep_backups(self):
+        m = self.module()
+        names = ('config.toml', 'astra.config.toml', 'opencode.json',
+                 'tui.json', 'astra.json', 'sol.json', 'opencode-notifier.json')
+        with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
+            root = Path(directory)
+            for name in names:
+                with self.subTest(name=name):
+                    source = root / ('source-' + name)
+                    target = root / name
+                    content = (b'# Preserve comments and spacing.\r\nmodel = "new"\r\n'
+                               if name.endswith('.toml') else
+                               b'{\r\n    "model": "new"\r\n}\r\n')
+                    old = (b'model = "old"\n[model_providers.retired]\nname = "old"\n'
+                           if name.endswith('.toml') else
+                           b'{"provider":{"mlx":{"models":{"old":{}}}},"custom":true}')
+                    source.write_bytes(content)
+                    target.write_bytes(old)
+                    installed = m.config_bytes(target, source)
+                    self.assertEqual(installed, content)
+                    m.write_managed(target, installed)
+                    self.assertEqual(target.read_bytes(), content)
+                    backups = list(root.glob(name + '.backup.*'))
+                    self.assertEqual(len(backups), 1)
+                    self.assertEqual(backups[0].read_bytes(), old)
+                    m.write_managed(target, m.config_bytes(target, source))
+                    self.assertEqual(list(root.glob(name + '.backup.*')), backups)
+
+    def test_real_configuration_sources_can_be_reinstalled(self):
+        m = self.module()
+        for relative in ('ai/opencode/opencode.json', 'ai/codex/config.toml',
+                         'ai/codex/astra.config.toml', 'ai/opencode/tui.json',
+                         'ai/opencode/astra.json', 'ai/opencode/sol.json',
+                         'ai/opencode/opencode-notifier.json'):
+            with self.subTest(source=relative):
+                source = ROOT / relative
+                self.assertEqual(m.config_bytes(source, source), source.read_bytes())
+
+    def test_exact_read_exceptions_and_denied_namespace_conflicts(self):
         m = self.module()
         source = {'permission': {
             'github_*': 'ask', 'github_get_file_contents': 'allow',
             'exa_*': 'deny', 'exa_web_search_exa': 'allow',
         }}
         m.check_prompt_conflicts(source, source)
-        result = m.merge(source, source)
-        self.assertEqual(list(result['permission']), list(source['permission']))
-        old = {'permission': {'github_get_file_contents': 'deny'}}
-        result = m.merge(old, source)['permission']
-        self.assertEqual(result['github_get_file_contents'], 'deny')
-        self.assertEqual(list(result)[-1], 'github_get_file_contents')
         m.check_prompt_conflicts({'agent': {'custom': {
             'permission': {'github_get_file_contents': 'allow'}}}}, source)
         for permission in ({'github_*': 'allow'}, {'*create_issue': 'allow'},
@@ -58,24 +90,6 @@ class InstallTest(unittest.TestCase):
             with self.subTest(settings=settings):
                 with self.assertRaisesRegex(ValueError, 'reconcile'):
                     m.check_prompt_conflicts({'mcp_servers': {'exa': settings}}, source)
-        old = {'mcp_servers': {'exa': {'tools': {
-            'web_search_exa': {'enabled': False}}}}}
-        self.assertIs(m.merge(old, source)['mcp_servers']['exa']['tools']
-                      ['web_search_exa']['enabled'], False)
-
-    def test_real_permission_sources_can_be_merged_and_reinstalled(self):
-        m = self.module()
-        for relative in ('ai/opencode/opencode.json', 'ai/codex/config.toml'):
-            source = m.load_config(ROOT / relative)
-            result = m.merge({}, source)
-            m.check_prompt_conflicts(result, source)
-            again = m.merge(result, source)
-            self.assertEqual(result, again)
-            if 'permission' in source:
-                self.assertEqual(list(source['permission']), list(again['permission']))
-            else:
-                self.assertEqual(tomllib.loads(m.toml_dump(again)), source)
-
 
     def test_codex_permissive_server_defaults_in_companions_and_nested_profiles(self):
         m = self.module()
@@ -95,7 +109,7 @@ class InstallTest(unittest.TestCase):
         m.check_prompt_conflicts({'mcp_servers': {'unrelated': {'default_tools_approval_mode': 'auto'}}}, source)
         m.check_prompt_conflicts(source, source)
 
-    def test_prompt_conflicts_refused_and_deny_preserved(self):
+    def test_prompt_conflicts_refused(self):
         m = self.module()
         self.assertTrue(hasattr(m, 'check_prompt_conflicts'))
         source = {'permission': {'github_*': 'ask'}, 'mcp': {'github': {}}}
@@ -108,30 +122,11 @@ class InstallTest(unittest.TestCase):
                 m.check_prompt_conflicts(old, source)
         old = {'permission': {'github_create_issue': 'deny', 'unrelated_tool': 'allow'}}
         m.check_prompt_conflicts(old, source)
-        self.assertEqual(m.merge(old, source)['permission']['github_create_issue'], 'deny')
-        self.assertEqual(list(m.merge(old, source)['permission'])[-1], 'github_create_issue')
-        self.assertEqual(m.merge({'permission': {'github_*': 'deny'}}, source)['permission']['github_*'], 'deny')
-        self.assertEqual(m.merge({'permission': 'deny'}, source)['permission'], 'deny')
-        nested = {'permission': {'github_*': {'*': 'deny'}}}
-        self.assertEqual(m.merge(nested, source)['permission']['github_*'], {'*': 'deny'})
         codex = {'mcp_servers': {'github': {'default_tools_approval_mode': 'prompt'}}}
         for mode in ('auto', 'never'):
             with self.assertRaisesRegex(ValueError, 'reconcile'):
                 m.check_prompt_conflicts({'mcp_servers': {'github': {'tools': {'write': {'approval_mode': mode}}}}}, codex)
         m.check_prompt_conflicts({'mcp_servers': {'unrelated': {'tools': {'write': {'approval_mode': 'auto'}}}}}, codex)
-
-    def test_remote_endpoint_change_drops_old_credential_bindings(self):
-        m = self.module()
-        for namespace in ('mcp', 'mcp_servers'):
-            old = {namespace: {'jira': {'url': 'https://old.invalid/mcp',
-                    'headers': {'Authorization': 'secret-sentinel'}, 'oauth': {'clientId': 'old'},
-                    'http_headers': {'X-Token': 'secret-sentinel'}, 'env_http_headers': {'X-Key': 'OLD_KEY'},
-                    'bearer_token_env_var': 'OLD_TOKEN', 'enabled': False}}}
-            new = {namespace: {'jira': {'url': 'https://new.invalid/mcp',
-                                      'headers': {'Authorization': '{env:NEW_TOKEN}'}}}}
-            result = m.merge(old, new)[namespace]['jira']
-            self.assertEqual(result, {'url': 'https://new.invalid/mcp',
-                                     'headers': {'Authorization': '{env:NEW_TOKEN}'}, 'enabled': False})
 
     def test_renderer_summary_is_emitted_without_hardcoded_counts(self):
         m = self.module()
@@ -273,35 +268,6 @@ class InstallTest(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module
-
-    def test_merge_preserves_unrelated_and_env(self):
-        m = self.module()
-        result = m.merge({'mcp': {'custom': {'token': '{env:SECRET}'}, 'shared': {'extra': 1}}},
-                         {'mcp': {'shared': {'enabled': False}}})
-        self.assertEqual(result['mcp']['custom']['token'], '{env:SECRET}')
-        self.assertEqual(result['mcp']['shared'], {'extra': 1, 'enabled': False})
-
-    def test_mcp_transport_replacement_preserves_unrelated_settings(self):
-        m = self.module()
-        for key, old, new in [
-            ('mcp', {'type': 'local', 'command': ['node', 'old'], 'environment': {'OLD': 'reference'}},
-             {'type': 'remote', 'url': 'https://example.com/mcp'}),
-            ('mcp_servers', {'command': 'node', 'args': ['old'], 'env': {'OLD': 'reference'}, 'cwd': '/old'},
-             {'url': 'https://example.com/mcp'}),
-        ]:
-            result = m.merge({key: {'jira': dict(old, enabled=True, custom_timeout=30), 'unrelated': old}},
-                             {key: {'jira': new}})
-            self.assertEqual(result[key]['jira'], dict(new, enabled=True, custom_timeout=30))
-            self.assertEqual(result[key]['unrelated'], old)
-
-    def test_mcp_command_change_replaces_environment(self):
-        m = self.module()
-        for key, env_key, command in [('mcp', 'environment', ['docker', 'run']),
-                                       ('mcp_servers', 'env', 'docker')]:
-            result = m.merge({key: {'postgresql': {'command': 'node', env_key: {'STALE': 'old'}, 'enabled': True}}},
-                             {key: {'postgresql': {'command': command, env_key: {'DATABASE_URI': '{env:DATABASE_URI}'}}}})
-            self.assertEqual(result[key]['postgresql'][env_key], {'DATABASE_URI': '{env:DATABASE_URI}'})
-            self.assertTrue(result[key]['postgresql']['enabled'])
 
     def test_github_token_preflight(self):
         m = self.module()
@@ -448,7 +414,7 @@ class InstallTest(unittest.TestCase):
         self.assertEqual(permissions['permission']['skill'],
                          {'resolve-review-feedback': 'allow'})
 
-    def test_isolated_install_merge_and_repeat(self):
+    def test_isolated_install_replace_and_repeat(self):
         self.module()
         with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
             root = Path(directory)
@@ -537,8 +503,10 @@ if sys.argv[1] == 'add':
                 self.assertEqual((target.parent / 'AGENTS.md').read_bytes(), instruction_bytes)
                 self.assertEqual(list(target.parent.glob('AGENTS.md.backup.*')), [])
             value = json.loads(target.read_text())
-            self.assertEqual(value['custom'], 'preserved')
-            self.assertEqual(value['mcp']['private']['token'], '{env:SECRET}')
+            self.assertNotIn('custom', value)
+            self.assertNotIn('private', value['mcp'])
+            self.assertEqual(target.read_bytes(),
+                             (root / 'ai/opencode/opencode.json').read_bytes())
             self.assertFalse(value['mcp']['shared']['enabled'])
             self.assertEqual(len(list(target.parent.glob('opencode.json.backup.*'))), 1)
             self.assertEqual((target.parent / 'AGENTS.md').read_bytes(), instruction_bytes)
