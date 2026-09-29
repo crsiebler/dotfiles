@@ -26,7 +26,7 @@ an explicitly approved installation; there is no silent `npx` fallback.
 ### Choose an installation scope
 
 Run validation from this checkout without credentials. Before choosing one of the
-installation targets, review the [installation guide](docs/ai-configuration.md#installation-and-merge-behavior),
+installation targets, review the [installation guide](docs/ai-configuration.md#installation-and-replacement-behavior),
 authorize installation, and securely export the required `GITHUB_MCP_TOKEN`:
 
 ```sh
@@ -61,7 +61,12 @@ copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
 [`AGENTS.md`](AGENTS.md) remains separate, repository-only guidance.
 GitHub, Exa, and Context7 are globally enabled; Vercel, Jira/Rovo, PostgreSQL, and Jev remain off.
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
-See the guide for credentials, project opt-in, profiles, and merge behavior.
+See the guide for credentials, project opt-in, profiles, and replacement behavior.
+AI installation replaces managed JSON/TOML files exactly from the repository,
+including Codex configuration and OpenCode companion files. Installed-only settings
+are removed; move desired settings into the sources first. Changed files receive
+timestamped backups. Verify installed files, retain backups for rollback, and
+run `make clean` when installer backups are no longer needed.
 
 For the broader shell setup, `make install` first installs missing custom Zsh
 plugins and the configured theme, then copies shell/alias files, creates or
@@ -168,6 +173,17 @@ After running `make install-opencode` (also included in `make install`):
 ```
 
 By default, `/review-pr` generates a local review report only. When `--post` is provided, it previews the PR URL, review event, consolidated body, inline comment count, and exact `gh` command or API payload, then requires explicit confirmation before posting anything to GitHub.
+
+## Local Coding Model
+
+Bonsai 2 MLX is the sole configured local coding provider. See the
+[setup and verification guide](docs/local-bonsai.md) for the isolated runtime,
+64K starting context and `mlx-bonsai` Zsh shortcut. Select the base configuration's
+Bonsai provider through OpenCode's `/models` menu; no extra profile is required.
+Provisioning is separate from
+dotfiles installation. For cleanup, inspect exact old model paths, stop their
+users, remove only selected coding caches, and retain rollback configuration
+until verification. Preserve audio weights and shared environments.
 
 ## Audio Generation
 
@@ -475,20 +491,23 @@ installing replacements. Codex keeps native `craft` plugins and their Desktop
 presentation; OpenCode uses the `skills` CLI. See [automatic retirement](docs/remove-old-ai-files.md#automatic-managed-retirement)
 for ownership, shared-directory scope, and preserved conflicts.
 
-1. Verify the installed configuration and retain backups needed for rollback.
-2. Review adjacent `.backup.<timestamp>` files and changed OpenCode skill assets
-   under `.install-ai-backups/<timestamp>/skills/` in the configuration root.
-   The broad installer backs up `.zshrc`. Existing `.env` files are synchronized
-   by appending missing keys/exports without creating backups.
-   Retirement archives are under `.install-ai-backups/<timestamp>/retired/`;
-   native plugin source snapshots are under `.install-ai-backups/plugin-sources/`.
-   Inspect the preview before installation, verify discovery afterward, and retain
-   these archives until rollback is no longer needed. Delete only approved backups.
-3. After reviewing all matching `.zshrc` backups, run `make clean` to remove
-   only `$HOME/.zshrc.backup.*`. It preserves active files, existing `.env`
-   backups, and all AI configuration/backups.
-4. For AI files and backups, follow the [manual removal guide](docs/remove-old-ai-files.md).
-   Approve and remove only reviewed paths; never delete a whole configuration root.
+1. Verify the installed configuration and copy any backups needed for rollback
+   outside the cleanup locations before running `make clean`.
+2. Review the generated backups: `$HOME/.zshrc.backup.<timestamp>`, adjacent
+   timestamped AI configuration/agent/command backups, timestamped skill and
+   retirement archives under `.install-ai-backups/`, and hashed plugin source
+   snapshots under `.install-ai-backups/plugin-sources/`.
+3. Run `make clean` to remove these installer backups for both OpenCode and Codex.
+   It honors `CODEX_HOME` and `XDG_CONFIG_HOME`, defaulting to `~/.codex` and
+   `~/.config/opencode`. This includes backups from the separate AI install targets.
+   Active configurations, agents, commands, skills, plugin caches, installation
+   inventories, Ralph state, and legacy `.env` backups remain untouched. Invalid
+   root paths are rejected before deletion; symlink roots are rejected and symlink
+   backup candidates are skipped. Cleanup does not follow symlinks inside archives.
+4. Cleanup matches installer names and timestamp/hash formats, not every file
+   containing `backup`. Unknown backup names and unrelated files remain for manual
+   review under the [manual removal guide](docs/remove-old-ai-files.md).
+   Never delete a whole configuration root to remove backups.
 5. Separately review the obsolete installed command and sprite-agent paths listed
    in that guide. Renames install no compatibility aliases or automatic cleanup;
    preserve the Ralph executable, native Ralph agents, and project artifacts.

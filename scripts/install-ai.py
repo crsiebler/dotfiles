@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Local AI configuration installer. Requires Python 3.11+, no pip packages.
 
-Managed keys override existing values; other JSON/TOML settings survive.
-TOML formatting/comments are normalized, but values (including env references)
-are preserved. No login, dependency bootstrap, shell setup, or binary install.
+Managed JSON/TOML files replace installed files byte-for-byte with backups.
+Source formatting, comments, and environment references are preserved.
+No login, dependency bootstrap, shell setup, or binary install.
 """
 import argparse
-import copy
 import datetime
 import errno
 import importlib.util
@@ -97,62 +96,6 @@ def operation(argv: list[str]) -> str:
             return 'removing retired managed skill'
         return PROGRESS.phase if PROGRESS.phase.startswith('installing skills bundle ') else 'installing skills'
     return 'checking/rendering agents from ai/codex/agents'
-
-
-def contains_deny(value):
-    return (any(contains_deny(v) for v in value.values())
-            if isinstance(value, dict) else value == 'deny')
-
-
-def merge(old, new, path=()):
-    result = copy.deepcopy(old)
-    for key, value in new.items():
-        if key == 'permission' and result.get(key) == 'deny':
-            continue
-        if 'permission' in path and contains_deny(result.get(key)) and not isinstance(value, dict):
-            continue
-        if isinstance(value, dict) and isinstance(result.get(key), dict):
-            previous = result[key]
-            if path in (('mcp',), ('mcp_servers',)):
-                previous = clean_mcp_fields(previous, value)
-            result[key] = merge(previous, value, (*path, key))
-        else:
-            result[key] = copy.deepcopy(value)
-    if 'permission' in path:
-        # Restore managed rule order: default namespace rules precede exact
-        # exceptions. Only retained custom denies belong after those exceptions.
-        for key in new:
-            result[key] = result.pop(key)
-        for key, value in old.items():
-            if contains_deny(value) and (key not in new or value != new[key]):
-                result[key] = result.pop(key)
-    return result
-
-
-def clean_mcp_fields(old, new):
-    """Keep server-independent settings, not obsolete transport/process fields."""
-    old = copy.deepcopy(old)
-    local_fields = ('command', 'args', 'environment', 'env', 'env_vars', 'cwd')
-    remote_fields = ('url', 'headers', 'http_headers', 'env_http_headers',
-                     'bearer_token_env_var', 'oauth')
-    if new.get('type') == 'remote' or 'url' in new:
-        for key in local_fields:
-            old.pop(key, None)
-        if 'url' in new and new['url'] != old.get('url'):
-            for key in remote_fields:
-                old.pop(key, None)
-    elif new.get('type') == 'local' or 'command' in new:
-        for key in remote_fields:
-            old.pop(key, None)
-        if 'command' in new and new['command'] != old.get('command'):
-            for key in local_fields:
-                old.pop(key, None)
-    # Managed process environment is an atomic map, not an accumulation of
-    # obsolete credentials/settings across server implementations.
-    for key in ('environment', 'env', 'env_vars'):
-        if key in new:
-            old.pop(key, None)
-    return old
 
 
 def check_github_token(config, environment):
@@ -456,8 +399,7 @@ def load_config(path):
 def config_bytes(path, source):
     old, managed = load_config(path), load_config(source)
     check_prompt_conflicts(old, managed)
-    data = merge(old, managed)
-    return (toml_dump(data) if source.suffix == '.toml' else json.dumps(data, indent=2) + '\n').encode()
+    return source.read_bytes()
 
 
 def check_agent_sources(root):
@@ -601,7 +543,7 @@ def main():
                     if file.is_file():
                         plans.append((target / folder / file.relative_to(source / folder), file.read_bytes()))
         if args.target != 'validate':
-            say(f'Managed scope: {target} - config keys are merged; AGENTS.md and same-name shipped agents/commands are replaced with backups when changed. Unrelated files remain.', sys.stderr)
+            say(f'Managed scope: {target} - config files, AGENTS.md and same-name shipped agents/commands are replaced with backups when changed. Unrelated files remain.', sys.stderr)
         # Parse canonical TOML locally for safe file/line errors even when only
         # the OpenCode target is selected; renderer diagnostics stay private.
         for file in sorted((ROOT / 'ai/codex/agents').glob('*.toml')):

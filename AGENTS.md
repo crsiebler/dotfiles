@@ -65,6 +65,12 @@ defines the native role contract.
   preferences. AI installation must not provision models. Existing game
   installations are not automatically moved or removed. No chat-provider entry
   is added for an audio-only model.
+- Managed AI JSON/TOML files are replaced byte-for-byte, not merged: Codex
+  `config.toml`/`astra.config.toml` and OpenCode `opencode.json`, `tui.json`,
+  `astra.json`, `sol.json`, and `opencode-notifier.json`. Keep desired local settings
+  and permission restrictions in source before installation. Preserve preflight
+  checks and timestamped backups. After installation, verify the installed files,
+  retain needed rollback copies outside cleanup locations before `make clean`.
 - `make install-codex`, `make install-opencode`, and `make install-ai` modify user
   AI configuration only. They require explicit installation authorization. No
   logins, dependency bootstrap, shell setup, or binary installation are included.
@@ -106,6 +112,20 @@ defines the native role contract.
   for every tool. These four remain absent from Codex. Preserve this policy and
   narrower reviewer restrictions; never log tokens,
   connection strings, full authorization headers, or credential stores.
+
+## Local coding model
+
+Bonsai 2 MLX is the only local coding provider in `ai/opencode/opencode.json`.
+Runtime installation pins are documented in `docs/local-bonsai.md`; no separate
+local provider profile is needed. The `mlx-bonsai` function in
+`aliases/.aliases` invokes the
+uv-tool executable directly with weights in `~/Models/bonsai-2-mlx`; no Conda
+environment or checkout path is used. Follow `docs/local-bonsai.md`.
+Installation does not provision this runtime or download weights. Preserve the
+separate audio environment. For cleanup: inventory exact coding model paths,
+stop their users with authorization, remove only approved model directories,
+and retain needed rollback copies until the MLX integration is verified. Never
+delete a shared cache/environment wholesale. Keep README and this guide aligned.
 
 ## Review and Ralph boundaries
 
@@ -368,21 +388,21 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 
 ## Cleaning Up Dotfile Backups
 
-1. Verify the installed configuration and retain any backups needed for rollback.
-2. Review adjacent `.backup.<timestamp>` files and changed OpenCode skill assets
-   under `.install-ai-backups/<timestamp>/skills/` in the configuration root.
-   The broad installer backs up `.zshrc`. Existing `.env` files are synchronized
-   by appending missing keys/exports without creating backups.
-   Preview managed retirement before installation; afterward verify discovery and
-   retain `.install-ai-backups/<timestamp>/retired/` archives plus
-   `.install-ai-backups/plugin-sources/` snapshots. Remove only individually
-   approved backups after rollback is no longer needed. `make clean` preserves them.
-3. With explicit approval covering all matching `.zshrc` backups, `make clean`
-   removes only `$HOME/.zshrc.backup.*`. It preserves active files, existing
-   `.env` backups, and all AI configuration/backups.
-4. For AI files and backups, follow [manual removal](docs/remove-old-ai-files.md),
-   obtain explicit deletion approval, and remove only reviewed paths. Never delete
-   a whole configuration root to remove backups.
+1. Verify installed configurations and retain needed rollback copies outside the
+   cleanup locations before running `make clean`.
+2. Review generated `.zshrc.backup.<timestamp>` files, adjacent timestamped AI
+   configuration/agent/command backups, timestamped skill/retirement archives under
+   `.install-ai-backups/`, and hashed `plugin-sources/` snapshots. Existing `.env`
+   files are synchronized without generating backups.
+3. `make clean` removes these recognized backups for both AI harnesses, honoring
+   `CODEX_HOME` and `XDG_CONFIG_HOME`, including backups from AI-only installation.
+   Preserve active files, plugin caches, installation inventories, Ralph controls,
+   and legacy `.env` backups. Reject invalid or symlinked roots before deletion;
+   skip symlink backup candidates and never follow archive symlinks.
+4. Preserve unknown backup names and unrelated files for separate manual review
+   using [manual removal](docs/remove-old-ai-files.md). Never delete a whole
+   configuration root to remove backups. An agent must not run global cleanup
+   merely to validate code; use isolated project-local fixtures.
 5. Review obsolete installed command/agent paths listed in that guide separately;
    command renames do not rename `bin/ralph`, native Ralph agents, `prd.json`, or
    the bundled `subagents` helper. No automatic migration or aliases are installed.
@@ -428,7 +448,8 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
     Follow [activation and rollback](docs/remove-old-ai-files.md#consolidated-coding-workflows).
 
 **Process for future iterations:**
-- Keep AI and old `.env` backup removal manual; limit `make clean` to `.zshrc` backups.
+- Keep cleanup scoped to recognized installer backups; preserve active files,
+  installation inventories, unknown backups, and legacy `.env` backups.
 - Always update both README.md and AGENTS.md to document the backup and cleanup process step-by-step so code and docs remain in sync.
 
 ---

@@ -225,7 +225,7 @@
     "provider": {
         "bonsai": {
             "models": {
-                "bonsai-2-27b": {
+                "prism-ml/Ternary-Bonsai-2-27B-mlx-2bit": {
                     "interleaved": {
                         "field": "reasoning_content"
                     },
@@ -241,49 +241,20 @@
                             "text"
                         ]
                     },
-                    "name": "Ternary Bonsai 2 27B PQ2_0",
+                    "name": "Ternary Bonsai 2 27B MLX 2-bit",
                     "reasoning": true,
                     "temperature": true,
                     "tool_call": true
                 }
             },
-            "name": "PrismML Bonsai Local",
+            "name": "Bonsai 2 MLX Local",
             "npm": "@ai-sdk/openai-compatible",
             "options": {
                 "apiKey": "none",
                 "baseURL": "http://127.0.0.1:8081/v1",
-                "timeout": false
-            }
-        },
-        "mlx": {
-            "models": {
-                "mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit": {
-                    "limit": {
-                        "context": 65536,
-                        "output": 8192
-                    },
-                    "modalities": {
-                        "input": [
-                            "text"
-                        ],
-                        "output": [
-                            "text"
-                        ]
-                    },
-                    "name": "Qwen3 Coder 30B A3B MLX",
-                    "reasoning": false,
-                    "temperature": true,
-                    "tool_call": true
-                }
-            },
-            "name": "MLX Local",
-            "npm": "@ai-sdk/openai-compatible",
-            "options": {
-                "apiKey": "none",
-                "baseURL": "http://127.0.0.1:8080/v1",
-                "chunkTimeout": 120000,
+                "timeout": false,
                 "headerTimeout": 600000,
-                "timeout": false
+                "chunkTimeout": 120000
             }
         }
     },

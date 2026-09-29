@@ -1,8 +1,10 @@
 # Manually remove old AI files
 
 The installer retires only verified managed assets under the ownership rules
-below. Use this guide to reconcile preserved or unverified old AI files. `make clean` removes only `$HOME/.zshrc.backup.*`;
-it does not remove existing `.env` backups, AI files, or AI backups.
+below. Use this guide to reconcile preserved or unverified old AI files.
+`make clean` removes recognized shell and AI installer backups; it preserves
+active AI files, inventories, unknown backups, and existing `.env` backups. See
+[backup cleanup](../README.md#removing-backup-files) before running it.
 
 Run only commands for individually reviewed paths. Do not paste this document as
 a script or delete an entire configuration directory. If an AI agent performs
@@ -79,8 +81,9 @@ the separate repository-root `AGENTS.md` as cleanup.
    previously recorded IDs now absent from the marketplace, with matching sources.
 5. Restart and verify discovery. Preserve ownership inventories and backups for
    retries/rollback; malformed inventories block. Do not edit inventories to claim
-   unrelated installations. Backups require separate deletion approval and are never
-   removed by `make clean`. Follow the manual procedure below for preserved conflicts.
+   unrelated installations. When rollback is no longer needed, `make clean` removes
+   recognized installer backups while preserving inventories. Follow the manual
+   procedure below for preserved conflicts.
 
 ## 3. Remove selected old skills
 
