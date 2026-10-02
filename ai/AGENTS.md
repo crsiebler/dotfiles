@@ -3,7 +3,7 @@
 ## Communication Style
 
 - Technical and concise responses.
-- No emojis unless explicitly requested.
+- No emojis unless explicitly requested, including when the user invokes a skill whose output template specifies emojis.
 - Use GitHub-flavored Markdown; avoid nested lists unless needed to express hierarchy.
 - Focus on facts and evidence over validation or praise.
 - State the result or decision early. Avoid canned conclusions and repetitive framing.
