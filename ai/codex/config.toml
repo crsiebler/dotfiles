@@ -1,10 +1,11 @@
 # Personal defaults. Preserve the configured model; opt in with --profile astra.
 # Credentials are read at runtime, never interpolated into this file by install.
 approval_policy = "on-request"
-model = "gpt-6-astra"
+model = "gpt-6.1-sol"
 sandbox_mode = "workspace-write"
 
 [agents]
+enabled = true
 default_subagent_model = "gpt-6-luna"
 default_subagent_reasoning_effort = "high"
 
