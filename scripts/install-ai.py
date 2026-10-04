@@ -80,8 +80,8 @@ def parse_json(text: str, context: str) -> dict:
 def operation(argv: list[str]) -> str:
     """Map installer-owned commands to safe operations, never entire argv."""
     if argv[0] == 'codex':
-        if argv[1:] == ['--version']:
-            return 'checking Codex version'
+        if argv[-1] == '--help':
+            return 'checking Codex plugin CLI capabilities'
         if argv[1:4] == ['plugin', 'marketplace', 'list']:
             return 'listing marketplaces'
         if argv[1:4] == ['plugin', 'marketplace', 'add']:
@@ -231,6 +231,27 @@ def run(argv):
         # Avoid echoing harness errors which may contain credential values.
         raise ValueError(f'{label}: exit status {result.returncode}; inspect configuration locally')
     return result.stdout
+
+
+def check_codex_cli():
+    """Require the plugin interface we use, independently of release numbers."""
+    commands = (
+        (['plugin', 'marketplace', 'list'], ['--json']),
+        (['plugin', 'marketplace', 'add'], []),
+        (['plugin', 'list'], ['--marketplace', '--json', '--available']),
+        (['plugin', 'add'], []),
+        (['plugin', 'remove'], []),
+    )
+    for command, options in commands:
+        label = 'codex ' + ' '.join(command)
+        try:
+            help_text = run(['codex', *command, '--help'])
+        except ValueError as error:
+            raise ValueError(f'cannot check required command {label}: {error}') from None
+        for option in options:
+            if not re.search(r'(?<![\w-])' + re.escape(option) + r'(?![\w-])', help_text):
+                raise ValueError(f'Codex CLI lacks required option {option} for {label}; '
+                                 'update Codex explicitly before installing')
 
 
 def check_registration(root, name, listing):
@@ -431,8 +452,8 @@ def main():
         for tool in dependencies:
             if not shutil.which(tool):
                 raise ValueError(f'{tool} is required on PATH; install it explicitly (no network bootstrap)')
-        if 'codex' in targets and run(['codex', '--version']).strip() != 'codex-cli 0.153.4':
-            raise ValueError('Codex 0.153.4 required for this installer contract')
+        if 'codex' in targets:
+            check_codex_cli()
     PROGRESS.phase = 'preparing sources'
     native_agents = check_agent_sources(ROOT)
     manifest = load_config(ROOT / '.agents/plugins/marketplace.json')

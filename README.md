@@ -14,7 +14,9 @@ A collection of configuration files for storing user preferences and preserving 
 
 - Shell setup: Zsh, Oh My Zsh, standard Unix tools, and `python3` for environment synchronization.
 - AI installer: Python 3.11+ (`PYTHON` defaults to `python3.11`).
-- Codex installation: Codex CLI **0.153.4**.
+- Codex installation: a CLI supporting native local plugin marketplaces,
+  plugin add/list/remove, and the listing flags used by the installer.
+  Prerequisites check capabilities rather than pinning a release number.
 - AI installation/skill retirement: the `skills` CLI already on `PATH`; retirement
   requires tested version 1.5.24. OpenCode is needed to use its installed skills.
 - Source validation and agent rendering: Python 3.11+. Ralph requires Python 3.11+, POSIX, and Git;

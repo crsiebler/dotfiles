@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -27,8 +28,12 @@ class NativePluginTest(unittest.TestCase):
                                         capture_output=True, text=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 return result.stdout
-            if run('--version').strip() != 'codex-cli 0.153.4':
-                self.skipTest('native contract targets Codex 0.153.4')
+            spec = importlib.util.spec_from_file_location('installer', ROOT / 'scripts/install-ai.py')
+            assert spec and spec.loader
+            installer = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(installer)
+            with patch.object(installer, 'run', side_effect=lambda argv: run(*argv[1:])):
+                installer.check_codex_cli()
             manifest = json.loads((ROOT / '.agents/plugins/marketplace.json').read_text())
             target = root / '.agents/plugins'
             target.mkdir(parents=True)

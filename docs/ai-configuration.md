@@ -197,7 +197,13 @@ make install-ai
 ```
 
 Python 3.11+ is required for validation, rendering, and installation; Make defaults
-to `python3.11`. Codex installation requires exactly CLI 0.153.4.
+to `python3.11`. Codex installation requires native local marketplace and plugin
+add/list/remove support. Prerequisites inspect those commands with `--help`,
+including marketplace listing's `--json` and plugin listing's `--marketplace`,
+`--json`, and `--available` options, before preparing sources or destinations.
+There is no exact Codex release pin. Existing preflight still validates listing
+JSON and local source ownership; command help alone does not prove installation
+or configuration compatibility. CLI failures remain blockers.
 All AI installation targets require `skills` on `PATH` for standalone retirement.
 When retirement is planned, CLI 1.5.24 is required for its tested scoped-removal
 contract. Preview does not require or run either CLI. Missing prerequisites
@@ -673,8 +679,9 @@ There is no standalone repository typecheck target. `validate-ai` checks local
 plugin structure, JSON/TOML syntax, and both Python renderer targets without
 starting a harness or MCP. Python tests cover installer replacement and backups,
 environment sync, discovery, and an isolated native plugin contract. That native
-test skips when Codex is missing or not 0.153.4; report skips rather than claiming
-live compatibility. Ralph tests exercise runner/model and review contracts;
+test runs against the installed Codex version and skips only when Codex is missing;
+report failures and skips rather than claiming live compatibility. Ralph tests
+exercise runner/model and review contracts;
 `tests/ralph_review_test.sh` uses Ruby only to validate native reviewer YAML.
 Ruby is not an installer dependency.
 

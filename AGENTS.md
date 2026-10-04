@@ -483,7 +483,8 @@ This repository assumes:
   `python3` for environment sync
 - Ruby only for native reviewer YAML validation in `tests/ralph_review_test.sh`,
   not as an installer dependency
-- Codex CLI 0.153.4 for Codex installation; `skills` CLI for OpenCode skill copies
+- Codex CLI with native local marketplace and plugin add/list/remove support
+  (capability checks, no exact release pin); `skills` CLI for OpenCode skill copies
 - Python 3.11+, Git, and POSIX process groups/flock for the Ralph supervisor;
   jq remains a shell regression-test fixture dependency, not a runner dependency
 - Optional: shellcheck for linting (run manually, not automated)
