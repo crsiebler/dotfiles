@@ -198,18 +198,58 @@ class InstallTest(unittest.TestCase):
 
     def test_prerequisites_precede_renderer(self):
         m = self.module()
-        for available, version, expected in [(None, '', 'required on PATH'),
-                                              ('codex', 'wrong', '0.153.4 required')]:
-            calls = []
-            def execute(argv):
-                calls.append(argv)
-                return version
-            with patch.object(sys, 'argv', ['install-ai.py', 'codex']), \
-                    patch.object(m.shutil, 'which', return_value=available), \
-                    patch.object(m, 'run', side_effect=execute):
-                with self.assertRaisesRegex(ValueError, expected):
-                    m.main()
-            self.assertTrue(all(argv == ['codex', '--version'] for argv in calls))
+        with patch.object(sys, 'argv', ['install-ai.py', 'codex']), \
+                patch.object(m.shutil, 'which', return_value=None), \
+                patch.object(m, 'run') as execute:
+            with self.assertRaisesRegex(ValueError, 'required on PATH'):
+                m.main()
+            execute.assert_not_called()
+
+    def test_codex_updates_with_required_capabilities_reach_source_preparation(self):
+        for version in ('0.153.4', '0.160.0', '0.200.0'):
+            with self.subTest(version=version):
+                m = self.module()
+                def execute(argv):
+                    if argv == ['codex', '--version']:
+                        return f'codex-cli {version}'
+                    self.assertEqual(argv[0], 'codex')
+                    self.assertEqual(argv[-1], '--help')
+                    return '--json --marketplace --available'
+                with patch.object(sys, 'argv', ['install-ai.py', 'codex']), \
+                        patch.object(m.shutil, 'which', return_value='fixture'), \
+                        patch.object(m, 'run', side_effect=execute), \
+                        patch.object(m, 'check_agent_sources',
+                                     side_effect=RuntimeError('source preparation reached')):
+                    with self.assertRaisesRegex(RuntimeError, 'source preparation reached'):
+                        m.main()
+
+    def test_missing_codex_command_stops_before_sources_and_hides_cli_output(self):
+        m = self.module()
+        failed = subprocess.CompletedProcess([], 2, 'secret-sentinel', 'secret-sentinel')
+        with patch.object(sys, 'argv', ['install-ai.py', 'codex']), \
+                patch.object(m.shutil, 'which', return_value='fixture'), \
+                patch.object(m.subprocess, 'run', return_value=failed), \
+                patch.object(m, 'check_agent_sources') as prepare:
+            with self.assertRaisesRegex(ValueError, 'required.*codex plugin') as caught:
+                m.main()
+            prepare.assert_not_called()
+        self.assertNotIn('secret-sentinel', str(caught.exception))
+
+    def test_missing_codex_list_option_stops_before_sources(self):
+        for option in ('--json', '--marketplace', '--available'):
+            with self.subTest(option=option):
+                m = self.module()
+                help_text = ' '.join(value for value in (
+                    '--json', '--marketplace', '--available') if value != option)
+                # A similarly named option must not satisfy the contract.
+                help_text += f' {option}-other'
+                with patch.object(sys, 'argv', ['install-ai.py', 'all']), \
+                        patch.object(m.shutil, 'which', return_value='fixture'), \
+                        patch.object(m, 'run', return_value=help_text), \
+                        patch.object(m, 'check_agent_sources') as prepare:
+                    with self.assertRaisesRegex(ValueError, f'required option {option}'):
+                        m.main()
+                    prepare.assert_not_called()
 
     def test_partial_outcome_reporting(self):
         m = self.module()
@@ -468,7 +508,7 @@ if sys.argv[1] == 'add':
                         ignore=shutil.ignore_patterns('metadata.json', '.git', '__pycache__', '__pypackages__'))
 ''')
             fake.chmod(0o755)
-            early_codex = put('fakebin/codex', '#!/bin/sh\nprintf "codex-cli 0.153.4\\n"\n')
+            early_codex = put('fakebin/codex', '#!/bin/sh\nprintf "%s\\n" "--json --marketplace --available"\n')
             early_codex.chmod(0o755)
             env = dict(os.environ, HOME=str(root / 'home'), CODEX_HOME=str(root / 'home/codex'),
                        XDG_CONFIG_HOME=str(root / 'home/xdg'), PATH=str(root / 'fakebin'))
@@ -549,7 +589,9 @@ if sys.argv[1] == 'add':
 import json
 from pathlib import Path
 if sys.argv[1:] == ['--version']:
-    print('codex-cli 0.153.4')
+    print('codex-cli 0.160.0')
+elif sys.argv[-1] == '--help':
+    print('--json --marketplace --available')
 elif sys.argv[1:4] == ['plugin', 'marketplace', 'list']:
     print('{"marketplaces": []}')
 else:
