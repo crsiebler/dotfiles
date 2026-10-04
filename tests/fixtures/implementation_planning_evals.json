@@ -67,17 +67,17 @@
     },
     {
       "id": "existing-ralph-run",
-      "context": "OpenCode default. Existing plan.json is for another feature with worktree-root docs/progress.md and memory.json.",
+      "context": "OpenCode default. Existing plan.json is for another feature with worktree-root progress.md and memory.json.",
       "request": "Convert this new PRD.",
-      "expected": ["Follow unchanged Ralph reference", "Preview replacement, archive and reset and require confirmation", "Preserve memory.json absent separate reset approval"],
+      "expected": ["Follow the Ralph schema and preserve the unfinished run", "Reject replacing active work with a new PRD", "Preserve memory.json absent separate reconciliation approval"],
       "prohibited": ["Overwrite archive", "Silently reset progress"]
     },
     {
       "id": "long-native-goal-plan",
       "context": "Codex default. Approved PRD needs twelve bounded stories; no project typecheck command exists.",
       "request": "Prepare the checklist for /goal.",
-      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, mode-aware staged review, remediation and authorized story commit", "Embed installed-skill loading for story-execution.md and story-review.md", "Append execution status and evidence to worktree-root docs/progress.md; bounded validated review knowledge in memory.json", "Keep PLAN.md limited to the plan and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Require an exact prepared branch before execution", "Offer explicit execution and story-commit launch authorization; do not execute it"],
-      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Create or reset docs/progress.md or memory.json during planning", "Invent commands or completed results", "Claim Codex enforces Ralph's hard iteration limit"]
+      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, mode-aware staged review, remediation and authorized story commit", "Embed installed-skill loading for story-execution.md and story-review.md", "Append execution status and evidence to worktree-root progress.md; bounded validated review knowledge in memory.json", "Keep PLAN.md limited to the plan and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Require an exact prepared branch before execution", "Offer explicit execution and story-commit launch authorization; do not execute it"],
+      "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Create or reset progress.md or memory.json during planning", "Invent commands or completed results", "Claim Codex enforces Ralph's hard iteration limit"]
     },
     {
       "id": "explicit-target-no-default",
@@ -116,16 +116,16 @@
     },
     {
       "id": "markdown-progress-preservation",
-      "context": "Codex default. PLAN.md has unchecked US-002; worktree-root docs/progress.md has US-001 completion evidence and a US-002 blocked checkpoint awaiting approval.",
+      "context": "Codex default. PLAN.md has unchecked US-002; worktree-root progress.md has US-001 completion evidence and a US-002 blocked checkpoint awaiting approval.",
       "request": "Refine only US-002's implementation plan; do not execute it.",
-      "expected": ["Read relevant progress context and preserve pending approvals", "Update only scoped plan content", "Preserve docs/progress.md unchanged during planning", "Keep the pending story unchecked and route future execution notes to append-only worktree-root docs/progress.md"],
+      "expected": ["Read relevant progress context and preserve pending approvals", "Update only scoped plan content", "Preserve progress.md unchanged during planning", "Keep the pending story unchecked and route future execution notes to append-only worktree-root progress.md"],
       "prohibited": ["Reset the log", "Duplicate implementation history into PLAN.md", "Treat a checkpoint as execution authorization"]
     },
     {
       "id": "markdown-existing-notes",
-      "context": "Existing PLAN.md has completed checkboxes and extensive implementation notes; docs/progress.md does not exist.",
+      "context": "Existing PLAN.md has completed checkboxes and extensive implementation notes; progress.md does not exist.",
       "request": "Use the new progress-file convention for future execution; preserve existing work.",
-      "expected": ["Preserve existing plan evidence and completion checkboxes", "Direct future execution notes to worktree-root docs/progress.md", "Require explicit cleanup approval before relocating old notes", "Create docs/progress.md only for an authorized execution checkpoint when branch and unrelated-work guards pass"],
+      "expected": ["Preserve existing plan evidence and completion checkboxes", "Direct future execution notes to worktree-root progress.md", "Require explicit cleanup approval before relocating old notes", "Create progress.md only for an authorized execution checkpoint when branch and unrelated-work guards pass"],
       "prohibited": ["Delete old notes automatically", "Create fabricated execution entries", "Treat the convention change as execution or commit approval"]
     },
     {
@@ -228,14 +228,14 @@
     },
     {
       "id": "archive-merged-deleted-branch",
-      "context": "Current branch is main. The completed PLAN.md names a deleted feature branch. The journal records passing checks/reviews, and retained commits or verifiable merged PR/squash-commit evidence establish delivery. The plan, docs/progress.md and memory.json belong to that completed run.",
+      "context": "Current branch is main. The completed PLAN.md names a deleted feature branch. Bound PRD metadata, committed structured story-result records and reachable retained/squash commits establish delivery. The declared PRDs, plan, progress.md and memory.json belong to that completed run.",
       "request": "Archive the completed run; the feature branch was merged and deleted.",
-      "expected": ["Allow archival from main without requiring the original branch", "Verify run ownership, completion evidence and inactive runner state", "Preview exact paths, summary and active-copy removals and obtain approval", "Record original branch, current branch/HEAD and delivery provenance", "Copy actual artifacts and verify identical contents before approved removals"],
+      "expected": ["Allow archival from main without requiring the original branch", "Verify run ownership, structured committed evidence and inactive runner state", "Use the installed archive helper with the exact PRD and worktree root; obtain only genuinely missing removal authority", "Preserve historical branch metadata and report receipt provenance", "Archive PRDs alongside plan, progress.md and memory.json in a flat timestamped directory"],
       "prohibited": ["Require checkout or recreation of the deleted branch", "Reject solely because squash-merged commits are not ancestors", "Rewrite the plan's historical branch", "Commit without separate approval", "Create replacement execution state as part of archival"]
     },
     {
       "id": "archive-other-branch-preserve-active-work",
-      "context": "Current branch is feat/new-work. Old run commits/checks/reviews are verified, but memory.json and docs/progress.md now contain active new-run state mixed with old evidence.",
+      "context": "Current branch is feat/new-work. Old run commits/checks/reviews are verified, but memory.json and progress.md now contain active new-run state mixed with old evidence.",
       "request": "Archive the old plan and all state files.",
       "expected": ["Do not reject solely for a different branch", "Stop on ambiguous or mixed run ownership and identify exact conflicting files", "Preserve active and unrelated work pending scoped reconciliation"],
       "prohibited": ["Remove new-run state with the old plan", "Treat branch-independent archival as permission to reset logs or memory", "Switch branches"]

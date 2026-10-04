@@ -21,7 +21,7 @@ and ask before writing. Apply the preservation guard before every save.
 PRDs record approved requirements, requirement changes, and open questions; label
 drafts and assumptions rather than presenting them as approved. Once execution
 begins, implementation outcomes and checkpoints belong in worktree-root
-`docs/progress.md`. Approved requirement changes update the PRD and should be
+`progress.md`. Approved requirement changes update the PRD and should be
 cross-referenced from that journal during execution. Do not bloat the PRD with
 execution notes or require/create the journal while drafting requirements.
 
@@ -36,9 +36,40 @@ execution notes or require/create the journal while drafting requirements.
    archive, and verify identical contents before replacing the active file. Do
    not follow out-of-project symlinks. If approval is withheld or preservation
    fails, leave the original unchanged and return the draft in the response.
-4. Never archive `PLAN.md`, `plan.json`, `memory.json`, or `docs/progress.md` as a
-   drafting side effect. They belong to separately approved completed-run
-   archival, not PRD replacement. Preserve unrelated files and execution evidence.
+4. Never archive `PLAN.md`, `plan.json`, `memory.json`, or `progress.md` as a
+   drafting side effect. Completed-run archival belongs to prepare-implementation's
+   deterministic helper after verified execution, including the run-owned PRDs.
+   PRD replacement is a separate preservation guard. Preserve unrelated files.
+
+## Machine-readable run identity
+
+For a saved new PRD, include exactly one block like this. Generate a unique stable
+lowercase run ID (letters/digits/hyphens, at most 80 characters); preserve it on
+revisions. List only associated PRDs, using project-relative paths and distinct
+basenames. All PRDs in the run carry the identical block.
+
+```work-run
+{
+  "version": 1,
+  "run_id": "search-20261003",
+  "feature": "search",
+  "adapter": null,
+  "task_source": null,
+  "prds": ["tasks/prd-search.md"],
+  "journal": "progress.md",
+  "memory": "memory.json",
+  "archive_on_completion": true
+}
+```
+
+During implementation planning, prepare-implementation binds adapter to
+CodexGoalMarkdown or RalphJSON and task_source to the actual PLAN.md or plan.json
+path, preserving the Ralph JSON schema. Discover that skill for its canonical
+archive contract/script; do not hardcode its installed location. The true flag
+expresses intended automatic closeout, not approval for removal or commits.
+Do not create progress.md or memory.json while drafting. Completed archival puts
+the PRD at the archive root beside the plan, journal, and memory, retaining its
+original filename. Do not retrofit or move existing PRDs during an unrelated request.
 
 ---
 

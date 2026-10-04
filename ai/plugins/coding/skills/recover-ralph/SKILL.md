@@ -21,7 +21,7 @@ The autonomous Ralph executor must not invoke this workflow to clear its own sto
    the applicable contract, not to generate a plan or begin story execution.
    Resolve relative to the installed skill, not checkout or guessed cache paths.
    Missing protocol is a blocker, not permission to invent one.
-3. Read the relevant `plan.json` story, recent worktree-root `docs/progress.md`
+3. Read the relevant `plan.json` story, recent worktree-root `progress.md`
    checkpoints if present, stop reason if present, and the outcome matching the
    ledger's iteration and story
    IDs. Locate the ledger through `git rev-parse --git-path ralph/state.json`.
@@ -76,7 +76,7 @@ the supervisor. Do not reset `memory.json` or mark a story complete to unblock i
 Do not raise recovery limits without a separately previewed and approved budget
 decision using the runner's supported option, never direct state editing.
 
-Append a dated recovery checkpoint to worktree-root `docs/progress.md` only within
+Append a dated recovery checkpoint to worktree-root `progress.md` only within
 approved repair scope: story/iteration, original blocker, actual approvals, repair, checks, remaining
 issues, and next action. Preserve prior entries. If the branch or state makes even
 that write unsafe, report the checkpoint in the response instead.

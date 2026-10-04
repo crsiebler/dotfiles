@@ -80,6 +80,19 @@ bundle. Follow [coordinated activation and rollback](remove-old-ai-files.md#cons
 the user-waived live evaluations; source delivery does not establish installed
 routing or behavioral quality.
 
+### Shipping and GitHub assessment
+
+`manage-changes` owns scoped commit/push/PR shipping; GitHub is the implemented
+external adapter. It prepares exact write previews before requesting approval
+for a bounded sequence and carries that approval forward unless scope changes.
+Descriptions summarize final behavior across all commits, including an authorized
+archival closeout commit, with actual validation and limitations. No implicit merge.
+`assess-work-item` has a dedicated GitHub issue/Projects adapter, selecting adequate
+exposed read tools or installed gh. It distinguishes issue/PR/draft project items,
+handles pagination/coverage gaps, and defaults to a draft. Posting still requires
+a verified comment target and exact scoped approval. No live account access is
+established by source validation; source delivery does not install these changes.
+
 ### Review feedback consolidation
 
 `resolve-review-feedback` now owns assessment and resolution preparation.
@@ -586,20 +599,27 @@ native wrapper and skill copies, separately authorize `make install-opencode` an
 restart OpenCode; Ralph's native step limits remain unchanged.
 
 Keep task sources limited to the stable plan, completion state, and concise current
-status, worktree-root `docs/progress.md` append-only, and root `memory.json` at version 1 with at most
+status, worktree-root `progress.md` append-only, and root `memory.json` at version 1 with at most
 20 patterns and 20 suppressions. Missing memory is normal; invalid memory blocks
 without overwrite. Update memory only after passing review, promoting reusable
 accepted fixes with verification and suppressing only evidenced false positives.
 Only durable guidance belongs in the nearest `AGENTS.md`.
 Create the journal only for a permitted execution checkpoint, never during planning
 or requirements drafting. Do not read or migrate legacy execution logs. After full
-verified delivery, use the separately approved
-[completed-run archive](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md)
-for the plan, journal, and memory together; Ralph must first validate completion
-and exit. Archival may occur on any branch, including main/master, after the
-original branch has been merged/deleted. Verify run ownership and completion
-from retained commits or merged PR/squash-commit evidence plus the journal; the
-execution branch guards remain unchanged. PRD replacement separately requires
+verified delivery, automatically invoke the installed
+[completed-run archive helper](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md)
+under the execution grant's exact archival/removal scope. Bound work-run metadata
+in the PRDs selects the task source and associated PRDs; pre-commit story-result
+records in root progress.md provide structured observed check/review evidence.
+The script verifies committed markers/evidence and copies artifacts byte-for-byte
+to one flat timestamped archive, with PRDs alongside plan/journal/memory and a
+receipt mapping original paths. One closeout commit needs its own authority,
+which may be granted upfront. Ralph's invoking assistant first waits for
+supervisor validation and successful exit; CLI-only Ralph has no archive hook.
+Archival may occur on any branch, including main/master after merge; reachable
+retained/squash delivery evidence is required. Partial failures stop without
+automatic cleanup. Execution branch guards and historical archive layouts remain
+unchanged; no existing journals or installed copies are moved by source delivery. PRD replacement separately requires
 approved archival and verified preservation before replacement, never automatic
 execution-state cleanup.
 

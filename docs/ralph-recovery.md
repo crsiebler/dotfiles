@@ -61,7 +61,7 @@ outcomes, or evidence to make the run continue.
 
 Approve a specific repair scope or perform the correction yourself. The assistant
 then runs applicable checks and, when authorized, appends a recovery checkpoint to
-worktree-root `docs/progress.md`. Create it only for a permitted repair checkpoint,
+worktree-root `progress.md`. Create it only for a permitted repair checkpoint,
 never during read-only assessment. Do not read or migrate legacy execution logs.
 Existing history and unrelated work stay intact. Runner state,
 retry counts, locks, and old outcomes must not be edited or removed by the helper.

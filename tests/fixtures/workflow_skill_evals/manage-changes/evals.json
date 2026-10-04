@@ -1,0 +1,7 @@
+{
+  "skill_name": "manage-changes",
+  "evals": [
+    {"id": 1, "prompt": "Prepare to ship the completed feature to GitHub. Its last commit only archives the run.", "expected_output": "Inspect all included changes, prepare exact commit/push/PR scope as needed, and write a purpose-based PR title/body with actual validation.", "files": [], "expectations": ["Feature title rather than archive commit title", "One concrete bounded write preview", "No external writes before approval", "No merge/deploy"]},
+    {"id": 2, "prompt": "Continue the exact push and PR creation sequence I approved earlier.", "expected_output": "Recheck unchanged targets/content and proceed within the existing scope, verifying results.", "files": [], "expectations": ["No repeated unchanged approval", "No force push or main/master push", "Check for existing PR after ambiguous results"]}
+  ]
+}

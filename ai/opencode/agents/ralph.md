@@ -37,7 +37,7 @@ the runner outcome and recovery protocol. Never modify runner state or retry cou
 - Work on the runner's exact selected story with `passes: false`; read its
   `notes`. Set `passes: true` only provisionally for the passing story commit;
   delivery requires successful commit, with scoped marker rollback on failure.
-- Handoff: append-only worktree-root `docs/progress.md`, bounded version-1 root
+- Handoff: append-only worktree-root `progress.md`, bounded version-1 root
   `memory.json`, and durable repository guidance in nearby `AGENTS.md`, as
   specified by the contract.
 - Native staged reviewer: exactly `ralph-reviewer` when the shared mode/risk
@@ -87,5 +87,10 @@ failed checks, or failed/unperformed commits. A fully complete valid plan is a
 runner no-op and needs no new work or empty commit.
 
 Leave the task source and candidate intact for runner completion validation.
-Completed-run archival is a separate explicitly approved post-run operation under
-the installed skill's `references/completed-run-archive.md`, never this iteration.
+Completed-run archival uses the installed skill's `scripts/archive_run.py` and
+`references/completed-run-archive.md`, never this iteration. The invoking
+assistant runs it automatically after supervisor validation and successful exit
+when its execution grant includes the declared active-copy removals; one closeout
+commit needs its own scope. Preserve the bound PRDs and root progress.md until
+then, including truthful pre-commit story-result records as the shared contract
+requires. A CLI-only supervisor does not implement an automatic archival hook.

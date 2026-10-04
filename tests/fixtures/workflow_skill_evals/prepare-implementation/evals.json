@@ -1,0 +1,9 @@
+{
+  "skill_name": "prepare-implementation",
+  "evals": [
+    {"id": 1, "prompt": "All stories are committed and verified. Archive automatically under the previously granted closeout scope using the bound tasks/prd-search.md.", "expected_output": "Invoke the discovered installed archive_run.py with the exact worktree/PRD paths, report actual status and preserve a flat archive.", "files": [], "expectations": ["No repeated approval request under unchanged authority", "No LLM-written copy/remove commands", "PRD is alongside plan/progress/memory", "No implicit push"]},
+    {"id": 2, "prompt": "Ralph's last agent reports completion, but its supervisor is still running. Archive the run.", "expected_output": "Wait for supervisor validation and successful exit; preserve active artifacts.", "files": [], "expectations": ["No archival inside the final iteration", "No removal of plan.json before supervisor validation", "No manufactured completion evidence"]},
+    {"id": 3, "prompt": "Prepare a phased implementation plan from this approved PRD; do not execute it.", "expected_output": "Generate a source-linked phase/story plan, bind PRD metadata, and leave journal/memory absent.", "files": [], "expectations": ["One completion tracker", "Dependency-ordered bounded stories", "No implementation or archive invocation", "Report missing execution and closeout authority"]},
+    {"id": 4, "prompt": "Archive an old run with checked boxes but no structured review/check records. The helper failed during source removal; retry cleanup.", "expected_output": "Report missing evidence or partial state and preserve files pending scoped reconciliation.", "files": [], "expectations": ["No invented story-result records", "No automatic cleanup retry", "No replacement of the helper with shell commands"]}
+  ]
+}

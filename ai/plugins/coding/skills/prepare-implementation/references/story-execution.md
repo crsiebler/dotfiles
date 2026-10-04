@@ -21,7 +21,7 @@ Use trusted runtime context or the invoking native entry point to select:
 | RalphJSON | Project `plan.json`, `userStories` | Exact `branchName` | `passes: false` / `true` | OpenCode `ralph-reviewer` |
 | CodexGoalMarkdown | Project `PLAN.md`, story checklist | Explicit exact working branch in plan | Story checkbox `[ ]` / `[x]` | Codex `story-reviewer` |
 
-Read the selected task source, repository instructions, existing `docs/progress.md`,
+Read the selected task source, repository instructions, existing `progress.md`,
 and bounded memory. Require unique story IDs, titles, priorities, descriptions,
 acceptance criteria, and
 unambiguous completion state. Goal plans also require explicit dependencies (or
@@ -40,7 +40,7 @@ or Goal story unit; do not silently expand an oversized story.
 
 Ralph's runner owns iteration scheduling and its hard maximum. Goal continues
 only within its approved native execution scope, with checkpoints in
-`docs/progress.md`. Neither adapter creates a runner, fresh-session loop, automatic
+`progress.md`. Neither adapter creates a runner, fresh-session loop, automatic
 compaction controller, or new background process.
 
 ## State documents
@@ -51,22 +51,29 @@ Resolve state paths from the Git worktree root, not the task source's directory:
   dependencies, completion state, and concise current status. Preserve the adapter
   schema and completion-only finalization constraints; do not accumulate execution
   narratives in task sources.
-- `docs/progress.md`: canonical append-only execution journal for commands/results,
+- `progress.md`: canonical append-only execution journal for commands/results,
   changed paths, staged-review findings/dispositions, blockers, actual approvals,
   resumption checkpoints, actual advisor use, and commit status.
 - `memory.json`: bounded reusable review knowledge, not a general execution log.
 - PRDs: approved requirements, requirement changes, and open questions, not
   implementation checkpoints. Cross-reference approved changes in the journal.
 
-A missing `docs/` directory or `docs/progress.md` journal is normal and does not
+A missing root `progress.md` journal is normal and does not
 block execution. When authorized execution first needs to record a checkpoint,
-create any missing directory and journal, then write the entry. No separate
+create the journal, then write the entry. No separate
 approval is needed for these in-scope creations unless repository or runtime rules
 require it. If the journal already exists, append only; never rewrite earlier
 entries or headers. Planning and PRD drafting must not create execution-state
 files. If branch, permission, or unrelated-work guards prohibit writing, report
 the checkpoint in the response instead. Leave legacy execution logs and unrelated
 files untouched; do not read, migrate, or delete legacy logs.
+
+New runs bind the task source and associated PRDs with the work-run manifest in
+[completed-run archival](completed-run-archive.md). Read that contract before
+execution. The manifest and execution grant identify whether automatic archival
+and one closeout commit are authorized. Existing runs without metadata retain
+their state and execution evidence; missing archival inputs block archival,
+not permission to invent records, relocate old journals, or reset memory.
 
 ## Authorization and prepared branch
 
@@ -388,7 +395,7 @@ After a final `blocked` native review, stop delivery and further review attempts
 for that story. Preserve the staged/worktree candidate, incomplete task status,
 findings and dispositions, check results, reviewer/session provenance, and
 historical evidence. Do not update review memory or mark the story complete.
-Append a blocker checkpoint to `docs/progress.md` only when the existing write
+Append a blocker checkpoint to `progress.md` only when the existing write
 guards allow; otherwise report it in the response. Record:
 
 - The specific blocking condition, including exact unavailable evidence or input.
@@ -532,7 +539,7 @@ and active status. Suppress only evidenced `rejected_false_positive` findings;
 store fingerprint, reason, path scope, and last reviewed story. Suppression must
 never hide a newly demonstrated failure.
 
-`memory.json` is bounded operational knowledge; `docs/progress.md` is append-only
+`memory.json` is bounded operational knowledge; `progress.md` is append-only
 audit history. Never rewrite or prepend to existing journal headers.
 Put future validated patterns in memory; append story learnings
 to progress. Promote mature, repeatedly validated patterns to the nearest
@@ -543,7 +550,7 @@ Substantive AGENTS changes belong in the candidate before review, not after it.
 
 ## Progress and commit finalization
 
-Append entries to `docs/progress.md`, never rewrite earlier entries or headers.
+Append entries to `progress.md`, never rewrite earlier entries or headers.
 Use this common shape for both adapters, with truthful values and explicit
 unknown/unavailable fields:
 
@@ -565,6 +572,42 @@ unknown/unavailable fields:
 - Next story or resumption checkpoint:
 ---
 ```
+
+After passing checks/review and before staging the story's completion marker,
+append one machine-readable record for this story using actual observations.
+It belongs in the same story commit as the completed task marker. Preserve prior
+records; a later remediation appends a new record rather than editing history.
+Use the PRD's bound run ID. Example shape (illustrative values, never evidence):
+
+```story-result
+{
+  "version": 1,
+  "run_id": "search-20261003",
+  "story_id": "US-001",
+  "checks": [
+    {"command": "python -m unittest tests.test_search", "status": "passed", "evidence": "Observed successful exit and passing test results."},
+    {"command": "typecheck", "status": "not_applicable", "evidence": "Documentation-only story; no typed source changed."}
+  ],
+  "review": {
+    "verdict": "pass",
+    "kind": "native",
+    "role": "story-reviewer",
+    "session_id": "actual-native-session-id",
+    "evidence": "Observed passing review under the required profile and pass budget."
+  }
+}
+```
+
+For Ralph native review use ralph-reviewer and its actual session ID. Budget-permitted
+self-review uses kind self, verdict pass, evidence, and a reason identifying the
+mode/risk allowance; it never claims independent/native review. Checks must list
+actual commands/results, with not_applicable only for a supported exemption and
+reason. Failed or unavailable required checks still block delivery; never label
+them not_applicable to satisfy the helper. Do not put a speculative commit hash
+or a delivered flag in the pre-commit record. The archive helper resolves actual
+delivery from reachable committed records and completed task markers. For legacy
+runs lacking a bound manifest, record the existing execution evidence normally
+and report the archival enrollment gap; do not fabricate a run ID/history.
 
 After final passing review, update validated memory, append final review evidence,
 and provisionally set only the selected story's completion flag/checkbox for
@@ -604,8 +647,13 @@ or iteration controller. Never mark blocked, unverified, or uncommitted work don
 Ralph must also provide its matching structured runner outcome. A completion
 sentinel or successful OpenCode process exit alone never authorizes continuation.
 
-Once all tasks are verified and delivered, offer the separately approved
-[completed-run archival procedure](completed-run-archive.md). Do not append a final
-run summary or move state inside Ralph's final iteration: first let the runner
-validate the completed outcome and exit. Archival is not a story or an automatic
-runner action, and any archive commit requires separate explicit authorization.
+Once all tasks are verified and delivered, automatically invoke the installed
+archive helper under the [completed-run archival contract](completed-run-archive.md)
+when the existing execution grant covers its exact active-copy removals. Goal
+does this after the final story commit. Ralph's invoking assistant does it only
+after the runner validates completion and returns successfully; never archive
+inside the final story iteration. Report the helper's actual JSON status and
+destination. It supplies a deterministic receipt; do not rewrite the journal.
+Make one closeout commit only if that scope was authorized, including upfront
+with execution. Missing authority requires only the missing scoped approval;
+metadata or story-commit scope alone cannot grant removal/closeout commits.

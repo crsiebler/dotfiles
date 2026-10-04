@@ -287,7 +287,7 @@ the dedicated three-step, project-local `ralph-reviewer`, with at most one same-
 substantive fixes. It never substitutes a general-purpose reviewer. Checks include
 relevant typecheck, lint, tests, and `verify-interface` for UI changes.
 
-Worktree-root `docs/progress.md` is the append-only handoff and review history. Optional
+Worktree-root `progress.md` is the append-only handoff and review history. Optional
 version-1 `memory.json` retains at most 20 validated patterns and 20 evidenced
 false-positive suppressions; its initial absence is normal, invalid memory blocks.
 Memory changes follow passing review; reusable accepted fixes require passing
@@ -300,7 +300,7 @@ only its provisional completion marker and preserving unrelated work.
 ### Completed-run archives
 
 Use one active plan per worktree. `PLAN.md` or `plan.json` and `memory.json` remain
-at the root; the journal is `docs/progress.md`, independent of a custom plan path.
+at the root; the journal is `progress.md`, independent of a custom plan path.
 Neither workflow reads or migrates legacy execution logs. PRDs retain requirements
 and open questions, not implementation checkpoints.
 
@@ -311,19 +311,31 @@ Both workflows use the [completed-run archive procedure](ai/plugins/coding/skill
    Archival may run on any branch, including `main`/`master`; the original branch
    may already be merged and deleted. Verify delivery using retained commits or
    merged PR/squash-commit evidence plus the journal, and verify file ownership.
-2. Preview the final summary, unique `archive/YYYY-MM-DD-feature-name/` destination,
-   exact plan/journal/memory paths, and active-copy removals; obtain explicit approval.
-3. Append the final summary, copy existing run artifacts with relative paths intact,
-   and verify identical contents before removing approved active copies.
-4. Preserve PRDs, unrelated work, and Ralph controls. Do not reset the journal or
-   create replacement state. Any archive commit needs separate authorization.
+2. New PRDs carry work-run JSON metadata identifying the run, exact task source,
+   and associated PRDs. Planning binds the adapter/path; execution commits truthful
+   story-result records in root progress.md with each completed story marker.
+3. After verified delivery, the agent invokes the installed archive_run.py under
+   the execution request's scoped archival/removal grant. Ralph's invoking
+   assistant waits for supervisor validation and successful exit first.
+4. The script copies into a fresh staging directory, verifies bytes and committed
+   evidence, and removes only unchanged declared active copies. PRDs, PLAN.md or
+   plan.json, progress.md and existing memory.json are peers in
+   `archive/YYYY-MM-DDTHHMMSSffffffZ-feature/`, with a machine-readable receipt.
+5. Preserve unrelated work and Ralph controls. Repeated completed invocations are
+   read-only; partial failures require reconciliation, never automatic cleanup.
+   One closeout commit needs its own scope, which may be authorized upfront.
 
-Archival is manual, not automatic runner behavior. Memory is archived with its run;
-new execution starts fresh and retains its exact prepared-branch requirements.
+Archival is automatic for an authorized executing/invoking agent; the CLI-only
+Ralph supervisor has no post-run hook. The helper never commits or pushes. Memory
+is archived with its run; new execution starts fresh and retains its exact
+prepared-branch requirements. Existing archives and old journals are not migrated.
 Do not switch branches or rewrite historical plan metadata to archive a run.
 PRD replacement separately requires approval to archive
 the existing PRD and verified preservation before replacement. Drafting requirements
 never archives execution state as a side effect.
+
+See [archival verification](docs/run-archival-verification.md) for tested fixture
+behavior, broader-suite dependency failures and installed activation limits.
 
 ### Stops, crashes, and bounded recovery
 
@@ -352,7 +364,7 @@ group. Processes that deliberately escape the group are not covered.
 
 Create `.ralph-stop` at the worktree root to request a stop, including termination
 of the currently managed session. Ralph never removes it. Before resuming, inspect
-`docs/progress.md`, the latest `.ralph-outcome-<id>.json`, and the candidate changes;
+`progress.md`, the latest `.ralph-outcome-<id>.json`, and the candidate changes;
 resolve the blocker and clear the stop file yourself, or authorize the separate
 interactive recovery assistant to remove that exact file after preview. Then use
 `ralph --resume` only after reconciliation and launch approval.
@@ -389,7 +401,7 @@ See the [recovery runbook](docs/ralph-recovery.md) for the full process and exam
 Invoke `prepare-implementation` in Codex to turn approved requirements into
 `PLAN.md`: ordered user stories, unchecked acceptance criteria, verification,
 budget-selected staged review, and completion checkboxes. Execution status,
-implementation notes, evidence, and resumption checkpoints go in append-only `docs/progress.md`, not
+implementation notes, evidence, and resumption checkpoints go in append-only `progress.md`, not
 growing sections in `PLAN.md`. The same skill defaults to Ralph's
 `plan.json` in OpenCode. Explicit format requests take precedence; no format question
 is needed when trusted runtime context or the invoking native entry point identifies
@@ -397,7 +409,7 @@ the active harness. OpenCode's `ai/opencode/commands/plan-work.md` supplies the 
 default. If routing is unavailable or ambiguous, the skill asks rather than
 inferring the harness from `PATH`, installed tools, folders, or environment variables.
 
-Planning does not start execution or create `docs/progress.md`/`memory.json`. After
+Planning does not start execution or create `progress.md`/`memory.json`. After
 reviewing the plan, explicitly authorize scoped implementation, necessary project
 dependencies, checks, and story commits when launching an actual native `/goal`.
 A quoted template or prepared plan grants no permission. Goal uses the same
@@ -463,8 +475,12 @@ with its exact staged-Git allowlist. Adding this role retires no installed paths
 
 Use native delegation to invoke agents; reading a definition is not delegation.
 OpenCode `/find-agents` loads `use-subagents` for discovery; the skill bundles
-the unchanged `subagents` helper. `/ship` prepares a PR with preview and explicit
-approval; it does not push implicitly. `/review-pr` remains the review command.
+the unchanged `subagents` helper. `/ship` loads `manage-changes` to prepare the
+requested Git commit, branch push and GitHub PR sequence, with exact previews and
+one explicit approval for the bounded sequence. It never merges implicitly.
+`assess-work-item` reads GitHub issues and Projects through adequate exposed tools
+or installed gh, including scoped item/field evidence and pagination gaps; its
+default result is a draft. `/review-pr` remains the review command.
 From this checkout:
 
 ```sh

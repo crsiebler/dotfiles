@@ -13,6 +13,5 @@ argument lists. Only an explicitly approved, previewed
 new comment rather than accidentally edit an existing one.
 
 Asana is unsupported until an actual schema/adapter is verified. For GitHub,
-use installed `gh` read operations (`gh pr view`, `gh pr checks`, scoped
-`gh api` GET requests) or supplied evidence; do not assume a GitHub MCP suite.
+use this skill's [GitHub issue and Projects adapter](github.md), not Jira routing.
 Unavailable integrations limit evidence, not permission to guess state.

@@ -1,80 +1,140 @@
-# Completed-run archival
+# Deterministic completed-run archival
 
-One active plan belongs to one Git worktree. Ralph and Codex Goal use the same
-completed-run archive, not an automatic reset when a new feature is planned.
-This is a separately approved manual operation, not a runner feature or authority
-granted by planning, story execution, or story-commit approval.
+One active run belongs to one Git worktree. The installed skill's
+[archive helper](../scripts/archive_run.py) owns file selection, validation,
+copying, verification, and active-copy removal. Do not reproduce these operations
+with LLM-written shell commands. Python 3.11+, Git, and POSIX file locks are
+required; no packages, model calls, or network access are needed.
 
-## Verify and obtain approval
+## Run manifest
 
-1. Verify every story/task is complete, required checks and reviews passed, and
-   required story commits succeeded using actual Git and journal evidence. A
-   checkbox, `passes: true`, or process exit alone is insufficient. After a merge,
-   use retained commits or verifiable merged PR/squash-commit evidence together
-   with the journal to establish delivery. The original branch need not exist;
-   its deletion or lack of ancestry after a squash merge is not itself a blocker.
-   Do not rewrite the plan's historical branch or invent missing commit evidence.
-   If completion evidence is missing or the run is unfinished, stop without
-   archiving or replacing its plan.
-2. For Goal, wait until the final story commit succeeds. For Ralph, additionally
-   wait until the runner validates completion and exits; leave root `plan.json`
-   and the final candidate unchanged until then. Stop files, unresolved runner
-   state, or active processes block archival pending human reconciliation.
-3. Inspect the exact worktree, current branch (or detached HEAD), HEAD commit,
-   state-file ownership, and changes. Completed-run archival is permitted on any
-   branch, including main/master or a different feature branch, without requiring
-   the plan's original branch to exist or be checked out. Branch identity is
-   provenance, not an archival gate; never create or switch branches for archival.
-   Verify the files belong to the completed run, not another active run, and
-   preserve unrelated work. Preview a final journal summary, all source and
-   destination paths, removal of the active copies, and whether a separate archive
-   commit is requested. Obtain explicit approval before any archival writes.
-4. Recheck that the approved evidence and paths have not materially changed. Use a
-   unique project-local `archive/YYYY-MM-DD-feature-name/` destination; never
-   overwrite an archive, follow out-of-worktree symlinks, or use wildcard cleanup.
+Each associated PRD contains exactly one fenced `work-run` JSON block. All PRDs
+for a run contain the same manifest; bind the task source during planning, without
+changing the Ralph task-source schema. Paths are relative to the Git worktree
+root, even when the PRD or plan is in another directory.
 
-## Preserve the complete run
-
-After approval, append the final summary to `docs/progress.md`: feature/task source,
-actual story commits, checks/review outcomes, remaining limitations, and archival
-approval/destination. This permitted checkpoint may create the journal if absent;
-never fabricate missing execution evidence. This is post-run finalization, not an
-extra story bookkeeping commit. Record the original plan branch, current archival
-branch/HEAD, and any merged-delivery evidence used when the original commits are
-unavailable.
-
-Copy the actual task source and existing state together, preserving relative paths:
-
-```text
-archive/YYYY-MM-DD-feature-name/
-  PLAN.md                 # Or plan.json, whichever this run used
-  memory.json             # If present
-  docs/
-    progress.md
+```work-run
+{
+  "version": 1,
+  "run_id": "search-20261003",
+  "feature": "search",
+  "adapter": "CodexGoalMarkdown",
+  "task_source": "PLAN.md",
+  "prds": ["tasks/prd-search.md"],
+  "journal": "progress.md",
+  "memory": "memory.json",
+  "archive_on_completion": true
+}
 ```
 
-For a custom task-source path, preserve its worktree-relative path. Do not archive
-both plan formats unless both are verified run-owned and explicitly approved.
-Verify every copy matches its source and recheck that sources are unchanged
-immediately before removing any approved active copy.
-On failure, preserve sources and available archive evidence, report partial state,
-and stop; do not overwrite, delete, or retry cleanup automatically.
+Use a stable, unique lowercase run ID and feature slug: letters, digits, hyphens,
+at most 80 characters. For OpenCode use `RalphJSON` and `plan.json`; `prd.json` is
+not the current Ralph task source. Additional PRDs must be explicitly declared,
+run-owned, and have distinct basenames, including case-insensitive comparison.
+Never collect PRDs with a wildcard. The journal and memory paths are fixed at
+root `progress.md` and `memory.json`. Missing memory is normal; missing PRD,
+task source, journal, manifest, or completion evidence blocks archival.
 
-Move the journal intact by this verified copy/remove procedure; never truncate or
-rewrite its history. Archive memory with the run rather than carrying it into a
-new run. New execution starts with fresh bounded memory; durable repository
-guidance already promoted through the reviewed workflow remains in `AGENTS.md`.
-Do not create a replacement plan, journal, or memory as part of archival.
+`write-requirements` may leave adapter/task_source null while drafting. Planning
+binds both before execution and lists the associated PRDs. Metadata expresses
+the intended behavior, not user authorization. Preserve run IDs during revisions.
 
-Leave PRDs, unrelated files, and all Ralph ledger/lock/stop/outcome controls intact.
-Archival does not reset runner state or authorize reuse of a completed Ralph
-worktree; new Ralph runs still need their own valid prepared worktree and plan.
-PRD replacement uses the separate requirements preservation guard.
+## Completion and authority
 
-This branch-independent permission applies only to completed-run archival. New
-implementation or resumed execution still requires its exact prepared branch and
-all existing execution guards; archival approval does not grant execution authority.
+An execution request may authorize the whole approved sequence, including
+automatic archival/removal of its exact declared active artifacts and one
+closeout commit. Once granted, carry that authority through continuation; do not
+request it again. If archival/removal or commit authority is genuinely missing,
+preview the exact paths/result and request only the missing scope. Narrower
+instructions and runtime restrictions still apply. Planning never archives.
 
-Report archived paths, verification, removed active paths, and any partial work.
-Commit only with separate explicit authorization, following repository checks and
-Git rules; otherwise report the uncommitted archive changes. Never push implicitly.
+For each delivered story, the executor stages a structured `story-result` block
+in `progress.md` with the completion marker, after passing checks and review but
+before the story commit. See [execution finalization](story-execution.md#progress-and-commit-finalization).
+These records report observed outcomes; they must never fabricate passing checks,
+native review sessions, or approvals. The helper independently verifies that
+each passing record and its completed task marker occur together in reachable
+Git history and that all active artifacts match HEAD. It does not rerun tests,
+reperform reviews, or establish the truth of an executor's recorded observations.
+
+For Goal, invoke the helper after the final successful authorized story commit.
+For Ralph, the **invoking assistant**, outside the story agent, waits for the
+supervisor to validate completion and return exit zero, then invokes the helper.
+The story agent must not archive or remove plan.json inside the last iteration.
+The helper also refuses a held runner lock, live recorded runner/child process,
+stop file, or runner state other than completed. A fully checked old plan without
+structured records or a validated Ralph completion ledger is insufficient.
+CLI-only Ralph invocations without an invoking assistant do not automatically
+archive; do not claim that the supervisor implements a post-run hook.
+
+## Invoke the installed helper
+
+Discover `prepare-implementation` and resolve `scripts/archive_run.py` relative
+to its advertised installed base. Never use checkout or hardcoded cache paths
+in generated plans. The following placeholders are data, not executable examples:
+
+```sh
+python "<installed-skill-base>/scripts/archive_run.py" \
+  --project "<absolute-worktree-root>" --prd "tasks/prd-search.md" --dry-run
+python "<installed-skill-base>/scripts/archive_run.py" \
+  --project "<absolute-worktree-root>" --prd "tasks/prd-search.md"
+```
+
+`--dry-run` performs validation and returns JSON without filesystem writes.
+When scoped archival authority already exists, invoke the normal command
+automatically after completion; preview is optional, not a new approval gate.
+`--run-id` disambiguates repeat calls when several archived runs used the same
+now-absent PRD path. Exit 0 means preview, archived, or already_archived as stated
+in the JSON `status`; exit 2 means blocked. Never interpret preview as archival.
+
+## Result and failure behavior
+
+The helper creates a unique UTC timestamped directory with microseconds:
+
+```text
+archive/YYYY-MM-DDTHHMMSSffffffZ-feature/
+  prd-search.md
+  PLAN.md                   # Or plan.json
+  progress.md
+  memory.json               # If present
+  _archive.json             # Source mapping, hashes, commits, evidence, provenance
+```
+
+All artifacts are peers, including PRDs originally under tasks/ and custom plan
+paths. The receipt retains each original path. No tasks/ or docs/ subdirectory is
+created. The helper preserves file contents byte-for-byte; its receipt supplies
+the deterministic closeout summary without rewriting or appending invented
+narrative to the journal. The receipt records actual current HEAD/branch and
+the Git commits carrying the story records. Historical branch metadata remains
+in the archived task source unchanged.
+
+The helper takes an exclusive archive lock, copies into a fresh project-local
+`.pending-<run_id>` directory, verifies bytes, publishes to a reserved fresh final
+directory, rechecks all sources, and removes only the declared unchanged copies.
+It preserves unrelated files, empty source directories, existing archives, and
+all Ralph controls. It never stages, commits, pushes, resets runner state, or
+creates a replacement plan/journal/memory. New execution starts with fresh memory.
+Bounds: 2 MiB per input, 32 PRDs, 1,000 stories/history commits/archive entries.
+Unsafe paths, symlinks, nonregular files, collisions, invalid metadata/memory,
+missing or failed evidence, and changed/uncommitted artifacts are refused.
+
+On failure, preserve sources and any partial archive; report JSON and inspect
+the exact partial state. Never retry cleanup, overwrite an archive, or delete
+pending directories automatically. A completed repeat invocation verifies the
+receipt and archived bytes and returns already_archived without writes. Active
+copies or incomplete receipts block that shortcut and need scoped reconciliation.
+The helper serializes archive writers; execution must already have stopped.
+
+Archival may run on any branch, including main/master or detached HEAD, after
+delivery. It verifies reachable commits, including a squash commit containing the
+actual records and completed plan. Missing retained Git evidence blocks rather
+than falling back to a merge claim. Do not create/switch branches for archival;
+execution still requires its exact prepared branch.
+
+After successful archival, make the separately authorized closeout commit only
+on an allowed working branch. Stage the returned source removals and destination
+files explicitly, excluding archive/.archive.lock and runner controls. Use the
+repository's commit convention, for example `chore(workflow): archive completed search`.
+If no commit authority exists, report the uncommitted archive. Failure to commit
+does not undo the verified archive or authorize another story/cleanup attempt.
+Shipping remains an explicit separate action; never push implicitly.
