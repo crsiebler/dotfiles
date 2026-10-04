@@ -47,6 +47,23 @@ SKILL_TEST_YAML_PYTHON=/opt/anaconda3/envs/dotfiles/bin/python \
 /opt/anaconda3/envs/dotfiles/bin/python -m unittest discover -s tests -p '*test*.py'
 ```
 
+## PR #67 archive lock correction
+
+The archive lock now lives at Git's per-worktree `archive-run.lock` metadata path.
+It remains persistent and exclusively locked, but no longer leaves an untracked
+file after the declared closeout files are committed. Linked worktrees resolve
+independent locks; nonsymlink directory anchoring and regular-file checks remain.
+
+Four new regression cases failed against the original helper, including the
+exact `?? archive/.archive.lock` status after a scoped closeout commit. After the
+fix, all 24 archive tests passed in the same Conda environment. They exercise
+Ralph's actual clean-candidate check, held-lock refusal and release, linked
+worktree isolation, symlink refusal, and a preview that creates no metadata lock.
+`make validate-ai` and whitespace validation passed. No dependencies were installed.
+The 59 Ralph Python regressions passed after a permission-authorized rerun.
+Their initial sandboxed run reported two errors because `ps` was denied during
+fixture child-process cleanup checks; no assertions were changed or skipped.
+
 ## Limits and activation
 
 No standalone repository typecheck is configured. Ruff/Black are absent from

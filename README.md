@@ -324,6 +324,8 @@ Both workflows use the [completed-run archive procedure](ai/plugins/coding/skill
 5. Preserve unrelated work and Ralph controls. Repeated completed invocations are
    read-only; partial failures require reconciliation, never automatic cleanup.
    One closeout commit needs its own scope, which may be authorized upfront.
+   The persistent archive lock lives in per-worktree Git metadata, so it does not
+   leave untracked worktree files after a closeout commit.
 
 Archival is automatic for an authorized executing/invoking agent; the CLI-only
 Ralph supervisor has no post-run hook. The helper never commits or pushes. Memory

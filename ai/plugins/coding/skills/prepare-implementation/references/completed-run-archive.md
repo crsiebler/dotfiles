@@ -108,7 +108,10 @@ narrative to the journal. The receipt records actual current HEAD/branch and
 the Git commits carrying the story records. Historical branch metadata remains
 in the archived task source unchanged.
 
-The helper takes an exclusive archive lock, copies into a fresh project-local
+The helper takes an exclusive archive lock at the per-worktree Git metadata path
+returned by `git rev-parse --git-path archive-run.lock`. The persistent lock is
+outside the tracked worktree; never reset/delete it. Linked worktrees have
+independent locks. The helper copies into a fresh project-local
 `.pending-<run_id>` directory, verifies bytes, publishes to a reserved fresh final
 directory, rechecks all sources, and removes only the declared unchanged copies.
 It preserves unrelated files, empty source directories, existing archives, and
@@ -133,8 +136,9 @@ execution still requires its exact prepared branch.
 
 After successful archival, make the separately authorized closeout commit only
 on an allowed working branch. Stage the returned source removals and destination
-files explicitly, excluding archive/.archive.lock and runner controls. Use the
-repository's commit convention, for example `chore(workflow): archive completed search`.
+files explicitly, excluding runner controls. The metadata lock requires no staging
+or ignore rule. Use the repository's commit convention, for example
+`chore(workflow): archive completed search`.
 If no commit authority exists, report the uncommitted archive. Failure to commit
 does not undo the verified archive or authorize another story/cleanup attempt.
 Shipping remains an explicit separate action; never push implicitly.

@@ -245,6 +245,8 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   then removes only unchanged active copies. PRDs, plan, progress and memory are
   peers in `archive/YYYY-MM-DDTHHMMSSffffffZ-feature/`; the receipt maps original
   paths and records provenance. Preserve existing historical archive layouts.
+  Keep the persistent archive lock at Git's per-worktree `archive-run.lock`
+  metadata path, outside tracked files; never stage, reset or delete it.
   Invoke automatically after verified delivery under an explicit scoped
   archival/removal grant, which may be included upfront with execution. One
   closeout commit requires its own scope; carry existing approval forward.

@@ -394,6 +394,31 @@ def runner_guard(project, adapter, task_data):
             os.close(lock_fd)
 
 
+@contextmanager
+def archive_lock(project):
+    # Git resolves a separate metadata path for each linked worktree.
+    path = Path(git(project.root, 'rev-parse', '--git-path',
+                    'archive-run.lock').stdout.decode().strip())
+    if not path.is_absolute():
+        path = project.root / path
+    metadata = Project(path.parent)
+    lock_fd = None
+    try:
+        with metadata.parent(path.name) as (fd, leaf):
+            lock_fd = os.open(leaf, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
+                              0o600, dir_fd=fd)
+        require(stat.S_ISREG(os.fstat(lock_fd).st_mode), 'unsafe archive lock')
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise Refusal('another archive writer is active') from None
+        yield
+    finally:
+        if lock_fd is not None:
+            os.close(lock_fd)
+        metadata.close()
+
+
 def inventory(files):
     return [{'source': path, 'name': PurePosixPath(path).name,
              'sha256': hashlib.sha256(data).hexdigest(), 'size': len(data)}
@@ -470,16 +495,8 @@ def execute(project, prd, dry_run, run_id=None):
                   'head': head, 'branch': branch}
         if dry_run:
             return result
-        # One archive writer per worktree; never reset/delete this lock file.
-        with project.parent('archive/.archive.lock', create=True) as (fd, leaf):
-            lock_fd = os.open(leaf, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
-                              0o600, dir_fd=fd)
-        try:
-            require(stat.S_ISREG(os.fstat(lock_fd).st_mode), 'unsafe archive lock')
-            try:
-                fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                raise Refusal('another archive writer is active') from None
+        # One archive writer per worktree; never reset/delete its metadata lock.
+        with archive_lock(project):
             require(existing_archive(project, prd, manifest['run_id']) is None,
                     'run was archived concurrently')
             staging = 'archive/.pending-' + manifest['run_id']
@@ -525,8 +542,6 @@ def execute(project, prd, dry_run, run_id=None):
                 os.replace('_receipt.pending', leaf, src_dir_fd=fd, dst_dir_fd=fd)
                 os.fsync(fd)
             return result
-        finally:
-            os.close(lock_fd)
 
 
 def main():

@@ -50,6 +50,10 @@ class ArchiveRunTest(unittest.TestCase):
         return subprocess.run(['git', '-C', str(self.project), *args],
                               capture_output=True, check=check)
 
+    def git_path(self, name):
+        path = self.git('rev-parse', '--git-path', name).stdout.decode().strip()
+        return self.project / path
+
     def write(self, name, value):
         path = self.project / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -77,6 +81,7 @@ class ArchiveRunTest(unittest.TestCase):
         result = self.run_script('--dry-run')
         self.assertEqual(result['status'], 'preview')
         self.assertFalse((self.project / 'archive').exists())
+        self.assertFalse(self.git_path('archive-run.lock').exists())
         self.assertEqual(self.git('status', '--porcelain').stdout, b'')
         self.assertEqual(len(result['files']), 4)
 
@@ -112,6 +117,65 @@ class ArchiveRunTest(unittest.TestCase):
         second = self.run_script()
         self.assertEqual(second['status'], 'already_archived')
         self.assertEqual(second['destination'], first['destination'])
+
+    def test_closeout_commit_leaves_a_clean_ralph_candidate(self):
+        result = self.run_script()
+        paths = [item['source'] for item in result['files']]
+        paths += [result['destination'] + '/' + item['name']
+                  for item in result['files']]
+        paths.append(result['destination'] + '/_archive.json')
+        self.git('add', '--', *paths)
+        self.git('-c', 'user.name=Archive Fixture', '-c', 'user.email=fixture@example.invalid',
+                 'commit', '-q', '-m', 'chore(fixture): archive completed run')
+        self.assertEqual(self.git('status', '--porcelain').stdout, b'')
+        candidate = subprocess.run(
+            [sys.executable, '-c',
+             "import runpy, sys; assert runpy.run_path(sys.argv[1])['clean_candidate']()",
+             str(ROOT / 'bin/ralph')], cwd=self.project, capture_output=True, text=True)
+        self.assertEqual(candidate.returncode, 0, candidate.stdout + candidate.stderr)
+
+    def test_held_archive_lock_preserves_sources_and_releases_after_use(self):
+        lock = self.git_path('archive-run.lock')
+        with lock.open('w') as stream:
+            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            result = self.run_script(expected=2)
+            self.assertEqual(result['reason'], 'another archive writer is active')
+            self.assertTrue((self.project / 'PLAN.md').exists())
+            self.assertFalse((self.project / 'archive').exists())
+        self.assertEqual(self.run_script()['status'], 'archived')
+        with lock.open('r') as stream:
+            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_linked_worktree_has_an_independent_metadata_lock(self):
+        temporary = tempfile.TemporaryDirectory(dir=ROOT / 'tests')
+        self.addCleanup(temporary.cleanup)
+        linked = Path(temporary.name) / 'linked'
+        self.git('worktree', 'add', '-q', '-b', 'feat/linked', str(linked))
+        original = self.project
+        lock = self.git_path('archive-run.lock')
+        try:
+            self.project = linked
+            linked_lock = self.git_path('archive-run.lock')
+            self.assertNotEqual(lock, linked_lock)
+            with lock.open('w') as stream:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                result = self.run_script()
+            self.assertEqual(result['status'], 'archived')
+            self.assertTrue(linked_lock.is_file())
+            self.assertFalse((linked / 'archive/.archive.lock').exists())
+            self.assertTrue((original / 'PLAN.md').exists())
+        finally:
+            self.project = original
+
+    def test_symlink_archive_lock_is_refused_without_touching_its_target(self):
+        lock = self.git_path('archive-run.lock')
+        target = self.project / 'unrelated.md'
+        before = target.read_bytes()
+        lock.symlink_to(target)
+        self.run_script(expected=2)
+        self.assertEqual(target.read_bytes(), before)
+        self.assertTrue((self.project / 'PLAN.md').exists())
+        self.assertFalse((self.project / 'archive').exists())
 
     def test_ralph_archive_requires_completed_unlocked_runner(self):
         self.manifest.update(adapter='RalphJSON', task_source='plan.json')
