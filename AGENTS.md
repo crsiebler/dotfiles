@@ -16,9 +16,12 @@ defines the native role contract.
   and `create-mcp-server`.
   `researching` owns `read-docx`, `read-pptx`, `read-xlsx`, and `read-pdf` alongside
   web research. Reporting owns synthesis/communication, not file production.
-  Prefer adequate native tools for simple reads. All ten new bundles resolve their
-  own installed resources and document required/optional dependencies; dependency
-  setup is separately authorized and never performed by AI installation.
+  Prefer adequate native tools for simple reads. Resolve bundled resources from
+  the loaded skill. Each skill links to `references/requirements.md` for required
+  and optional dependencies, installation instructions, and availability checks.
+  Keep the 29-skill [dependency inventory](docs/skill-dependencies.md) aligned with
+  source changes. Dependency setup is separately authorized and never performed
+  by AI installation.
   See [document verification](docs/document-skill-verification.md) for actual tested
   environments and artifact/rendering limits. Document implementations are original;
   create-skill/create-gif and create-mcp-server adapt attributed Apache upstream

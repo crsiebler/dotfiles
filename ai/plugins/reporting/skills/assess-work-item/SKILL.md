@@ -5,6 +5,9 @@ description: Assess scope, effort, dependencies and risks from GitHub issues or 
 
 # Assess Work Item
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read [assessment contract](references/assessment.md). Identify the work item
 from its URL, identifier and platform, or supplied context. Load the
 [Jira adapter](references/jira.md) only for Jira. Confirm the target, requirements,

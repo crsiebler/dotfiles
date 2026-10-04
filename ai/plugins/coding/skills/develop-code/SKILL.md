@@ -5,6 +5,9 @@ description: Implement features, diagnose and fix bugs, or refactor code while p
 
 # Develop Code
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Establish the requested outcome and authority before edits or commands. Read
 applicable project instructions, relevant code, callers and tests, and existing
 changes. Preserve user work. Identify required behavior, compatibility, errors,

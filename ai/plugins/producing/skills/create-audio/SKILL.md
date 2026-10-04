@@ -5,6 +5,9 @@ description: Generate audio through backend adapters using project-owned prompts
 
 # Create Audio
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Use the bundled `scripts/create_audio.py` with Python 3.11+. Resolve its path
 relative to this installed skill, not a dotfiles checkout or another project's
 wrapper. Agents interact through this skill; OpenCode's optional `/create-audio`

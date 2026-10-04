@@ -22,3 +22,36 @@ Original implementation uses official ReportLab
 Context7 research and local artifact tests informed this original code; no proprietary
 Anthropic document skill sources were consulted. Font glyph-map inspection is tied
 to the pinned ReportLab version and tested missing-glyph behavior.
+
+## Installation and availability check
+
+Use an existing compatible project environment, or create a fresh project-local
+one after dependency installation is authorized. Resolve `skill_dir` to the
+advertised loaded skill; do not assume the checkout is the installed bundle.
+
+```sh
+skill_dir='/absolute/path/to/loaded/create-pdf'
+python3.11 -m venv .venv-create-pdf
+./.venv-create-pdf/bin/python -m pip install -r "$skill_dir/requirements.txt"
+./.venv-create-pdf/bin/python "$skill_dir/scripts/create_pdf.py" check
+```
+
+Replace the path placeholder and choose an unused environment directory.
+[Python installation](https://www.python.org/downloads/) is separate if missing;
+macOS with existing Homebrew can use approved `brew install python@3.11`.
+Keep the bundled pins and normal transitive dependencies; do not use global pip,
+overwrite an existing environment, or upgrade packages implicitly.
+A successful `check` establishes availability only, not artifact/rendering quality.
+
+## Optional rendering and required font input
+
+For requested raster preview, Poppler's `pdftoppm` is optional. Approved macOS
+setup with existing Homebrew: `brew install poppler`
+([formula](https://formulae.brew.sh/formula/poppler)); verify `pdftoppm -v`.
+For other hosts, use [Poppler distributions](https://poppler.freedesktop.org/).
+Write previews inside the project. Rendering is separate from helper `check`.
+
+The creation request needs a licensed TrueType font file with verified glyph
+coverage. Obtain it from the user or an approved font source and retain required
+license notices; a system font name is not a supplied file. No automatic font
+download or installation is included.

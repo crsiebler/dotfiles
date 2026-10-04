@@ -5,6 +5,9 @@ description: Plans and generates pixel-art sprites and animation sheets, process
 
 # Create Sprites
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Use this workflow for asset-only delivery or optional engine integration. Read
 [Godot integration](references/godot.md) only for Godot requests or relevant
 Godot project context. Asset-only work requires neither `project.godot` nor a

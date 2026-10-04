@@ -7,6 +7,7 @@ and connection setup are separate, explicitly authorized operations.
 ## Contents
 
 - [Sources and installed layout](#sources-and-installed-layout)
+- [Skill dependencies and setup](skill-dependencies.md)
 - [Installation and replacement behavior](#installation-and-replacement-behavior)
 - [Connecting applications](#connecting-applications)
 - [Local Bonsai 2 installation and OpenCode setup](local-bonsai.md)
@@ -63,6 +64,13 @@ namespace syntax or cached installation paths. Resolve bundled resources from
 the loaded skill location. Marketplace authentication policy is `ON_USE`, not an
 instruction to log in during installation.
 
+Every Craft skill links to its bundled `references/requirements.md`. Read it
+before selecting external utilities or running helpers. The
+[dependency audit](skill-dependencies.md) inventories all 29 skills and explains
+setup, authorization, and availability checks. AI installation copies these
+instructions; it does not install Python packages, CLIs, browsers, renderers,
+model weights, or provider authentication.
+
 ### Coding workflow consolidation
 
 `develop-code` owns feature implementation, diagnosis/fixes and behavior-preserving
@@ -79,6 +87,24 @@ bundle. Follow [coordinated activation and rollback](remove-old-ai-files.md#cons
 [Verification](coding-workflow-verification.md) distinguishes static checks from
 the user-waived live evaluations; source delivery does not establish installed
 routing or behavioral quality.
+
+### UI verification backends
+
+The [verify-interface skill](../ai/plugins/coding/skills/verify-interface/SKILL.md)
+defaults to Google Chrome and prefers an available Playwright CLI for routine web
+checks, while respecting requested backends and authorized existing sessions.
+Its conditional references cover [Playwright CLI](../ai/plugins/coding/skills/verify-interface/references/playwright-cli.md),
+[Playwright MCP and project tests](../ai/plugins/coding/skills/verify-interface/references/playwright.md),
+and [Computer Use](../ai/plugins/coding/skills/verify-interface/references/use-computer.md).
+Shared [browser guidance](../ai/plugins/coding/skills/verify-interface/references/browser.md)
+distinguishes Chrome, Chromium, Firefox, WebKit/Safari, Edge, and Brave, with
+optional compatibility coverage and console/snapshot/network/CDP limitations.
+
+This is source guidance, not a browser installation or connection grant. The AI
+installer does not provision Playwright CLI, browsers, extensions, or Computer Use.
+Codex source MCP configuration still omits the optional OpenCode browser servers.
+Refresh/install the coding bundle only under separate installation authorization;
+source validation does not establish live diagnostics or installed discovery.
 
 ### Shipping and GitHub assessment
 

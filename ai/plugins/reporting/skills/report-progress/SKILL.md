@@ -5,6 +5,9 @@ description: Drafts evidence-backed daily work-item updates with remaining work 
 
 # Report Progress
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read [daily update contract](references/daily-update.md). Identify the work item
 from its URL, identifier and platform, or supplied context. Load the
 [Jira adapter](references/jira.md) only for Jira. Gather relevant work-item and,

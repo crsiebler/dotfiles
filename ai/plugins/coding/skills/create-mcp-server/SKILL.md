@@ -5,6 +5,9 @@ description: Design, implement, and verify MCP servers that expose APIs or local
 
 # Create MCP Server
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Build a server around useful, verifiable workflows. Follow the target project's
 instructions and existing architecture. A skill invocation does not authorize
 installs, credential access, external writes, deployment, or global MCP setup.

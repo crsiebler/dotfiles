@@ -52,6 +52,13 @@ The five checkout-local `craft` plugins are `coding`, `reporting`, `researching`
 Use a native tool when it adequately handles a simple document read. Production
 skills create files; researching extracts evidence; reporting owns synthesis and
 communication. Each new skill has its own Python requirements and validation guide.
+
+All 29 Craft skills link to a bundled `references/requirements.md` describing
+required/optional utilities, installation steps, and availability checks.
+See the [skill dependency audit and inventory](docs/skill-dependencies.md).
+Source updates require an authorized plugin refresh or skill installation before
+agents discover them.
+
 Dependency setup is separately authorized and is never part of AI installation.
 See [verification and tested runtimes](docs/document-skill-verification.md) and
 [coordinated activation](docs/ai-configuration.md#producing-and-document-skill-activation).
@@ -216,7 +223,7 @@ requests or relevant project context.
 
 The workflow installs:
 
-- `opencode-gpt-imagegen@0.1.9`, an unofficial OpenCode plugin that exposes the
+- `opencode-gpt-imagegen@0.1.12`, an unofficial OpenCode plugin that exposes the
   `gpt_imagegen` tool through the existing ChatGPT OAuth session
 - `sprite-artist`, the specialized generation and integration agent
 - `create-sprites`, the reusable asset planning and prompt skill
@@ -288,6 +295,11 @@ protocol to the reviewer. Ralph's review gate uses self-review where allowed or
 the dedicated three-step, project-local `ralph-reviewer`, with at most one same-session follow-up after
 substantive fixes. It never substitutes a general-purpose reviewer. Checks include
 relevant typecheck, lint, tests, and `verify-interface` for UI changes.
+
+`verify-interface` defaults to Chrome, with conditional guidance for Playwright CLI,
+Playwright MCP/project tests, and Computer Use. Other browsers provide targeted
+compatibility coverage. See [UI verification backends](docs/ai-configuration.md#ui-verification-backends)
+for selection, diagnostic limits, and separately authorized tooling setup.
 
 Worktree-root `progress.md` is the append-only handoff and review history. Optional
 version-1 `memory.json` retains at most 20 validated patterns and 20 evidenced

@@ -5,6 +5,9 @@ description: Lists, searches, and reads native agent definitions with a bundled 
 
 # Use Subagents
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read [helper usage](references/helper.md). Resolve the bundled helper's absolute
 path from this loaded skill's directory, not the current working directory or
 a global CLI. Select the actual target harness explicitly: `opencode` or `codex`.

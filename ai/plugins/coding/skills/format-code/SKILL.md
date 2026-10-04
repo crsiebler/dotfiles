@@ -5,6 +5,9 @@ description: Format and lint intended changed files using the repository's confi
 
 # Format Code
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Inspect repository instructions, scripts, formatter configuration, and changed
 files. Select the repository-native tools and commands for the actual languages.
 Read [Python](references/python.md) or

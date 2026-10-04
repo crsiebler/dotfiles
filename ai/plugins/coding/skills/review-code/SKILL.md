@@ -5,6 +5,9 @@ description: Review local changes, pull requests, branches, selected components,
 
 # Review Code
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Establish requested scope and relevant project instructions before gathering
 facts. This independent workflow inspects and recommends; it requires no
 implementation skill. Use only available read-only tools permitted by the role

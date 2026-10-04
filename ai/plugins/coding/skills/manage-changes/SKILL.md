@@ -5,6 +5,9 @@ description: Ship scoped changes through Git commits, branch pushes and GitHub p
 
 # Manage Changes
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Use for shipping changes, preparing commits, pushing a feature branch, or opening
 a pull request. Identify the requested endpoint and repository/remote provider.
 GitHub is the implemented adapter; other hosts need a verified adapter before

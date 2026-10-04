@@ -15,3 +15,23 @@ Original implementation follows official openpyxl
 [cell utilities](https://openpyxl.readthedocs.io/en/stable/api/openpyxl.utils.cell.html).
 Context7 verified data_only/keep_links/read_only, dimension-hint limitations and
 range iteration. No proprietary document skill implementations were consulted.
+
+## Installation and availability check
+
+Use an existing compatible project environment, or create a fresh project-local
+one after dependency installation is authorized. Resolve `skill_dir` to the
+advertised loaded skill; do not assume the checkout is the installed bundle.
+
+```sh
+skill_dir='/absolute/path/to/loaded/read-xlsx'
+python3.11 -m venv .venv-read-xlsx
+./.venv-read-xlsx/bin/python -m pip install -r "$skill_dir/requirements.txt"
+./.venv-read-xlsx/bin/python "$skill_dir/scripts/read_xlsx.py" check
+```
+
+Replace the path placeholder and choose an unused environment directory.
+[Python installation](https://www.python.org/downloads/) is separate if missing;
+macOS with existing Homebrew can use approved `brew install python@3.11`.
+Keep the bundled pins and normal transitive dependencies; do not use global pip,
+overwrite an existing environment, or upgrade packages implicitly.
+A successful `check` establishes availability only, not artifact/rendering quality.
