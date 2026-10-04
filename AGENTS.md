@@ -217,7 +217,7 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   audits do not reset story review budgets. Ralph's explicit recovery protocol and
   persisted counters remain authoritative and unchanged.
 - Keep only story completion status in the task source; append execution status,
-  notes, evidence, dispositions, and resumption checkpoints to `docs/progress.md`.
+  notes, evidence, dispositions, and resumption checkpoints to `progress.md`.
   Delivery requires passing checks/review and a successful authorized story commit;
   restore only the provisional completion marker on failed finalization/commit.
   Goal retains native continuation/compaction, not Ralph's external hard iteration
@@ -228,7 +228,7 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 - Each Ralph story should fit one iteration and include typecheck acceptance criteria.
   Use `verify-interface` for browser verification of UI changes. Run relevant
   lint/typecheck/tests before committing; do not claim unavailable checks passed.
-- Keep append-only review history in worktree-root `docs/progress.md` (never rewrite headers),
+- Keep append-only review history in worktree-root `progress.md` (never rewrite headers),
   bounded version-1 operational knowledge in project `memory.json` (at most 20
   patterns and 20 suppressions), and only durable repository instructions in the
   nearest `AGENTS.md`. Missing memory is normal; invalid memory blocks without
@@ -237,17 +237,26 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 - One active plan belongs to each worktree. Keep task sources and `memory.json`
   at the root; create the journal only for a permitted execution checkpoint, never
   during planning/PRD drafting. Do not read or migrate legacy execution logs.
-- Completed-run archival follows the installed skill's
-  `references/completed-run-archive.md`: verify all tasks/checks/reviews/commits,
-  wait for Ralph runner validation and exit, preview and obtain explicit approval,
-  append the final summary, copy the actual plan/journal/memory to a unique archive,
-  verify contents, then remove only approved active copies. Preserve runner controls
-  and unrelated work; archive commits need separate approval. Never reset journals.
-  Archival may occur on any branch, including main/master, after the original
-  branch has been merged/deleted. Verify ownership and completion using retained
-  commits or merged PR/squash-commit evidence plus the journal; record provenance,
-  never recreate/switch branches or rewrite the plan's historical branch. Missing
-  completion evidence still blocks. This does not relax execution branch guards.
+- Completed-run archival follows the installed prepare-implementation skill's
+  `references/completed-run-archive.md` and `scripts/archive_run.py`. PRDs declare
+  the run ID, exact task source and associated PRDs in a work-run JSON block.
+  Root `progress.md` carries truthful pre-commit story-result records; the script
+  verifies their committed task markers, copies/hashes all run-owned artifacts,
+  then removes only unchanged active copies. PRDs, plan, progress and memory are
+  peers in `archive/YYYY-MM-DDTHHMMSSffffffZ-feature/`; the receipt maps original
+  paths and records provenance. Preserve existing historical archive layouts.
+  Keep the persistent archive lock at Git's per-worktree `archive-run.lock`
+  metadata path, outside tracked files; never stage, reset or delete it.
+  Invoke automatically after verified delivery under an explicit scoped
+  archival/removal grant, which may be included upfront with execution. One
+  closeout commit requires its own scope; carry existing approval forward.
+  Ralph's invoking assistant must first wait for supervisor validation and exit;
+  CLI-only Ralph has no archive hook. Preserve runner controls and unrelated work.
+  Never reset journals, infer evidence from prose, overwrite archives or retry
+  partial cleanup automatically. Archival may run on any branch, including
+  main/master after merge, using retained reachable/squash delivery evidence.
+  Do not recreate/switch branches or rewrite historical plan metadata. Missing
+  metadata/evidence blocks archival; this does not relax execution branch guards.
 - PRD replacement requires exact-path archival approval and verified preservation
   before writing the replacement. Same-PRD revisions stay scoped; requirements
   drafting never archives execution state as a side effect.
@@ -261,6 +270,7 @@ and relevant regression tests; record unavailable checks explicitly:
 make validate-ai
 python3.11 -m unittest discover -s tests -p '*test*.py'
 python3.11 tests/agent_contract_test.py
+python3.11 tests/archive_run_test.py
 bash tests/ralph_model_test.sh
 bash tests/ralph_review_test.sh
 bash tests/zsh_aliases_test.sh

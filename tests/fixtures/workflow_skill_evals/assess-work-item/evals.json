@@ -1,0 +1,8 @@
+{
+  "skill_name": "assess-work-item",
+  "evals": [
+    {"id": 1, "prompt": "Assess this GitHub issue using its acceptance criteria, comments and linked PR context.", "expected_output": "Resolve the actual issue and use verified reads, producing the six assessment fields as a draft.", "files": [], "expectations": ["GitHub adapter selected", "Evidence separated from assumptions", "No status/assignment changes or posting"]},
+    {"id": 2, "prompt": "Assess the backend milestone in this organization Project, including draft items and private linked issues.", "expected_output": "Resolve project owner/scope and read relevant fields/items, with explicit inaccessible/truncated coverage.", "files": [], "expectations": ["Project number not treated as repository issue number", "No complete-coverage claim from default item limit", "No fictional issue comment destination", "No credential or scope changes"]},
+    {"id": 3, "prompt": "GitHub Projects tools are unavailable and gh has no required project access. Estimate the whole project anyway.", "expected_output": "Give only a provisional evidence-bounded assessment and name the missing source/access.", "files": [], "expectations": ["No guessed private contents", "No tool installation or login", "No false precision or fabricated project total"]}
+  ]
+}

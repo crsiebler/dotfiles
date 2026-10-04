@@ -167,7 +167,7 @@ class StoryExecutionTest(unittest.TestCase):
         ralph = (ROOT / 'ai/opencode/agents/ralph.md').read_text()
         for adapter in (template, ralph):
             for name in ('story-execution.md', 'story-review.md',
-                         'docs/progress.md', 'memory.json'):
+                         'progress.md', 'memory.json'):
                 self.assertIn(name, adapter)
             self.assertIn('installed', adapter)
             self.assertNotIn('ai/plugins/', adapter)

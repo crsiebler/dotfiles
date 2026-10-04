@@ -14,6 +14,10 @@ Goal continuation and compaction; it does not run the external Ralph loop.
 
 - Record objective, requirement sources, scope/non-goals, working branch,
   authorization, delivery expectations, verification commands, and material gaps.
+- Explain the implementation approach and ordered phases. Map every story to a
+  phase and source requirements, using one story completion tracker. Bind the
+  source PRDs' work-run metadata under completed-run-archive.md and include their
+  exact paths/run ID and actual archival/closeout authorization in the handoff.
 - The working branch must be an exact prepared Git branch before execution, not
   main/master or detached HEAD, with an existing commit. During planning it may
   be unknown, but label that an execution blocker. Do not create/switch branches.
@@ -32,7 +36,7 @@ Goal continuation and compaction; it does not run the external Ralph loop.
   or a human ad hoc to bypass an unavailable required gate.
 - Keep scope, requirements, criteria, dependencies, completion checkboxes, and
   concise current status in the plan, not repeated execution narratives.
-  Execution evidence and checkpoints go in append-only `docs/progress.md`;
+  Execution evidence and checkpoints go in append-only `progress.md`;
   validated patterns/suppressions go in bounded `memory.json`. These paths are
   relative to the worktree root, even when the task source has a custom path.
 - Mark a story delivered only after checks, review, and an explicitly authorized
@@ -45,7 +49,7 @@ Preserve supplied implementation recommendations; infer only useful exact known
 role names, never a quota. The executor implements and tests. Implementation
 specialists are read-only advisors under the shared mode budget (at most two),
 not competing file editors. Record the role's bounded question in the plan;
-record actual invocation or a skip reason in `docs/progress.md` at execution time.
+record actual invocation or a skip reason in `progress.md` at execution time.
 Discovery is not invocation and a definition does not prove native availability.
 
 The staged reviewer is fixed to Codex `story-reviewer` when the mode requires
@@ -77,8 +81,16 @@ loads the shared contract even when the planning skill is not otherwise active.
 - Mode: standard
 - Authorization: <actual execution/commit grant, or pending; sensitive actions excluded>
 - Delivery: one authorized commit per verified and reviewed story
+- Archive PRD: <exact project-relative primary PRD path>
+- Run ID: <bound work-run run_id>
+- Closeout: <actual archival/removal and one closeout commit grant, or pending>
 - Verification commands: <real format/lint/typecheck/test commands and unavailable checks>
 - Assumptions / open questions: <material gaps or none>
+
+## Implementation approach and phases
+- Approach: <source-backed design, interfaces, compatibility and tradeoffs>
+- Phase 1: <purpose and included story IDs>
+- Later phases: <dependency-ordered purposes and story IDs>
 
 ## Ordered stories
 
@@ -86,6 +98,7 @@ loads the shared contract even when the planning skill is not otherwise active.
 - [ ] Story complete
 - Priority: 1
 - Depends on: none
+- Phase / requirements: <phase and source requirement references>
 - User story: As a <user>, I want <capability> so that <benefit>.
 - Relevant paths: <source/test paths>
 - Recommended implementation advisors: <known roles or none>
@@ -111,12 +124,12 @@ loads the shared contract even when the planning skill is not otherwise active.
   that skill's reported base directory. Follow its CodexGoalMarkdown adapter.
   If discovery, a reference, or required story-reviewer invocation is unavailable,
   stop with the blocker; do not invent a path, substitute a reviewer, or skip rules.
-- Read this plan, relevant latest docs/progress.md entries, and memory.json if
+- Read this plan, relevant latest progress.md entries, and memory.json if
   present, resolving state paths from the worktree root. Keep this plan concise:
   scope, requirements, criteria, dependencies, completion state, and current status.
   Put commands/results, changed paths, review findings/dispositions, blockers,
   approvals, actual advisor use, commit status, and resumption checkpoints in
-  append-only docs/progress.md; never rewrite its history. Create it only when
+  append-only progress.md; never rewrite its history. Create it only when
   authorized execution requires a checkpoint and branch/unrelated-work guards pass.
 - Missing memory.json is normal: check existence before reading, use empty
   version-1 memory in process, and create it only after passing review. Preserve
@@ -135,9 +148,13 @@ loads the shared contract even when the planning skill is not otherwise active.
   is delivered only after its authorized commit succeeds. On failure follow the
   shared marker-restoration and checkpoint procedure. Never claim unchecked work done.
 - [ ] Final report: actual commits, checks/review outcomes, delivered scope, remaining gaps.
-- After all tasks are verified and committed, offer separately approved archival
-  using references/completed-run-archive.md from the installed skill. Do not move
-  active state or commit an archive under story-commit authorization alone.
+- After all tasks are verified and committed, invoke scripts/archive_run.py from
+  the installed prepare-implementation base with --project <absolute-worktree-root>
+  and --prd <bound-primary-PRD-path>. Follow references/completed-run-archive.md.
+  Run automatically under the existing archival/removal grant; do not request it
+  again. The helper archives associated PRDs and root progress.md/memory.json
+  beside this plan and emits a verified receipt. Make the one closeout commit
+  only under its own granted scope; never push implicitly or hand-roll cleanup.
 ```
 
 For a Python client story, `python-pro` may advise on implementation risks while
@@ -155,9 +172,14 @@ plan review; do not enter it or execute anything during planning:
 /goal Execute the approved PLAN.md using prepare-implementation's shared story
 execution and staged-review contracts in standard mode. I authorize scoped
 implementation, required project dependencies, checks, and one commit per passing
-story. Read PLAN.md, docs/progress.md, and memory.json as specified. Keep task
+story. Read PLAN.md, progress.md, and memory.json as specified. Keep task
 checkboxes and concise current status in PLAN.md, append execution history to
-docs/progress.md, and update bounded memory only from validated review evidence.
+progress.md, and update bounded memory only from validated review evidence.
+After all stories are delivered, I authorize the installed archival helper to
+archive the exact run-owned PRDs and task source declared in the bound work-run
+manifest, root progress.md and existing memory.json, removing only verified
+active copies, and one closeout commit on the prepared working branch. Use the
+plan's exact primary PRD path; preserve unrelated files and runner controls.
 Preserve unrelated work and existing
 permission boundaries; ask for sensitive operations. Stop on branch, verification,
 review, memory, or commit blockers. Do not push, deploy, or post externally.
@@ -171,7 +193,7 @@ limits, or run `/compact` as a shell command.
 Do not create/reset progress or memory during planning. Existing plans may have
 implementation notes: preserve them and completed checkboxes. Relocating that
 evidence requires explicit cleanup approval during authorized execution and must
-preserve it in docs/progress.md before removing it from the plan. Do not replace an
+preserve it in progress.md before removing it from the plan. Do not replace an
 unfinished run. Archive completed runs only under the shared
 [archival procedure](completed-run-archive.md). A resumed old plan missing the
 branch or shared contract needs a scoped plan update, not silent execution with

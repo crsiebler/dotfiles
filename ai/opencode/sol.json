@@ -9,5 +9,5 @@
             "model": "openai/gpt-6-luna"
         }
     },
-    "model": "openai/gpt-6-sol"
+    "model": "openai/gpt-6.1-sol"
 }

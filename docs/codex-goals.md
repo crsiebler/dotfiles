@@ -15,14 +15,14 @@ Ask Codex to use the installed `prepare-implementation` skill with your requirem
 Use the skill identifier shown by the runtime rather than guessing plugin namespace
 syntax. The skill reads only the selected format reference and creates the plan;
 it does not implement, run project tests, create branches, start a goal, or create
-`docs/progress.md` or `memory.json`.
+`progress.md` or `memory.json`.
 
 Each new Markdown story starts unchecked and contains:
 
 - Stable ID, priority, dependencies, user benefit, and relevant paths.
 - Observable acceptance criteria and applicable verification commands.
 - Research, implementation, verification, bounded staged review, and remediation steps.
-- An instruction to append execution checkpoints to `docs/progress.md`, not the plan.
+- An instruction to append execution checkpoints to `progress.md`, not the plan.
 
 The plan records the exact required working branch, not a branch suggestion.
 Review the plan before execution. Existing plans, checked statuses, and evidence
@@ -68,8 +68,13 @@ requires it. Require the plan's exact existing branch and an existing commit;
 reject main/master, detached HEAD, and mismatch before any writes. Do not create
 or switch branches. Keep the plan stable with completion state and concise current
 status in PLAN.md; append execution notes, evidence, dispositions, and resumption
-checkpoints to docs/progress.md, and
+checkpoints to progress.md, and
 maintain bounded version-1 memory.json only as the shared contract permits.
+After all stories are delivered, automatically invoke the installed archive_run.py
+with this plan's bound primary PRD and worktree root. I authorize archival/removal
+of the exact run-owned PRDs/task source declared in its work-run manifest, root
+progress.md and existing memory.json after verified preservation, and one closeout
+commit on the prepared branch. Preserve unrelated files and runner controls.
 Preserve unrelated work. Stop with the story pending for missing required input,
 protocol, reviewer/session, permission, invalid memory, or failed checks, review,
 or commit. After a final blocked review, preserve the candidate and evidence and
@@ -173,7 +178,7 @@ pre-commit pending status, without a second bookkeeping commit.
 A final native review `blocked` verdict stops delivery and further review attempts
 for that story immediately. Preserve its candidate, unchecked status, findings,
 dispositions, checks, reviewer ID, and historical evidence. Append a safe checkpoint
-to `docs/progress.md` naming the exact blocker, what must materially change, the
+to `progress.md` naming the exact blocker, what must materially change, the
 evidence required before resumption, consumed review passes, and existing authority.
 If write guards prohibit the checkpoint, report it in the response instead.
 
@@ -234,7 +239,7 @@ continuation controller, unsupported Goal setting, or false completion claim.
 
 Keep `PLAN.md` as the stable plan and completion checklist. Append current results,
 status, implementation notes, review dispositions, and the next action to
-`docs/progress.md` after each reviewed story and before pausing or handing off blocked
+`progress.md` after each reviewed story and before pausing or handing off blocked
 or incomplete work. Identify entries by plan/feature and story ID. Record evidence
 before provisionally checking completion boxes; missing checks, review, or a
 successful authorized commit keep a story undelivered.
@@ -248,12 +253,12 @@ budget reason; mark unavailable metadata unknown. Do not invent iteration limits
 or claim Codex has Ralph's external hard iteration controller, fresh-session loop,
 or completion sentinel.
 
-Planning creates neither log nor memory. Resolve `docs/progress.md` and `memory.json`
+Planning creates neither log nor memory. Resolve `progress.md` and `memory.json`
 from the worktree root, even with a custom plan path. After branch and worktree
 guards pass, execution creates the journal only when a permitted checkpoint is
 required and otherwise appends without resetting it. Never rewrite earlier entries
 or headers, or read/migrate legacy execution logs. Existing plan notes are preserved;
-explicitly approved cleanup during execution must preserve them in `docs/progress.md`
+explicitly approved cleanup during execution must preserve them in `progress.md`
 before trimming the plan. Keep future execution narratives out of the plan and PRD.
 
 Look up project-local `memory.json` before reading it. Absence is normal: use
@@ -275,12 +280,18 @@ No global or plugin lifecycle hook is installed for it.
 
 With one active plan per worktree, archive only after all tasks are verified and
 required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
-preview and obtain explicit approval, append a final summary, copy the actual plan,
-`docs/progress.md`, and existing `memory.json` to a unique archive, verify contents,
-then remove approved active copies. Archive the memory with the run; do not reset
-the journal or automatically create new state. Archive commits require separate
-authorization. Ralph uses the same procedure, but only after runner validation
-and exit. Neither workflow archives as a side effect of requirements drafting.
+invoke the installed archive_run.py automatically under the existing scoped
+archival/removal grant, passing the exact primary PRD and absolute worktree root.
+PRD work-run metadata declares the task source and associated PRDs; committed
+story-result records bind observed check/review results to completed story markers.
+The script verifies and archives PRDs, plan, root progress.md and existing
+memory.json together as peers in a unique timestamped directory, preserving
+bytes and recording a receipt. It never resets history or creates new state.
+A closeout commit needs its own scope, which may be authorized upfront. Ralph's
+invoking assistant uses the same helper after supervisor validation and successful
+exit; CLI-only Ralph has no post-run hook. Neither workflow archives during
+requirements drafting. Legacy runs lacking metadata/records need scoped
+enrollment; never fabricate evidence or automatically relocate old journals.
 
 Archival is allowed on any branch, including `main`/`master`, even if the original
 branch was merged and deleted. Verify run ownership and delivery using retained

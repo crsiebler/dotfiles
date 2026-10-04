@@ -4,7 +4,7 @@
 
 **Status:** Deferred. No hook, controller, or automatic compaction command is
 implemented. Use native goal continuation/automatic compaction and write a durable
-checkpoint in append-only `docs/progress.md` at each story's shared delivery gate.
+checkpoint in append-only `progress.md` at each story's shared delivery gate.
 Codex Goal already shares Ralph's execution, bounded version-1 memory, staged
 review, prepared-branch, and authorized per-story commit contract; compaction
 automation is the deferred feature, not those execution rules. Native Goal does

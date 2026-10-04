@@ -21,13 +21,20 @@ migrations and Docker operations still require their own applicable approvals.
 
 If `plan.json` already exists, preserve it and require confirmation for scoped
 updates. Do not overwrite an unfinished run with a different feature. Completed
-runs use the separately approved [archival procedure](completed-run-archive.md),
+runs use the deterministic [archival procedure](completed-run-archive.md) under
+the existing scoped archival/removal grant,
 after the runner has validated completion and exited, not during conversion.
 
 Keep `plan.json` a stable task source with concise planning context in `notes`,
 not execution narratives. Append execution evidence only to worktree-root
-`docs/progress.md`; bounded reusable review knowledge stays in root `memory.json`.
+`progress.md`; bounded reusable review knowledge stays in root `memory.json`.
 Planning creates neither state file and never resets them.
+
+Explain implementation phases in the planning handoff; encode phase and PRD
+requirement references in existing story notes and priority order. Do not add
+phase/completion keys to the JSON schema. Bind the associated PRDs' work-run
+metadata to RalphJSON and the actual plan path. Include the exact primary PRD
+path and archival/removal plus closeout commit authorization in the handoff.
 
 ---
 
@@ -318,11 +325,14 @@ Add ability to mark tasks with different statuses.
 
 ## Archiving Completed Runs
 
-After all stories pass checks/review and their commits succeed, wait for runner
-completion validation and exit. Offer the [shared archival procedure](completed-run-archive.md)
-for `plan.json`, `docs/progress.md`, and existing `memory.json` together. It requires
-explicit approval and verified preservation before active-copy removal. Do not
-archive inside an iteration, reset the journal, or assume automatic runner cleanup.
+After all stories pass checks/review and their commits succeed, the invoking
+assistant waits for runner completion validation and successful exit, then
+automatically invokes the installed script under the [archival contract](completed-run-archive.md)
+when the scoped grant covers the declared PRDs, plan.json, root progress.md and
+existing memory.json. The script archives them flat with a verified receipt.
+The story agent must not archive inside an iteration or remove the plan before
+runner validation. A CLI-only runner has no post-run archive hook. One closeout
+commit requires its own scope, which may be authorized upfront.
 
 ---
 
@@ -330,7 +340,9 @@ archive inside an iteration, reset the journal, or assume automatic runner clean
 
 Before writing plan.json, verify:
 
-- [ ] No unfinished run is being replaced; completed-run archival is separately approved
+- [ ] No unfinished run is being replaced; archival is outside planning under its scoped grant
+- [ ] Implementation phases/requirement links are mapped in notes without new JSON keys
+- [ ] Associated PRDs have bound work-run metadata and the handoff identifies archival/closeout authority
 - [ ] Each story is completable in one iteration (small enough)
 - [ ] Stories are ordered by dependency (schema to backend to UI)
 - [ ] Every story has "Typecheck passes" as criterion

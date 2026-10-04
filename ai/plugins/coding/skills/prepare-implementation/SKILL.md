@@ -46,7 +46,7 @@ During planning, load **only the selected format reference**, not both:
 - `markdown-checklist`: [Markdown checklist](references/markdown-checklist.md).
   Keep `PLAN.md` concise: requirements, completion checkboxes, and current status,
   not repeated execution narratives. Direct execution evidence and checkpoints to
-  append-only `docs/progress.md` relative to the Git worktree root.
+  append-only `progress.md` relative to the Git worktree root.
   Include the shared execution handoff and bounded `memory.json` instructions in
   the generated plan; planning does not create either execution-state file.
 - `ralph-json`: [Ralph format](references/ralph-format.md). Preserve its exact JSON
@@ -57,7 +57,7 @@ During planning, load **only the selected format reference**, not both:
 
 Both formats are stable task sources for scope, requirements, acceptance criteria,
 dependencies, completion state, and concise current status only; preserve the JSON
-schema. `docs/progress.md` owns execution history, root `memory.json` owns bounded
+schema. `progress.md` owns execution history, root `memory.json` owns bounded
 reusable review knowledge, and PRDs own approved requirements and changes, not
 implementation checkpoints. Do not create the journal or memory during planning.
 
@@ -66,14 +66,30 @@ source, and existing verification commands; ask only about material gaps. Split
 work into bounded, independently verifiable stories and validate against the
 selected reference. Do not invent missing documentation or commands.
 
+Explain the implementation approach and phase order before the detailed stories.
+Map each story to its source requirements and phase; bound its implementation,
+verification, review and commit. Phases organize the same stories, not a second
+completion tracker. For Ralph, express phase/requirement links in existing notes
+and priority ordering without adding JSON keys.
+
+Read [run manifest and archival contract](references/completed-run-archive.md).
+When saving a new plan, bind its exact path/adapter and associated PRDs in their
+work-run metadata. Preserve requirement prose and run IDs. For text-only sources,
+obtain a saved, run-owned PRD before execution; do not invent approved requirements.
+Expose missing archival metadata/authority as a handoff gap. Planning may create
+or update this scoped PRD metadata; it never creates journal/memory or archives.
+
 Preserve existing artifacts. Preview and require explicit confirmation before
-destructive overwrite, archive, or reset. For approved plan continuation, update
+destructive overwrite or reset. For approved plan continuation, update
 only scoped sections, preserving checked statuses and completion evidence.
 Do not replace an unfinished run with a new feature. Completed runs use the
-[shared archival procedure](references/completed-run-archive.md), separately
-approved after delivery, never as an automatic planning side effect.
+[deterministic archival procedure](references/completed-run-archive.md),
+automatically after verified delivery when the execution grant covers the exact
+artifact removals. A closeout commit needs its own scope, which may be granted
+upfront with the sequence. Neither planning nor metadata grants either authority.
 
-When preparing a plan, generate the plan only: do not implement, run implementation checks, create or
-switch branches, commit, launch Ralph, run a CLI goal, or automatically create a
+When preparing a plan, generate the plan and scoped PRD binding only: do not
+implement, run implementation checks, create or switch branches, commit, launch
+Ralph, run a CLI goal, or automatically create a
 goal. Report format/path, story order, plan validation, assumptions, and blockers;
 distinguish plan checks from unrun implementation tests.

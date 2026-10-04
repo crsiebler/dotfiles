@@ -58,7 +58,7 @@ For unfinished but recoverable implementation/review work, write:
 ```
 
 Keep the story incomplete and preserve the candidate. Append a checkpoint to
-worktree-root `docs/progress.md` only when the shared write guards permit it,
+worktree-root `progress.md` only when the shared write guards permit it,
 with unresolved findings, attempted fixes, checks, reviewer provenance, and the
 next action before writing the outcome. Do not update review memory from a failed
 review. The runner requires changed candidate state or new verification evidence
@@ -84,7 +84,7 @@ failed commit/finalization, contradictory requirements, or no credible fix:
 }
 ```
 
-Append the checkpoint to `docs/progress.md` when safe, write the blocked outcome,
+Append the checkpoint to `progress.md` when safe, write the blocked outcome,
 then create `.ralph-stop` with
 a concise reason if file access is available. Create the stop file last because
 the runner observes it while OpenCode is running and terminates the managed
@@ -124,7 +124,9 @@ human-blocked work. Never claim a solution is impossible merely because a retry
 budget was exhausted; report the attempts and the unresolved decision instead.
 
 Do not archive state or append post-run summaries inside the final iteration.
-After the runner validates completion and exits, a separate interactive assistant
-may offer the explicitly approved [completed-run archive](completed-run-archive.md).
+After the runner validates completion and exits, the invoking assistant
+automatically runs the installed archive helper under the existing scoped
+archival grant, following [completed-run archive](completed-run-archive.md).
+Missing authority or metadata blocks archival without resetting runner controls.
 Never remove `plan.json` before runner validation or modify runner controls as
 part of archival.

@@ -1,6 +1,6 @@
 ---
 name: assess-work-item
-description: Assesses work-item scope, effort, dependencies, risks, and unknowns.
+description: Assess scope, effort, dependencies and risks from GitHub issues or Projects, Jira items, or supplied evidence.
 ---
 
 # Assess Work Item
@@ -9,6 +9,10 @@ Read [assessment contract](references/assessment.md). Identify the work item
 from its URL, identifier and platform, or supplied context. Load the
 [Jira adapter](references/jira.md) only for Jira. Confirm the target, requirements,
 related work, and relevant evidence before estimating complexity or impact.
+For GitHub issues or Projects, read the [GitHub adapter](references/github.md).
+For a project, identify the bounded item/milestone/filter scope; report a project
+synthesis and assess selected items individually when requested. Do not treat
+one project status field as evidence that implementation passed checks/review.
 For other platforms, draft from supplied evidence unless a verified integration
 is available; do not assume Jira identifiers or invent platform-specific tools.
 Separate evidence, reported constraints, assumptions, and unanswered questions.
