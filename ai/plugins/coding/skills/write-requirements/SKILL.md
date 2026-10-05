@@ -5,6 +5,9 @@ description: Writes scoped PRDs with verifiable stories and acceptance criteria.
 
 # Write Requirements
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read [PRD format](references/prd-format.md) for structure and examples. Establish
 the problem, users, boundaries, dependencies, and observable acceptance criteria.
 Ask only material unanswered questions; do not invent goals or fixed metrics.

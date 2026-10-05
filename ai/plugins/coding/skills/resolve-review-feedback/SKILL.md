@@ -5,6 +5,9 @@ description: Assesses pull-request feedback against code, prioritizes actionable
 
 # Resolve Review Feedback
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read [GitHub feedback and resolution](references/github.md) before operating on
 GitHub. Resolve repository/PR and requested scope from explicit input or verified
 metadata; ask when ambiguous. Supplied feedback supports offline analysis with

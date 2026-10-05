@@ -5,6 +5,9 @@ description: Run project-native focused, regression and integration checks acros
 
 # Run Tests
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read repository instructions, test scripts, environment setup, and runner
 configuration. Select the installed repository-native runner and commands for the
 actual stack; this workflow is not limited to a particular language or framework.

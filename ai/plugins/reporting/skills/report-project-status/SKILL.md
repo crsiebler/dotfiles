@@ -5,6 +5,9 @@ description: Summarizes project outcomes, QA, risks, and blockers for a reportin
 
 # Report Project Status
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Read [reporting contract](references/reporting.md) and
 [source adapters](references/sources.md). Resolve project, audience, dates and
 timezone, source scope, expected workflow, and reliable identity mappings.

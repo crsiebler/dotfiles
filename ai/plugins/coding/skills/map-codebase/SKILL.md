@@ -5,6 +5,9 @@ description: Creates and updates source-backed repository maps in focused techni
 
 # Map Codebase
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Produce a persistent navigation aid that explains where behavior lives, how
 components connect, what changes may affect, and where verification belongs.
 Use for repository or subsystem mapping, not as a prerequisite for small edits.

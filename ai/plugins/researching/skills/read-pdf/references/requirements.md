@@ -15,3 +15,23 @@ Original implementation follows official pypdf
 through Context7 and independent fixtures. No proprietary document skill code read.
 Content-stream decompression still consumes memory before decoded-size rejection;
 limits bound supported inputs and output, not an operating-system resource sandbox.
+
+## Installation and availability check
+
+Use an existing compatible project environment, or create a fresh project-local
+one after dependency installation is authorized. Resolve `skill_dir` to the
+advertised loaded skill; do not assume the checkout is the installed bundle.
+
+```sh
+skill_dir='/absolute/path/to/loaded/read-pdf'
+python3.11 -m venv .venv-read-pdf
+./.venv-read-pdf/bin/python -m pip install -r "$skill_dir/requirements.txt"
+./.venv-read-pdf/bin/python "$skill_dir/scripts/read_pdf.py" check
+```
+
+Replace the path placeholder and choose an unused environment directory.
+[Python installation](https://www.python.org/downloads/) is separate if missing;
+macOS with existing Homebrew can use approved `brew install python@3.11`.
+Keep the bundled pins and normal transitive dependencies; do not use global pip,
+overwrite an existing environment, or upgrade packages implicitly.
+A successful `check` establishes availability only, not artifact/rendering quality.

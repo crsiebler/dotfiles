@@ -5,6 +5,9 @@ description: Searches and reads web sources for current information, fact checks
 
 # Search Web
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 Start with supplied and authorized local context. Use external research only
 when it is needed to answer the request. Clarify scope, recency, geography, or
 output format only when the missing information materially changes the answer;

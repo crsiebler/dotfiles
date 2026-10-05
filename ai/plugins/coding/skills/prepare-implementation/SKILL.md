@@ -5,6 +5,9 @@ description: Turn approved requirements into an ordered implementation plan.
 
 # Prepare Implementation
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 ## Execution handoff
 
 Planning is the default. When explicitly invoked to execute an already approved

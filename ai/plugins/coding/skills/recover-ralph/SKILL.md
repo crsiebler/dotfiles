@@ -5,6 +5,9 @@ description: Diagnoses stopped Ralph runs, guides approved repairs, and prepares
 
 # Recover Ralph
 
+Read [requirements](references/requirements.md) before selecting external tools or
+running helpers. Dependency setup is separately authorized.
+
 This is an interactive recovery workflow for the primary assistant, not another
 autonomous Ralph iteration. Default to read-only assessment and finish with a
 recovery report. Invoking this skill is not authorization to edit, remove a stop

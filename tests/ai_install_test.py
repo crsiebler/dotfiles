@@ -436,7 +436,7 @@ class InstallTest(unittest.TestCase):
         source = skills / 'search-web'
         self.assertEqual({p.relative_to(source).as_posix()
                           for p in source.rglob('*') if p.is_file()},
-                         {'SKILL.md', 'references/exa.md'})
+                         {'SKILL.md', 'references/exa.md', 'references/requirements.md'})
 
     def test_review_feedback_skill_discovery_and_reference(self):
         m = self.module()
@@ -447,7 +447,7 @@ class InstallTest(unittest.TestCase):
         source = skills / 'resolve-review-feedback'
         self.assertEqual({p.relative_to(source).as_posix()
                           for p in source.rglob('*') if p.is_file()},
-                         {'SKILL.md', 'references/github.md'})
+                         {'SKILL.md', 'references/github.md', 'references/requirements.md'})
         self.assertIn('(references/github.md)',
                       (source / 'SKILL.md').read_text())
         permissions = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
