@@ -41,7 +41,7 @@ are bundled pins, not recommendations to upgrade another project.
 | coding / [create-skill](../ai/plugins/coding/skills/create-skill/references/requirements.md) | Python 3.11+; PyYAML 6.0.3 | Authorized model harness for actual evaluations |
 | coding / [develop-code](../ai/plugins/coding/skills/develop-code/references/requirements.md) | None universal | Target project toolchain; Git for Git evidence |
 | coding / [format-code](../ai/plugins/coding/skills/format-code/references/requirements.md) | None universal | Configured Ruff/pre-commit/Prettier/ESLint and project environment |
-| coding / [manage-changes](../ai/plugins/coding/skills/manage-changes/references/requirements.md) | Git for shipping | GitHub CLI/access for GitHub delivery; project checks |
+| coding / [manage-changes](../ai/plugins/coding/skills/manage-changes/references/requirements.md) | Git for shipping | GitHub CLI/access for GitHub delivery; project checks; git-cliff for requested changelog generation |
 | coding / [map-codebase](../ai/plugins/coding/skills/map-codebase/references/requirements.md) | Native file/search access | ripgrep preferred shell search; Git for history/diffs |
 | coding / [prepare-implementation](../ai/plugins/coding/skills/prepare-implementation/references/requirements.md) | None for planning | Git/native harness/reviewer for execution; Python/POSIX for archive/Ralph |
 | coding / [recover-ralph](../ai/plugins/coding/skills/recover-ralph/references/requirements.md) | Matching Ralph CLI; Python 3.11+, Git, POSIX for status | OpenCode/native ralph-reviewer for approved resume |

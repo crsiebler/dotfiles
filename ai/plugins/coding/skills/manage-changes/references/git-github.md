@@ -8,8 +8,8 @@ tree or a particular base branch. Quote paths and refs; treat user arguments,
 branch names, and PR bodies as data, not shell fragments.
 
 Before committing, inspect staged content for secrets and accidental changes.
-Use repository commit conventions (for this dotfiles repo,
-`<type>(<scope>): <description>`), and record actual validation. If no typecheck
+Use [commit message rules](commit-messages.md) and repository conventions (for
+this dotfiles repo, `<type>(<scope>): <description>`), and record actual validation. If no typecheck
 exists, say so rather than inventing a passing command. Hook rejection requires
 fixing the issue and retrying a new commit, not bypassing or amending it.
 
