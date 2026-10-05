@@ -18,6 +18,10 @@ instructions, current branch, worktree state, diff, tracking, and recent history
 Preserve unrelated work and follow repository naming conventions rather than
 imposing Git Flow.
 
+For commit drafting or validation, read [commit messages](references/commit-messages.md).
+For requested changelog work, read [git-cliff](references/git-cliff.md); it is
+optional and is not run on every commit by default.
+
 Create branches or commits only when requested. Run required tests, lint, and
 typecheck before a commit; stage intended paths only. Do not amend, rebase shared
 history, force-push, bypass hooks, or merge implicitly.

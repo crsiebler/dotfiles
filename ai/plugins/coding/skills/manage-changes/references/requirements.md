@@ -7,6 +7,13 @@ adapter uses installed GitHub CLI (`gh`), repository access, and user
 authentication. Supplied descriptions can be drafted without GitHub access.
 Run required project checks with their existing environment before shipping.
 
+git-cliff is optional, required only for requested git-cliff changelog generation.
+It is not needed to draft or validate conventional commit messages. Check with
+`git cliff --version`; inspect the repository's existing configuration and history.
+Separately approved macOS setup can use `brew install git-cliff`; other platforms
+should follow [official installation](https://git-cliff.org/docs/installation/).
+The skill and AI installer do not install it or configure release automation.
+
 ## Installation and checks
 
 On macOS with Homebrew already installed, separately approved setup can use:
