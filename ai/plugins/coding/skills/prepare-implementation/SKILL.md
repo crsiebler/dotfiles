@@ -75,6 +75,42 @@ verification, review and commit. Phases organize the same stories, not a second
 completion tracker. For Ralph, express phase/requirement links in existing notes
 and priority ordering without adding JSON keys.
 
+### Preserve acceptance coverage
+
+Carry every in-scope user requirement and PRD acceptance criterion into the
+plan, preserving its conditions, constraints, edge cases, and exclusions. Reuse
+clear source wording; make vague criteria explicit only from approved requirements
+and inspected project evidence. Surface unresolved product decisions as questions
+or blockers, not invented behavior, numerical targets, or silently reduced scope.
+Do not add preconditions that narrow the outcome: "draft edits survive reload"
+must not become "manually saved edits survive reload" unless the source says so.
+
+Write observable acceptance criteria: the relevant condition or action and its
+expected result. Implementation tasks and typecheck/test/browser gates support
+these criteria; they do not replace the required product or technical outcome.
+Use the PRD path and existing requirement/story references, with distinguishing
+criterion text where needed, in Markdown's `Phase / requirements` or Ralph's
+existing `notes`. Do not require new source IDs or a second completion tracker.
+
+When decomposing a requirement across stories, identify the contributors and
+assign verification of the complete integrated behavior to the last contributing
+story or a bounded integration story, ordered after its prerequisites. Component
+checks alone do not establish the complete outcome. For example, if the PRD
+requires status filtering that survives reload, the owning story must verify both
+the selected filter and matching results after reload; an API parameter and a
+rendered dropdown are insufficient. Add persistence only when the source requires it.
+
+Before delivering the plan, compare it against the source requirements in both
+directions: find omissions or weakened conditions, integration outcomes without
+an owner, and added acceptance obligations unsupported by approved scope or
+necessary technical verification. Fix supported gaps; report unresolved ones with
+their exact source references and affected stories. Identify any explicitly
+approved exclusions. Summarize coverage and gaps in the planning handoff, without
+creating another status document or claiming implementation verification. A plan
+with unresolved acceptance gaps is a draft, not ready for execution.
+
+### Bind and preserve the run
+
 Read [run manifest and archival contract](references/completed-run-archive.md).
 When saving a new plan, bind its exact path/adapter and associated PRDs in their
 work-run metadata. Preserve requirement prose and run IDs. For text-only sources,

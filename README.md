@@ -4,6 +4,7 @@ A collection of configuration files for storing user preferences and preserving 
 
 ## Setup and documentation
 
+- [Repository overview and source map](docs/overview.md)
 - [AI configuration, connections, and validation](docs/ai-configuration.md)
 - [Manual removal of old AI files](docs/remove-old-ai-files.md)
 - [Native agent authoring and rendering](docs/agent-authoring.md)

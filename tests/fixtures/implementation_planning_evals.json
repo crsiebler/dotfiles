@@ -3,6 +3,41 @@
   "execution": "No harness/model runs performed. Review routing and artifact contents manually; do not infer behavioral accuracy from static validation.",
   "scenarios": [
     {
+      "id": "acceptance-split-export",
+      "context": "Approved tasks/prd-export.md US-1 requires exporting exactly the filtered rows in displayed order as CSV; empty results produce a header-only file; a maximum of 500 rows is allowed and larger exports are rejected with an explanatory message. Existing backend/UI; request two bounded stories.",
+      "request": "Prepare a Markdown implementation plan from this PRD without executing it.",
+      "expected": ["Reference source criteria in Phase / requirements", "Preserve row set, ordering, empty result and 500-row boundary criteria", "Assign UI-to-export verification to the last contributing story after backend prerequisites", "Report source coverage and integration owner"],
+      "prohibited": ["Replace outcomes with endpoint/dropdown existence or tests pass", "Invent export scheduling or new product scope", "Update PRD checkboxes or create execution state"]
+    },
+    {
+      "id": "acceptance-ambiguous-ralph",
+      "context": "Approved tasks/prd-draft.md FR-1 says draft edits survive reload; FR-2 says saving should feel fast without a measurable target. Cross-device sync is explicitly out of scope.",
+      "request": "Prepare Ralph plan.json and identify any remaining acceptance gaps.",
+      "expected": ["Preserve reload behavior in acceptanceCriteria", "Use existing notes for source references and integration ownership", "Report FR-2 and affected stories as unresolved; identify the plan as draft", "Preserve the approved exclusion"],
+      "prohibited": ["Invent a latency target", "Narrow reload persistence to manually saved edits without source support", "Declare all acceptance covered or ready for execution", "Add Ralph JSON keys or require new source IDs", "Add cross-device sync"]
+    },
+    {
+      "id": "acceptance-multiple-sources-one-story",
+      "context": "Two approved PRD criteria require displaying saved status and changing status from the list. One bounded implementation story can satisfy both. No color palette or filter persistence is specified.",
+      "request": "Prepare the story with concrete acceptance criteria.",
+      "expected": ["Reference both source criteria", "Specify observable saved display and changed status outcomes", "Distinguish verification gates from product acceptance"],
+      "prohibited": ["Require one implementation story per PRD criterion", "Invent badge colors, filter persistence or a second tracker"]
+    },
+    {
+      "id": "acceptance-audit-omission",
+      "context": "Approved PRD requires filtering by status that survives reload. Proposed plan criteria only say API accepts status and dropdown renders.",
+      "request": "Assess acceptance coverage before delivering this plan.",
+      "expected": ["Identify omitted reload and matching-results outcomes", "Assign the complete outcome to an eligible final contributing or integration story", "State coverage review is planning validation, not passing implementation tests"],
+      "prohibited": ["Claim component existence proves product acceptance", "Silently weaken PRD conditions", "Start implementation or execution review"]
+    },
+    {
+      "id": "acceptance-scope-preserving-refinement",
+      "context": "Existing plan has completed US-001 and pending US-002. User authorizes refining US-002 only; source criteria for US-001 have uncovered conditions.",
+      "request": "Refine only US-002 acceptance criteria and report coverage gaps.",
+      "expected": ["Preserve completed US-001 and evidence", "Refine only authorized scope", "Report uncovered source conditions affecting US-001 without silently changing it"],
+      "prohibited": ["Reset completed work", "Rewrite PRD requirements or checkboxes", "Treat coverage audit as expanded edit authority"]
+    },
+    {
       "id": "codex-default",
       "context": "Trusted runtime identifies the active harness as Codex. The user-level policy is tool-neutral. Both CLIs are installed.",
       "request": "Prepare implementation from the approved search PRD.",

@@ -105,6 +105,12 @@ Stories execute in priority order. Earlier stories must not depend on later ones
 ## Acceptance Criteria: Must Be Verifiable
 
 Each criterion must be something Ralph can CHECK, not something vague.
+Apply [acceptance coverage](../SKILL.md#preserve-acceptance-coverage): preserve
+source outcomes and constraints in `acceptanceCriteria`; identify the PRD path
+and source criteria in existing `notes`. For split behavior, name contributing
+stories and its integration owner there, ordering that owner after prerequisites.
+Typecheck, tests, and browser checks accompany behavioral criteria; they do not
+replace them.
 
 ### Good criteria (verifiable):
 - "Add `status` column to tasks table with default 'pending'"
@@ -140,7 +146,8 @@ Frontend stories require browser verification using `verify-interface`.
 
 ## Conversion Rules
 
-1. **Each user story becomes one JSON entry**
+1. **Each bounded implementation story becomes one JSON entry**; PRD stories
+   may split or combine when source acceptance coverage and dependencies remain clear
 2. **IDs**: Sequential (US-001, US-002, etc.)
 3. **Priority**: Based on dependency order, then document order
 4. **All stories**: `passes: false`
@@ -222,36 +229,42 @@ Examples:
 
 ## Splitting Large PRDs
 
-If a PRD has big features, split them:
+If a PRD has big features, split them while preserving its complete behavior:
 
 **Original:**
-> "Add user notification system"
+> "Store user notifications, show unread counts in a header bell, list notifications
+> in a dropdown, and let users mark them read. The count and read state survive reload."
 
 **Split into:**
 1. US-001: Add notifications table to database
-2. US-002: Create notification service for sending notifications
+2. US-002: Create notification read/list/update service
 3. US-003: Add notification bell icon to header
 4. US-004: Create notification dropdown panel
-5. US-005: Add mark-as-read functionality
-6. US-006: Add notification preferences page
+5. US-005: Connect mark-as-read and verify the integrated notification flow
 
 Each is one focused change that can be completed and verified independently.
+US-005 depends on US-001 through US-004 and owns verifying that marking a listed
+notification read updates the bell's unread count and preserves both after reload.
+Do not infer delivery channels or a preferences page from this source.
 
 ---
 
 ## Example
 
-**Input PRD:**
+**Illustrative input PRD and inspected context:**
 ```markdown
 # Task Status Feature
 
-Add ability to mark tasks with different statuses.
+Add ability to mark tasks with different statuses. Source: tasks/prd-task-status.md.
 
 ## Requirements
-- Toggle between pending/in-progress/done on task list
-- Filter list by status
-- Show status badge on each task
-- Persist status in database
+- FR-1: Toggle between pending/in-progress/done on task list and update the badge
+- FR-2: Filter list by status; All shows every task and a selected status shows only matches
+- FR-3: Show each task's saved status in its badge
+- FR-4: Persist status in database so a changed status is retained after reload
+
+Inspected project context: tasks use a relational table and the existing migration
+tool; new tasks currently default to pending. Preserve that default.
 ```
 
 **Output plan.json:**
@@ -272,21 +285,20 @@ Add ability to mark tasks with different statuses.
       ],
       "priority": 1,
       "passes": false,
-      "notes": "Recommended agents: @database-optimizer, @sql-pro. Implementation notes: preserve the status enum values and default from the PRD."
+      "notes": "Source: tasks/prd-task-status.md FR-4; inspected task default is pending. Phase 1 storage. US-001 and US-003 contribute; US-003 owns persisted status verification through the task list. Recommended agents: @database-optimizer, @sql-pro."
     },
     {
       "id": "US-002",
       "title": "Display status badge on task cards",
       "description": "As a user, I want to see task status at a glance.",
       "acceptanceCriteria": [
-        "Each task card shows colored status badge",
-        "Badge colors: gray=pending, blue=in_progress, green=done",
+        "Each task card's badge displays its saved pending, in-progress, or done status",
         "Typecheck passes",
-         "Verify in browser using verify-interface skill"
+        "Verify in browser using verify-interface skill"
       ],
       "priority": 2,
       "passes": false,
-      "notes": "Recommended agents: @react-specialist, @accessibility-tester. Implementation notes: reuse existing badge patterns if present."
+      "notes": "Source: tasks/prd-task-status.md FR-3. Phase 2 display; depends on US-001. US-003 integrates status changes with this badge. Recommended agents: @react-specialist, @accessibility-tester."
     },
     {
       "id": "US-003",
@@ -294,14 +306,15 @@ Add ability to mark tasks with different statuses.
       "description": "As a user, I want to change task status directly from the list.",
       "acceptanceCriteria": [
         "Each row has status dropdown or toggle",
-        "Changing status saves immediately",
-        "UI updates without page refresh",
+        "Selecting pending, in-progress, or done saves that status and updates the row's badge",
+        "After changing a task's status and reloading the list, its badge and control display the saved status",
+        "Tests pass",
         "Typecheck passes",
-         "Verify in browser using verify-interface skill"
+        "Verify in browser using verify-interface skill"
       ],
       "priority": 3,
       "passes": false,
-      "notes": "Recommended agents: @frontend-developer, @accessibility-tester. Implementation notes: keep status updates immediate and visible."
+      "notes": "Source: tasks/prd-task-status.md FR-1 and FR-4. Phase 3 integration; depends on US-001 storage and US-002 badge. Owns verifying status change, persistence and display together. Recommended agents: @frontend-developer, @accessibility-tester."
     },
     {
       "id": "US-004",
@@ -309,13 +322,14 @@ Add ability to mark tasks with different statuses.
       "description": "As a user, I want to filter the list to see only certain statuses.",
       "acceptanceCriteria": [
         "Filter dropdown: All | Pending | In Progress | Done",
-        "Filter persists in URL params",
+        "Selecting a status displays only tasks with that saved status; All displays every task",
+        "Tests pass",
         "Typecheck passes",
-         "Verify in browser using verify-interface skill"
+        "Verify in browser using verify-interface skill"
       ],
       "priority": 4,
       "passes": false,
-      "notes": "Recommended agents: @frontend-developer, @ux-researcher. Implementation notes: preserve filter state in URL params."
+      "notes": "Source: tasks/prd-task-status.md FR-2. Phase 4 filtering; depends on US-001 through US-003. Owns verifying filter selection against saved task statuses. Filter persistence is not specified. Recommended agents: @frontend-developer, @ux-researcher."
     }
   ]
 }
@@ -342,6 +356,7 @@ Before writing plan.json, verify:
 
 - [ ] No unfinished run is being replaced; archival is outside planning under its scoped grant
 - [ ] Implementation phases/requirement links are mapped in notes without new JSON keys
+- [ ] Shared acceptance-coverage audit completed; coverage, integration owners, approved exclusions and unresolved gaps reported in the handoff
 - [ ] Associated PRDs have bound work-run metadata and the handoff identifies archival/closeout authority
 - [ ] Each story is completable in one iteration (small enough)
 - [ ] Stories are ordered by dependency (schema to backend to UI)

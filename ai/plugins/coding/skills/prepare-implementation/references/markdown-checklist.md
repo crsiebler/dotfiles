@@ -18,6 +18,10 @@ Goal continuation and compaction; it does not run the external Ralph loop.
   phase and source requirements, using one story completion tracker. Bind the
   source PRDs' work-run metadata under completed-run-archive.md and include their
   exact paths/run ID and actual archival/closeout authorization in the handoff.
+- Apply [acceptance coverage](../SKILL.md#preserve-acceptance-coverage). Use
+  `Phase / requirements` to identify source criteria and, for split behavior,
+  contributing stories and the story owning integrated acceptance. Put observable
+  outcomes in acceptance criteria, alongside the relevant verification gates.
 - The working branch must be an exact prepared Git branch before execution, not
   main/master or detached HEAD, with an existing commit. During planning it may
   be unknown, but label that an execution blocker. Do not create/switch branches.
@@ -98,7 +102,7 @@ loads the shared contract even when the planning skill is not otherwise active.
 - [ ] Story complete
 - Priority: 1
 - Depends on: none
-- Phase / requirements: <phase and source requirement references>
+- Phase / requirements: <phase, PRD path and source criteria; contributors and integration owner when split>
 - User story: As a <user>, I want <capability> so that <benefit>.
 - Relevant paths: <source/test paths>
 - Recommended implementation advisors: <known roles or none>
@@ -106,8 +110,8 @@ loads the shared contract even when the planning skill is not otherwise active.
 - Staged reviewer: story-reviewer when required by the shared mode/risk budget
 
 #### Acceptance criteria
-- [ ] <observable behavior>
-- [ ] <regression/edge case verified>
+- [ ] <required behavior: condition/action and expected result>
+- [ ] <source constraint/edge case; integrated outcome when this story owns it>
 - [ ] <typecheck passes; explicit treatment of unavailable checks>
 
 #### Execution checklist
@@ -164,6 +168,9 @@ reason. These are examples, not mandatory architecture or fixed agent counts.
 
 ## Handoff and existing plans
 
+Complete the shared acceptance-coverage audit before handoff. Report source
+coverage, integrated acceptance owners, approved exclusions, and exact unresolved
+gaps; do not present a draft with acceptance gaps as ready for execution.
 Report path, dependency/ordering checks, assumptions, unresolved verification,
 branch preparation, and authorization gaps. Offer this launch text only after
 plan review; do not enter it or execute anything during planning:
