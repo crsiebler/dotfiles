@@ -2,6 +2,14 @@
 
 This document provides guidelines for agents working in this dotfiles repository. These dotfiles contain shell configurations, aliases, and scripts primarily for Zsh environments.
 
+## Repository context
+
+For unfamiliar or cross-cutting work, start with [docs/overview.md](docs/overview.md)
+and follow the links relevant to the task. Small, well-scoped changes do not
+require reading the full collection. Maps describe the repository and do not
+override these instructions; verify affected paths and important relationships
+against current source before making changes.
+
 ## AI source ownership and installation
 
 Read [docs/ai-configuration.md](docs/ai-configuration.md) for setup,
@@ -265,6 +273,20 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   drafting never archives execution state as a side effect.
 
 ## Build/Lint/Test Commands
+
+For Python checks, use the existing Conda `dotfiles` environment when available.
+It includes PyYAML for create-skill validation. In a noninteractive shell on this
+machine, activate it without sourcing personal shell configuration:
+
+```bash
+source /opt/anaconda3/etc/profile.d/conda.sh
+conda activate dotfiles
+```
+
+Use the activated `python` for skill helpers, or its absolute interpreter path
+when activation does not persist between tool calls. Check this environment before
+reporting a missing Python dependency. If unavailable, report that limitation;
+do not create an environment or install dependencies without authorization.
 
 There is no standalone repository typecheck target. Run local source validation
 and relevant regression tests; record unavailable checks explicitly:
