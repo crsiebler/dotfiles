@@ -203,12 +203,13 @@ update affected subjects without rewriting policy or execution state. Read-only
 requests return proposed content instead of saving. Directory-based discovery
 requires no new command, agent, or installer special case.
 
-The base Codex configuration leaves the user's model selection intact. Astra is
-opt-in: `astra.config.toml` selects `gpt-6-astra` with high reasoning effort;
-OpenCode's `astra.json` selects `openai/gpt-6-astra` and the configured build variant.
-Verify account availability and the installed harness's profile/overlay help
-before activating these files. Installation does not prove model availability
-or make Astra Ralph-compatible.
+The [runtime selection guide](runtime-selection.md) describes the central policy
+in `ai/AGENTS.md`. Base Codex selects Sol 6.1; Astra is an explicit opt-in profile
+with high effort. OpenCode's overlays select the session model without hidden
+build/subagent pins. Reusable roles omit model and effort settings. Ralph inherits
+OpenCode settings unless explicit launch selectors are supplied. Verify account
+availability and effective settings after separately authorized activation;
+source validation does not prove model access, automatic routing or quality.
 
 ## Installation and replacement behavior
 
@@ -637,8 +638,12 @@ without overwrite. Update memory only after passing review, promoting reusable
 accepted fixes with verification and suppressing only evidenced false positives.
 Only durable guidance belongs in the nearest `AGENTS.md`.
 Create the journal only for a permitted execution checkpoint, never during planning
-or requirements drafting. Do not read or migrate legacy execution logs. After full
-verified delivery, automatically invoke the installed
+or requirements drafting. Do not read or migrate legacy execution logs. Bounded
+tasks may keep approved requirements in the plan without a separate PRD or
+work-run manifest. Larger work retains PRDs, explicit dependencies and integrated
+acceptance owners. Archival is optional planning enrollment; existing enrolled
+runs retain their manifest and safeguards. After full verified delivery of an
+enrolled run, automatically invoke the installed
 [completed-run archive helper](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md)
 under the execution grant's exact archival/removal scope. Bound work-run metadata
 in the PRDs selects the task source and associated PRDs; pre-commit story-result

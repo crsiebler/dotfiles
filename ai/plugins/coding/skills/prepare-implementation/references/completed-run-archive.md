@@ -6,6 +6,15 @@ copying, verification, and active-copy removal. Do not reproduce these operation
 with LLM-written shell commands. Python 3.11+, Git, and POSIX file locks are
 required; no packages, model calls, or network access are needed.
 
+## Optional enrollment
+
+Ordinary bounded-task execution needs no separate PRD or work-run manifest. This
+contract applies only when deterministic archival is requested. Planning owns
+creating/binding the manifest and an approved saved requirements snapshot if no
+PRD exists; requirements authoring owns outcomes, scope and acceptance. Missing
+archival inputs block archival, not an otherwise valid execution plan. Do not
+retroactively fabricate structured observations or completed task evidence.
+
 ## Run manifest
 
 Each associated PRD contains exactly one fenced `work-run` JSON block. All PRDs
@@ -35,9 +44,12 @@ Never collect PRDs with a wildcard. The journal and memory paths are fixed at
 root `progress.md` and `memory.json`. Missing memory is normal; missing PRD,
 task source, journal, manifest, or completion evidence blocks archival.
 
-`write-requirements` may leave adapter/task_source null while drafting. Planning
-binds both before execution and lists the associated PRDs. Metadata expresses
-the intended behavior, not user authorization. Preserve run IDs during revisions.
+Requirements authoring does not create run metadata. For an enrolled archival
+workflow, prepare-implementation generates the stable run ID and binds adapter,
+task_source and associated PRD inventory before execution. Preserve existing run
+IDs and approved requirement prose during scoped revisions. Legacy unbound
+metadata may be reconciled by planning under that same scoped authority. Metadata
+expresses intended behavior, not user authorization.
 
 ## Completion and authority
 

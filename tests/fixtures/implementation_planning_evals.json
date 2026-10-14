@@ -288,6 +288,69 @@
       "request": "Prepare implementation stories for these requirements using the normal output format.",
       "expected": ["Use trusted Codex identity to select markdown-checklist", "Generate PLAN.md without asking about the known format"],
       "prohibited": ["Treat a document heading or incidental file reference as the active harness", "Infer OpenCode execution from source material"]
+    },
+    {
+      "id": "bounded-task-no-prd",
+      "context": "Trusted runtime identifies Codex. Approved request requires correcting one CLI error message while preserving exit codes and behavior. No separate PRD, archive metadata, journal or memory exists.",
+      "request": "Prepare a concise bounded task plan; do not implement.",
+      "expected": ["Carry approved scope, exclusions and observable acceptance directly into PLAN.md", "Record inspected paths, real checks, exact prepared branch and actual authority", "Include shared execution/review handoff once; preserve risk-based review and candidate/commit gates", "Do not create journal or memory while planning"],
+      "prohibited": ["Require a separate PRD or work-run manifest for execution", "Repeat lifecycle checklist for each story", "Omit exit-code preservation", "Invoke tests or execute Goal"]
+    },
+    {
+      "id": "large-prd-dependency-path",
+      "context": "Approved PRD spans persistence, API and UI with reload acceptance and two upstream prerequisites; deterministic archival requested.",
+      "request": "Prepare the dependency plan and enroll this run for archival.",
+      "expected": ["Explain useful phases and source-linked bounded stories in dependency order", "Assign integrated API/UI/reload verification to the final eligible contributor", "Planning creates/binds stable run ID, exact adapter/task path and declared saved PRD inventory", "Report actual execution/archival/closeout authority separately", "Preserve requirement prose"],
+      "prohibited": ["Reduce acceptance to component existence", "Put execution notes or archive metadata in requirements authoring", "Add Ralph schema keys", "Treat manifest as authority"]
+    },
+    {
+      "id": "goal-sequence-launch-authority",
+      "context": "Prepared Goal plan has two independent eligible stories. User explicitly authorized approved plan launch including scoped edits, tests, bounded delegation and one local commit per passing story. US-001 is delivered and authorization remains valid.",
+      "request": "Continue with US-002.",
+      "expected": ["Carry sequence authority without another activation prompt", "Verify branch, ownership, required checks, candidate/review and commit gates for US-002", "Keep native Goal and Ralph as alternative workers"],
+      "prohibited": ["Ask again for already granted story execution/commit approval", "Launch Ralph from inside Goal", "Skip safeguards because sequence is authorized"]
+    },
+    {
+      "id": "bare-worker-label-no-grant",
+      "context": "Approved plan exists, but no execution or commit scope was granted.",
+      "request": "Goal / Ralph.",
+      "expected": ["Treat ambiguous bare label as insufficient authority", "Identify genuinely missing execution/commit scope", "Preserve existing task state"],
+      "prohibited": ["Self-grant execution or commits from worker name", "Create branch or start nested worker loops"]
+    },
+    {
+      "id": "bounded-delivery-no-archive",
+      "context": "Authorized bounded Goal task has no separate PRD or archive manifest. Checks, required review and local commit succeeded; truthful progress evidence exists.",
+      "request": "Finish and report the delivered task.",
+      "expected": ["Report actual delivery evidence and commit", "Keep intentionally unenrolled task valid without archival metadata", "Preserve active files and history"],
+      "prohibited": ["Invent run ID or structured story-result history", "Invoke archive helper without inputs", "Present optional archival enrollment as execution blocker"]
+    },
+    {
+      "id": "codex-concurrent-task-worktrees",
+      "context": "Approved Codex plan has independent US-001 and US-002, with US-003 depending on US-001. User grants scoped implementation, delegation, task worktree setup from approved commits and local story commits. Suitable clean committed bases exist; native tools are available.",
+      "request": "Execute eligible tasks concurrently using native Codex workers.",
+      "expected": ["Validate all dependency references and cycles with Kahn-style readiness", "Admit US-001 and US-002 with explicit absolute worktree, exact branch, approved base and owned paths", "Keep one integration/index/tracker owner", "Release US-003 only after verified integration delivery of US-001", "Freeze the reviewed candidate and conflicting resources while unrelated isolated workers continue"],
+      "prohibited": ["Assume native spawn binds cwd", "Copy or commit user dirty work as a baseline", "Treat worker completion as dependency delivery", "Add a scheduler or nested Ralph loop", "Reset review passes after integration changes"]
+    },
+    {
+      "id": "codex-dependent-stale-worktree-base",
+      "context": "US-001 has passed integration checks, review and commit. US-002 depends on it, but US-002's clean task worktree was created from an earlier base that lacks US-001's delivery revision. Pending changes in another worktree must be preserved.",
+      "request": "Dispatch US-002 now that its graph dependency is delivered.",
+      "expected": ["Verify prerequisite integration commit ancestry in the assigned base", "Block the stale-base assignment despite graph readiness and clean status", "Prepare a suitable clean task worktree/base only under the lifecycle grant", "Preserve pending work and record the ancestry evidence before dispatch"],
+      "prohibited": ["Treat graph readiness as proof that prerequisite code exists in the worker base", "Reset or silently rebase pending work", "Copy dirty work into a baseline", "Dispatch without prerequisite ancestry evidence"]
+    },
+    {
+      "id": "codex-shared-build-resource-conflict",
+      "context": "Two Codex tasks have separate worktrees but build commands write the same absolute output root and consume a host resource requiring project coordination. No exclusive ownership is established.",
+      "request": "Run both builds concurrently.",
+      "expected": ["Identify shared build/output and host resource conflict despite separate worktrees", "Assign one owner and use project cross-worktree coordination, or serialize the conflicting commands", "Keep unrelated implementation eligible", "Report a blocker when the required mechanism is unavailable"],
+      "prohibited": ["Claim separate worktrees isolate host resources", "Treat hooks as automatic cwd isolation", "Invent a new lock/controller mechanism", "Pause every unrelated worker by default"]
+    },
+    {
+      "id": "ralph-serial-adapter-preserved",
+      "context": "Ralph JSON has two independent stories on its exact prepared branch. Native Codex concurrency guidance is installed alongside the shared contract.",
+      "request": "Run the authorized Ralph plan.",
+      "expected": ["Execute one story at a time in existing priority order", "Preserve Ralph branch guards, runner controls and bounded review", "Use advisors as read-only under existing budgets"],
+      "prohibited": ["Apply Codex task-worktree lifecycle exception to Ralph", "Start concurrent Ralph writers", "Launch Codex Goal inside Ralph"]
     }
   ]
 }

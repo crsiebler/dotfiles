@@ -1,7 +1,8 @@
 {
   "skill_name": "write-requirements",
   "evals": [
-    {"id": 1, "prompt": "Save a new search PRD for later implementation planning.", "expected_output": "Save outcome-level requirements and a work-run block with stable run ID, PRD inventory and unbound adapter/task source.", "files": [], "expectations": ["No progress.md or memory.json creation", "No execution or archival", "Metadata is not approval"]},
-    {"id": 2, "prompt": "Revise the existing search PRD acceptance criteria.", "expected_output": "Update only the approved requirements while preserving its run ID, binding and unrelated content.", "files": [], "expectations": ["No new run identity", "No archival side effect", "No reset of execution history"]}
+    {"id": 1, "prompt": "Save a new search PRD for later implementation planning.", "expected_output": "Save outcome-level requirements, scope/exclusions and observable acceptance; leave run/archive metadata to implementation planning.", "files": [], "expectations": ["No progress.md or memory.json creation", "No execution or archival", "No work-run block or runner settings created"]},
+    {"id": 2, "prompt": "Revise the existing search PRD acceptance criteria.", "expected_output": "Update only the approved requirements while preserving its run ID, binding and unrelated content.", "files": [], "expectations": ["No new run identity", "No archival side effect", "No reset of execution history"]},
+    {"id": 3, "prompt": "Define acceptance for a bounded CLI error-message fix preserving exit codes; do not require another document.", "expected_output": "Return a concise task brief preserving the approved behavior, constraints and acceptance, suitable for direct planning.", "files": [], "expectations": ["No forced fuller PRD", "No story execution breakdown", "No archive metadata", "Preserve all acceptance conditions"]}
   ]
 }

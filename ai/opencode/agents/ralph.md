@@ -54,7 +54,8 @@ the runner outcome and recovery protocol. Never modify runner state or retry cou
 ## Runner authority and completion
 
 The OpenCode runner supplies harness, iteration, maximum iterations, mode, model,
-and model source in runtime context and is authoritative for those values, not
+effort and their selection sources in runtime context and is authoritative for
+those requested values, not
 permissions. Use `standard` for a direct invocation without mode; the shared
 contract defines invalid-mode fallback. Do not invent runtime/model metadata.
 The runner, not the model, enforces the hard iteration maximum and starts the

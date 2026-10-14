@@ -14,8 +14,9 @@ Planning is the default. When explicitly invoked to execute an already approved
 plan (including a Codex Goal), do not regenerate it: read the installed skill's
 [shared execution contract](references/story-execution.md) and
 [staged-review protocol](references/story-review.md), then follow the appropriate
-task-source adapter. Require execution and commit authorization; the presence of
-a plan or skill does not grant it. Missing references or required native reviewer
+task-source adapter. Require execution and commit authorization; an explicit authorized plan launch
+may cover the whole eligible sequence without another activation per story. The
+presence of a plan or skill does not grant it. Missing references or required native reviewer
 availability block execution. No hardcoded checkout or plugin-cache paths.
 On continuation or resumption, apply the shared contract's persistent blocker
 gate before further story work or review. A final blocked review keeps the story
@@ -26,6 +27,30 @@ protocol/schema. Parent tool-output references are not delivery. Start a separat
 reviewer session for each story; record the selected native role and actual session
 ID independently of its display label. Follow the execution contract's packet
 preflight and story/session checks before every initial or targeted invocation.
+
+## Scale the plan
+
+Use a lightweight bounded-task path for a clear approved outcome with few focused
+changes. Carry the supplied request or brief directly into the selected task source
+with scope/exclusions, observable acceptance, inspected paths, verification,
+ordered dependencies, exact prepared branch and actual authority. A separate PRD,
+phase narrative and archive manifest are optional, not execution prerequisites.
+Keep the shared handoff once in the plan instead of repeating lifecycle boilerplate
+for each story; acceptance and completion state still belong to each story.
+
+Use the fuller PRD/dependency path for broader, interdependent or uncertain work,
+or when requested: link approved PRDs, explain the design and phase order, record
+prerequisites and integration owners, and bound the execution stories. Ask only
+material unresolved questions. Neither path reduces acceptance coverage or the
+shared branch, verification, risk-based review, candidate or commit safeguards.
+
+Codex Goal and Ralph/OpenCode are alternative execution paths. RalphJSON remains
+serial. CodexGoalMarkdown permits concurrent dependency-ready implementation
+workers under [Codex concurrency](references/codex-concurrency.md), with explicit
+task worktree/branch/base/owned-path assignments and one integration owner.
+Choose the explicit target or trusted runtime default below; never nest the loops.
+Requirements, acceptance coverage and bounded delivery gates remain shared.
+Planning worker selection is explicit, not automatic model routing.
 
 ## Select the format
 
@@ -69,15 +94,21 @@ source, and existing verification commands; ask only about material gaps. Split
 work into bounded, independently verifiable stories and validate against the
 selected reference. Do not invent missing documentation or commands.
 
-Explain the implementation approach and phase order before the detailed stories.
-Map each story to its source requirements and phase; bound its implementation,
-verification, review and commit. Phases organize the same stories, not a second
-completion tracker. For Ralph, express phase/requirement links in existing notes
-and priority ordering without adding JSON keys.
+Explain the implementation approach and dependency order before the stories;
+add phases only when they clarify larger work. Map each story to its source
+requirements (approved request/brief or PRD) and any phase; bound implementation,
+verification, review and commit. Record an explicit stable plan revision and the
+approved scope baseline (source revision/ref when available); completion-marker
+updates do not advance that revision. Reconcile material scope/acceptance or
+dependency updates against approval and existing delivery evidence before recording
+a new revision. A revision label alone does not extend the launch grant.
+Phases organize the same stories, not a second
+completion tracker. For Ralph, express dependencies and source/phase links in
+existing notes and priority ordering without adding JSON keys.
 
 ### Preserve acceptance coverage
 
-Carry every in-scope user requirement and PRD acceptance criterion into the
+Carry every in-scope user requirement and any PRD acceptance criterion into the
 plan, preserving its conditions, constraints, edge cases, and exclusions. Reuse
 clear source wording; make vague criteria explicit only from approved requirements
 and inspected project evidence. Surface unresolved product decisions as questions
@@ -88,7 +119,8 @@ must not become "manually saved edits survive reload" unless the source says so.
 Write observable acceptance criteria: the relevant condition or action and its
 expected result. Implementation tasks and typecheck/test/browser gates support
 these criteria; they do not replace the required product or technical outcome.
-Use the PRD path and existing requirement/story references, with distinguishing
+Use the approved request/brief or PRD path and existing requirement/story references,
+with distinguishing
 criterion text where needed, in Markdown's `Phase / requirements` or Ralph's
 existing `notes`. Do not require new source IDs or a second completion tracker.
 
@@ -109,14 +141,18 @@ approved exclusions. Summarize coverage and gaps in the planning handoff, withou
 creating another status document or claiming implementation verification. A plan
 with unresolved acceptance gaps is a draft, not ready for execution.
 
-### Bind and preserve the run
+### Optional run enrollment and preservation
 
-Read [run manifest and archival contract](references/completed-run-archive.md).
-When saving a new plan, bind its exact path/adapter and associated PRDs in their
-work-run metadata. Preserve requirement prose and run IDs. For text-only sources,
-obtain a saved, run-owned PRD before execution; do not invent approved requirements.
-Expose missing archival metadata/authority as a handoff gap. Planning may create
-or update this scoped PRD metadata; it never creates journal/memory or archives.
+Deterministic archival is optional. When requested or covered by the explicit
+closeout scope, read [run manifest and archival contract](references/completed-run-archive.md).
+Planning owns generating/binding the stable run ID, exact plan path/adapter and
+associated saved PRD inventory; preserve requirement prose and existing run IDs.
+Enroll only approved run-owned files, never unrelated PRDs or mixed execution
+state. Missing metadata blocks archival, not otherwise valid bounded-task
+execution. Do not create a separate PRD solely to satisfy ordinary execution.
+For a requested archival workflow without a saved PRD, prepare an approved
+requirements snapshot and manifest before execution; report a genuine ownership
+or approval gap. Planning never creates journal/memory or archives files.
 
 Preserve existing artifacts. Preview and require explicit confirmation before
 destructive overwrite or reset. For approved plan continuation, update
@@ -127,7 +163,8 @@ automatically after verified delivery when the execution grant covers the exact
 artifact removals. A closeout commit needs its own scope, which may be granted
 upfront with the sequence. Neither planning nor metadata grants either authority.
 
-When preparing a plan, generate the plan and scoped PRD binding only: do not
+When preparing a plan, generate the plan and any requested scoped PRD binding only:
+do not
 implement, run implementation checks, create or switch branches, commit, launch
 Ralph, run a CLI goal, or automatically create a
 goal. Report format/path, story order, plan validation, assumptions, and blockers;

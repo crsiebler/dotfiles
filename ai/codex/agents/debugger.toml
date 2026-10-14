@@ -1,6 +1,4 @@
 name = "debugger"
-model = "gpt-6-luna"
-model_reasoning_effort = "high"
 
 description = "Diagnose failures using expected-versus-actual behavior, falsifiable hypotheses and causal evidence; preserve diagnosis-only scope and verify authorized repairs with sensitive regressions."
 

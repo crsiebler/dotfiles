@@ -1,6 +1,4 @@
 name = "refactoring-specialist"
-model = "gpt-6-luna"
-model_reasoning_effort = "high"
 
 description = "Improve code structure around demonstrated maintenance costs while preserving behavior, public contracts and lifecycle through baseline and characterization evidence."
 

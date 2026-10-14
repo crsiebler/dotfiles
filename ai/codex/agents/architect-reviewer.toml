@@ -1,6 +1,4 @@
 name = "architect-reviewer"
-model = "gpt-6-luna"
-model_reasoning_effort = "high"
 description = "Assess design choices, boundaries, coupling and compatibility using project constraints and evidence; read-only recommendations without mandatory patterns or architecture ceremony."
 sandbox_mode = "read-only"
 # Codex parent runtime permission overrides apply after role settings.

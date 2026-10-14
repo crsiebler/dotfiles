@@ -5,6 +5,26 @@ Read it alongside story-execution.md and story-review.md at execution time.
 The runner, not an agent, persists the current iteration as `running` before it
 launches OpenCode. Continuation is denied until a fresh outcome is validated.
 
+## Launch and selection
+
+A clear authorized Ralph launch covers in-scope implementation, checks,
+delegation, and local passing-story commits across the planned sequence. Carry
+that authority forward without another activation prompt per story. Bare labels,
+quoted commands, and read-only status requests are not launch grants. Existing
+sensitive-operation, stop, recovery, review, and candidate gates remain binding.
+Use native Codex Goal or Ralph/OpenCode as separate workers, never nested loops.
+
+The executable resolves `python3.11` from PATH and requires Python 3.11+.
+`--model` selects an allowlisted OpenCode provider/model; Sol 6.1 is
+`openai/gpt-6.1-sol`. `--effort` selects `none`, `minimal`, `low`, `medium`,
+`high`, `xhigh`, `max`, or `ultra`, passed through as OpenCode `--variant`.
+Provider/model variant support must be checked before launch; this finite
+selector does not establish support for every model. Omitted selectors inherit
+OpenCode runtime defaults and omit the corresponding CLI override. Invocation
+context records explicit requested values and sources; inherited actual values
+are unknown until evidenced by the worker. Do not report an inferred resolved
+model/effort as observed provenance or promise native automatic model routing.
+
 ## Ownership and handoff
 
 - Work at the Git worktree root on the exact story selected by the runner.

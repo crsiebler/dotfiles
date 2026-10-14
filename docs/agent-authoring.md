@@ -17,6 +17,21 @@ The name must match the filename stem and be path-safe. Dots are accepted;
 duplicate or case-colliding names fail. Action-oriented naming applies to skills,
 **not** agents. Unknown native fields fail validation rather than being dropped.
 
+The user-level specialist collection omits `model`, `model_provider`, and
+`model_reasoning_effort`. Expertise, permissions, output contracts and review
+profiles belong to the role; runtime/model/effort selection belongs to the caller.
+The base Codex configuration has no global subagent model or effort override.
+Generated OpenCode specialists and native `ralph-reviewer` likewise omit model
+and effort settings so the selected worker/session can supply them. This is
+inheritance, not automatic task routing. Record the actual selection and its
+source; do not claim a role chose a cheaper or stronger model automatically.
+
+Explicit top-level worker/session profiles remain available. A caller may choose
+a supported invocation override when task needs justify it; that choice does not
+grant permissions or change review requirements. Native Codex Goal and Ralph in
+OpenCode are separate worker choices, never nested execution loops. See the
+[runtime selection policy](runtime-selection.md) for the common selection contract.
+
 Three separate sources live in `ai/opencode/agents/`: `sprite-artist.md`,
 `ralph.md`, and `ralph-reviewer.md`. Keep them native OpenCode Markdown with their
 own frontmatter; the installer copies them unchanged. They have no Codex
@@ -44,8 +59,8 @@ reviewers. Native and generated source names must not collide, including by case
 
 ## Coding-method alignment
 
-The six targeted roles retain native names, models, reasoning settings and sandbox
-metadata. Their descriptions and bodies supply independent expertise: prompt
+The six targeted roles retain native names and sandbox metadata. Their
+descriptions and bodies supply independent expertise: prompt
 discovery/evaluation (`prompt-engineer`), evidence-based design assessment
 (`architect-reviewer`), scoped read-only findings (`code-reviewer`), preservation
 and characterization (`refactoring-specialist`), causal diagnosis (`debugger`),
@@ -168,6 +183,8 @@ selected harness, the installer runs `--check`, then `--output` into local stagi
 
 Optional `model` maps to `openai/<model>` and `model_reasoning_effort` maps to
 `options.reasoningEffort` for OpenCode. Omitted settings inherit runtime defaults.
+The renderer retains explicit override support for custom collections; the
+canonical user-level specialists deliberately leave these settings absent.
 Model identifiers must be unqualified; OpenCode accepts only the `openai` provider,
 and an explicit `model_provider` requires an explicit model. Valid native-only
 `approval_policy` and `nickname_candidates` fields are accepted for Codex but fail
@@ -224,7 +241,8 @@ make validate-ai
 
 Tests use repository-local temporary fixtures. They check native TOML parsing,
 body preservation, byte-identical Codex copies, native OpenCode copies and policies,
-model/effort mapping, unsupported-field rejection, dry runs, deterministic output,
+model/effort override mapping and omission/inheritance, unsupported-field rejection,
+dry runs, deterministic output,
 and output safety. Ruby is used only in `tests/ralph_review_test.sh` for native
 reviewer YAML validation, not by the renderer or installer. These checks do not
 claim live discovery, delegated execution, or sandbox enforcement.
@@ -247,8 +265,9 @@ and [role discovery](https://github.com/openai/codex/blob/main/codex-rs/core/src
 Coordinate the six aligned role sources with `develop-code`, independent
 `review-code` and the slim personal policy. Preserve custom installed roles and
 merge the optional [project template](templates/code-repository-AGENTS.md) with
-actual project instructions. Native permissions, model metadata, counts and
-renderer ownership are unchanged. Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows)
+actual project instructions. Native permissions, counts and renderer ownership
+are preserved; specialist model/effort metadata now inherits worker selection.
+Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows)
 under separate installation authorization; a source commit does not refresh a
 running session. [Verification](coding-workflow-verification.md) records that live
 comparative model evaluation was waived, not passed.

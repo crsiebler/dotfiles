@@ -7,27 +7,41 @@ inventing them. Planning does not execute tests or create execution-state files.
 
 This is the Markdown task-source adapter for the same
 [execution contract](story-execution.md) and [review protocol](story-review.md)
-as Ralph JSON. The formats differ, not the story lifecycle. Codex retains native
-Goal continuation and compaction; it does not run the external Ralph loop.
+as Ralph JSON. Acceptance and delivery gates are shared; execution differs.
+Ralph remains serial. Codex may use concurrent implementation workers under
+[Codex concurrency](codex-concurrency.md), retaining native Goal continuation and
+compaction without an external Ralph loop. Read that reference when planning
+concurrency or executing this adapter.
 
 ## Plan contract
 
-- Record objective, requirement sources, scope/non-goals, working branch,
+- Record objective, requirement sources, stable plan revision and approved scope
+  baseline, scope/non-goals, working branch,
   authorization, delivery expectations, verification commands, and material gaps.
-- Explain the implementation approach and ordered phases. Map every story to a
-  phase and source requirements, using one story completion tracker. Bind the
-  source PRDs' work-run metadata under completed-run-archive.md and include their
-  exact paths/run ID and actual archival/closeout authorization in the handoff.
+- Choose bounded-task or fuller PRD/dependency planning from scope. Map every
+  story to approved request/brief or PRD requirements with one completion tracker.
+  Explain dependency order and add phases when they clarify larger work. A separate
+  PRD and run metadata are optional; enroll archival only under
+  completed-run-archive.md when requested, recording exact paths and authority.
 - Apply [acceptance coverage](../SKILL.md#preserve-acceptance-coverage). Use
-  `Phase / requirements` to identify source criteria and, for split behavior,
+  `Phase / requirements` (phase optional) to identify source criteria and, for split behavior,
   contributing stories and the story owning integrated acceptance. Put observable
   outcomes in acceptance criteria, alongside the relevant verification gates.
 - The working branch must be an exact prepared Git branch before execution, not
   main/master or detached HEAD, with an existing commit. During planning it may
-  be unknown, but label that an execution blocker. Do not create/switch branches.
+  be unknown, but label that an execution blocker. Planning creates no branches.
+  Authorized Codex execution may prepare task branches/worktrees from approved
+  existing commits under codex-concurrency.md; never switch the user's checkout.
 - Use unique stable IDs (`US-001`), numeric priorities, and explicit dependencies
   (`none` or earlier IDs). Validate references, dependency order, and acyclicity.
-  Execution selects the lowest numeric priority eligible incomplete story.
+  Validate the complete graph with Kahn-style readiness/cycle checks and reject
+  missing references. The lead admits ready stories in priority/document order;
+  dependencies require verified integration delivery, not worker completion.
+- Name one integration owner. Before dispatch, assign each worker its stable
+  story ID, absolute worktree, exact branch, approved base commit and owned paths.
+  Record shared build/output ownership and host resource coordination. Require
+  an established clean committed baseline; never copy or commit user dirty work
+  to prepare a task. Native child spawn does not bind cwd; use assigned paths.
 - Bound each story to one focused implementation, verification, review, and
   commit unit. Include user benefit, relevant paths, observable criteria, tests,
   typecheck, formatting/lint commands, and `verify-interface` for UI changes.
@@ -45,14 +59,17 @@ Goal continuation and compaction; it does not run the external Ralph loop.
   relative to the worktree root, even when the task source has a custom path.
 - Mark a story delivered only after checks, review, and an explicitly authorized
   per-story commit succeed. Planning/plan approval is not execution or commit
-  permission. Honor narrower instructions and report undelivered work.
+  permission. A clear authorized launch may grant implementation, tests, budgeted
+  delegation and local commits across the eligible sequence without repeating
+  activation per story. Honor narrower instructions and report undelivered work.
 
 ## Recommended advisors
 
 Preserve supplied implementation recommendations; infer only useful exact known
-role names, never a quota. The executor implements and tests. Implementation
-specialists are read-only advisors under the shared mode budget (at most two),
-not competing file editors. Record the role's bounded question in the plan;
+role names, never a quota. Codex implementation specialists may write and test
+in explicitly assigned task worktrees. Read-only advisors remain under the shared
+mode budget (at most two per story). The lead owns integration and trackers.
+Record worker ownership and each advisor's bounded question in the plan;
 record actual invocation or a skip reason in `progress.md` at execution time.
 Discovery is not invocation and a definition does not prove native availability.
 
@@ -70,31 +87,29 @@ returned ID alongside the story/attempt; labels alone do not establish identity.
 ## Template
 
 Replace placeholders using project evidence; repeat only the story section.
-The resume instructions below must be included in the generated plan so a Goal
-loads the shared contract even when the planning skill is not otherwise active.
+Include the shared resume handoff once so a Goal loads the contract even when
+the skill is not otherwise active. Do not repeat an execution checklist in every
+story. The compact shape is suitable for bounded tasks; larger work can add design,
+phases and PRD references without introducing another completion tracker.
 
 ```markdown
 # Implementation plan: <feature>
 
 ## Objective and context
 - Objective: <observable outcome>
-- Sources: <requirements and inspected paths>
-- Scope: <included work>
-- Non-goals: <excluded work>
+- Sources: <approved request/brief or PRDs and inspected paths>
+- Plan revision: <stable scope revision, e.g. v1; approved baseline revision/ref when known>
+- Scope / non-goals: <included and excluded work>
 - Working branch: <exact prepared branch; unknown is an execution blocker>
+- Integration owner: <one lead; owns integration index, markers, progress and memory>
 - Mode: standard
-- Authorization: <actual execution/commit grant, or pending; sensitive actions excluded>
+- Authorization: <actual sequence execution/delegation/local-commit grant or pending>
 - Delivery: one authorized commit per verified and reviewed story
-- Archive PRD: <exact project-relative primary PRD path>
-- Run ID: <bound work-run run_id>
-- Closeout: <actual archival/removal and one closeout commit grant, or pending>
-- Verification commands: <real format/lint/typecheck/test commands and unavailable checks>
+- Verification: <real commands; supported exemptions and unavailable checks>
 - Assumptions / open questions: <material gaps or none>
 
-## Implementation approach and phases
-- Approach: <source-backed design, interfaces, compatibility and tradeoffs>
-- Phase 1: <purpose and included story IDs>
-- Later phases: <dependency-ordered purposes and story IDs>
+## Approach and dependencies
+<source-backed approach and prerequisite order; phases only if useful>
 
 ## Ordered stories
 
@@ -102,63 +117,57 @@ loads the shared contract even when the planning skill is not otherwise active.
 - [ ] Story complete
 - Priority: 1
 - Depends on: none
-- Phase / requirements: <phase, PRD path and source criteria; contributors and integration owner when split>
+- Phase / requirements: <approved request/brief criteria or PRD references; phase optional>
 - User story: As a <user>, I want <capability> so that <benefit>.
 - Relevant paths: <source/test paths>
-- Recommended implementation advisors: <known roles or none>
-- Advisor questions: <bounded read-only guidance needed or not needed>
-- Staged reviewer: story-reviewer when required by the shared mode/risk budget
+- Worker assignment: <absolute task worktree; exact branch; approved base commit>
+- Owned paths: <bounded repository-relative paths; shared paths have one owner>
+- Shared resources: <build/output roots; host resource ownership/coordination or none>
+- Implementation advisors: <optional known roles and bounded questions, or none>
 
 #### Acceptance criteria
 - [ ] <required behavior: condition/action and expected result>
-- [ ] <source constraint/edge case; integrated outcome when this story owns it>
-- [ ] <typecheck passes; explicit treatment of unavailable checks>
-
-#### Execution checklist
-- [ ] Verify authorization and exact prepared branch; read project instructions and state.
-- [ ] Research and implement this story with tests; use only budgeted read-only advisors.
-- [ ] Run formatting, lint, typecheck, tests, and UI verification as applicable.
-- [ ] Stage the intended candidate and complete the shared mode-aware review gate.
-- [ ] Resolve findings, rerun affected checks, and perform at most one targeted re-review.
-- [ ] Update bounded memory and append progress; finalize task metadata and commit.
+- [ ] <source constraints/edge cases; integration outcome and contributors if split>
+- [ ] <required tests/typecheck/lint/browser criteria; supported exemptions>
 
 ## Resume and delivery
-- For authorized execution, load the installed prepare-implementation skill and
-  read references/story-execution.md and references/story-review.md relative to
-  that skill's reported base directory. Follow its CodexGoalMarkdown adapter.
-  If discovery, a reference, or required story-reviewer invocation is unavailable,
-  stop with the blocker; do not invent a path, substitute a reviewer, or skip rules.
-- Read this plan, relevant latest progress.md entries, and memory.json if
-  present, resolving state paths from the worktree root. Keep this plan concise:
-  scope, requirements, criteria, dependencies, completion state, and current status.
-  Put commands/results, changed paths, review findings/dispositions, blockers,
-  approvals, actual advisor use, commit status, and resumption checkpoints in
-  append-only progress.md; never rewrite its history. Create it only when
-  authorized execution requires a checkpoint and branch/unrelated-work guards pass.
-- Missing memory.json is normal: check existence before reading, use empty
-  version-1 memory in process, and create it only after passing review. Preserve
-  invalid memory and stop; keep at most 20 patterns and 20 suppressions.
-- Recheck the prepared branch before changes, staging, and commit. No branch
-  creation/switching, implicit pushes, external posts, or sensitive-operation grants.
-- Native review uses story-reviewer, its supplied shared JSON schema, and at most
-  one initial plus one targeted same-session pass. Self-review is permitted only
-  by the mode/risk budget; malformed/blocked review stops delivery.
-- Embed the full review protocol/schema directly in every native review message.
-  Preflight the packet under story-execution.md before sending. Start a separate
-  reviewer session for each story; label it with the story ID and attempt number,
-  and record the actual selected role and returned session ID separately. Send a
-  targeted follow-up only to the recorded session for that same story and attempt.
-- Provisional completion boxes are staged only after checks/review pass; a story
-  is delivered only after its authorized commit succeeds. On failure follow the
-  shared marker-restoration and checkpoint procedure. Never claim unchecked work done.
-- [ ] Final report: actual commits, checks/review outcomes, delivered scope, remaining gaps.
-- After all tasks are verified and committed, invoke scripts/archive_run.py from
-  the installed prepare-implementation base with --project <absolute-worktree-root>
-  and --prd <bound-primary-PRD-path>. Follow references/completed-run-archive.md.
-  Run automatically under the existing archival/removal grant; do not request it
-  again. The helper archives associated PRDs and root progress.md/memory.json
-  beside this plan and emits a verified receipt. Make the one closeout commit
-  only under its own granted scope; never push implicitly or hand-roll cleanup.
+- For authorized execution, load the installed prepare-implementation skill; read
+  references/story-execution.md and references/story-review.md in full relative
+  to its advertised base. Follow CodexGoalMarkdown, the mode/risk budgets and
+  native story-reviewer when required. Missing protocol/tools/reviewer blocks;
+  do not invent paths or substitute a general reviewer.
+- Read this plan, relevant append-only progress.md entries and memory.json if
+  present from the worktree root. Planning creates neither file. Execution may
+  create a journal only after branch and unrelated-work guards pass; invalid
+  memory blocks, missing memory is normal. Preserve history; update bounded
+  memory only from verified reusable findings after passing review.
+- Execute the approved plan revision; completion-marker updates do not advance
+  its scope revision. Reconcile material scope/acceptance/dependency revisions
+  against user approval and delivery evidence; a revision label is not a grant.
+- Carry the actual authorized launch scope across eligible stories and
+  continuation; verify it without another activation request per story. Require
+  the exact existing prepared branch and commit before writes, staging and commit;
+  reject main/master, detached HEAD and mismatch. Prepare task branches/worktrees
+  only with a scoped lifecycle grant and clean committed baseline; never switch
+  the user's checkout or copy/commit dirty work as preparation.
+- Admit dependency-ready stories under codex-concurrency.md. Workers use explicit
+  assigned paths; the lead owns integration, progress and memory. Coordinate host
+  resources and shared outputs; freeze only the candidate and conflicting resources.
+  Other isolated workers may continue. Integrate one bounded story with applicable
+  checks and at most two read-only advisors. Stage only its intended candidate;
+  keep it immutable during
+  review. Supply the full protocol/schema in each native invocation; use a fresh
+  actual reviewer session per story and at most one initial plus one targeted
+  remediation pass in the same session. Preserve final blockers until verified
+  material resolution; continuation never resets review budgets.
+- Record actual checks, review/session provenance, findings/dispositions, authority
+  and checkpoints in progress.md. Finalize only the selected completion marker
+  after checks/review pass. Delivery requires its authorized local commit; on
+  failed finalization/commit follow shared marker restoration and stop. Never
+  claim unchecked, blocked, unverified or uncommitted work delivered.
+- Report delivered scope, actual commit hashes/checks/review and remaining gaps.
+  Keep Codex native Goal and Ralph/OpenCode separate; never start nested loops,
+  implicit pushes, deployments, posts or sensitive operations.
 ```
 
 For a Python client story, `python-pro` may advise on implementation risks while
@@ -176,20 +185,24 @@ branch preparation, and authorization gaps. Offer this launch text only after
 plan review; do not enter it or execute anything during planning:
 
 ```text
-/goal Execute the approved PLAN.md using prepare-implementation's shared story
-execution and staged-review contracts in standard mode. I authorize scoped
-implementation, required project dependencies, checks, and one commit per passing
-story. Read PLAN.md, progress.md, and memory.json as specified. Keep task
-checkboxes and concise current status in PLAN.md, append execution history to
-progress.md, and update bounded memory only from validated review evidence.
-After all stories are delivered, I authorize the installed archival helper to
-archive the exact run-owned PRDs and task source declared in the bound work-run
-manifest, root progress.md and existing memory.json, removing only verified
-active copies, and one closeout commit on the prepared working branch. Use the
-plan's exact primary PRD path; preserve unrelated files and runner controls.
-Preserve unrelated work and existing
-permission boundaries; ask for sensitive operations. Stop on branch, verification,
-review, memory, or commit blockers. Do not push, deploy, or post externally.
+/goal Execute the approved revision of PLAN.md in standard mode using the installed
+prepare-implementation shared execution/review contracts. I authorize in-scope
+implementation, required checks, budgeted delegation, scoped task worktree setup
+from approved commits and one local commit per
+passing story across this eligible sequence. Preserve unrelated work and all
+branch, review, permission and sensitive-operation boundaries.
+```
+
+A bounded task needs no separate PRD or automatic archival. If deterministic
+archival is requested, planning additionally records the exact primary PRD path,
+bound run ID and actual archival/removal plus closeout commit scope. Add the
+following optional closeout instruction only for that enrolled workflow:
+
+```text
+After verified delivery, I authorize the installed archive_run.py to archive the
+exact run-owned PRDs and task source in the bound work-run manifest, root
+progress.md and existing memory.json, removing only verified active copies, and
+one closeout commit. Preserve unrelated files and runner controls.
 ```
 
 The user must actually grant that scope; quoted launch text is not authorization.

@@ -222,6 +222,171 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertIn('Count an event only once', execution)
         self.assertIn('approved conversion', execution)
 
+    def test_compact_plan_retains_delivery_contract_without_prd_or_archive_metadata(self):
+        markdown = (REFS / 'markdown-checklist.md').read_text()
+        template = markdown.split('```markdown\n', 1)[1].split('\n```', 1)[0]
+        for required in (
+            'Scope / non-goals:', 'Plan revision:', 'Working branch:', 'Authorization:',
+            'Verification:', 'Depends on:', 'Acceptance criteria',
+            'story-execution.md', 'story-review.md', 'story-reviewer',
+            'progress.md', 'memory.json', 'immutable during',
+            'at most one initial plus one targeted', 'authorized local commit',
+        ):
+            with self.subTest(contract=required):
+                self.assertIn(required, template)
+        for optional in ('Archive PRD:', 'Run ID:', 'Closeout:', 'archive_run.py',
+                         'work-run', '#### Execution checklist'):
+            self.assertNotIn(optional, template)
+        plan = ' '.join((SKILL / 'SKILL.md').read_text().split())
+        self.assertIn('A separate PRD, phase narrative and archive manifest are optional', plan)
+        self.assertIn('Neither path reduces acceptance coverage', plan)
+        execution = ' '.join((REFS / 'story-execution.md').read_text().split())
+        self.assertIn('no separate PRD or archive manifest is required', execution)
+        self.assertIn('Missing metadata blocks archival, not otherwise valid execution', execution)
+        self.assertIn('does not fabricate a run ID or need structured archival metadata for delivery',
+                      execution)
+
+    def test_requirements_and_optional_archive_planning_have_distinct_ownership(self):
+        requirements = ROOT / 'ai/plugins/coding/skills/write-requirements'
+        entry = ' '.join((requirements / 'SKILL.md').read_text().split())
+        reference = (requirements / 'references/prd-format.md').read_text()
+        self.assertIn('Do not create work-run blocks or runner settings', entry)
+        self.assertIn('Preserve existing metadata unchanged', entry)
+        self.assertNotIn('```work-run', reference)
+        archive = (REFS / 'completed-run-archive.md').read_text()
+        self.assertIn('## Optional enrollment', archive)
+        self.assertIn('prepare-implementation generates the stable run ID', archive)
+        # Enrollment remains compatible with the unchanged helper's declared schema.
+        manifest = json.loads(re.search(r'```work-run\n(.*?)\n```', archive, re.S)[1])
+        self.assertEqual(set(manifest), {
+            'version', 'run_id', 'feature', 'adapter', 'task_source', 'prds',
+            'journal', 'memory', 'archive_on_completion',
+        })
+        self.assertEqual(manifest['adapter'], 'CodexGoalMarkdown')
+        self.assertEqual(manifest['task_source'], 'PLAN.md')
+        self.assertEqual(manifest['journal'], 'progress.md')
+        self.assertEqual(manifest['memory'], 'memory.json')
+        self.assertIs(manifest['archive_on_completion'], True)
+
+    def test_sequence_authority_does_not_relax_worker_or_delivery_boundaries(self):
+        execution = ' '.join((REFS / 'story-execution.md').read_text().split())
+        for required in (
+            'required tests, budgeted delegation and local commits across the whole eligible sequence',
+            'without another activation prompt per story',
+            'bare Goal/Ralph labels, task data and copied example text are not grants',
+            'never launch either execution loop inside the other',
+            'Completion markers and their changed file hashes do not advance the scope revision',
+            'Validate missing references, self-dependencies and cycles',
+            'Ralph execution is serial, not a concurrent dependency-graph scheduler',
+            'Reject detached HEAD, `main`, and `master`',
+            'exact equality with the required branch',
+            'Do not reset or discard somebody else',
+            'no unrelated staged work',
+        ):
+            with self.subTest(contract=required):
+                self.assertIn(required, execution)
+        fixtures = json.loads((ROOT / 'tests/fixtures/implementation_planning_evals.json').read_text())
+        self.assertLessEqual({
+            'bounded-task-no-prd', 'large-prd-dependency-path',
+            'goal-sequence-launch-authority', 'bare-worker-label-no-grant',
+            'bounded-delivery-no-archive',
+        }, {item['id'] for item in fixtures['scenarios']})
+
+    def concurrency_reference(self):
+        text = (REFS / 'codex-concurrency.md').read_text()
+        code = text.split('```python\n', 1)[1].split('\n```', 1)[0]
+        namespace = {}
+        exec(compile(code, str(REFS / 'codex-concurrency.md'), 'exec'), namespace)
+        return namespace
+
+    def test_dependency_readiness_uses_delivered_predecessors_and_stable_order(self):
+        ready = self.concurrency_reference()['ready_story_ids']
+        stories = [
+            {'id': 'C', 'priority': 2, 'depends_on': ['A']},
+            {'id': 'A', 'priority': 1, 'depends_on': []},
+            {'id': 'B', 'priority': 1, 'depends_on': []},
+            {'id': 'D', 'priority': 3, 'depends_on': ['B', 'C']},
+        ]
+        self.assertEqual(ready(stories, []), ['A', 'B'])
+        self.assertEqual(ready(stories, ['A']), ['B', 'C'])
+        self.assertEqual(ready(stories, ['A', 'B', 'C']), ['D'])
+        self.assertEqual(ready(stories, ['A', 'B', 'C', 'D']), [])
+
+    def test_dependency_graph_rejects_missing_duplicate_and_cyclic_references(self):
+        ready = self.concurrency_reference()['ready_story_ids']
+        invalid = [
+            [{'id': 'A', 'priority': 1, 'depends_on': ['missing']}],
+            [{'id': 'A', 'priority': 1, 'depends_on': ['A']}],
+            [{'id': 'A', 'priority': 1, 'depends_on': ['B']},
+             {'id': 'B', 'priority': 2, 'depends_on': ['A']}],
+            [{'id': 'A', 'priority': 1, 'depends_on': []},
+             {'id': 'A', 'priority': 2, 'depends_on': []}],
+            [{'id': 'A', 'priority': 1, 'depends_on': []},
+             {'id': 'B', 'priority': 2, 'depends_on': ['A', 'A']}],
+        ]
+        for stories in invalid:
+            with self.subTest(stories=stories), self.assertRaises(ValueError):
+                ready(stories, [])
+        with self.assertRaises(ValueError):
+            ready(invalid[2], ['A', 'B'])  # Completion cannot hide a cycle.
+
+    def test_delivered_state_requires_dependency_evidence_reconciliation(self):
+        ready = self.concurrency_reference()['ready_story_ids']
+        stories = [{'id': 'A', 'priority': 1, 'depends_on': []},
+                   {'id': 'B', 'priority': 2, 'depends_on': ['A']}]
+        for delivered in (['unknown'], ['B']):
+            with self.subTest(delivered=delivered), self.assertRaises(ValueError):
+                ready(stories, delivered)
+
+    def test_owned_paths_include_descendants_without_prefix_false_positives(self):
+        conflict = self.concurrency_reference()['owned_paths_conflict']
+        self.assertTrue(conflict(['src'], ['src/api/handler.py']))
+        self.assertTrue(conflict(['src/api'], ['src']))
+        self.assertTrue(conflict(['src/api'], ['src/api']))
+        self.assertFalse(conflict(['src/api'], ['src/apiv2']))
+        self.assertFalse(conflict(['src/a'], ['src/b']))
+        self.assertFalse(conflict(['src'], ['src-other']))
+
+    def test_owned_paths_reject_ambiguous_or_escaping_assignments(self):
+        conflict = self.concurrency_reference()['owned_paths_conflict']
+        for paths in ([], [''], ['.'], ['../src'], ['/src'], ['src/../lib'],
+                      ['src//api'], ['src/'], ['src\\api'], ['src/*'], ['src\x00x']):
+            with self.subTest(paths=paths), self.assertRaises(ValueError):
+                conflict(paths, ['tests'])
+
+    def test_codex_worktree_contract_retains_single_integration_and_review_owner(self):
+        reference = ' '.join((REFS / 'codex-concurrency.md').read_text().split())
+        for required in (
+            'Assign exactly one integration owner',
+            'absolute worktree in the worker packet',
+            'established clean committed baseline',
+            "each delivered predecessor's integration commit is an ancestor of the assigned base",
+            'git merge-base --is-ancestor',
+            'preserve any pending work rather than silently resetting or rebasing it',
+            'silently copy dirty work or commit it to manufacture a baseline',
+            'project\'s cross-worktree coordination mechanism',
+            'Only that owner stages or mutates its index',
+            'Freeze that candidate and conflicting resources',
+            'Unrelated implementation in separate task worktrees may continue',
+            'one initial and at most one targeted same-session pass per attempt',
+        ):
+            with self.subTest(contract=required):
+                self.assertIn(required, reference)
+        markdown = (REFS / 'markdown-checklist.md').read_text()
+        template = markdown.split('```markdown\n', 1)[1].split('\n```', 1)[0]
+        for field in ('Integration owner:', 'Worker assignment:', 'Owned paths:',
+                      'Shared resources:', 'codex-concurrency.md'):
+            self.assertIn(field, template)
+        execution = ' '.join((REFS / 'story-execution.md').read_text().split())
+        self.assertIn('RalphJSON executes one story at a time', execution)
+        self.assertIn('Ralph never creates, switches, or repairs a branch', execution)
+        self.assertIn('Codex may create task branches and worktrees only under an explicit scoped lifecycle grant',
+                      execution)
+        scenarios = json.loads((ROOT / 'tests/fixtures/implementation_planning_evals.json').read_text())
+        self.assertIn('codex-dependent-stale-worktree-base',
+                      {item['id'] for item in scenarios['scenarios']})
+        # Prose checks protect the authored contract, not native enforcement.
+
     def test_planning_fixtures_cover_failure_and_resumption_contracts(self):
         data = json.loads((ROOT / 'tests/fixtures/implementation_planning_evals.json').read_text())
         scenarios = data['scenarios']

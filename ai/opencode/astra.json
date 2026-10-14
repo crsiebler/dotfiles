@@ -1,13 +1,4 @@
 {
     "$schema": "https://opencode.ai/config.json",
-    "agent": {
-        "build": {
-            "model": "openai/gpt-6-luna",
-            "variant": "high"
-        },
-        "subagents": {
-            "model": "openai/gpt-6-luna"
-        }
-    },
     "model": "openai/gpt-6-astra"
 }

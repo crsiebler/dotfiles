@@ -1,12 +1,12 @@
-# Ralph PRD Converter
+# Ralph implementation plan
 
-Converts existing PRDs to the plan.json format that Ralph uses for autonomous execution.
+Convert approved bounded-task requirements or fuller PRDs to Ralph plan.json.
 
 ---
 
 ## The Job
 
-Take a PRD (markdown file or text) and convert it to `plan.json` in the Ralph
+Take an approved request/brief or PRD and convert it to `plan.json` in the Ralph
 working directory where the `ralph` primary agent expects to read it.
 
 This is a planning adapter, not execution authorization. Approved execution uses
@@ -16,8 +16,11 @@ This is a planning adapter, not execution authorization. Approved execution uses
 maps `branchName`, `userStories`, and `passes` to the shared execution contract;
 the runner still owns external iterations and their maximum. Prepare a committed
 worktree on that exact branch before execution; never use `main`, `master`, or
-detached HEAD. Execution and per-story commits require explicit authorization;
-migrations and Docker operations still require their own applicable approvals.
+detached HEAD. A clear authorized Ralph launch covers scoped implementation,
+required checks, budgeted delegation and local commits across the eligible
+sequence; do not request another activation per story. A bare Ralph label, plan
+or quoted command grants no authority. Honor narrower instructions; migrations
+and Docker operations still require their own applicable approvals.
 
 If `plan.json` already exists, preserve it and require confirmation for scoped
 updates. Do not overwrite an unfinished run with a different feature. Completed
@@ -30,11 +33,21 @@ not execution narratives. Append execution evidence only to worktree-root
 `progress.md`; bounded reusable review knowledge stays in root `memory.json`.
 Planning creates neither state file and never resets them.
 
-Explain implementation phases in the planning handoff; encode phase and PRD
-requirement references in existing story notes and priority order. Do not add
-phase/completion keys to the JSON schema. Bind the associated PRDs' work-run
-metadata to RalphJSON and the actual plan path. Include the exact primary PRD
-path and archival/removal plus closeout commit authorization in the handoff.
+Use the bounded-task path for clear small work: retain source outcomes, exclusions,
+verification and dependencies directly in the existing description/story fields.
+No separate PRD or archive manifest is required. Larger work uses fuller PRDs and
+phase/dependency explanations. Encode source/phase/dependency references in
+existing notes and priority order; add no JSON keys or second completion tracker.
+Record the stable approved plan revision and scope baseline in the handoff and
+existing description/notes fields. Completion `passes` updates do not advance the
+revision. Reconcile material scope/acceptance/dependency changes against approval
+and delivery evidence before a new revision; labels cannot extend launch authority.
+
+When deterministic archival is requested, planning generates/binds associated
+saved PRDs' work-run metadata to RalphJSON and the actual plan path. Include the
+exact primary PRD path and actual archival/removal plus closeout commit authority
+in the handoff. Missing metadata blocks archival, not otherwise valid execution.
+Ralph/OpenCode and Codex native Goal remain alternative workers, never nested loops.
 
 ---
 
@@ -88,7 +101,12 @@ Ralph starts a fresh implementation context per iteration and relies on project-
 
 ## Story Ordering: Dependencies First
 
-Stories execute in priority order. Earlier stories must not depend on later ones.
+Ralph executes serially in priority order; this format is not a concurrent DAG
+runtime. Encode dependencies as exact existing story IDs in notes and order their
+prerequisites earlier. Validate missing references, self-dependencies and cycles
+before handoff; reject any dependency on a later story or inconsistent order.
+Do not add dependency keys to the JSON schema. Larger planning may describe a
+dependency graph, but the current worker still serializes the ordered stories.
 
 **Correct order:**
 1. Schema/database changes (migrations)
@@ -106,7 +124,7 @@ Stories execute in priority order. Earlier stories must not depend on later ones
 
 Each criterion must be something Ralph can CHECK, not something vague.
 Apply [acceptance coverage](../SKILL.md#preserve-acceptance-coverage): preserve
-source outcomes and constraints in `acceptanceCriteria`; identify the PRD path
+source outcomes and constraints in `acceptanceCriteria`; identify the approved request/brief or PRD path
 and source criteria in existing `notes`. For split behavior, name contributing
 stories and its integration owner there, ordering that owner after prerequisites.
 Typecheck, tests, and browser checks accompany behavioral criteria; they do not
@@ -151,7 +169,9 @@ Frontend stories require browser verification using `verify-interface`.
 2. **IDs**: Sequential (US-001, US-002, etc.)
 3. **Priority**: Based on dependency order, then document order
 4. **All stories**: `passes: false`
-5. **branchName**: Derive from feature name, kebab-case, prefixed with `ralph/`
+5. **branchName**: Record the exact existing prepared branch; never invent, create
+   or switch it. Examples below illustrate already prepared `ralph/...` branches.
+   Missing branch preparation is an execution blocker, not a routing heuristic.
 6. **Always add**: "Typecheck passes" to every story's acceptance criteria
 7. **Recommended agents**: Preserve PRD `Recommended Agents` lines in each
    story's `notes` field so Ralph can optionally invoke the right
@@ -339,7 +359,8 @@ tool; new tasks currently default to pending. Preserve that default.
 
 ## Archiving Completed Runs
 
-After all stories pass checks/review and their commits succeed, the invoking
+For an enrolled archival workflow only, after all stories pass checks/review and
+their commits succeed, the invoking
 assistant waits for runner completion validation and successful exit, then
 automatically invokes the installed script under the [archival contract](completed-run-archive.md)
 when the scoped grant covers the declared PRDs, plan.json, root progress.md and
@@ -355,9 +376,9 @@ commit requires its own scope, which may be authorized upfront.
 Before writing plan.json, verify:
 
 - [ ] No unfinished run is being replaced; archival is outside planning under its scoped grant
-- [ ] Implementation phases/requirement links are mapped in notes without new JSON keys
+- [ ] Source criteria/dependencies, approved plan revision/baseline and any useful phases are mapped in existing fields without new JSON keys
 - [ ] Shared acceptance-coverage audit completed; coverage, integration owners, approved exclusions and unresolved gaps reported in the handoff
-- [ ] Associated PRDs have bound work-run metadata and the handoff identifies archival/closeout authority
+- [ ] If archival was requested, associated saved PRDs have bound work-run metadata and the handoff identifies actual archival/closeout authority
 - [ ] Each story is completable in one iteration (small enough)
 - [ ] Stories are ordered by dependency (schema to backend to UI)
 - [ ] Every story has "Typecheck passes" as criterion
@@ -365,7 +386,7 @@ Before writing plan.json, verify:
 - [ ] UI stories have "Verify in browser using verify-interface skill" as criterion
 - [ ] Each story's `notes` includes 0-2 relevant recommended development agents
 - [ ] Acceptance criteria are verifiable (not vague)
-- [ ] No story depends on a later story
+- [ ] Exact dependency references are present, acyclic and earlier; no story depends on itself or a later story
 - [ ] Story IDs are unique
 - [ ] Priorities are ordered by dependency and execution sequence
 - [ ] Every story starts with `passes: false`

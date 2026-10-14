@@ -47,6 +47,16 @@ defines the native role contract.
   concatenation or normalization. This root file is repository-only guidance.
 - Codex configuration sources are `ai/codex/config.toml` and `astra.config.toml`.
   OpenCode configuration and native prompts remain under `ai/opencode/`.
+- Shared runtime/model selection policy lives in `ai/AGENTS.md`; see
+  [selection and rollout](docs/runtime-selection.md). Reusable roles omit model
+  and effort pins; preserve their expertise and permission/review contracts.
+  Global subagent/build defaults must not silently override session selection.
+  Explicit runtime profiles remain supported; inheritance is not automatic routing.
+  Galena is the source checkout and local verification host. Native Codex goals
+  use dependency-ready task workers; Ralph remains serial. Paperclip/NCase
+  multi-session management is a separate future project. Controller/application
+  integrations belong in Avengers; Apple integration and external tracker adapters
+  are excluded from this foundation.
 - `ai/codex/agents/*.toml` is the canonical custom-agent collection (128 roles).
   Copy all sources byte-for-byte to Codex and generate 128 OpenCode Markdown files.
   Keep `sprite-artist`, `ralph`, and `ralph-reviewer` native and OpenCode-only
@@ -172,6 +182,11 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   Explicit user format requests override these defaults. OpenCode entry points
   are `/define-requirements` and `/plan-work`; neither starts execution or creates
   execution logs/memory.
+  Small bounded tasks may hold outcome, scope and acceptance directly in the
+  plan, without a separate PRD or archival enrollment. Larger tasks use PRDs and
+  explicit validated dependency edges. Requirements authoring does not own
+  runner/archive metadata; planning binds it only for enrolled archival runs,
+  preserving existing manifests and all archival integrity checks.
   Resolve active-harness identity from trusted runtime context or the invoking
   native entry point; `ai/opencode/commands/plan-work.md` supplies the JSON default.
   Ask when routing is unavailable or ambiguous, never infer it from `PATH`,
@@ -205,12 +220,21 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   Never stage stop/outcome files. Before manual cleanup inspect exact paths and
   retain needed audit evidence; `make clean` must not delete runner controls.
   Follow `docs/ralph-recovery.md`; inspection exit zero is not proof of readiness.
-- Codex Goal and Ralph share the full execution, memory, review, prepared-branch,
-  and per-story commit contract; task adapters use Markdown checkboxes versus JSON
-  `passes`. Goal requires the plan's exact existing branch and an existing commit;
-  reject detached HEAD, main/master, or mismatch before any writes. Never create
-  or switch branches for either adapter. Explicit execution and story-commit scope
-  authorization is required; a quoted Goal template is not permission.
+- Codex Goal and Ralph share requirements, acceptance, memory, bounded review and
+  per-story delivery gates. RalphJSON remains serial on its exact prepared branch.
+  CodexGoalMarkdown admits dependency-ready workers under the installed skill's
+  `references/codex-concurrency.md`: explicit absolute task worktree, exact branch,
+  approved committed base and owned paths; one lead owns integration and trackers.
+  Validate missing references/cycles before dispatch. Native spawn does not bind
+  cwd; commands/files must use assigned paths. Task worktrees need a clean committed
+  baseline; never silently copy or commit user dirty work to prepare one.
+  Codex task branch/worktree creation requires a scoped lifecycle grant; never
+  switch the user's checkout. Reject detached HEAD, main/master and mismatch.
+  Coordinate shared outputs/builds and host resources with the project's mechanism.
+  Freeze the reviewed candidate and conflicting resources, not unrelated workers
+  in separate worktrees. Explicit execution and story-commit authorization remains
+  required; a quoted Goal template is not permission. Source changes do not activate
+  installed skills, runtime/model settings or native cwd isolation.
 - Both use the shared fast/standard/deep risk budgets: at most two read-only
   implementation advisors, budget-selected self/native staged review, one initial
   pass and at most one targeted pass in the same actual native session per attempt. Missing
