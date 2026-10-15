@@ -346,6 +346,30 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.state()["status"], "completed")
 
+    def test_executable_uses_compatible_python3_without_versioned_name(self):
+        binaries = self.root / "python-only"
+        binaries.mkdir()
+        (binaries / "python3").symlink_to(sys.executable)
+        result = subprocess.run([str(RUNNER), "--help"], cwd=self.repo,
+                                env=dict(self.env, PATH=str(binaries)),
+                                text=True, capture_output=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Usage: ralph", result.stdout)
+        self.assertFalse((self.repo / ".git/ralph").exists())
+
+    def test_executable_reports_missing_compatible_python(self):
+        binaries = self.root / "no-python"
+        binaries.mkdir()
+        old = binaries / "python3"
+        old.write_text("#!/bin/sh\nexit 1\n")
+        old.chmod(0o755)
+        result = subprocess.run([str(RUNNER), "--help"], cwd=self.repo,
+                                env=dict(self.env, PATH=str(binaries)),
+                                text=True, capture_output=True, timeout=15)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Python 3.11 or newer", result.stderr)
+        self.assertFalse((self.repo / ".git/ralph").exists())
+
     def test_inherited_model_and_effort_omit_overrides(self):
         self.assertEqual(self.run_cli().returncode, 0)
         call = json.loads((self.root / "log").read_text())

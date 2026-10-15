@@ -10,6 +10,9 @@ running helpers. Dependency setup is separately authorized.
 
 ## Execution handoff
 
+Read [coding runtime and execution ownership](references/runtime-selection.md)
+when selecting an execution lane, planning workers, or executing a plan.
+
 Planning is the default. When explicitly invoked to execute an already approved
 plan (including a Codex Goal), do not regenerate it: read the installed skill's
 [shared execution contract](references/story-execution.md) and
@@ -51,6 +54,14 @@ task worktree/branch/base/owned-path assignments and one integration owner.
 Choose the explicit target or trusted runtime default below; never nest the loops.
 Requirements, acceptance coverage and bounded delivery gates remain shared.
 Planning worker selection is explicit, not automatic model routing.
+
+For an authorized CodexGoalMarkdown parallel batch or explicit swarm/team request,
+discover `run-agent-team` through advertised skills and load its installed contract.
+Plan the handoff during planning; do not spawn agents or create execution state.
+During execution it owns team dispatch/model/capacity procedure, while these shared
+references retain acceptance, graph/ownership, review, commit and archival gates.
+An already assigned lead adopts the team contract without creating another manager;
+a bounded worker follows its story method only. RalphJSON never invokes that skill.
 
 ## Select the format
 
@@ -141,10 +152,16 @@ approved exclusions. Summarize coverage and gaps in the planning handoff, withou
 creating another status document or claiming implementation verification. A plan
 with unresolved acceptance gaps is a draft, not ready for execution.
 
-### Optional run enrollment and preservation
+### Required archival and plan preservation
 
-Deterministic archival is optional. When requested or covered by the explicit
-closeout scope, read [run manifest and archival contract](references/completed-run-archive.md).
+Archive the plan whenever the entire goal is reached. Read the
+[archival and preservation contract](references/completed-run-archive.md) for every
+plan. Prefer verified completed-run archival for enrolled runs; otherwise use its
+copy-only plan preservation mode. A separate PRD/manifest remains optional for
+bounded tasks, but plan archival is required. Record the exact closeout paths and
+actual authority in the handoff; missing authority leaves closeout pending.
+
+For verified completed-run archival, read the run-manifest contract below.
 Planning owns generating/binding the stable run ID, exact plan path/adapter and
 associated saved PRD inventory; preserve requirement prose and existing run IDs.
 Enroll only approved run-owned files, never unrelated PRDs or mixed execution
@@ -152,19 +169,24 @@ state. Missing metadata blocks archival, not otherwise valid bounded-task
 execution. Do not create a separate PRD solely to satisfy ordinary execution.
 For a requested archival workflow without a saved PRD, prepare an approved
 requirements snapshot and manifest before execution; report a genuine ownership
-or approval gap. Planning never creates journal/memory or archives files.
+or approval gap. Planning never creates journal/memory. Before writing a different plan to an
+existing completed plan's path, verify its archive and current source hashes. If
+completion archival was missed, perform the contract's copy-only preservation
+fallback first under the applicable scope; block replacement if preservation or
+overwrite authority is missing. Do not replace an unfinished run. Never treat a
+preservation receipt as proof that the old goal was delivered.
 
 Preserve existing artifacts. Preview and require explicit confirmation before
 destructive overwrite or reset. For approved plan continuation, update
 only scoped sections, preserving checked statuses and completion evidence.
-Do not replace an unfinished run with a new feature. Completed runs use the
-[deterministic archival procedure](references/completed-run-archive.md),
+Do not replace an unfinished run with a new feature. Enrolled completed runs use the
+[verified archival procedure](references/completed-run-archive.md),
 automatically after verified delivery when the execution grant covers the exact
 artifact removals. A closeout commit needs its own scope, which may be granted
 upfront with the sequence. Neither planning nor metadata grants either authority.
 
-When preparing a plan, generate the plan and any requested scoped PRD binding only:
-do not
+Alongside required preservation of a prior completed plan, generate the plan
+and any requested scoped PRD binding only; do not
 implement, run implementation checks, create or switch branches, commit, launch
 Ralph, run a CLI goal, or automatically create a
 goal. Report format/path, story order, plan validation, assumptions, and blockers;

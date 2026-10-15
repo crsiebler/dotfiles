@@ -27,7 +27,7 @@ defines the native role contract.
   Prefer adequate native tools for simple reads. Resolve bundled resources from
   the loaded skill. Each skill links to `references/requirements.md` for required
   and optional dependencies, installation instructions, and availability checks.
-  Keep the 29-skill [dependency inventory](docs/skill-dependencies.md) aligned with
+  Keep the 30-skill [dependency inventory](docs/skill-dependencies.md) aligned with
   source changes. Dependency setup is separately authorized and never performed
   by AI installation.
   See [document verification](docs/document-skill-verification.md) for actual tested
@@ -35,6 +35,10 @@ defines the native role contract.
   create-skill/create-gif and create-mcp-server adapt attributed Apache upstream
   bundles. create-mcp-server is instruction-only, with no runtime dependencies;
   see [MCP skill verification](docs/create-mcp-server-verification.md).
+- `coding` adds `run-agent-team` for explicit Codex parallel execution using the
+  existing plan-aware `multi-agent-coordinator`; Ralph remains serial. One batch
+  lead owns dispatch and integration, with native capability/model/pin preflight.
+  Source delivery does not activate installed roles or prove native team execution.
 - `coding` uses `develop-code` for feature/fix/refactor methods and independent
   `review-code` for read-only scopes/lenses. The three former development bundles
   are retired; no aliases remain. Keep the project template optional and preserve
@@ -47,7 +51,7 @@ defines the native role contract.
   concatenation or normalization. This root file is repository-only guidance.
 - Codex configuration sources are `ai/codex/config.toml` and `astra.config.toml`.
   OpenCode configuration and native prompts remain under `ai/opencode/`.
-- Shared runtime/model selection policy lives in `ai/AGENTS.md`; see
+- Coding runtime/model selection policy lives in the prepare-implementation skill; see
   [selection and rollout](docs/runtime-selection.md). Reusable roles omit model
   and effort pins; preserve their expertise and permission/review contracts.
   Global subagent/build defaults must not silently override session selection.

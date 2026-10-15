@@ -77,6 +77,88 @@ class ArchiveRunTest(unittest.TestCase):
         self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
         return json.loads(result.stdout)
 
+    def preserve_plan(self, *args, expected=0):
+        result = subprocess.run([sys.executable, str(SCRIPT), '--project', str(self.project),
+                                 '--preserve-plan', 'PLAN.md', *args],
+                                cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+        return json.loads(result.stdout)
+
+    def test_plan_preservation_keeps_uncommitted_bytes_without_delivery_claim(self):
+        self.write('PLAN.md', '# Old plan without structured history\n')
+        self.write('progress.md', 'Historical evidence, not machine-readable.\n')
+        sources = {name: (self.project / name).read_bytes() for name in
+                   ('PLAN.md', 'progress.md', 'memory.json', 'tasks/prd-fixture.md')}
+        result = self.preserve_plan('--include-prd', 'tasks/prd-fixture.md')
+        self.assertEqual(result['status'], 'preserved')
+        receipt_path = self.project / result['destination'] / '_preservation.json'
+        receipt = json.loads(receipt_path.read_text())
+        self.assertIs(receipt['delivery_verified'], False)
+        self.assertNotIn('stories', receipt)
+        self.assertEqual({item['source'] for item in receipt['files']}, set(sources))
+        for name, data in sources.items():
+            self.assertEqual((self.project / name).read_bytes(), data)
+            self.assertEqual((receipt_path.parent / Path(name).name).read_bytes(), data)
+        self.assertTrue((self.project / 'unrelated.md').exists())
+        self.assertFalse((receipt_path.parent / '_archive.json').exists())
+
+    def test_plan_preservation_preview_does_not_write(self):
+        result = self.preserve_plan('--dry-run')
+        self.assertEqual(result['status'], 'preview')
+        self.assertFalse((self.project / 'archive').exists())
+        self.assertFalse(self.git_path('archive-run.lock').exists())
+
+    def test_plan_preservation_rejects_symlinks_and_flat_collisions(self):
+        (self.project / 'PLAN.md').unlink()
+        (self.project / 'PLAN.md').symlink_to('unrelated.md')
+        self.preserve_plan(expected=2)
+        self.assertFalse((self.project / 'archive').exists())
+        (self.project / 'PLAN.md').unlink()
+        self.write('PLAN.md', 'old plan')
+        self.write('tasks/PLAN.md', 'unrelated duplicate')
+        result = self.preserve_plan('--include-prd', 'tasks/PLAN.md', expected=2)
+        self.assertIn('collision', result['reason'])
+        self.assertFalse((self.project / 'archive').exists())
+
+    def test_plan_preservation_works_without_optional_state_and_never_replaces_archive(self):
+        (self.project / 'progress.md').unlink()
+        (self.project / 'memory.json').unlink()
+        result = self.preserve_plan('--dry-run')
+        self.assertEqual([item['source'] for item in result['files']], ['PLAN.md'])
+        directory = self.project / result['destination']
+        directory.mkdir(parents=True)
+        (directory / 'sentinel').write_text('retain existing archive')
+        project = ARCHIVE.Project(self.project)
+        self.addCleanup(project.close)
+        with patch.object(ARCHIVE, 'datetime') as clock:
+            clock.now.return_value.strftime.return_value = directory.name.removesuffix('-plan-preservation')
+            with self.assertRaises(FileExistsError):
+                ARCHIVE.preserve_plan(project, 'PLAN.md', [], False)
+        self.assertEqual((directory / 'sentinel').read_text(), 'retain existing archive')
+        self.assertTrue((self.project / 'PLAN.md').exists())
+
+    def test_plan_preservation_does_not_bypass_stopped_runner(self):
+        self.write('.ralph-stop', 'preserve runner controls')
+        result = self.preserve_plan(expected=2)
+        self.assertIn('stop file', result['reason'])
+        self.assertFalse((self.project / 'archive').exists())
+        self.assertEqual((self.project / '.ralph-stop').read_text(), 'preserve runner controls')
+
+    def test_plan_preservation_rejects_changed_sources_without_removing_them(self):
+        project = ARCHIVE.Project(self.project)
+        self.addCleanup(project.close)
+        original = project.write_new
+        def change_source(name, data):
+            original(name, data)
+            if name.endswith('/PLAN.md'):
+                self.write('PLAN.md', 'changed during preservation')
+        with patch.object(project, 'write_new', side_effect=change_source):
+            with self.assertRaises(ARCHIVE.Refusal):
+                ARCHIVE.preserve_plan(project, 'PLAN.md', [], False)
+        self.assertEqual((self.project / 'PLAN.md').read_text(), 'changed during preservation')
+        self.assertTrue((self.project / 'progress.md').exists())
+        self.assertFalse(list((self.project / 'archive').glob('*/_preservation.json')))
+
     def test_preview_is_read_only(self):
         result = self.run_script('--dry-run')
         self.assertEqual(result['status'], 'preview')

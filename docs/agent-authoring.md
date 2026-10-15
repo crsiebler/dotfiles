@@ -271,3 +271,14 @@ Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-work
 under separate installation authorization; a source commit does not refresh a
 running session. [Verification](coding-workflow-verification.md) records that live
 comparative model evaluation was waived, not passed.
+
+## Plan-aware multi-agent coordinator
+
+The existing multi-agent-coordinator role has a conditional Codex coding-plan
+contract: an explicitly assigned batch lead loads run-agent-team, consumes the exact
+plan/revision, preserves story IDs/dependencies/acceptance and releases ready work
+only against delivery evidence. It owns dispatch and integration alone. Non-lead
+workers use bounded story methods without orchestration recursion; generic uses
+retain the role's original working contract. Model choices belong to the team
+invocation, not native role fields. This source contract cannot manufacture native
+role selection, nesting, permissions, worktree isolation or execution evidence.

@@ -242,7 +242,7 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertIn('Neither path reduces acceptance coverage', plan)
         execution = ' '.join((REFS / 'story-execution.md').read_text().split())
         self.assertIn('no separate PRD or archive manifest is required', execution)
-        self.assertIn('Missing metadata blocks archival, not otherwise valid execution', execution)
+        self.assertIn('Missing metadata blocks verified run archival, not otherwise valid execution', execution)
         self.assertIn('does not fabricate a run ID or need structured archival metadata for delivery',
                       execution)
 
@@ -254,7 +254,7 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertIn('Preserve existing metadata unchanged', entry)
         self.assertNotIn('```work-run', reference)
         archive = (REFS / 'completed-run-archive.md').read_text()
-        self.assertIn('## Optional enrollment', archive)
+        self.assertIn('## Required plan archival; optional full-run enrollment', archive)
         self.assertIn('prepare-implementation generates the stable run ID', archive)
         # Enrollment remains compatible with the unchanged helper's declared schema.
         manifest = json.loads(re.search(r'```work-run\n(.*?)\n```', archive, re.S)[1])
@@ -289,7 +289,7 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertLessEqual({
             'bounded-task-no-prd', 'large-prd-dependency-path',
             'goal-sequence-launch-authority', 'bare-worker-label-no-grant',
-            'bounded-delivery-no-archive',
+            'bounded-delivery-preserve-plan',
         }, {item['id'] for item in fixtures['scenarios']})
 
     def concurrency_reference(self):

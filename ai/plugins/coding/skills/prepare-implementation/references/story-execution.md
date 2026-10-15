@@ -9,6 +9,10 @@ execution, commit, delegation, or sensitive-operation authority.
 
 ## Loading and task-source adapters
 
+Read [coding runtime and execution ownership](runtime-selection.md) in full when
+selecting a lane or executing. It owns runtime/model selection and worker
+ownership; general personal policy remains suitable for non-coding interaction.
+
 Load `prepare-implementation` through the active harness's advertised installed
 skill identifier. Resolve this file and sibling `story-review.md` relative to
 that loaded skill's base directory (`references/`); read both in full before
@@ -47,6 +51,11 @@ dependency order is inconsistent or no pending story is eligible.
 Read notes before editing;
 recommendations are optional. For CodexGoalMarkdown, read codex-concurrency.md
 in full and validate the entire dependency graph before admitting ready stories.
+For an authorized parallel/team batch, discover the advertised run-agent-team skill
+and use its dispatch procedure. Its designated coordinator is the sole batch lead
+for dispatch and integration; the parent supervises scope without competing writes.
+An existing lead adopts the contract directly, and workers never route back into
+orchestration. Keep RalphJSON serial; the team skill does not extend its grants.
 Worker completion alone does not satisfy dependencies. Keep every story bounded
 to one iteration or Goal story unit; do not expand oversized stories silently.
 
@@ -88,11 +97,13 @@ source; no separate PRD or archive manifest is required. Full PRD/dependency pla
 use linked requirement sources. Both paths keep the same branch, checks, review,
 candidate and commit safeguards.
 
-For requested deterministic archival, planning binds associated saved PRDs with
+Plan archival is required at full goal completion. For verified run archival,
+planning binds associated saved PRDs with
 the work-run manifest in [completed-run archival](completed-run-archive.md). Read
 that contract for an enrolled run. Its manifest and actual grant identify whether
 automatic archival/removal and a closeout commit are authorized. Missing metadata
-blocks archival, not otherwise valid execution. Existing runs retain their state
+blocks verified run archival, not otherwise valid execution; use the copy-only
+plan preservation fallback at completion instead. Existing runs retain their state
 and evidence; never invent records, relocate old journals or reset memory.
 
 ## Authorization and prepared branch
@@ -655,8 +666,9 @@ them not_applicable to satisfy the helper. Do not put a speculative commit hash
 or a delivered flag in the pre-commit record. The archive helper resolves actual
 delivery from reachable committed records and completed task markers. For legacy
 runs lacking a bound manifest, record execution evidence normally. Report an
-archival enrollment gap only when archival is requested; do not fabricate a run
-ID/history or present an intentionally unenrolled bounded task as blocked.
+verified-run archival enrollment gap and use copy-only plan preservation at
+completion; do not fabricate a run ID/history or block bounded-task delivery
+solely for absent structured metadata.
 
 After final passing review, update validated memory, append final review evidence,
 and provisionally set only the selected story's completion flag/checkbox for
@@ -696,7 +708,8 @@ or iteration controller. Never mark blocked, unverified, or uncommitted work don
 Ralph must also provide its matching structured runner outcome. A completion
 sentinel or successful OpenCode process exit alone never authorizes continuation.
 
-For a run enrolled for archival, once all tasks are verified and delivered,
+Once the entire goal is verified and delivered, archive its plan. For an enrolled
+run,
 automatically invoke the installed
 archive helper under the [completed-run archival contract](completed-run-archive.md)
 when the existing execution grant covers its exact active-copy removals. Goal
@@ -707,3 +720,13 @@ destination. It supplies a deterministic receipt; do not rewrite the journal.
 Make one closeout commit only if that scope was authorized, including upfront
 with execution. Missing authority requires only the missing scoped approval;
 metadata or story-commit scope alone cannot grant removal/closeout commits.
+
+For an unenrolled bounded or legacy plan, invoke the same helper's copy-only
+`--preserve-plan` mode after delivery, with exact associated PRDs if any. Preserve
+active sources and report `preserved`, not verified run archival. Missing authority
+or failed preservation leaves archival pending: report the exact blocker and keep
+the old plan. Before a later new-plan write, planning must finish preservation and
+verify the old bytes still match its receipt. A new run must not reuse old journal
+or memory; retiring those active copies requires separately scoped reconciliation.
+Ralph's invoking assistant applies this only after supervisor validation and exit;
+there is no new CLI hook or change to serial execution.

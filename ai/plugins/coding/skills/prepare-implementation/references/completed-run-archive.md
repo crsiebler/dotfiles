@@ -6,10 +6,16 @@ copying, verification, and active-copy removal. Do not reproduce these operation
 with LLM-written shell commands. Python 3.11+, Git, and POSIX file locks are
 required; no packages, model calls, or network access are needed.
 
-## Optional enrollment
+## Required plan archival; optional full-run enrollment
 
-Ordinary bounded-task execution needs no separate PRD or work-run manifest. This
-contract applies only when deterministic archival is requested. Planning owns
+Archive the plan after the entire goal is reached. Prefer the verified full-run
+procedure below when enrolled; otherwise use copy-only plan preservation. If
+completion archival was missed, preserve the old completed plan before generating
+its replacement. Failed preservation blocks replacement; never silently overwrite.
+An unfinished plan must be continued or explicitly reconciled, not replaced.
+
+Ordinary bounded-task execution needs no separate PRD or work-run manifest. The
+verified full-run procedure requires enrollment. Planning owns
 creating/binding the manifest and an approved saved requirements snapshot if no
 PRD exists; requirements authoring owns outcomes, scope and acceptance. Missing
 archival inputs block archival, not an otherwise valid execution plan. Do not
@@ -58,7 +64,9 @@ automatic archival/removal of its exact declared active artifacts and one
 closeout commit. Once granted, carry that authority through continuation; do not
 request it again. If archival/removal or commit authority is genuinely missing,
 preview the exact paths/result and request only the missing scope. Narrower
-instructions and runtime restrictions still apply. Planning never archives.
+instructions and runtime restrictions still apply. Planning may perform only the
+copy-only preservation fallback before an authorized completed-plan replacement;
+it never removes execution state or claims delivery through that fallback.
 
 For each delivered story, the executor stages a structured `story-result` block
 in `progress.md` with the completion marker, after passing checks and review but
@@ -154,3 +162,35 @@ or ignore rule. Use the repository's commit convention, for example
 If no commit authority exists, report the uncommitted archive. Failure to commit
 does not undo the verified archive or authorize another story/cleanup attempt.
 Shipping remains an explicit separate action; never push implicitly.
+
+## Copy-only plan preservation fallback
+
+Use the installed `archive_run.py --project "<absolute-worktree-root>"
+--preserve-plan "<exact-project-relative-plan-path>"` for bounded plans without a
+manifest or legacy plans whose verified archival inputs are unavailable. Add
+`--include-prd "<exact-associated-PRD-path>"` for each inspected run-owned PRD;
+never glob. `--dry-run` is read-only. Stop writers first; keep Ralph stopped until
+its supervisor has validated completion and exited. Honor pending runner controls.
+
+The helper copies the plan, available root progress.md/memory.json and explicitly
+selected PRDs into a fresh `archive/<UTC-timestamp>-plan-preservation/`. It verifies
+all copied and active bytes and writes `_preservation.json` last, with source
+mapping, SHA-256 hashes, observed HEAD, `delivery_verified: false` and
+`active_sources_removed: false`. It accepts uncommitted/legacy bytes solely to
+prevent loss; it never fabricates manifests, passing checks, review or commits.
+This receipt is distinct from `_archive.json` and cannot satisfy verified-run
+archival or prove an unfinished plan complete. Symlinks, unsafe paths, flat-name
+collisions, active runners and changed sources are refused. A partial directory
+without its verified receipt is not a successful archive; preserve it and report
+the failure rather than retrying automatically.
+
+At goal completion use the applicable existing grant for this copy-only archival;
+request only genuinely missing scope. Before replacing a completed plan, verify
+the receipt and every preserved file/hash, then compare all current source bytes
+with the receipt. If they differ, stop and reconcile instead of overwriting.
+The new-plan request may cover replacement of that exact completed plan; narrower
+confirmation rules still apply. Do not reset or remove prior progress/memory/PRDs
+through this mode. Their active copies remain preserved, and their retirement
+needs scoped reconciliation before starting a new run. If archival or replacement
+is blocked, leave the previous plan intact and report the exact paths and reason.
+A closeout commit remains separately authorized. No implicit push or installation.

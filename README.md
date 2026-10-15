@@ -54,7 +54,7 @@ Use a native tool when it adequately handles a simple document read. Production
 skills create files; researching extracts evidence; reporting owns synthesis and
 communication. Each new skill has its own Python requirements and validation guide.
 
-All 29 Craft skills link to a bundled `references/requirements.md` describing
+All 30 Craft skills link to a bundled `references/requirements.md` describing
 required/optional utilities, installation steps, and availability checks.
 See the [skill dependency audit and inventory](docs/skill-dependencies.md).
 Source updates require an authorized plugin refresh or skill installation before
@@ -276,8 +276,9 @@ Ralph's implementation loop runs through **OpenCode only**.
    ```
 
 `make install` installs the executable; AI-only targets do not. The checkout
-entry point is the single-file Python supervisor `bin/ralph`, whose executable
-shebang selects `python3.11` rather than an older `python3`. `--auto` and the old
+entry point is the single-file supervisor `bin/ralph`, whose shell launcher probes
+`python3`, versioned Python names and `python` on PATH and validates Python 3.11+
+before running the Python supervisor. `--auto` and the old
 `--authorize-story-commits` flag are unsupported. Invoking `ralph` itself
 authorizes passing-story commits, routine scoped implementation, necessary project
 dependencies, and relevant tests, not permission bypasses. Docker lifecycle,
@@ -327,7 +328,15 @@ and open questions, not implementation checkpoints.
 
 Small tasks may keep approved requirements directly in the plan, without a separate
 PRD or archival metadata. Larger work uses PRDs and explicit dependencies.
-Runs enrolled for archival use the
+Plan archival is required at full goal completion. Unenrolled bounded/legacy plans
+use the installed archive helper's copy-only `--preserve-plan` mode: the exact
+plan, available journal/memory and named associated PRDs are copied and verified,
+with a distinct preservation receipt and no source removal or delivery claim.
+If completion archival was missed, preserve the completed previous plan and
+verify its receipt/current hashes before authorized replacement. Failed
+preservation blocks replacement; never replace an unfinished run or reuse old
+execution state without scoped reconciliation.
+Runs enrolled for verified full-run archival use the
 [completed-run archive procedure](ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
 
 1. Verify all tasks, required checks/reviews, and story commits. For Ralph, wait
@@ -587,3 +596,13 @@ for ownership, shared-directory scope, and preserved conflicts.
     retirement affects other harnesses; customized/unverified/symlinked copies
     require separate exact-path reconciliation. Retain rollback archives and never
     delete caches manually. Follow the [activation and rollback steps](docs/remove-old-ai-files.md#consolidated-coding-workflows).
+
+### Codex parallel agent teams
+
+Use the coding `run-agent-team` skill for explicitly authorized swarm/team coding
+or substantial independent Codex plan stories. A single Sol coordinator owns
+dispatch and integration; Luna workers run in prepared task worktrees. Native
+role/model/reviewer capability, installed pins, grants and capacity are preflighted
+before dispatch. Independent eligible work dispatches concurrently when possible;
+Ralph remains serial. [Verification and activation limits](docs/agent-team-verification.md)
+separate source contract checks from actual native execution.

@@ -1,4 +1,15 @@
-#!/usr/bin/env python3.11
+#!/bin/sh
+""":"
+# Keep a single installed file while validating PATH interpreters before launch.
+for ralph_python in python3 python3.15 python3.14 python3.13 python3.12 python3.11 python; do
+    if command -v "$ralph_python" >/dev/null 2>&1 &&
+        "$ralph_python" -c 'import sys; sys.exit(sys.version_info < (3, 11))' >/dev/null 2>&1; then
+        exec "$ralph_python" "$0" "$@"
+    fi
+done
+printf '%s\n' 'Error: Ralph requires Python 3.11 or newer on PATH.' >&2
+exit 1
+":"""
 """Single-file, POSIX Ralph supervisor. Requires Python 3.11+ and Git."""
 
 import sys
@@ -56,7 +67,7 @@ Read-only --status grants no execution authority.
 Required checks and review must pass. Sensitive operations, external posts and pushes
 still require separate approval; no runtime permission is overridden.
 --auto and --authorize-story-commits are unsupported.
-The executable resolves python3.11 from PATH (Python 3.11+ required).
+The executable discovers and validates Python 3.11+ on PATH (python3 first).
 Requires POSIX process groups/flock, Git, plan.json and a prepared
 committed exact plan branch (not main/master/detached). OpenCode and its installed
 Ralph agent are needed only for incomplete plans. No jq dependency.

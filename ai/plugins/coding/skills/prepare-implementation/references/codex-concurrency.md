@@ -5,6 +5,20 @@ story-execution.md. Requirements, stable story IDs, acceptance, authorization,
 review budgets and per-story delivery gates remain shared. Use native subagents;
 add no scheduler, background controller, duplicate task store or nested Ralph loop.
 
+## Team execution ownership
+
+For authorized Codex parallel/team execution, discover and load run-agent-team
+relative to its advertised installed base. That skill owns native role/model
+preflight, bounded capacity and dispatch-before-wait procedure. This reference
+remains canonical for dependency readiness, task worktrees and integration.
+There is one dispatch owner and one integration owner, both the designated batch
+lead. In delegated mode this is native multi-agent-coordinator, not its parent;
+the parent supervises scope without another dispatch loop or canonical writes.
+In supported parent-direct mode the parent is the sole lead and explicitly
+reports adoption of the coordinator guidance. Never create recursive managers.
+Workers follow bounded packets, not team entry routing. No mode waives native
+reviewer availability, authorization or the shared delivery gates.
+
 ## Admission and ownership
 
 The lead validates the complete dependency graph before dispatch: unique IDs,

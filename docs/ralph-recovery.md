@@ -133,9 +133,9 @@ OpenCode afterward; start a new Codex thread after refreshing its plugin. If an
 older runner rejects `--status`, update it rather than running plain `ralph` as a
 diagnostic fallback. Skill availability is not proof of an updated executable.
 
-The standalone executable resolves `python3.11` on PATH and requires Python
-3.11 or newer. It does not use an unrelated older `python3`. Ensure this
-interpreter is present on the rollout host; source tests and file existence do
+The standalone executable probes `python3` first, then versioned Python 3.11+
+names and `python` on PATH, validating Python 3.11+ before launch. An older
+interpreter is skipped. Ensure a compatible interpreter is present on the rollout host; source tests and file existence do
 not establish installed-runtime readiness.
 
 The runner's exact handoff contract is in

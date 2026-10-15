@@ -314,10 +314,17 @@ No global or plugin lifecycle hook is installed for it.
 
 ## Completed-run archival
 
-Archival is optional: an unenrolled bounded task finishes after verified story
-delivery and reports its evidence without another PRD or cleanup workflow.
-When deterministic archival is requested, planning owns the saved PRD inventory
-and work-run binding; requirements drafting adds no runner/archive metadata.
+Plan archival is required whenever the entire goal is reached. An unenrolled
+bounded task uses the installed archive helper's copy-only `--preserve-plan`
+mode, retaining active sources and writing a separate preservation receipt without
+claiming verified run archival. No extra PRD or invented delivery history is needed.
+If completion archival was missed, planning must preserve the old completed plan
+and verify its receipt/current hashes before authorized replacement. Failure
+blocks replacement; unfinished plans stay intact. Old journal/memory retirement
+requires scoped reconciliation before a new run can execute.
+
+For verified full-run archival, planning owns the saved PRD inventory and work-run
+binding; requirements drafting adds no runner/archive metadata.
 
 For an enrolled run, with one active plan per worktree, archive only after all
 tasks are verified and required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
@@ -331,9 +338,9 @@ bytes and recording a receipt. It never resets history or creates new state.
 A closeout commit needs its own scope, which may be authorized upfront. Ralph's
 invoking assistant uses the same helper after supervisor validation and successful
 exit; CLI-only Ralph has no post-run hook. Neither workflow archives during
-requirements drafting. Legacy runs lacking metadata/records need scoped
-enrollment when archival is requested; never fabricate evidence or automatically
-relocate old journals.
+requirements drafting. Legacy runs lacking metadata/records use copy-only plan
+preservation; never fabricate evidence or automatically relocate old journals.
+Missing archival authority leaves closeout pending and must be reported.
 
 Archival is allowed on any branch, including `main`/`master`, even if the original
 branch was merged and deleted. Verify run ownership and delivery using retained
@@ -354,3 +361,17 @@ Static checks do not prove live Goal continuation, reviewer permissions, or comm
 Sources: [Follow a goal](https://developers.openai.com/codex/use-cases/follow-goals),
 [Using Goals in Codex](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex),
 [CLI slash commands](https://developers.openai.com/codex/cli/slash-commands).
+
+## Explicit parallel agent teams
+
+For authorized substantial independent stories, prepare-implementation discovers
+run-agent-team. It requires concurrent dispatch before waiting when capability,
+authority and capacity permit, with exact logged serial exceptions. One Sol
+multi-agent-coordinator owns dispatch and integration; Luna workers use assigned
+worktrees. Astra escalation does not add a review gate or renew budgets. The
+coordinator reads the exact existing plan/revision and releases dependencies only
+after integration delivery. Parent-direct guidance adoption is a disclosed
+fallback for unavailable nesting/capacity, not a native role invocation claim.
+Missing required story-reviewer selection still blocks execution. Existing
+requirements, checks/review, commits and archival remain authoritative. See
+[team verification](agent-team-verification.md) before claiming activation.

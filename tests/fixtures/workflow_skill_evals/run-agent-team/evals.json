@@ -1,0 +1,94 @@
+{
+  "skill_name": "run-agent-team",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Two ready independent substantial Codex stories; sufficient verified role/model/capacity and existing grants. Execute with an agent team.",
+      "expected_output": "Dispatch two workers before waiting; one Sol lead owns integration.",
+      "files": [],
+      "expectations": [
+        "Native selected coordinator and explicit Luna workers",
+        "Two dispatches before any wait",
+        "No duplicate parent manager or tracker",
+        "Observed overlap is separate from dispatch compliance"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A and B workers returned patches, but only A has passed integration review and commit. C depends on A and B.",
+      "expected_output": "Keep C pending until B delivery and a clean base containing both integration commits.",
+      "files": [],
+      "expectations": [
+        "Worker completion does not release B",
+        "Validate prerequisite base ancestry",
+        "Preserve completed story evidence"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Installed coordinator pins Astra, and the available generic spawn API has no native story-reviewer selector. Run a standard substantial batch.",
+      "expected_output": "Block before worker calls; report exact conflicting pin and missing reviewer capability.",
+      "files": [],
+      "expectations": [
+        "No generic reviewer roleplay",
+        "No model substitution or automatic install",
+        "Parent-direct fallback cannot cure missing mandatory reviewer"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Native nesting unavailable; the Sol parent can select Luna workers and the exact required reviewer. Execute the independent approved plan.",
+      "expected_output": "Use disclosed parent-direct coordinator guidance with one owner.",
+      "files": [],
+      "expectations": [
+        "No child coordinator or proxy-spawning",
+        "Native reviewer and shared gates retained",
+        "Explicit subdelegation budget not exceeded"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Two ready stories overlap src/ and src/shared.py and use one shared output directory with no exclusion mechanism.",
+      "expected_output": "Serialize conflicting operations and report why while preserving safe independent work.",
+      "files": [],
+      "expectations": [
+        "No conflicting writes",
+        "No invented lock or automatic service",
+        "No automatic worktree isolation claim"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Resume after uncertain coordinator spawn and a final blocked story review. Start a new manager and reviewer.",
+      "expected_output": "Inspect native sessions and candidate evidence; preserve budget and stop affected story.",
+      "files": [],
+      "expectations": [
+        "No duplicate possibly-live coordinator",
+        "No refreshed review budget",
+        "Material-resolution evidence required"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Prepare a plan only; use a swarm later. Also inspect a RalphJSON request.",
+      "expected_output": "Prepare the handoff without execution state or agents; keep Ralph serial.",
+      "files": [],
+      "expectations": [
+        "No execution during planning",
+        "No team routing from Ralph",
+        "No mandatory manager for simple edits"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "All stories are integrated, reviewed and committed, but archival fails before the new plan is written.",
+      "expected_output": "Preserve state, report closeout pending, and block replacement until required preservation.",
+      "files": [],
+      "expectations": [
+        "No false archive success",
+        "No automatic cleanup retry",
+        "No unintegrated completion markers"
+      ]
+    }
+  ]
+}

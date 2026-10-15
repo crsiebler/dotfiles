@@ -6,8 +6,6 @@ sandbox_mode = "workspace-write"
 
 [agents]
 enabled = true
-# Specialized roles inherit the selected session model/effort unless the caller
-# explicitly selects a supported override. Inheritance is not automatic routing.
 
 [sandbox_workspace_write]
 network_access = false

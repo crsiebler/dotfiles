@@ -53,7 +53,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
+| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `run-agent-team`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | `delegating` | `use-subagents` |
@@ -66,7 +66,7 @@ instruction to log in during installation.
 
 Every Craft skill links to its bundled `references/requirements.md`. Read it
 before selecting external utilities or running helpers. The
-[dependency audit](skill-dependencies.md) inventories all 29 skills and explains
+[dependency audit](skill-dependencies.md) inventories all 30 skills and explains
 setup, authorization, and availability checks. AI installation copies these
 instructions; it does not install Python packages, CLIs, browsers, renderers,
 model weights, or provider authentication.
@@ -203,8 +203,8 @@ update affected subjects without rewriting policy or execution state. Read-only
 requests return proposed content instead of saving. Directory-based discovery
 requires no new command, agent, or installer special case.
 
-The [runtime selection guide](runtime-selection.md) describes the central policy
-in `ai/AGENTS.md`. Base Codex selects Sol 6.1; Astra is an explicit opt-in profile
+The [runtime selection guide](runtime-selection.md) describes the coding plugin
+policy loaded by prepare-implementation. Base Codex selects Sol 6.1; Astra is an explicit opt-in profile
 with high effort. OpenCode's overlays select the session model without hidden
 build/subagent pins. Reusable roles omit model and effort settings. Ralph inherits
 OpenCode settings unless explicit launch selectors are supplied. Verify account
@@ -839,3 +839,15 @@ Source validation and fake-Node launcher tests cover the path, environment-only
 key forwarding, exit status and approval defaults. They do not establish real
 client startup, account access, billing or model quality. This source change does
 not install configuration, read keys, or run live calls.
+
+### Codex agent-team execution
+
+The coding run-agent-team skill supplies explicit native dispatch for authorized
+parallel plans or swarm requests. One Sol multi-agent-coordinator is both dispatch
+and integration owner, with explicit Luna workers and budgeted Astra escalation.
+Its conditional role contract consumes the exact Codex plan; parent supervision
+and worker method routing do not create competing managers. The shared planning
+references retain graph/ownership, review, commit and required archival gates.
+Ralph remains serial. See [team verification](agent-team-verification.md) for source
+checks and missing native execution/activation evidence. Installation is separate;
+role files, model pins and callable APIs must be verified in a fresh runtime.

@@ -24,9 +24,11 @@ and Docker operations still require their own applicable approvals.
 
 If `plan.json` already exists, preserve it and require confirmation for scoped
 updates. Do not overwrite an unfinished run with a different feature. Completed
-runs use the deterministic [archival procedure](completed-run-archive.md) under
-the existing scoped archival/removal grant,
-after the runner has validated completion and exited, not during conversion.
+runs require plan archival after the runner validates completion and exits.
+Use the [archival procedure](completed-run-archive.md) under its applicable grant.
+If archival was missed, conversion must first use copy-only preservation and
+verify its receipt/current hashes before authorized replacement; failure blocks
+replacement. Conversion never removes execution state.
 
 Keep `plan.json` a stable task source with concise planning context in `notes`,
 not execution narratives. Append execution evidence only to worktree-root
@@ -359,15 +361,18 @@ tool; new tasks currently default to pending. Preserve that default.
 
 ## Archiving Completed Runs
 
-For an enrolled archival workflow only, after all stories pass checks/review and
+Every completed goal requires plan archival. After all stories pass checks/review and
 their commits succeed, the invoking
 assistant waits for runner completion validation and successful exit, then
 automatically invokes the installed script under the [archival contract](completed-run-archive.md)
-when the scoped grant covers the declared PRDs, plan.json, root progress.md and
+for an enrolled run when the scoped grant covers the declared PRDs, plan.json, root progress.md and
 existing memory.json. The script archives them flat with a verified receipt.
 The story agent must not archive inside an iteration or remove the plan before
 runner validation. A CLI-only runner has no post-run archive hook. One closeout
-commit requires its own scope, which may be authorized upfront.
+commit requires its own scope, which may be authorized upfront. Without full-run
+enrollment, the invoking assistant uses copy-only plan preservation instead.
+Missing authority or preservation failure leaves archival pending and blocks
+replacement of the old plan; it never permits fabricated completion records.
 
 ---
 
@@ -375,7 +380,7 @@ commit requires its own scope, which may be authorized upfront.
 
 Before writing plan.json, verify:
 
-- [ ] No unfinished run is being replaced; archival is outside planning under its scoped grant
+- [ ] No unfinished run is being replaced; a completed prior plan has verified archival or copy-only preservation before authorized replacement
 - [ ] Source criteria/dependencies, approved plan revision/baseline and any useful phases are mapped in existing fields without new JSON keys
 - [ ] Shared acceptance-coverage audit completed; coverage, integration owners, approved exclusions and unresolved gaps reported in the handoff
 - [ ] If archival was requested, associated saved PRDs have bound work-run metadata and the handoff identifies actual archival/closeout authority

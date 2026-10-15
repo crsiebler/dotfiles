@@ -21,8 +21,9 @@ concurrency or executing this adapter.
 - Choose bounded-task or fuller PRD/dependency planning from scope. Map every
   story to approved request/brief or PRD requirements with one completion tracker.
   Explain dependency order and add phases when they clarify larger work. A separate
-  PRD and run metadata are optional; enroll archival only under
-  completed-run-archive.md when requested, recording exact paths and authority.
+  PRD and full-run metadata are optional. Always record required plan archival
+  under completed-run-archive.md, including exact paths and actual authority;
+  use copy-only preservation when full-run enrollment is absent.
 - Apply [acceptance coverage](../SKILL.md#preserve-acceptance-coverage). Use
   `Phase / requirements` (phase optional) to identify source criteria and, for split behavior,
   contributing stories and the story owning integrated acceptance. Put observable
@@ -71,6 +72,10 @@ in explicitly assigned task worktrees. Read-only advisors remain under the share
 mode budget (at most two per story). The lead owns integration and trackers.
 Record worker ownership and each advisor's bounded question in the plan;
 record actual invocation or a skip reason in `progress.md` at execution time.
+For planned Codex team execution, identify run-agent-team as the dispatch owner
+procedure and name one batch lead for both dispatch and integration. Record
+model/capacity limits and worktree ownership in the handoff, not another registry.
+A planning document grants no team execution or worktree lifecycle authority.
 Discovery is not invocation and a definition does not prove native availability.
 
 The staged reviewer is fixed to Codex `story-reviewer` when the mode requires
@@ -150,6 +155,10 @@ phases and PRD references without introducing another completion tracker.
   reject main/master, detached HEAD and mismatch. Prepare task branches/worktrees
   only with a scoped lifecycle grant and clean committed baseline; never switch
   the user's checkout or copy/commit dirty work as preparation.
+- For authorized Codex team execution, discover run-agent-team and follow its
+  preflight and dispatch-before-wait contract. One designated lead owns dispatch
+  and integration; workers must not route back into orchestration. Keep native
+  story-reviewer availability and all existing gates.
 - Admit dependency-ready stories under codex-concurrency.md. Workers use explicit
   assigned paths; the lead owns integration, progress and memory. Coordinate host
   resources and shared outputs; freeze only the candidate and conflicting resources.
@@ -193,8 +202,9 @@ passing story across this eligible sequence. Preserve unrelated work and all
 branch, review, permission and sensitive-operation boundaries.
 ```
 
-A bounded task needs no separate PRD or automatic archival. If deterministic
-archival is requested, planning additionally records the exact primary PRD path,
+Every completed goal requires plan archival. A bounded task without a separate
+PRD uses copy-only preservation under completed-run-archive.md. If full-run
+archival is selected, planning additionally records the exact primary PRD path,
 bound run ID and actual archival/removal plus closeout commit scope. Add the
 following optional closeout instruction only for that enrolled workflow:
 
@@ -214,7 +224,9 @@ Do not create/reset progress or memory during planning. Existing plans may have
 implementation notes: preserve them and completed checkboxes. Relocating that
 evidence requires explicit cleanup approval during authorized execution and must
 preserve it in progress.md before removing it from the plan. Do not replace an
-unfinished run. Archive completed runs only under the shared
+unfinished run. If completion archival was missed, use the shared copy-only
+preservation fallback and verify its receipt/hashes before an authorized new-plan
+write; failed preservation blocks replacement. Archive completed runs under the shared
 [archival procedure](completed-run-archive.md). A resumed old plan missing the
 branch or shared contract needs a scoped plan update, not silent execution with
 weaker rules.

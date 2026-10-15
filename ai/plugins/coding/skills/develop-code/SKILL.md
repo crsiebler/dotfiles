@@ -14,6 +14,19 @@ changes. Preserve user work. Identify required behavior, compatibility, errors,
 side effects and material unknowns; do not silently drop requirements to simplify
 the solution. Use supplied context first and inspect only affected contracts.
 
+For an explicit coding swarm/agent-team/parallel-agent execution request, discover
+`run-agent-team` and follow its approved-plan and capability handoff. Planning-only
+work stays planning. If already assigned a bounded story/worker packet, use this
+method directly: do not route back to team orchestration or subdelegate. This
+routing neither grants execution nor starts a manager for ordinary development.
+
+For coding runtime/model selection, discover the advertised
+`prepare-implementation` skill and read `references/runtime-selection.md` relative
+to its advertised installed base. That shared policy applies to direct development
+as well as planned execution. Load only that reference; it does not start planning,
+execute a plan, or grant delegation or commits. Never use a hardcoded checkout,
+sibling-skill, or plugin-cache path. Report unavailable required guidance.
+
 Select the action and read its bundled reference relative to this loaded skill:
 
 | Intent | Method |

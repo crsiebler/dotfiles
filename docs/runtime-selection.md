@@ -1,8 +1,10 @@
 # Runtime and model selection
 
-The central portable selection policy is the **Runtime and model selection**
-section in [ai/AGENTS.md](../ai/AGENTS.md). Installation copies that policy unchanged
-to both user-level harnesses. Roles supply expertise, permitted tools and outputs;
+Coding runtime selection and execution ownership live in the coding plugin's
+[runtime-selection reference](../ai/plugins/coding/skills/prepare-implementation/references/runtime-selection.md),
+loaded by prepare-implementation. The general [personal policy](../ai/AGENTS.md)
+is copied unchanged to both user-level harnesses and contains no coding execution
+procedure. Roles supply expertise, permitted tools and outputs;
 runtime profiles and explicit launch arguments supply model and effort choices.
 This is a source foundation, not a scheduler or automatic task classifier.
 
@@ -52,3 +54,13 @@ need their own approved execution scope; source checks do not authorize them.
 Offline evidence: renderer/role contracts, runtime-selection config tests, actual
 Ralph executable startup and captured fake-worker arguments. These tests do not
 establish unattended operation, model quality or installed discovery.
+
+## Explicit agent-team profile
+
+The run-agent-team skill selects Sol coordination and explicit Luna implementation
+through supported native controls. Material ambiguity or evidenced hard failure
+may use Astra within existing advisor/review/remediation limits. This workflow
+profile does not add pins to reusable roles or change ordinary session inheritance.
+Installed role pins take precedence and must be reconciled through separately
+authorized activation; no skill edits runtime settings automatically. Parent-direct
+fallback requires a selected Sol parent plus all required worker/reviewer APIs.
