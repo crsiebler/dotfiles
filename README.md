@@ -54,7 +54,7 @@ Use a native tool when it adequately handles a simple document read. Production
 skills create files; researching extracts evidence; reporting owns synthesis and
 communication. Each new skill has its own Python requirements and validation guide.
 
-All 30 Craft skills link to a bundled `references/requirements.md` describing
+All 31 Craft skills link to a bundled `references/requirements.md` describing
 required/optional utilities, installation steps, and availability checks.
 See the [skill dependency audit and inventory](docs/skill-dependencies.md).
 Source updates require an authorized plugin refresh or skill installation before
@@ -294,15 +294,17 @@ effort on every story. See [runtime selection](docs/runtime-selection.md) for
 session profiles, model-agnostic roles, verification limits and separate activation.
 The interactive Astra profile does not expand Ralph's model allowlist.
 
-Both Ralph and Codex Goal follow the full shared
-[story execution contract](ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
-and [review protocol/schema](ai/plugins/coding/skills/run-agent-team/references/story-review.md).
-Executors load both references in full from the advertised installed
-`run-agent-team` skill, not checkout paths, and pass the full review
-protocol to the reviewer. Ralph's review gate uses self-review where allowed or
-the dedicated three-step, project-local `ralph-reviewer`, with at most one same-session follow-up after
-substantive fixes. It never substitutes a general-purpose reviewer. Checks include
-relevant typecheck, lint, tests, and `verify-interface` for UI changes.
+Ralph's delivery lifecycle belongs to its native
+[ralph role](ai/opencode/agents/ralph.md); its complete three-step protocol/schema
+belongs to [ralph-reviewer](ai/opencode/agents/ralph-reviewer.md). Codex uses its
+own [delivery](ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+and [review](ai/plugins/coding/skills/run-agent-team/references/story-review.md)
+references. Each executor supplies its complete workflow-specific protocol in
+every native review packet. Missing native routing, full protocol or same-session
+continuation blocks required review; a general reviewer never substitutes.
+Safeguard/schema compatibility is tested without forcing identical prose. Checks
+include relevant typecheck, lint, tests and `verify-interface` for UI changes.
+
 
 `verify-interface` defaults to Chrome, with conditional guidance for Playwright CLI,
 Playwright MCP/project tests, and Computer Use. Other browsers provide targeted
@@ -337,7 +339,7 @@ verify its receipt/current hashes before authorized replacement. Failed
 preservation blocks replacement; never replace an unfinished run or reuse old
 execution state without scoped reconciliation.
 Runs enrolled for verified full-run archival use the
-[completed-run archive procedure](ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md):
+[completed-run archive procedure](ai/plugins/coding/skills/archive-run/references/completed-run-archive.md):
 
 1. Verify all tasks, required checks/reviews, and story commits. For Ralph, wait
    until the runner validates completion and exits before changing active state.
@@ -599,17 +601,14 @@ for ownership, shared-directory scope, and preserved conflicts.
 
 ### Codex parallel agent teams
 
-Use `run-agent-team` explicitly for authorized swarm/team coding with an approved
-plan. Planning stays independent. The Sol main thread owns dispatch, version
-control, merging and task state. Luna workers run in prepared task worktrees.
-Verify native model/reviewer controls, installed pins, grants and capacity before
-dispatch. Fill eligible capacity before waiting; Ralph remains serial.
+Invoke `run-agent-team` explicitly or assign the existing `multi-agent-coordinator`
+with an approved plan. Planning stays independent. The Sol-selected coordinator
+owns dispatch under supported nested delegation; the main thread owns Git,
+worktree lifecycle, integration and canonical task state. If coordinator invocation
+or nesting is unavailable, a verified Sol main thread may adopt its guidance and
+dispatch directly after reconciling prior ownership. This is guidance adoption,
+not native role invocation. Never proxy-spawn or run competing dispatch loops.
+Luna workers use isolated assigned worktrees; Astra escalation retains existing
+review budgets. Fill eligible capacity before waiting. Ralph remains serial.
 [Verification and activation limits](docs/agent-team-verification.md) distinguish
-source checks from actual native execution.
-
-Launch a fresh top-level Swarm session from this checkout with
-`./bin/swarm --project /absolute/project --plan PLAN.md --scope "<actual grant>"`.
-Use `--dry-run` to inspect the request without starting Codex. This explicitly
-selects Sol and supplies [Swarm instructions](ai/codex/swarm.md); it is a CLI
-entry point rather than a native named primary-agent setting. No global install
-or security-policy override is performed. See [Swarm launch](docs/swarm.md).
+source checks from native execution. No standalone primary launcher is supplied.

@@ -38,7 +38,7 @@ residual_risks using the supplied JSON schema. Do not invent new read commands
 or bypass permissions to recover output.
 
 This configurable reading budget is behavioral guidance, not a native
-steps limit. It does not change OpenCode Ralph's enforced steps: 3 or Git allowlist.
+steps limit. It grants no additional runtime capability or permission.
 Targeted review retains at most two evidence-gathering tool turns, then the JSON
 result, limited to prior findings and remediation regressions. Allow one initial
 and at most one targeted review in the same actual native session per attempt.

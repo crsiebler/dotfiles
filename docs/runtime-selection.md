@@ -62,5 +62,9 @@ through supported native controls. Material ambiguity or evidenced hard failure
 may use Astra within existing advisor/review/remediation limits. This workflow
 profile does not add pins to reusable roles or change ordinary session inheritance.
 Installed role pins take precedence and must be reconciled through separately
-authorized activation; no skill edits runtime settings automatically. The selected Sol main thread owns direct dispatch, Git and task state;
-coordinating children advise only. Required worker/reviewer APIs must be available.
+authorized activation; no skill edits runtime settings automatically. The dispatcher is the existing multi-agent-coordinator on Sol under supported
+nested delegation. The main thread retains Git, integration and canonical state
+without changing its selected model. If invocation or nesting is unavailable,
+a verified Sol main thread may adopt coordinator guidance and dispatch directly
+only after reconciling a quiescent prior dispatcher. No proxy-spawning or competing
+loops; required worker/reviewer APIs remain mandatory in either path.

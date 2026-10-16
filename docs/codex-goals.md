@@ -85,7 +85,7 @@ the plan. Quoting or documenting this template is **not** execution permission:
 
 ```text
 /goal Execute the approved revision of PLAN.md in standard mode using the installed
-run-agent-team shared execution/review contracts. I authorize in-scope
+run-agent-team Codex execution/review contracts. I authorize in-scope
 implementation, required checks, budgeted delegation, scoped task worktree setup
 from approved commits and one local commit per
 passing story across this eligible sequence. Preserve unrelated work and all
@@ -148,7 +148,7 @@ The staged-review selection matrix is identical to Ralph's:
 | standard | Self | Native | Native | Native |
 | deep | Native | Native | Native | Native |
 
-Self-review uses the full shared protocol and schema; it is not independent review
+Self-review uses the full Codex protocol and schema; it is not independent review
 or a fallback for missing required native review. Codex native review uses exactly
 `story-reviewer`, not `code-reviewer`, a general specialist, or a human substitute.
 OpenCode Ralph uses its native `ralph-reviewer`; the generic generated OpenCode
@@ -329,7 +329,7 @@ For verified full-run archival, execution verifies and binds the saved PRD
 inventory and work-run metadata before the first checkpoint; requirements drafting adds no runner/archive metadata.
 
 For an enrolled run, with one active plan per worktree, archive only after all
-tasks are verified and required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md):
+tasks are verified and required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/archive-run/references/completed-run-archive.md):
 invoke the installed archive_run.py automatically under the existing scoped
 archival/removal grant, passing the exact primary PRD and absolute worktree root.
 The optional PRD work-run manifest declares the task source and associated PRDs; committed
@@ -366,12 +366,18 @@ Sources: [Follow a goal](https://developers.openai.com/codex/use-cases/follow-go
 
 ## Explicit parallel agent teams
 
-Invoke run-agent-team explicitly for authorized team execution of an existing
-approved plan. Planning produces stories, criteria, a DAG and recommended
-expertise; it never starts execution. The Sol-selected main thread owns dispatch,
-version control, merging and task state. Luna workers use assigned worktrees.
-Fill eligible capacity before waiting and release dependencies only after verified
-integration delivery. Astra escalation stays within existing review/remediation
-budgets and retains the exact dedicated reviewer. Missing native reviewer controls
-block execution. See [team verification](agent-team-verification.md) before
-claiming activation.
+Invoke run-agent-team explicitly or assign the existing multi-agent-coordinator
+for authorized execution of an approved plan. Planning produces stories, criteria,
+a DAG and recommended expertise without starting execution. The Sol-selected
+coordinator owns sole dispatch when native nested delegation is supported. The
+main thread owns Git, worktree lifecycle, integration and canonical task state.
+It sends verified delivery acknowledgements before dependencies become ready.
+
+If coordinator invocation/model controls or nesting are unavailable, a verified
+Sol main thread may adopt coordinator guidance and dispatch directly. Record the
+limitation; never proxy-spawn or claim a native role ran. Transfer only after the
+old dispatcher is quiescent and all live worker/reviewer IDs and consumed budgets
+are reconciled. Both paths retain required worker/reviewer controls and existing
+grants. Luna workers use assigned task worktrees; Astra escalation preserves
+exact dedicated reviewers and bounded budgets. Fill eligible capacity before
+waiting. See [team verification](agent-team-verification.md) for activation limits.

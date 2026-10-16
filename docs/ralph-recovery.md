@@ -139,7 +139,7 @@ interpreter is skipped. Ensure a compatible interpreter is present on the rollou
 not establish installed-runtime readiness.
 
 The runner's exact handoff contract is in
-[`ralph-control.md`](../ai/plugins/coding/skills/run-agent-team/references/ralph-control.md).
+[`ralph-control.md`](../ai/opencode/agents/ralph.md#ralph-runner-control).
 Status regression tests use isolated Git repositories and a fake harness, including
 unchanged-state checks. Skill scenarios specify expected assistant behavior; they
 are not evidence of live model recovery or a guarantee the next attempt succeeds.

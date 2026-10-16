@@ -27,7 +27,7 @@ defines the native role contract.
   Prefer adequate native tools for simple reads. Resolve bundled resources from
   the loaded skill. Each skill links to `references/requirements.md` for required
   and optional dependencies, installation instructions, and availability checks.
-  Keep the 30-skill [dependency inventory](docs/skill-dependencies.md) aligned with
+  Keep the 31-skill [dependency inventory](docs/skill-dependencies.md) aligned with
   source changes. Dependency setup is separately authorized and never performed
   by AI installation.
   See [document verification](docs/document-skill-verification.md) for actual tested
@@ -35,12 +35,18 @@ defines the native role contract.
   create-skill/create-gif and create-mcp-server adapt attributed Apache upstream
   bundles. create-mcp-server is instruction-only, with no runtime dependencies;
   see [MCP skill verification](docs/create-mcp-server-verification.md).
-- `coding` adds `run-agent-team` for explicit Codex parallel execution using the
-  existing approved plan; Ralph remains serial. The main thread owns dispatch,
-  Git, merging and canonical task state, with native capability/model/pin preflight.
-  The checkout-local `bin/swarm` starts a fresh top-level Sol Codex session using
-  `ai/codex/swarm.md`; it is not a native custom-primary registry entry. No global
-  installation is performed. Source delivery does not prove native team execution.
+- `coding` provides `archive-run` for the reusable deterministic archival helper.
+  Ralph owns serial lifecycle and review instructions in its native role files;
+  run-agent-team owns tailored Codex delivery/review references. Neither execution
+  workflow loads the other or an extra neutral prose contract. Keep compatible
+  safeguard/schema invariants tested without requiring identical wording.
+- `coding` adds `run-agent-team` for explicit Codex parallel execution of an
+  existing approved plan. The existing `multi-agent-coordinator` dispatches under
+  supported nested delegation; the main thread owns Git, integration and canonical
+  task state. Use exactly one dispatcher, with disclosed main-thread guidance
+  adoption only when fallback prerequisites hold and prior ownership is quiescent.
+  Preserve native capability/model/pin preflight. Ralph remains serial; source
+  delivery does not activate installed roles or prove native team execution.
 - `coding` uses `develop-code` for feature/fix/refactor methods and independent
   `review-code` for read-only scopes/lenses. The three former development bundles
   are retired; no aliases remain. Keep the project template optional and preserve
@@ -160,11 +166,13 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   canonical in `ai/opencode/commands/review-pr.md`. `/review-pr --post` must preview
   the exact GitHub review command/API payload and obtain explicit confirmation
   before any `gh` review write, regardless of available MCP write permissions.
-- Shared story execution and the canonical review protocol/JSON schema live in
-  `ai/plugins/coding/skills/run-agent-team/references/story-execution.md`
-  and `story-review.md`. Executors load both in full relative to the advertised
-  installed skill, never via checkout or hardcoded plugin-cache paths, and supply
-  the full review protocol to the native reviewer wrapper.
+- Codex story delivery/review rules live in the advertised run-agent-team bundle's
+  `references/story-execution.md` and `references/story-review.md`. Ralph's tailored
+  equivalents live in `ai/opencode/agents/ralph.md` and `ralph-reviewer.md`. The
+  executor obtains its actual installed protocol and embeds its complete text in
+  every native reviewer packet; no checkout/cache guesses or inherited references.
+  Native definition discovery is not proof of callable role selection. Missing or
+  duplicate definitions/protocol/session support block the affected workflow.
 - Ralph local staged reviews use only native OpenCode `ralph-reviewer`; Codex Goal
   uses native `story-reviewer`, never general reviewers. The generated OpenCode
   `story-reviewer` has no shell permission and is not a Ralph substitute. Preserve
@@ -209,8 +217,8 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 - A fully complete valid Ralph PRD exits without launching OpenCode.
   Stop files and interrupted/blocked runner state still take precedence.
 - Ralph persists `running` before launch and requires a matching completed,
-  retryable, or blocked outcome before continuation. See the installed skill's
-  `references/ralph-control.md`. Default two recoveries per story survive restart;
+  retryable, or blocked outcome before continuation. See the installed native ralph role's
+  marked RALPH RUNNER CONTROL section. Default two recoveries per story survive restart;
   only a validated retryable candidate may enter a new bounded review cycle.
   `.ralph-stop`, malformed/missing handoffs, permission blockers, failed commits,
   timeouts, and ineffective/exhausted recovery stop future sessions. `--resume`
@@ -278,7 +286,7 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 - One active plan belongs to each worktree. Keep task sources and `memory.json`
   at the root; create the journal only for a permitted execution checkpoint, never
   during planning/PRD drafting. Do not read or migrate legacy execution logs.
-- Completed-run archival follows the installed run-agent-team skill's
+- Completed-run archival follows the installed archive-run capability's
   `references/completed-run-archive.md` and `scripts/archive_run.py`. PRDs declare
   the run ID, exact task source and associated PRDs in a work-run JSON block.
   Root `progress.md` carries truthful pre-commit story-result records; the script

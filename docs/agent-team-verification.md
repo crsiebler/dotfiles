@@ -2,8 +2,9 @@
 
 The run-agent-team coding skill and plan-aware multi-agent-coordinator define a
 native Codex invocation procedure. They provide no scheduler or runtime API.
-Ralph remains serial; the shared run-agent-team execution/review/archive
-contracts remain authoritative.
+Ralph remains serial under its native lifecycle/review instructions. Codex
+delivery/review references belong to run-agent-team. Only archive-run shares
+executable archival functionality.
 
 ## Verification scope
 
@@ -37,9 +38,18 @@ model smoke, publication, deployment or service change is part of source testing
 
 ## Review revision boundary
 
-Planning and coding methods no longer route into team execution. The main thread
-owns dispatch, Git, merging and trackers. A coordinator child is advisory only.
+Planning and coding methods do not route implicitly into team execution. The
+existing multi-agent-coordinator handles sole dispatch under supported native
+nested delegation. The main thread retains Git, worktree lifecycle, integration
+and canonical trackers. Without coordinator invocation/nesting support, an
+eligible main thread may adopt its guidance and dispatch directly after prior
+dispatcher quiescence and reconciliation. No proxy-spawning or competing loops.
 The earlier smoke limitations above remain historical observations, not evidence
-of this revised contract running. Swarm is a source-checkout launcher for a fresh top-level Codex session, using
-explicit Sol selection and initial instructions. No native primary-agent registry
-entry, installed settings changes or live execution is implied.
+of this revised contract running. No primary launcher, renamed role, installed
+configuration change or live execution is supplied. The removed launcher and its
+instructions remain recoverable in Git commit 4864f67.
+
+Ralph reads only its native serial lifecycle and full reviewer definition. It
+never loads run-agent-team or a neutral delivery skill. Codex-specific routing,
+Kahn admission, worktree coordination and delivery references stay in the team
+bundle. Archive-run shares deterministic executable closeout, not story prose.

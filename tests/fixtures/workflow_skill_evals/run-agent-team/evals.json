@@ -4,10 +4,10 @@
     {
       "id": 1,
       "prompt": "Two ready independent substantial Codex stories; sufficient verified role/model/capacity and existing grants. Execute with an agent team.",
-      "expected_output": "Dispatch two workers before waiting; one Sol lead owns integration.",
+      "expected_output": "Sol coordinator dispatches ready workers before waiting; main thread owns integration.",
       "files": [],
       "expectations": [
-        "Sol-selected main thread and explicit Luna workers; main thread owns Git and task state",
+        "Exact native multi-agent-coordinator on Sol with supported nesting; explicit Luna workers",
         "Two dispatches before any wait",
         "No duplicate parent manager or tracker",
         "Observed overlap is separate from dispatch compliance"
@@ -26,13 +26,13 @@
     },
     {
       "id": 3,
-      "prompt": "The main thread selects Sol, but available spawn API has no native story-reviewer selector. Run a standard substantial batch.",
+      "prompt": "Coordinator invocation and nesting work, but the spawn API lacks native story-reviewer selection. Run a standard substantial batch.",
       "expected_output": "Block before worker calls; report exact missing reviewer capability.",
       "files": [],
       "expectations": [
         "No generic reviewer roleplay",
         "No model substitution or automatic install",
-        "Direct main-thread dispatch cannot cure missing mandatory reviewer"
+        "Neither delegated nor direct fallback cures missing mandatory reviewer"
       ]
     },
     {
@@ -103,12 +103,13 @@
     {
       "id": 10,
       "prompt": "The coordinator is a child and asks to own merging and mark stories complete.",
-      "expected_output": "Keep dispatch, Git, merging and canonical task state in the main thread; return bounded advice.",
+      "expected_output": "Coordinator retains dispatch only; main thread owns Git, merging and canonical task state.",
       "files": [],
       "expectations": [
         "No child-owned canonical writes",
         "No proxy-spawning",
-        "Preserve existing delivery gates"
+        "Preserve existing delivery gates",
+        "Only verified main-thread delivery acknowledgement releases dependencies"
       ]
     },
     {
@@ -154,6 +155,29 @@
         "No repeated approval for unchanged scope",
         "Native Goal and Ralph remain alternative workers",
         "Branch/candidate/review/commit gates preserved"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Native coordinator is available on Sol with nested worker/reviewer controls. Parent starts its own worker loop too.",
+      "expected_output": "Keep coordinator as sole dispatcher; main thread only integrates and acknowledges delivery.",
+      "files": [],
+      "expectations": [
+        "No competing dispatch loops",
+        "Main thread owns Git and task state",
+        "No recursive coordinator"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Nesting became unavailable but coordinator outcome is uncertain. Switch parent to direct dispatch.",
+      "expected_output": "Inspect native state; block transfer until coordinator is quiescent and all assignments/reviewer sessions are reconciled.",
+      "files": [],
+      "expectations": [
+        "No proxy-spawning",
+        "No duplicate possibly-live owner",
+        "No reset review budget",
+        "Fallback needs observed Sol and required controls"
       ]
     }
   ]

@@ -27,7 +27,7 @@ and connection setup are separate, explicitly authorized operations.
 | `ai/codex/astra.config.toml` | Standalone opt-in model evaluation profile |
 | `ai/opencode/{opencode.json,tui.json,astra.json,sol.json,opencode-notifier.json}` | OpenCode config, terminal UI, model overlays, and notifier settings |
 | `ai/codex/agents/*.toml` | 128 canonical custom-agent sources; all copied unchanged to Codex, Markdown generated for OpenCode |
-| `ai/plugins/coding/skills/run-agent-team/references/story-execution.md`, `story-review.md` | Shared execution contract and canonical staged-review protocol/JSON schema for Ralph and Codex Goal |
+| `ai/plugins/coding/skills/run-agent-team/references/story-execution.md`, `story-review.md` | Codex team delivery and staged-review protocol/schema; Ralph owns its tailored native instructions |
 | `ai/opencode/agents/*.md` | Three native OpenCode-only agents: `sprite-artist`, `ralph`, and `ralph-reviewer`; copied unchanged |
 | `ai/opencode/commands/` | `/create-sprite`, `/define-requirements`, `/plan-work`, `/ship`, `/find-agents`, `/recover-ralph`, and unchanged `/review-pr` |
 | `scripts/install-ai.py`, `scripts/render-agents.py` | Local installer and two-harness agent renderer |
@@ -53,7 +53,7 @@ there are no exclusions or overrides JSON files.
 
 | Plugin | Skills |
 | --- | --- |
-| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `run-agent-team`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
+| `coding` | `resolve-review-feedback`, `review-code`, `format-code`, `develop-code`, `run-tests`, `verify-interface`, `manage-changes`, `write-requirements`, `prepare-implementation`, `run-agent-team`, `archive-run`, `map-codebase`, `recover-ralph`, `create-skill`, `create-mcp-server` |
 | `reporting` | `assess-work-item`, `report-progress`, `report-project-status` |
 | `researching` | `search-web`, `read-docx`, `read-pptx`, `read-xlsx`, `read-pdf` |
 | `delegating` | `use-subagents` |
@@ -66,7 +66,7 @@ instruction to log in during installation.
 
 Every Craft skill links to its bundled `references/requirements.md`. Read it
 before selecting external utilities or running helpers. The
-[dependency audit](skill-dependencies.md) inventories all 30 skills and explains
+[dependency audit](skill-dependencies.md) inventories all 31 skills and explains
 setup, authorization, and availability checks. AI installation copies these
 instructions; it does not install Python packages, CLIs, browsers, renderers,
 model weights, or provider authentication.
@@ -547,7 +547,7 @@ Ralph supports only OpenCode; there is no harness selector or Codex execution
 profile. A fully complete plan needs no OpenCode; existing stop/interrupted state
 still blocks until reconciled. Git is needed to inspect possible persisted state.
 
-Ralph additionally loads the installed skill's `references/ralph-control.md`.
+Ralph's installed native role owns its marked RALPH RUNNER CONTROL section.
 Before launching, it persists runner-owned `running` state and a unique iteration
 ID. The agent writes the supplied project-local outcome file, not the ledger.
 Only a matching completed/committed story or evidence-backed retryable handoff
@@ -587,13 +587,14 @@ from `PATH`, installed binaries, directories, environment variables, inspected
 source text, or user-policy headings.
 
 Codex can use native `/goal` for an approved checklist. Planning does not launch
-execution or create execution logs/memory. Goal inherits Ralph's full shared
-execution, memory, review, prepared-branch, and per-story commit contract, using
-Markdown checkboxes rather than JSON `passes`. Both executors load
-`references/story-execution.md` and `references/story-review.md` in full relative
-to the advertised installed `run-agent-team` skill, never checkout or
-hardcoded plugin-cache paths. The executor sends the full canonical protocol to
-the reviewer wrapper; wrappers do not own separate schemas.
+execution or create execution logs/memory. Goal uses its own Codex delivery, memory, review, prepared-branch and per-story
+commit instructions, with Markdown checkboxes. The executor reads run-agent-team's
+installed references/story-execution.md and references/story-review.md in full and
+sends the complete protocol in each reviewer packet. Ralph owns serial lifecycle
+instructions in its native primary file and the full protocol in its native
+reviewer file; it reads that actual definition through native discovery. Neither
+workflow loads the other. Tests compare critical safeguard/schema invariants,
+without requiring identical workflow prose or runtime limits.
 
 Goal requires explicit scoped execution and story-commit authorization, an
 existing commit, and the plan's exact prepared working branch. Reject detached
@@ -623,7 +624,7 @@ turns and only prior findings/remediation regressions, using the same profile.
 
 To activate a revised reviewer, separately authorize `make install-codex` to copy
 the canonical role and refresh `coding@craft` through the installed CLI's supported
-native plugin refresh process so both shared references are current. Refresh
+native plugin refresh process so both Codex references are current. Refresh
 the wrapper and shared references together: older packets without a profile now
 block review. Restart Codex and start a new thread; verify the role and installed references before a
 new review cycle. Existing reviewer sessions do not establish that revised
@@ -644,7 +645,7 @@ work-run manifest. Larger work retains PRDs, explicit dependencies and integrate
 acceptance owners. Plan archival is required; full-run enrollment belongs to execution and is optional; existing enrolled
 runs retain their manifest and safeguards. After full verified delivery of an
 enrolled run, automatically invoke the installed
-[completed-run archive helper](../ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md)
+[completed-run archive helper](../ai/plugins/coding/skills/archive-run/references/completed-run-archive.md)
 under the execution grant's exact archival/removal scope. Bound work-run metadata
 in the PRDs selects the task source and associated PRDs; pre-commit story-result
 records in root progress.md provide structured observed check/review evidence.
@@ -672,7 +673,7 @@ See [Codex goals](codex-goals.md); automatic checkpoint compaction is
 [backlogged](backlog.md), with no hook or controller installed.
 
 A final blocked native story review also stops further review attempts for that
-story. The shared execution contract requires a checkpoint preserving the candidate,
+story. The Codex execution contract requires a checkpoint preserving the candidate,
 incomplete status, findings/history, consumed passes, exact blocker, required
 material change, and resolution evidence. Goal continuation, compaction, elapsed
 time, or reviewer replacement does not resolve it or renew review budgets. Bounded
@@ -685,7 +686,7 @@ Ralph's explicit recovery protocol and counters remain unchanged.
 
 To activate shared-instruction changes, separately authorize refreshing `coding@craft`
 through the installed Codex CLI's supported native plugin process, then restart
-Codex and start a new thread. Verify the loaded skill and both shared references
+Codex and start a new thread. Verify the loaded skill and both Codex references
 contain the revised blocker contract. If activating reviewer-profile updates
 too, follow the wrapper installation guidance above. OpenCode skill copies
 require separately authorized `make install-opencode` and a restart. Do not edit
@@ -740,7 +741,7 @@ The following are **manual evaluation cases, not recorded successful runs**:
   project connections remain disabled. Do not test mutation by performing it.
 - In an authorized disposable project, evaluate one bounded OpenCode Ralph story
   and inspect check evidence, staged-review budget, history, and memory.
-- Separately evaluate Codex Goal's shared contract: prepared-branch guards,
+- Separately evaluate Codex Goal's tailored contract: prepared-branch guards,
   native `story-reviewer` and same-session targeted review, memory validation,
   interrupted resumption, and failed checks/review/commit leaving a pending story.
   Source checks do not establish these live execution outcomes.
@@ -842,10 +843,19 @@ not install configuration, read keys, or run live calls.
 
 ### Codex agent-team execution
 
-Invoke run-agent-team explicitly or through assigned coordinator guidance with an
-existing approved plan. The Sol main thread owns dispatch, Git, merging and task
-state; coordinating children advise only. Luna workers use isolated assigned
-worktrees; Astra escalation retains existing budgets and exact dedicated reviewers.
-Execution contracts and the archive helper belong to run-agent-team. Ralph loads
-shared resources without entering Codex preflight and remains serial. Source
-changes do not activate settings. See [team verification](agent-team-verification.md).
+Explicit team execution uses the existing multi-agent-coordinator and
+run-agent-team with an approved plan. The coordinator on Sol is sole dispatcher
+under supported nested delegation. The main thread owns Git, worktree lifecycle,
+integration and canonical task state; it acknowledges verified delivery before
+the dispatcher releases dependent tasks. Luna workers use isolated assignments;
+Astra escalation retains existing budgets and exact dedicated review protocols.
+
+If coordinator invocation/model selection or nesting is unavailable, a verified
+Sol main thread may adopt the role guidance and dispatch directly after prior
+dispatcher quiescence/reconciliation. No proxy-spawning, competing loops, native
+invocation claims or automatic model/configuration changes. Both paths keep all
+required worker/reviewer controls. Team-specific dispatch/model/concurrency resources stay in run-agent-team.
+Ralph owns its native serial delivery/review instructions. Codex owns tailored
+references in run-agent-team. Only the executable archive-run capability is shared;
+neither workflow loads the other. No new
+primary entry point is supplied. See [team verification](agent-team-verification.md).

@@ -97,11 +97,6 @@ class StoryBlockerTest(unittest.TestCase):
             'native lifecycle capabilities when their runtime conditions are met',
             'blocked-audit restart after user resumption does not reset this story gate',
             'Never invent a restart loop, continuation controller, unsupported Goal setting',
-            'runner-validated retryable cycles, and persisted recovery counters',
-            'neither authorize Ralph retries nor change their semantics',
-            'Ralph does not independently skip to another story',
-            'acceptance criteria, required native review/checks',
-            'authorized commit gates',
         ))
         docs = ' '.join((ROOT / 'docs/codex-goals.md').read_text().split())
         self.assert_contracts(docs, (

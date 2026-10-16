@@ -24,7 +24,7 @@
 ## Explicit team selection
 
 An authorized run-agent-team invocation selects Sol coordination and explicit Luna
-implementation, with justified Astra escalation under existing budgets. Use this bundle's capability/pin preflight and main-thread dispatch contract. This
+implementation, with justified Astra escalation under existing budgets. Use this bundle's capability/pin preflight and single-dispatcher contract. This
 is an explicit workflow profile, not global automatic routing or a role pin.
 Ordinary work outside that profile retains the selection policy above.
 
@@ -48,7 +48,9 @@ Ordinary work outside that profile retains the selection policy above.
 
 For explicit team execution, use Astra for review, conflict analysis, architecture
 and cross-domain analysis through supported native selection and actual grants.
-Keep the main thread's Sol selection and conflict-resolution writes unchanged.
+Keep the dispatcher on Sol and preserve the main thread's selected model and
+conflict-resolution writes in delegated mode. A fallback requires observed Sol
+selection; do not silently switch the main thread.
 The exact native story-reviewer remains mandatory at the budget-selected native
 gate; selecting Astra never substitutes a generic reviewer or adds an extra pass.
 Respect existing advisor/review/remediation limits and record unavailable selection.

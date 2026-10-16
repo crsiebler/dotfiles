@@ -1,22 +1,24 @@
 # Native Codex task concurrency
 
 This reference applies only to CodexGoalMarkdown. RalphJSON remains serial under
-story-execution.md. Requirements, stable story IDs, acceptance, authorization,
+this bundle's story-execution.md. Requirements, stable story IDs, acceptance, authorization,
 review budgets and per-story delivery gates remain shared. Use native subagents;
 add no scheduler, background controller, duplicate task store or nested Ralph loop.
 
 ## Team execution ownership
 
 For authorized Codex parallel/team execution, follow this bundle's team entry
-contract. The main thread is the sole dispatch and integration owner, including
-Git, merging, task markers, progress and memory. Coordinating children may advise
-but never own dispatch, integration or canonical state. Workers follow bounded
-packets and never route back into orchestration. No mode waives required reviewer
-availability, authority or delivery gates.
+contract. The main thread owns Git, worktree lifecycle, integration and canonical
+task state. Exactly one dispatcher admits and assigns work: the existing native
+multi-agent-coordinator under supported nested delegation, or the main thread's
+disclosed guidance fallback when prerequisites hold. Never run competing loops,
+proxy-spawn for a child or recursively create coordinators. Review, authority and
+delivery gates remain unchanged. The dispatcher releases dependencies only from
+verified main-thread delivery acknowledgements, never worker completion claims.
 
 ## Admission and ownership
 
-The lead validates the complete dependency graph before dispatch: unique IDs,
+The dispatcher validates the complete dependency graph before dispatch: unique IDs,
 known references, no self-dependency or cycle. Use Kahn-style readiness, ordering
 ready stories by priority then document order. A predecessor is delivered only
 after integration checks, its bounded review and authorized story commit pass.
@@ -40,6 +42,8 @@ ownership includes descendants. Logical path checks are not symlink containment;
 verify actual paths stay within the assigned worktree and authorized scope.
 
 ## Prepared worktrees and native paths
+
+Codex may create task branches and worktrees only under an explicit scoped lifecycle grant.
 
 Before any worker writes, require an established clean committed baseline and
 verify its recorded base, exact branch, absolute worktree and status. Reject

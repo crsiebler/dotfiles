@@ -137,16 +137,17 @@ budget is behavioral guidance, not equivalent hard enforcement. Both profiles
 retain at most two evidence-gathering turns and remediation-only scope for targeted
 review; the same profile is required on resumption.
 
-Both wrappers receive the complete
-[shared review protocol/schema](../ai/plugins/coding/skills/run-agent-team/references/story-review.md)
-from the executor, which loads it and
-[story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
-in full relative to the advertised installed `run-agent-team` skill.
-Neither wrapper owns a duplicate schema or resolves checkout/cache paths. Missing
-protocol blocks review. Native review is project-local read/staged-Git-only,
-with one initial pass and at most one targeted pass in the same actual session;
-no tests, edits, browser/web/MCP, external posts, or further delegation.
-Do not substitute a general reviewer when required native review is unavailable.
+Each executor supplies its own complete protocol in the actual review packet.
+Codex loads [team review](../ai/plugins/coding/skills/run-agent-team/references/story-review.md)
+and [delivery](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+from the advertised installed run-agent-team bundle. Ralph owns its full protocol
+inside [ralph-reviewer.md](../ai/opencode/agents/ralph-reviewer.md); its primary
+reads the actual installed native definition through discovery before constructing
+the packet. Missing/duplicate definitions or runtime role/session support block.
+Reviewers never fetch global instructions themselves. Both protocols retain the
+compatible JSON shape, one initial and at most one targeted same-session pass,
+project-local staged evidence and no tests/edits/browser/MCP/posts/delegation.
+The prose is tailored to each workflow, not a shared neutral lifecycle dependency.
 The GitHub PR review command and its schema remain separately canonical in
 `ai/opencode/commands/review-pr.md`.
 
@@ -274,9 +275,17 @@ comparative model evaluation was waived, not passed.
 
 ## Plan-aware multi-agent coordinator
 
-The role may explicitly load run-agent-team for a coding-plan assignment. The
-main thread owns dispatch, Git, integration and canonical trackers. A coordinating
-child provides bounded advice only. Preserve the exact plan/revision and all
-review/delivery gates. Reusable role metadata stays model independent; team
-runtime selection belongs to the execution skill. A source role cannot promote a
-child to primary, activate settings or establish actual native invocation.
+The existing role is `multi-agent-coordinator` in the canonical Codex TOML
+collection; there is no separate `multi-agent-orchestration` role. For an explicit
+coding-plan assignment it loads run-agent-team and, with supported native role,
+model and nesting controls, owns sole dispatch of bounded workers and requested
+advisors/reviewers. The main thread retains all Git, worktree lifecycle,
+integration, conflict writes and canonical task state. Only its verified delivery
+acknowledgement releases dependent work. No recursive coordinator or second loop.
+
+When invocation or nesting is unavailable, an eligible main thread may adopt the
+role guidance and dispatch directly under the skill's unchanged worker/reviewer
+preflight. Quiesce and reconcile a prior dispatcher before transfer; uncertain
+native state blocks transfer. Disclose adoption rather than native invocation.
+Runtime model choices stay in the execution skill, not reusable role metadata.
+The role is not renamed or promoted to primary; source edits activate no runtime.

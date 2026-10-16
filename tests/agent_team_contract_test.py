@@ -11,6 +11,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / 'ai/plugins/coding/skills/run-agent-team'
+ARCHIVE = ROOT / 'ai/plugins/coding/skills/archive-run'
 CONCURRENCY = ROOT / 'ai/plugins/coding/skills/run-agent-team/references/codex-concurrency.md'
 
 
@@ -51,24 +52,63 @@ class AgentTeamContractTest(unittest.TestCase):
                     target = (source.parent / link.split('#')[0]).resolve()
                     self.assertTrue(target.is_relative_to(planning.resolve()))
                     self.assertTrue(target.is_file(), link)
-        for name in ('story-execution.md', 'story-review.md', 'ralph-control.md',
-                     'codex-concurrency.md', 'completed-run-archive.md',
-                     'runtime-selection.md'):
+        for name in ('story-execution.md', 'story-review.md'):
             self.assertTrue((BUNDLE / 'references' / name).is_file())
             self.assertFalse((planning / 'references' / name).exists())
         self.assertFalse((planning / 'scripts/archive_run.py').exists())
-        self.assertTrue((BUNDLE / 'scripts/archive_run.py').is_file())
+        self.assertTrue((ARCHIVE / 'scripts/archive_run.py').is_file())
+        self.assertFalse((BUNDLE / 'scripts/archive_run.py').exists())
         for consumer in ('ai/opencode/agents/ralph.md',
                          'ai/opencode/agents/ralph-reviewer.md',
-                         'ai/codex/agents/story-reviewer.toml',
                          'ai/plugins/coding/skills/recover-ralph/SKILL.md'):
             text = (ROOT / consumer).read_text()
-            self.assertIn('run-agent-team', text)
+            self.assertNotIn('story-delivery', text)
+            self.assertNotIn('run-agent-team', text)
             self.assertNotIn('prepare-implementation', text)
+        reviewer = (ROOT / 'ai/codex/agents/story-reviewer.toml').read_text()
+        self.assertIn('run-agent-team', reviewer)
         entry = ' '.join((BUNDLE / 'SKILL.md').read_text().split())
-        self.assertIn('main thread is the sole dispatch and integration owner', entry)
-        self.assertIn('cannot take over Git, trackers or dispatch', entry)
+        self.assertIn('main thread is the sole integration owner', entry)
+        self.assertIn('exactly one dispatcher', entry)
+        self.assertIn('multi-agent-coordinator', entry)
+        self.assertIn('nested delegation', entry)
         self.assertIn('do not invoke a planner', entry)
+
+    def test_archival_capability_has_closed_resources_and_no_delivery_framework(self):
+        for source in ARCHIVE.rglob('*.md'):
+            text = source.read_text()
+            for forbidden in ('story-delivery', 'multi-agent-coordinator',
+                              'codex-concurrency.md', 'gpt-6-luna', 'Kahn'):
+                self.assertNotIn(forbidden, text, str(source))
+            for link in re.findall(r'\]\(([^)]+)\)', text):
+                if '://' not in link and not link.startswith('#'):
+                    target = (source.parent / link.split('#')[0]).resolve()
+                    self.assertTrue(target.is_relative_to(ARCHIVE.resolve()))
+                    self.assertTrue(target.is_file(), link)
+        self.assertFalse((ARCHIVE / 'references/story-execution.md').exists())
+        self.assertFalse((ARCHIVE / 'references/story-review.md').exists())
+        self.assertFalse((ROOT / 'ai/plugins/coding/skills/story-delivery').exists())
+        entry = (BUNDLE / 'SKILL.md').read_text()
+        self.assertIn('archive-run', entry)
+        self.assertIn('Never invoke Ralph', entry)
+
+    def test_existing_coordinator_dispatches_without_primary_entry(self):
+        role = ROOT / 'ai/codex/agents/multi-agent-coordinator.toml'
+        self.assertTrue(role.is_file())
+        self.assertFalse((role.parent / 'multi-agent-orchestration.toml').exists())
+        text = ' '.join(role.read_text().split())
+        self.assertIn('sole dispatcher', text)
+        self.assertIn('run-agent-team', text)
+        self.assertIn('never stage, commit, merge', text)
+        packet = ' '.join((BUNDLE / 'references/codex.md').read_text().split())
+        for guard in ('delivery acknowledgement', 'quiescent', 'no proxy-spawning',
+                      'required reviewer', 'guidance adoption'):
+            self.assertIn(guard, packet.lower())
+        for path in ('bin/swarm', 'ai/codex/swarm.md', 'docs/swarm.md',
+                     'tests/swarm_launcher_test.py'):
+            self.assertFalse((ROOT / path).exists(), path)
+        for path in ('AGENTS.md', 'README.md', 'docs/agent-team-verification.md'):
+            self.assertNotIn('bin/swarm', (ROOT / path).read_text())
 
     def test_ready_frontier_requires_integration_delivery_not_worker_results(self):
         ready = reference_functions()['ready_story_ids']

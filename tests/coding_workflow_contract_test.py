@@ -17,7 +17,7 @@ class CodingWorkflowContractTest(unittest.TestCase):
     def test_final_coding_catalog_has_only_current_entry_points(self):
         expected = {'develop-code', 'review-code', 'resolve-review-feedback',
                     'format-code', 'run-tests', 'verify-interface', 'manage-changes',
-                    'write-requirements', 'prepare-implementation', 'run-agent-team', 'map-codebase',
+                    'write-requirements', 'prepare-implementation', 'run-agent-team', 'archive-run', 'map-codebase',
                     'recover-ralph', 'create-skill', 'create-mcp-server'}
         actual = {path.parent.name for path in SKILLS.glob('*/SKILL.md')}
         self.assertEqual(actual, expected)

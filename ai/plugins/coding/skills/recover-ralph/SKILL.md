@@ -19,11 +19,14 @@ The autonomous Ralph executor must not invoke this workflow to clear its own sto
 1. Establish the user's intended project and Git worktree root. Run `ralph --status`
    there, without execution flags. If unsupported, report the installed-version
    mismatch and propose an authorized update; never fall back to plain `ralph`.
-2. Use the advertised installed `run-agent-team` skill to locate its
-   `references/ralph-control.md` and `references/story-execution.md`; read them for
-   the applicable contract, not to generate a plan or begin story execution.
-   Resolve relative to the installed skill, not checkout or guessed cache paths.
-   Missing protocol is a blocker, not permission to invent one.
+2. Read the actual installed native ralph definition's Ralph Story Delivery and
+   marked RALPH RUNNER CONTROL sections, plus its native ralph-reviewer protocol
+   where relevant. Use actual native definition discovery; the installed
+   use-subagents helper can fetch exact names with explicit --harness opencode
+   and the actual --project root. Resolve that helper from its advertised bundle,
+   not a checkout/cache guess. Missing/duplicate definitions or protocol block
+   diagnosis that depends on them; reading a definition never starts its role.
+   Do not invoke a planner, alternative execution skill or autonomous iteration.
 3. Read the relevant `plan.json` story, recent worktree-root `progress.md`
    checkpoints if present, stop reason if present, and the outcome matching the
    ledger's iteration and story
@@ -122,5 +125,5 @@ The narrow stop-removal exception applies only to this separate interactive
 assistant acting on explicit user confirmation. Autonomous Ralph must still
 never clear its stop file, reset state, or increase its own budget.
 
-Resource loading only: do not enter Codex team orchestration or require its
-Sol/Luna/coordinator APIs. Ralph remains serial under its native runner.
+Contract loading does not start an execution or planning workflow. Ralph remains
+serial under its own native adapter and runner.

@@ -15,9 +15,10 @@ its replacement. Failed preservation blocks replacement; never silently overwrit
 An unfinished plan must be continued or explicitly reconciled, not replaced.
 
 Ordinary bounded-task execution needs no separate PRD or work-run manifest. The
-verified full-run procedure requires enrollment. Planning owns
-creating/binding the manifest and an approved saved requirements snapshot if no
-PRD exists; requirements authoring owns outcomes, scope and acceptance. Missing
+verified full-run procedure requires enrollment. The authorized execution owner
+verifies/binds the manifest and any approved saved requirements snapshot before
+the first execution checkpoint. Planning preserves supplied metadata only;
+requirements authoring owns outcomes, scope and acceptance. Missing
 archival inputs block archival, not an otherwise valid execution plan. Do not
 retroactively fabricate structured observations or completed task evidence.
 
@@ -70,7 +71,7 @@ authorized execution/closeout owner performs preservation, never planning itself
 
 For each delivered story, the executor stages a structured `story-result` block
 in `progress.md` with the completion marker, after passing checks and review but
-before the story commit. See [execution finalization](story-execution.md#progress-and-commit-finalization).
+before the story commit. Follow the invoking workflow's pre-commit evidence and marker finalization rules.
 These records report observed outcomes; they must never fabricate passing checks,
 native review sessions, or approvals. The helper independently verifies that
 each passing record and its completed task marker occur together in reachable
@@ -89,7 +90,7 @@ archive; do not claim that the supervisor implements a post-run hook.
 
 ## Invoke the installed helper
 
-Discover `run-agent-team` and resolve `scripts/archive_run.py` relative
+Discover `archive-run` and resolve `scripts/archive_run.py` relative
 to its advertised installed base. Never use checkout or hardcoded cache paths
 in generated plans. The following placeholders are data, not executable examples:
 
