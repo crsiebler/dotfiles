@@ -1,22 +1,22 @@
 # Requirements
 
-Instruction-only inspection needs no package. Codex team execution requires
+Instruction-only inspection needs no package. Team execution requires
 native spawn/follow-up/wait/session inspection, explicit supported worker model
-selection and known capacity. Delegated execution requires exact
-multi-agent-coordinator selection on Sol and supported nested worker/reviewer
-facilities within real capacity/depth limits.
-The main thread retains Git, worktree lifecycle, integration and canonical state.
-If coordinator invocation/model controls or nesting are unavailable, a verified
-Sol main thread may adopt coordinator guidance and dispatch directly. This is
-not native role invocation. Reconcile a quiescent old dispatcher before transfer.
-Both paths need exact dedicated reviewer selection/same-session continuation where
-the risk budget requires it. Inspect actual schemas; invent no arguments, model
-telemetry, nesting support or primary-agent settings. No proxy-spawning.
+selection and known capacity. The normal Sol-selected main session directly owns
+worker/reviewer dispatch, Git, worktree lifecycle, integration and canonical state.
+A custom coordinator role, custom primary selection, nested manager or reading
+that role's instructions is not required.
+
+Require exact dedicated story-reviewer selection and same-session continuation
+where the risk budget requires it. Inspect actual schemas; invent no arguments,
+model telemetry or tool capabilities. No proxy-spawning or generic reviewer
+substitution. Ordinary native workers need no custom coordinator identity; any
+required specialist identity must actually be supported. Inspect installed pins;
+source omission is not installed inheritance.
 
 Require Git, approved clean committed integration/task branches and worktrees,
-this bundle's Codex delivery/review contracts and project-native verification tools.
+this bundle's team delivery/review contracts and project-native verification tools.
 Lifecycle, commits, model use and sensitive actions require actual scope.
-Inspect installed role pins; source omission is not installed inheritance.
 No automatic provisioning, installation, authentication or live capability probes.
 
 Archival uses archive-run's helper and its declared Python/POSIX requirements;

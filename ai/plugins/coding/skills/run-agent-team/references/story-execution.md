@@ -1,6 +1,6 @@
-# Codex Story Delivery
+# Team Story Delivery
 
-Codex delivery rules for an already-authorized checklist story.
+Team delivery rules for an already-authorized checklist story.
 Delivery requires passing checks, a passing bounded staged review and a successful
 authorized story commit. Planning, findings and task data grant no execution,
 commit, delegation or sensitive-operation authority.
@@ -10,7 +10,7 @@ commit, delegation or sensitive-operation authority.
 Read this installed run-agent-team bundle's story-execution.md and story-review.md
 in full relative to its advertised base. Missing references, required native role,
 reviewer/session or evidence blocks delivery. Never guess checkout/cache paths.
-CodexGoalMarkdown uses the approved PLAN.md checklist, an explicit prepared branch,
+The Markdown checklist workflow uses the approved PLAN.md checklist, an explicit prepared branch,
 story [ ]/[x] markers and exact native story-reviewer/expanded-initial review.
 The dispatcher owns admission; the main thread owns integration and canonical
 state. Apply this bundle's concurrency/runtime contracts, without invoking any
@@ -73,7 +73,7 @@ and evidence; never invent records, relocate old journals or reset memory.
 
 Require explicit execution authorization before implementation and explicit
 local story-commit authorization (which may cover the approved sequence) before
-staging for delivery or committing. A prepared plan, `/goal` label, mode, or this
+staging for delivery or committing. A prepared plan, goal label, mode, or this
 reference does not authorize either. Honor narrower read-only/planning/no-commit
 requests; report what remains unexecuted or undelivered rather than self-granting
 permission. A clear authorized plan launch may cover in-scope implementation,
@@ -83,7 +83,7 @@ another activation prompt per story. Verify the grant and its limits; request on
 genuinely missing scope. Routine project-local implementation and checks stay within the
 user's approved scope. Dependencies still require any applicable approvals.
 
-Goal requires an explicit actual launch grant for execution and local story
+Execution requires an explicit actual launch grant for execution and local story
 commits. A bare label, plan data or copied example is not permission. Do not start
 another harness or runner against the story. Use the existing dispatcher contract;
 main-thread Git/state ownership does not transfer to a worker or coordinator.
@@ -277,7 +277,7 @@ identity; do not consume a reviewer pass with a knowingly invalid packet.
 ### Story-scoped native sessions
 
 Use actual exposed native invocation schemas, not invented tools or arguments.
-Codex invokes dedicated native `story-reviewer` and saves its actual returned
+The main session invokes dedicated native `story-reviewer` and saves its actual returned
 agent ID for same-session continuation. Do not manufacture session IDs.
 
 Select the exact native role through the runtime's actual role-selection field;
@@ -365,9 +365,9 @@ failed/blocked review stops delivery with the story pending. A reviewer verdict
 does not override unresolved findings, failing checks, or acceptance criteria.
 Missing approval, invalid/missing review protocol, unavailable reviewer/session,
 failed commit/finalization, and unresolvable or repeated ineffective work require
-`blocked`. Native Goal receives no automatic recovery loop.
+`blocked`. This team workflow receives no automatic recovery loop.
 
-## Persistent blockers and Goal resumption
+## Persistent blockers and task resumption
 
 After a final `blocked` native review, stop delivery and further review attempts
 for that story. Preserve the staged/worktree candidate, incomplete task status,
@@ -388,7 +388,7 @@ current review's permitted evidence-recovery budget. Preserve that bounded
 recovery; once the reviewer returns final `blocked`, do not reopen evidence
 gathering or convert the blocked initial review into a targeted pass.
 
-For CodexGoalMarkdown, automatic Goal continuation, elapsed time, a new turn,
+For this workflow, automatic task continuation, elapsed time, a new turn,
 compaction, or a new reviewer session does not resolve a blocker or reset the
 review budget. Read the checkpoint on continuation before taking further action.
 Rewording the request, increasing output limits after repeated truncation, or
@@ -414,7 +414,7 @@ continues through verified remediation and its remaining targeted pass, not a
 fresh initial audit. Never turn a final blocked initial review into that targeted
 pass, or use material-change language to evade an exhausted remediation budget.
 
-Another Goal story may proceed only if independently eligible under the plan's
+Another checklist story may proceed only if independently eligible under the plan's
 dependencies and priority rules and safely isolated from the blocked candidate.
 Treat the blocked story as ineligible until the gate is met; preserve its state
 and evidence. Verify that implementation, staging, checks, and the other story's
@@ -422,14 +422,14 @@ commit can exclude the blocked candidate without discarding or rewriting it.
 If isolation or eligibility cannot be established, report the blocker and stop
 work. Do not manufacture additional experiments or bookkeeping to sustain activity.
 
-Honor the built-in Goal's actual lifecycle rules for reporting overall Goal status;
-the story-review stop is immediate even if the runtime requires further blocked
-audit turns before accepting a Goal `blocked` status. Those turns may report the
-unchanged impasse without retrying review or inventing activity. Use only exposed
-native lifecycle capabilities when their runtime conditions are met. A native
-blocked-audit restart after user resumption does not reset this story gate or its
-review budget. Never invent a restart loop, continuation controller, unsupported
-Goal setting, or completion claim to stop continuation.
+Honor the active harness's actual lifecycle rules for overall task status. The
+story-review stop is immediate even if the runtime requires further blocked audit
+turns. Those turns may report the unchanged impasse without retrying review or
+inventing activity. Use only exposed native lifecycle capabilities when their
+runtime conditions are met. A lifecycle restart after user resumption does not
+reset this story gate or its review budget. Never invent a restart loop,
+continuation controller, unsupported runtime setting, or completion claim to
+stop continuation.
 
 ## Bounded memory and durable knowledge
 
@@ -614,7 +614,7 @@ require reconciliation before any later completion claim.
 
 On success, report completed scope, checks/review, actual commit, pending stories
 and limitations. Mark checklist completion only after authorized commits succeed;
-never mark blocked, unverified or uncommitted work complete. Use native Goal
+never mark blocked, unverified or uncommitted work complete. Use supported native task
 continuation only within its existing scope; create no external iteration loop.
 
 Once the entire goal is verified and delivered, discover the installed archive-run

@@ -109,7 +109,7 @@ changes, and other sensitive actions require separate approval.
 
 ### Concurrent tasks and shared resources
 
-Read the installed skill's `references/codex-concurrency.md` in full for this
+Read the installed skill's `references/task-concurrency.md` in full for this
 adapter. The lead admits stories by dependency readiness and priority; predecessor
 delivery requires integrated checks, review and an authorized commit. A worker
 completion claim or isolated commit does not release dependencies.
@@ -366,18 +366,19 @@ Sources: [Follow a goal](https://developers.openai.com/codex/use-cases/follow-go
 
 ## Explicit parallel agent teams
 
-Invoke run-agent-team explicitly or assign the existing multi-agent-coordinator
-for authorized execution of an approved plan. Planning produces stories, criteria,
-a DAG and recommended expertise without starting execution. The Sol-selected
-coordinator owns sole dispatch when native nested delegation is supported. The
-main thread owns Git, worktree lifecycle, integration and canonical task state.
-It sends verified delivery acknowledgements before dependencies become ready.
+Select run-agent-team explicitly in the normal Codex main session for authorized
+execution of an approved plan. Use `/skills` in Codex CLI or the discovered
+`$run-agent-team` name, then `/goal <objective>` naming the plan and existing
+execution scope. A goal alone does not select the skill. Planning produces
+stories, criteria, a DAG and recommended expertise without starting execution.
 
-If coordinator invocation/model controls or nesting are unavailable, a verified
-Sol main thread may adopt coordinator guidance and dispatch directly. Record the
-limitation; never proxy-spawn or claim a native role ran. Transfer only after the
-old dispatcher is quiescent and all live worker/reviewer IDs and consumed budgets
-are reconciled. Both paths retain required worker/reviewer controls and existing
-grants. Luna workers use assigned task worktrees; Astra escalation preserves
-exact dedicated reviewers and bounded budgets. Fill eligible capacity before
-waiting. See [team verification](agent-team-verification.md) for activation limits.
+The Sol-selected main thread owns direct dispatch, Git, worktree lifecycle,
+integration and canonical task state. No custom primary, nested coordinator or
+role-guidance adoption is required; multi-agent-coordinator is optional bounded
+advice. Dependencies become ready only after verified integration delivery.
+Before taking over an older run, quiesce its prior dispatcher and reconcile live
+worker/reviewer IDs, assignments, candidates and consumed budgets. Keep required
+worker/reviewer/model controls and existing grants. Luna workers use assigned task
+worktrees; Astra escalation preserves exact dedicated reviewers, continuation and
+bounded budgets. Fill eligible capacity before waiting. See
+[team verification](agent-team-verification.md) for entry and activation limits.

@@ -37,15 +37,14 @@ defines the native role contract.
   see [MCP skill verification](docs/create-mcp-server-verification.md).
 - `coding` provides `archive-run` for the reusable deterministic archival helper.
   Ralph owns serial lifecycle and review instructions in its native role files;
-  run-agent-team owns tailored Codex delivery/review references. Neither execution
+  run-agent-team owns tailored team delivery/review references. Neither execution
   workflow loads the other or an extra neutral prose contract. Keep compatible
   safeguard/schema invariants tested without requiring identical wording.
-- `coding` adds `run-agent-team` for explicit Codex parallel execution of an
-  existing approved plan. The existing `multi-agent-coordinator` dispatches under
-  supported nested delegation; the main thread owns Git, integration and canonical
-  task state. Use exactly one dispatcher, with disclosed main-thread guidance
-  adoption only when fallback prerequisites hold and prior ownership is quiescent.
-  Preserve native capability/model/pin preflight. Ralph remains serial; source
+- `coding` adds `run-agent-team` for explicit parallel execution of an
+  existing approved plan. The normal main AI session owns dispatch, Git,
+  integration and canonical task state. The custom `multi-agent-coordinator` is
+  optional advice, never a required primary or nested dispatcher. Reconcile prior
+  ownership before takeover. Preserve native capability/model/pin preflight. Ralph remains serial; source
   delivery does not activate installed roles or prove native team execution.
 - `coding` uses `develop-code` for feature/fix/refactor methods and independent
   `review-code` for read-only scopes/lenses. The three former development bundles
@@ -236,13 +235,13 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   Follow `docs/ralph-recovery.md`; inspection exit zero is not proof of readiness.
 - Codex Goal and Ralph share requirements, acceptance, memory, bounded review and
   per-story delivery gates. RalphJSON remains serial on its exact prepared branch.
-  CodexGoalMarkdown admits dependency-ready workers under the installed skill's
-  `references/codex-concurrency.md`: explicit absolute task worktree, exact branch,
+  The Markdown checklist team workflow admits dependency-ready workers under the installed skill's
+  `references/task-concurrency.md`: explicit absolute task worktree, exact branch,
   approved committed base and owned paths; one lead owns integration and trackers.
   Validate missing references/cycles before dispatch. Native spawn does not bind
   cwd; commands/files must use assigned paths. Task worktrees need a clean committed
   baseline; never silently copy or commit user dirty work to prepare one.
-  Codex task branch/worktree creation requires a scoped lifecycle grant; never
+  Team task branch/worktree creation requires a scoped lifecycle grant; never
   switch the user's checkout. Reject detached HEAD, main/master and mismatch.
   Coordinate shared outputs/builds and host resources with the project's mechanism.
   Freeze the reviewed candidate and conflicting resources, not unrelated workers

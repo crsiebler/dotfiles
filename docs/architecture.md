@@ -94,12 +94,12 @@ Only actual executable archival functionality is shared:
 
 | Responsibility | Canonical source / consumer |
 | --- | --- |
-| Codex delivery, evidence and finalization | [story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md) |
-| Codex review protocol | [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md), supplied to native story-reviewer |
+| Team delivery, evidence and finalization | [story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md) |
+| Team review protocol | [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md), supplied to native story-reviewer |
 | Serial Ralph lifecycle and controls | [ralph.md](../ai/opencode/agents/ralph.md) |
 | Complete Ralph review protocol | [ralph-reviewer.md](../ai/opencode/agents/ralph-reviewer.md), discovered by the executor and supplied in full |
 | Ralph supervisor | [bin/ralph](../bin/ralph), scheduling, state and delivery validation |
-| Codex dispatch and worktrees | [run-agent-team](../ai/plugins/coding/skills/run-agent-team/SKILL.md), existing multi-agent-coordinator; main thread owns Git/state |
+| Team dispatch and worktrees | [run-agent-team](../ai/plugins/coding/skills/run-agent-team/SKILL.md); normal main session owns dispatch, Git and state; coordinator advice is optional |
 | Reusable archival code/API | [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md), bundled unchanged archive_run.py |
 
 Native Ralph files are copied byte-for-byte by installation. Its full protocol

@@ -3,11 +3,11 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Two ready independent substantial Codex stories; sufficient verified role/model/capacity and existing grants. Execute with an agent team.",
-      "expected_output": "Sol coordinator dispatches ready workers before waiting; main thread owns integration.",
+      "prompt": "Two ready independent substantial checklist stories; sufficient verified role/model/capacity and existing grants. Execute with an agent team.",
+      "expected_output": "Sol main session directly dispatches ready workers before waiting and owns integration.",
       "files": [],
       "expectations": [
-        "Exact native multi-agent-coordinator on Sol with supported nesting; explicit Luna workers",
+        "No custom coordinator or nested manager; explicit Luna workers",
         "Two dispatches before any wait",
         "No duplicate parent manager or tracker",
         "Observed overlap is separate from dispatch compliance"
@@ -26,18 +26,18 @@
     },
     {
       "id": 3,
-      "prompt": "Coordinator invocation and nesting work, but the spawn API lacks native story-reviewer selection. Run a standard substantial batch.",
+      "prompt": "Normal Sol main can select Luna workers, but spawn lacks native story-reviewer selection. Run a standard substantial batch.",
       "expected_output": "Block before worker calls; report exact missing reviewer capability.",
       "files": [],
       "expectations": [
         "No generic reviewer roleplay",
         "No model substitution or automatic install",
-        "Neither delegated nor direct fallback cures missing mandatory reviewer"
+        "Direct orchestration does not cure missing mandatory reviewer capability"
       ]
     },
     {
       "id": 4,
-      "prompt": "Native nesting unavailable; the Sol parent can select Luna workers and the exact required reviewer. Execute the independent approved plan.",
+      "prompt": "No custom coordinator, primary selector or nesting is available. The Sol main can select Luna workers and the exact required reviewer. Execute the independent approved plan.",
       "expected_output": "The Sol main thread dispatches direct Luna workers and retains all Git and task state.",
       "files": [],
       "expectations": [
@@ -103,13 +103,13 @@
     {
       "id": 10,
       "prompt": "The coordinator is a child and asks to own merging and mark stories complete.",
-      "expected_output": "Coordinator retains dispatch only; main thread owns Git, merging and canonical task state.",
+      "expected_output": "Child returns advice only; main session owns direct dispatch, Git, merging and canonical task state.",
       "files": [],
       "expectations": [
         "No child-owned canonical writes",
         "No proxy-spawning",
         "Preserve existing delivery gates",
-        "Only verified main-thread delivery acknowledgement releases dependencies"
+        "Only verified main-thread integration delivery releases dependencies"
       ]
     },
     {
@@ -159,25 +159,58 @@
     },
     {
       "id": 15,
-      "prompt": "Native coordinator is available on Sol with nested worker/reviewer controls. Parent starts its own worker loop too.",
-      "expected_output": "Keep coordinator as sole dispatcher; main thread only integrates and acknowledges delivery.",
+      "prompt": "The normal Sol main session can dispatch directly. An optional coordinator advisor starts its own worker loop.",
+      "expected_output": "Keep main session as sole dispatcher; reconcile and quiesce competing ownership before proceeding.",
       "files": [],
       "expectations": [
         "No competing dispatch loops",
-        "Main thread owns Git and task state",
-        "No recursive coordinator"
+        "Main thread owns dispatch, Git and task state",
+        "Optional advisor cannot become dispatcher"
       ]
     },
     {
       "id": 16,
-      "prompt": "Nesting became unavailable but coordinator outcome is uncertain. Switch parent to direct dispatch.",
+      "prompt": "Resume an older delegated run with uncertain coordinator outcome. Switch to main-session direct dispatch.",
       "expected_output": "Inspect native state; block transfer until coordinator is quiescent and all assignments/reviewer sessions are reconciled.",
       "files": [],
       "expectations": [
         "No proxy-spawning",
         "No duplicate possibly-live owner",
         "No reset review budget",
-        "Fallback needs observed Sol and required controls"
+        "Direct dispatch needs observed Sol and required worker/reviewer controls"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Set /goal for PLAN.md without selecting run-agent-team; assume it activates automatically.",
+      "expected_output": "Explicitly select the skill through /skills or its discovered skill name; a goal alone does not activate it.",
+      "files": [],
+      "expectations": [
+        "No custom primary selection",
+        "Do not invent combined slash-command parsing",
+        "Verify actual execution, worktree and commit scope"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Use run-agent-team in another AI harness whose normal main session exposes authorized native Luna workers, Sol coordination, the exact Astra story-reviewer and same-session continuation.",
+      "expected_output": "Use the actual native controls and direct main-session orchestration; do not require Codex or its CLI commands.",
+      "files": [],
+      "expectations": [
+        "No mandatory Codex session or custom primary",
+        "Preserve all isolation, capacity, review and delivery gates",
+        "Inspect actual host schemas"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Another harness lacks dedicated reviewer selection. Rename a generic worker story-reviewer and proceed.",
+      "expected_output": "Block the affected native review path with exact missing capability; a label supplies no native role or tools.",
+      "files": [],
+      "expectations": [
+        "No fake native invocation",
+        "No permission bypass or automatic installation",
+        "No silent review-budget change"
       ]
     }
   ]

@@ -1,20 +1,20 @@
-# Native Codex task concurrency
+# Native task concurrency
 
-This reference applies only to CodexGoalMarkdown. RalphJSON remains serial under
-this bundle's story-execution.md. Requirements, stable story IDs, acceptance, authorization,
-review budgets and per-story delivery gates remain shared. Use native subagents;
+This reference applies to the parallel Markdown checklist workflow. RalphJSON
+remains serial under its own native execution instructions. Requirements, stable
+story IDs, acceptance, authorization, review budgets and per-story delivery gates
+remain shared. Use native subagents;
 add no scheduler, background controller, duplicate task store or nested Ralph loop.
 
 ## Team execution ownership
 
-For authorized Codex parallel/team execution, follow this bundle's team entry
+For authorized parallel/team execution, follow this bundle's team entry
 contract. The main thread owns Git, worktree lifecycle, integration and canonical
-task state. Exactly one dispatcher admits and assigns work: the existing native
-multi-agent-coordinator under supported nested delegation, or the main thread's
-disclosed guidance fallback when prerequisites hold. Never run competing loops,
-proxy-spawn for a child or recursively create coordinators. Review, authority and
-delivery gates remain unchanged. The dispatcher releases dependencies only from
-verified main-thread delivery acknowledgements, never worker completion claims.
+task state and is the only dispatcher admitting and assigning work. Direct native
+worker/reviewer calls require no custom coordinator or nested manager. Never run
+competing loops, proxy-spawn for a child or delegate orchestration. Review,
+authority and delivery gates remain unchanged. Release dependencies only after
+verified main-thread integration delivery, never worker completion claims.
 
 ## Admission and ownership
 
@@ -43,7 +43,7 @@ verify actual paths stay within the assigned worktree and authorized scope.
 
 ## Prepared worktrees and native paths
 
-Codex may create task branches and worktrees only under an explicit scoped lifecycle grant.
+The main session may create task branches and worktrees only under an explicit scoped lifecycle grant.
 
 Before any worker writes, require an established clean committed baseline and
 verify its recorded base, exact branch, absolute worktree and status. Reject
@@ -62,8 +62,9 @@ silently copy dirty work or commit it to manufacture a baseline. Changes needed
 from a dirty checkout require separate reconciliation, preservation and authority.
 Do not create a worktree outside approved filesystem roots to bypass a denial.
 
-Native child spawn does not bind cwd or create automatic child isolation. Supply
-the absolute worktree in the worker packet; use explicit assigned paths for file
+Do not assume native child spawn binds cwd or creates isolation; inspect the
+actual tool schema and verify the assigned root. Supply the absolute worktree
+in the worker packet; use explicit assigned paths for file
 operations, command workdir and Git (`git -C <assigned-worktree>`). Verify root,
 branch and status before writes and delivery. A task label is not path isolation.
 Worktree creation/removal and local commits remain within their actual grants;

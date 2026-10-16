@@ -36,16 +36,16 @@ def compact(text):
 class StoryExecutionTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.lives = {'codex': (TEAM_REFS / 'story-execution.md').read_text(),
+        cls.lives = {'team': (TEAM_REFS / 'story-execution.md').read_text(),
                      'ralph': RALPH.read_text()}
-        cls.protocols = {'codex': (TEAM_REFS / 'story-review.md').read_text(),
+        cls.protocols = {'team': (TEAM_REFS / 'story-review.md').read_text(),
                          'ralph': marked(REVIEWER.read_text(), 'RALPH REVIEW PROTOCOL')}
 
     def test_workflows_own_distinct_complete_protocols_with_compatible_schema(self):
         schemas = {name: examples(text) for name, text in self.protocols.items()}
         self.assertTrue(all(len(values) == 1 for values in schemas.values()))
-        self.assertEqual(schemas['codex'][0], schemas['ralph'][0])
-        schema = schemas['codex'][0]
+        self.assertEqual(schemas['team'][0], schemas['ralph'][0])
+        schema = schemas['team'][0]
         self.assertEqual(set(schema), {
             'verdict', 'pass_type', 'findings', 'resolved_findings',
             'executor_feedback', 'residual_risks', 'learning_candidates'})
@@ -57,11 +57,11 @@ class StoryExecutionTest(unittest.TestCase):
                 self.assertIn('All listed keys are required', text)
                 self.assertIn('must explain missing input in', text)
                 self.assertIn('Never return `pass` with unresolved', text)
-        self.assertNotEqual(self.protocols['codex'], self.protocols['ralph'])
+        self.assertNotEqual(self.protocols['team'], self.protocols['ralph'])
 
     def test_each_workflow_has_only_its_own_profile_and_native_role(self):
         for name, profile, role, other in (
-            ('codex', 'expanded-initial', 'story-reviewer', 'three-step'),
+            ('team', 'expanded-initial', 'story-reviewer', 'three-step'),
             ('ralph', 'three-step', 'ralph-reviewer', 'expanded-initial')):
             text = self.protocols[name]
             self.assertIn(f'Review profile: {profile}', text)
@@ -75,7 +75,7 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertNotIn('story-delivery', codex['developer_instructions'])
 
     def test_initial_and_targeted_budgets_are_workflow_specific(self):
-        codex, ralph = (compact(self.protocols[key]) for key in ('codex', 'ralph'))
+        codex, ralph = (compact(self.protocols[key]) for key in ('team', 'ralph'))
         self.assertIn('permit up to 40 small, read-only evidence-gathering calls', codex)
         self.assertIn('Count each call separately', codex)
         self.assertIn('40 calls is a ceiling, not a target', codex)
@@ -121,7 +121,7 @@ class StoryExecutionTest(unittest.TestCase):
                 self.assertIn('blocker', text)
         self.assertIn('persisted recovery counters', compact(self.lives['ralph']))
         self.assertIn('does not resolve a blocker or reset the review budget',
-                      compact(self.lives['codex']))
+                      compact(self.lives['team']))
 
     def test_executor_packets_require_complete_protocol_and_native_session_identity(self):
         for name, raw in self.lives.items():
@@ -174,9 +174,9 @@ class StoryExecutionTest(unittest.TestCase):
             self.assertIn('Count an event only once', memory)
             self.assertIn('do not read/create the missing file', memory)
             self.assertIn('only after passing review', memory)
-        self.assertEqual(shapes['codex'], shapes['ralph'])
-        self.assertEqual(set(shapes['codex']), {'version', 'patterns', 'suppressions'})
-        pattern = shapes['codex']['patterns'][0]
+        self.assertEqual(shapes['team'], shapes['ralph'])
+        self.assertEqual(set(shapes['team']), {'version', 'patterns', 'suppressions'})
+        pattern = shapes['team']['patterns'][0]
         self.assertEqual(pattern['evidence_count'],
                          pattern['accepted_count'] + pattern['rejected_count'])
 
@@ -185,8 +185,8 @@ class StoryExecutionTest(unittest.TestCase):
         for name, text in self.lives.items():
             tables[name] = re.findall(r'\| Mode \|.*?(?=\n\n)', text, re.S)
             self.assertIn('Never invoke more than two implementation advisors', text)
-        self.assertEqual(len(tables['codex']), 2)
-        self.assertEqual(tables['codex'], tables['ralph'])
+        self.assertEqual(len(tables['team']), 2)
+        self.assertEqual(tables['team'], tables['ralph'])
 
     def test_finalization_and_sensitive_operation_guards_remain_in_each_workflow(self):
         for name, raw in self.lives.items():
@@ -218,8 +218,8 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertIn('Ralph never creates, switches, or repairs a branch', self.lives['ralph'])
         self.assertIn('validates Python 3.11+', control)
         self.assertNotIn('resolves `python3.11`', control)
-        self.assertNotIn('RALPH RUNNER CONTROL', self.lives['codex'])
-        self.assertNotIn('ralph-control.md', self.lives['codex'])
+        self.assertNotIn('RALPH RUNNER CONTROL', self.lives['team'])
+        self.assertNotIn('ralph-control.md', self.lives['team'])
 
     def test_archival_shares_only_executable_capability_and_enrolls_at_execution(self):
         self.assertFalse((ROOT / 'ai/plugins/coding/skills/story-delivery').exists())
@@ -236,10 +236,10 @@ class StoryExecutionTest(unittest.TestCase):
             self.assertIn('--preserve-plan', text)
 
     def concurrency_reference(self):
-        text = (TEAM_REFS / 'codex-concurrency.md').read_text()
+        text = (TEAM_REFS / 'task-concurrency.md').read_text()
         code = text.split('```python\n', 1)[1].split('\n```', 1)[0]
         namespace = {}
-        exec(compile(code, str(TEAM_REFS / 'codex-concurrency.md'), 'exec'), namespace)
+        exec(compile(code, str(TEAM_REFS / 'task-concurrency.md'), 'exec'), namespace)
         return namespace
 
     def test_dependency_readiness_uses_delivered_predecessors_and_stable_order(self):

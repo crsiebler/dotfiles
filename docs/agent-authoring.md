@@ -273,19 +273,19 @@ under separate installation authorization; a source commit does not refresh a
 running session. [Verification](coding-workflow-verification.md) records that live
 comparative model evaluation was waived, not passed.
 
-## Plan-aware multi-agent coordinator
+## Optional multi-agent coordination advice
 
-The existing role is `multi-agent-coordinator` in the canonical Codex TOML
-collection; there is no separate `multi-agent-orchestration` role. For an explicit
-coding-plan assignment it loads run-agent-team and, with supported native role,
-model and nesting controls, owns sole dispatch of bounded workers and requested
-advisors/reviewers. The main thread retains all Git, worktree lifecycle,
-integration, conflict writes and canonical task state. Only its verified delivery
-acknowledgement releases dependent work. No recursive coordinator or second loop.
+The existing `multi-agent-coordinator` remains in the canonical Codex TOML
+collection; no role is renamed, removed or promoted to primary. Its generic
+coordination expertise is optional. For coding-plan questions it may advise under
+the existing read-only advisor budget. It does not dispatch workers or reviewers,
+change Git or own canonical task state.
 
-When invocation or nesting is unavailable, an eligible main thread may adopt the
-role guidance and dispatch directly under the skill's unchanged worker/reviewer
-preflight. Quiesce and reconcile a prior dispatcher before transfer; uncertain
-native state blocks transfer. Disclose adoption rather than native invocation.
-Runtime model choices stay in the execution skill, not reusable role metadata.
-The role is not renamed or promoted to primary; source edits activate no runtime.
+The normal main AI session runs the harness-agnostic run-agent-team directly. The skill owns all
+necessary workflow rules: DAG admission, worker packets, capacity/model checks,
+worktree isolation, bounded review, delivery, resumption and archival. No custom
+coordinator invocation, nested manager or reading the role is required. Runtime
+facilities supply tools, not the role or skill. Exact dedicated story-reviewer
+selection and same-session continuation remain required by the risk budget.
+Source edits activate no installed settings. See [team verification](agent-team-verification.md)
+for explicit skill/goal entry and activation limits.

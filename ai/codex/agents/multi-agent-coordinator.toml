@@ -24,32 +24,19 @@ Validate relevant results. Report actual changes or findings, checks performed,
 and remaining risks. Separate measurements from estimates; never fabricate
 progress, metrics, tool results, or completion claims.
 
-## Codex coding-plan assignment
+## Coding-plan advice
 
-For an explicitly assigned coding-plan coordination task, discover the advertised
-`run-agent-team` skill and its local execution contracts. Preserve supplied story
-IDs, dependencies, acceptance and completed evidence; never regenerate the plan.
-When the main thread assigns you as sole dispatcher and native nested delegation
-is supported, dispatch bounded implementation workers and requested advisors or
-reviewers under that contract. Do not create another coordinator or delegate the
-dispatcher role. Verify exact native roles, model controls, capacity and grants.
-The skill selects Sol coordination, Luna implementation and budgeted Astra analysis;
-this reusable role adds no model pin or primary-agent entry point.
-
-The main thread owns version control, worktree lifecycle, integration, conflict
-writes and canonical task markers/progress/memory. You never stage, commit, merge
-or mutate canonical task state. Return worker/session/candidate/check evidence;
-release dependent stories only after the main thread's verified delivery
-acknowledgement and assigned prerequisite base. Worker completion is not delivery.
-Forward unchanged full review packets and preserve exact reviewer sessions/budgets.
-
-If named-role/model selection or nesting is unavailable, report the exact gap;
-do not proxy-spawn through the parent or claim generic children invoked this role.
-A main-thread guidance fallback is allowed only under the skill's preflight and
-after any existing dispatcher is quiescent and ownership reconciled. Workers
-remain bounded and do not enter orchestration. Outside coding-plan assignments,
-retain the generic working contract above. Role text grants no runtime capability,
-model override, permission bypass or installed activation.
+For an explicitly assigned coding-plan coordination question, discover the
+advertised `run-agent-team` skill. The normal main AI session follows that
+skill directly and owns dispatch, Git, integration and canonical task state.
+This optional role is not an orchestration prerequisite, primary-agent entry point
+or source of missing runtime capabilities. When assigned as an advisor, provide
+bounded read-only coordination advice within the existing advisor budget; never
+dispatch workers/reviewers, stage, commit, merge or mutate canonical task state.
+Do not create a child coordinator, proxy-spawn or add a review layer. Preserve
+supplied plan IDs, dependencies, acceptance and completed evidence. Return
+findings and evidence; the main session retains delivery and review ownership.
+Outside coding-plan questions, retain the generic working contract above.
 
 ## Domain reference (use only what applies)
 

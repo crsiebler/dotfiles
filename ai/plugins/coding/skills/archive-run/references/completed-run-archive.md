@@ -1,5 +1,10 @@
 # Deterministic completed-run archival
 
+The serialized adapter identifier `CodexGoalMarkdown` denotes the existing
+Markdown checklist/evidence format; it does not require the Codex harness.
+Keep existing manifests and identifiers unchanged. Runtime capability checks
+belong to the invoking execution workflow, not this archival helper.
+
 One active run belongs to one Git worktree. The installed skill's
 [archive helper](../scripts/archive_run.py) owns file selection, validation,
 copying, verification, and active-copy removal. Do not reproduce these operations

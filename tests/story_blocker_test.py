@@ -20,7 +20,7 @@ class StoryBlockerTest(unittest.TestCase):
     def setUpClass(cls):
         cls.gate = section(
             REFS / 'story-execution.md',
-            '## Persistent blockers and Goal resumption',
+            '## Persistent blockers and task resumption',
             '## Bounded memory and durable knowledge',
         )
         cls.review = section(
@@ -50,7 +50,7 @@ class StoryBlockerTest(unittest.TestCase):
 
     def test_goal_continuation_requires_verified_resolution_not_relabeling(self):
         self.assert_contracts(self.gate, (
-            'automatic Goal continuation, elapsed time, a new turn, compaction, '
+            'automatic task continuation, elapsed time, a new turn, compaction, '
             'or a new reviewer session does not resolve a blocker or reset the review budget',
             'increasing output limits after repeated truncation',
             'replacing the reviewer does not by itself establish resolution',
@@ -95,8 +95,8 @@ class StoryBlockerTest(unittest.TestCase):
         self.assert_contracts(self.gate, (
             'story-review stop is immediate',
             'native lifecycle capabilities when their runtime conditions are met',
-            'blocked-audit restart after user resumption does not reset this story gate',
-            'Never invent a restart loop, continuation controller, unsupported Goal setting',
+            'lifecycle restart after user resumption does not reset this story gate',
+            'Never invent a restart loop, continuation controller, unsupported runtime setting',
         ))
         docs = ' '.join((ROOT / 'docs/codex-goals.md').read_text().split())
         self.assert_contracts(docs, (

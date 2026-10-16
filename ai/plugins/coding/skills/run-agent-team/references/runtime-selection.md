@@ -2,8 +2,8 @@
 
 ## Runtime and model selection
 
-- Select one worker lane per attempt: native Codex or Ralph through OpenCode.
-  Never launch Ralph inside a Codex Goal or run both against the same story.
+- Select one execution workflow per story attempt: this native team workflow
+  or the separate serial Ralph runner. Never run both against the same story.
 - Reusable roles define expertise, tools, constraints and outputs. Keep model
   and reasoning effort choices in explicit runtime profiles or launch parameters.
 - Ordinary work inherits the selected parent/session settings. Inheritance is
@@ -30,12 +30,13 @@ Ordinary work outside that profile retains the selection policy above.
 
 ## Native execution ownership
 
-- Ralph/OpenCode executes stories serially. Native Codex may admit concurrent
-  dependency-ready implementation workers under the selected installed execution
-  adapter. Preserve requirements, acceptance and bounded review/delivery gates.
-- Give each Codex worker an explicit absolute task worktree, exact branch,
-  approved committed base and owned paths. Native spawn does not bind cwd; use
-  assigned paths for files, Git and checks. Establish a clean committed baseline;
+- Ralph executes stories serially. This team workflow may admit concurrent
+  dependency-ready implementation workers when the active harness exposes the
+  required native controls. Preserve requirements, acceptance and bounded review/delivery gates.
+- Give each implementation worker an explicit absolute task worktree, exact branch,
+  approved committed base and owned paths. Inspect actual native cwd/isolation
+  controls; verify the assigned root and use assigned paths for files, Git and
+  checks. Establish a clean committed baseline;
   never copy or commit user dirty work to prepare it. Task branch/worktree setup
   needs a scoped lifecycle grant and never switches the user's checkout.
 - One lead owns integration branch/index, canonical task markers, progress and
@@ -48,9 +49,9 @@ Ordinary work outside that profile retains the selection policy above.
 
 For explicit team execution, use Astra for review, conflict analysis, architecture
 and cross-domain analysis through supported native selection and actual grants.
-Keep the dispatcher on Sol and preserve the main thread's selected model and
-conflict-resolution writes in delegated mode. A fallback requires observed Sol
-selection; do not silently switch the main thread.
+The main thread is the dispatcher and retains conflict-resolution writes. Require
+observed Sol selection; do not silently switch the main thread. No custom
+coordinator or nested delegation is needed.
 The exact native story-reviewer remains mandatory at the budget-selected native
 gate; selecting Astra never substitutes a generic reviewer or adds an extra pass.
 Respect existing advisor/review/remediation limits and record unavailable selection.

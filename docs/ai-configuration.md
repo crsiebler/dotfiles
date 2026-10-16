@@ -841,21 +841,20 @@ key forwarding, exit status and approval defaults. They do not establish real
 client startup, account access, billing or model quality. This source change does
 not install configuration, read keys, or run live calls.
 
-### Codex agent-team execution
+### Harness-agnostic agent-team execution
 
-Explicit team execution uses the existing multi-agent-coordinator and
-run-agent-team with an approved plan. The coordinator on Sol is sole dispatcher
-under supported nested delegation. The main thread owns Git, worktree lifecycle,
-integration and canonical task state; it acknowledges verified delivery before
-the dispatcher releases dependent tasks. Luna workers use isolated assignments;
-Astra escalation retains existing budgets and exact dedicated review protocols.
+The normal Sol-selected main AI session runs run-agent-team directly with an
+approved plan. It owns dispatch, Git, worktree lifecycle, integration and canonical
+task state. A custom coordinator or primary-agent selection is unnecessary;
+multi-agent-coordinator remains optional bounded advice. No nested dispatcher or
+role-guidance adoption is required. Preserve actual worker/reviewer/model controls,
+capacity, pins and same-session review continuation. Reconcile a quiescent prior
+dispatcher and its live assignments before takeover; never proxy-spawn or run
+competing loops. No automatic model/configuration changes.
 
-If coordinator invocation/model selection or nesting is unavailable, a verified
-Sol main thread may adopt the role guidance and dispatch directly after prior
-dispatcher quiescence/reconciliation. No proxy-spawning, competing loops, native
-invocation claims or automatic model/configuration changes. Both paths keep all
-required worker/reviewer controls. Team-specific dispatch/model/concurrency resources stay in run-agent-team.
-Ralph owns its native serial delivery/review instructions. Codex owns tailored
-references in run-agent-team. Only the executable archive-run capability is shared;
-neither workflow loads the other. No new
-primary entry point is supplied. See [team verification](agent-team-verification.md).
+Use the active harness's skill-selection mechanism. For Codex CLI only, select
+through `/skills` or its discovered `$run-agent-team` name, then set
+`/goal <objective>` naming the plan and execution scope. A goal does not automatically select a skill or authorize writes. Team
+resources stay in run-agent-team; Ralph owns its native serial delivery/review
+instructions. Only archive-run's executable archival capability is shared.
+See [team verification](agent-team-verification.md) for entry and activation limits.

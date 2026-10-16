@@ -1,7 +1,7 @@
-# Codex staged-story review
+# Team staged-story review
 
 The executor supplies this complete protocol with the compact story packet to
-Codex `story-reviewer`. Review one immutable staged candidate and return one holistic
+native `story-reviewer`. Review one immutable staged candidate and return one holistic
 result. You are a decision-support gate, not an implementation agent. This
 workflow's protocol owns its exact response schema.
 The executor embeds this entire reference directly in each invocation message;
@@ -13,10 +13,10 @@ Display labels are not proof of role selection or session identity.
 
 ## Review Profile Selection
 
-The executor explicitly selects the review profile from its already-selected
-Codex checklist using `story-execution.md`. Every initial and targeted packet
+The executor explicitly selects the review profile for its approved checklist
+workflow using `story-execution.md`. Every initial and targeted packet
 must include `Review profile` and `Pass type`. For example, an initial packet for
-the Markdown Goal adapter includes these literal lines (not a default):
+the Markdown checklist workflow includes these literal lines (not a default):
 
 ```text
 Review profile: expanded-initial
@@ -75,7 +75,7 @@ reads, and individual calls in a parallel batch; batching does not reset or evad
 the ceiling. The final JSON response is not an evidence call.
 
 This is a configurable reading budget expressed as behavioral instructions,
-not a native hard step cap or immutable sandbox/MCP enforcement. Native Codex
+not a native hard step cap or immutable sandbox/MCP enforcement. The dedicated
 `story-reviewer` uses this profile; the reviewer follows the explicit packet and
 wrapper selection rather than guessing from available tools.
 
@@ -209,7 +209,7 @@ evidence required for resolution in `residual_risks`, using the existing schema.
 Preserve any evidenced findings; never invent findings to fill missing coverage.
 
 The executor must apply `story-execution.md`'s persistent blocker gate before
-another attempt. Goal continuation and new sessions do not resolve the blocker
+another attempt. Task continuation and new sessions do not resolve the blocker
 or reset review budgets. A blocked initial review cannot become a targeted pass.
 The one-initial/one-targeted same-session contract remains available for actionable
 findings and verified remediation from a valid initial review. These stopping rules do not change this workflow's evidence-reading limits.

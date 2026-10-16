@@ -47,5 +47,5 @@ services, or installed plugin caches were inspected for this map. No application
 tests, installers, models, or services were run as part of mapping.
 
 Ralph owns serial lifecycle/review rules in its native role files; run-agent-team
-owns the tailored Codex counterparts. Only [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md)
+owns the harness-agnostic team counterparts. Only [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md)
 shares executable archival functionality. Planning remains independent.

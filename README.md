@@ -599,16 +599,19 @@ for ownership, shared-directory scope, and preserved conflicts.
     require separate exact-path reconciliation. Retain rollback archives and never
     delete caches manually. Follow the [activation and rollback steps](docs/remove-old-ai-files.md#consolidated-coding-workflows).
 
-### Codex parallel agent teams
+### Parallel agent teams
 
-Invoke `run-agent-team` explicitly or assign the existing `multi-agent-coordinator`
-with an approved plan. Planning stays independent. The Sol-selected coordinator
-owns dispatch under supported nested delegation; the main thread owns Git,
-worktree lifecycle, integration and canonical task state. If coordinator invocation
-or nesting is unavailable, a verified Sol main thread may adopt its guidance and
-dispatch directly after reconciling prior ownership. This is guidance adoption,
-not native role invocation. Never proxy-spawn or run competing dispatch loops.
-Luna workers use isolated assigned worktrees; Astra escalation retains existing
-review budgets. Fill eligible capacity before waiting. Ralph remains serial.
-[Verification and activation limits](docs/agent-team-verification.md) distinguish
-source checks from native execution. No standalone primary launcher is supplied.
+Select `run-agent-team` explicitly in the normal main AI session with an approved
+plan, using the active harness's supported skill mechanism. Its workflow contracts
+are harness agnostic; verify actual native tools and grants before dispatch.
+For Codex CLI only, use `/skills` to select it, then `/goal <objective>` naming the
+plan and existing execution scope. A goal alone does not select the skill.
+The Sol-selected main session owns dispatch, Git, worktree lifecycle, integration
+and canonical task state. The custom `multi-agent-coordinator` is optional advice;
+no custom primary or nested manager is required. Planning stays independent.
+
+Luna workers use isolated assigned worktrees; Astra escalation and dedicated
+story-reviewer invocation retain existing review budgets and session continuation.
+Fill eligible capacity before waiting. Reconcile uncertain prior ownership before
+takeover. Ralph remains serial. [Verification and activation limits](docs/agent-team-verification.md)
+distinguish source checks from actual native execution and provide a goal example.
