@@ -24,15 +24,14 @@
 ## Explicit team selection
 
 An authorized run-agent-team invocation selects Sol coordination and explicit Luna
-implementation, with justified Astra escalation under existing budgets. Discover
-that skill for its capability/pin preflight and one-owner dispatch contract. This
+implementation, with justified Astra escalation under existing budgets. Use this bundle's capability/pin preflight and main-thread dispatch contract. This
 is an explicit workflow profile, not global automatic routing or a role pin.
 Ordinary work outside that profile retains the selection policy above.
 
 ## Native execution ownership
 
 - Ralph/OpenCode executes stories serially. Native Codex may admit concurrent
-  dependency-ready implementation workers under the selected installed planning
+  dependency-ready implementation workers under the selected installed execution
   adapter. Preserve requirements, acceptance and bounded review/delivery gates.
 - Give each Codex worker an explicit absolute task worktree, exact branch,
   approved committed base and owned paths. Native spawn does not bind cwd; use
@@ -46,3 +45,10 @@ Ordinary work outside that profile retains the selection policy above.
 - Reconcile narrower project instructions before concurrent execution. Required
   native roles/tools and model selection must actually be available; this policy
   creates no runtime capability, installed activation or permission bypass.
+
+For explicit team execution, use Astra for review, conflict analysis, architecture
+and cross-domain analysis through supported native selection and actual grants.
+Keep the main thread's Sol selection and conflict-resolution writes unchanged.
+The exact native story-reviewer remains mandatory at the budget-selected native
+gate; selecting Astra never substitutes a generic reviewer or adds an extra pass.
+Respect existing advisor/review/remediation limits and record unavailable selection.

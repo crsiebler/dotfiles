@@ -8,6 +8,10 @@ description: Define scoped outcomes and verifiable acceptance for bounded tasks 
 Read [requirements](references/requirements.md) before selecting external tools or
 running helpers. Dependency setup is separately authorized.
 
+Use supplied task details first. Gather missing supplemental project information
+and relevant external research through available authorized sources when necessary;
+record source evidence and uncertainty without starting implementation.
+
 Read [requirements formats](references/prd-format.md) for structure and examples.
 Use a concise bounded-task brief for small, clear work; use the fuller PRD when
 multiple outcomes, dependencies, unresolved decisions, or stakeholder coordination
@@ -21,8 +25,8 @@ where applicable. Do not start implementation.
 
 Keep requirements at the outcome level: problem, users, scope/exclusions,
 observable acceptance, constraints/dependencies, assumptions and open questions.
-prepare-implementation owns dependency order, execution stories, worker selection,
-and optional run/archive metadata. Do not create work-run blocks or runner settings
+Requirements do not create the execution story list, dependency matrix or select
+worker models. Those are downstream planning/execution concerns. Do not create work-run blocks or runner settings
 while authoring requirements. Preserve existing metadata unchanged on scoped
 revisions; report conflicts for planning reconciliation. A saved PRD is optional
 for a bounded task whose approved requirements can be carried directly into its

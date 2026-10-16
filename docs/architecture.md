@@ -89,16 +89,16 @@ acceptance-coverage section maps source outcomes into bounded stories and assign
 integrated verification ownership before handoff. This guidance is present in the
 uncommitted source snapshot, not verified as installed behavior.
 
-The execution and persistence contracts are centralized in prepare-implementation:
+The execution and persistence contracts are centralized in run-agent-team:
 
 | Responsibility | Canonical source / consumer |
 | --- | --- |
-| Story selection, authorization, checks, review budget, finalization | [story-execution.md](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md), consumed by both adapters |
-| Review protocol and result schema | [story-review.md](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md), supplied to native staged reviewers |
+| Story selection, authorization, checks, review budget, finalization | [story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md), consumed by both adapters |
+| Review protocol and result schema | [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md), supplied to native staged reviewers |
 | Ralph executor | [ralph.md](../ai/opencode/agents/ralph.md), reads the installed shared contracts and writes the structured iteration outcome |
 | Ralph scheduling and recovery state | [bin/ralph](../bin/ralph), `main()`, `execute()`, `validate_delivery()` and `status_report()` |
 | Codex Goal adaptation | [Markdown plan reference](../ai/plugins/coding/skills/prepare-implementation/references/markdown-checklist.md), [story-reviewer.toml](../ai/codex/agents/story-reviewer.toml), [Goal guide](codex-goals.md) |
-| Completed-run preservation | [archive_run.py](../ai/plugins/coding/skills/prepare-implementation/scripts/archive_run.py), under the [archive contract](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md) |
+| Completed-run preservation | [archive_run.py](../ai/plugins/coding/skills/run-agent-team/scripts/archive_run.py), under the [archive contract](../ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md) |
 
 Ralph's `execute()` persists `running`, launches `opencode run --agent ralph`,
 then validates the iteration's identity, outcome, exact selected-story plan

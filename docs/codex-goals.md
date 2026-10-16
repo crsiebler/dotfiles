@@ -12,7 +12,8 @@ For a clear bounded task, carry the approved request or brief directly into the
 plan; a separate PRD and archive manifest are optional. Larger work can use fuller
 PRDs, design/phase context and explicit dependency/integration coverage.
 `write-requirements` defines outcomes, scope and acceptance; planning owns story
-breakdown, worker selection and any optional archive enrollment. Codex Goal and
+breakdown, dependency DAG and recommended expertise. Execution selects models,
+assigns workers and binds any optional archive enrollment. Codex Goal and
 Ralph/OpenCode are separate worker choices; never launch one inside the other.
 
 ## Prepare
@@ -25,13 +26,13 @@ it does not implement, run project tests, create branches, start a goal, or crea
 
 Each new Markdown story starts unchecked and contains:
 
-- Stable ID, priority, dependencies, user benefit, and owned paths.
-- One integration owner, explicit task worktree/branch/base assignments, and
-  shared build/output and host resource coordination before worker dispatch.
-- Observable acceptance criteria and applicable verification commands.
-- The shared implementation/verification/review handoff once, instead of a
-  repeated lifecycle checklist per story.
-- An instruction to append execution checkpoints to `progress.md`, not the plan.
+- Stable ID, priority, explicit dependencies, user benefit and relevant paths.
+- Observable acceptance criteria, integration acceptance owner and real checks.
+- Recommended known specialist agents and any material planning gaps.
+
+Execution assigns task worktrees/branches/bases, resources and worker models in
+its existing checkpoint. It appends actual evidence to progress.md; planning
+creates neither execution state nor orchestration callbacks.
 
 The plan records a stable approved revision and scope baseline, plus the exact
 required working branch. Completion checkboxes change without advancing the
@@ -57,10 +58,10 @@ gates with Ralph. Its Markdown adapter permits concurrent implementation workers
 Ralph's JSON adapter remains serial. The task adapter uses Markdown checkboxes in
 `PLAN.md` instead of JSON `passes` in `plan.json`; native runtime controls remain
 distinct. The canonical sources are
-[story-execution.md](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
-and [story-review.md](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md).
+[story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+and [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md).
 At execution time, load both in full relative to the advertised installed
-`prepare-implementation` skill, not through the dotfiles checkout or hardcoded
+`run-agent-team` skill, not through the dotfiles checkout or hardcoded
 plugin-cache paths. The executor supplies the full review protocol to the wrapper;
 the shared reference, not the native wrapper, owns the exact JSON schema.
 
@@ -84,7 +85,7 @@ the plan. Quoting or documenting this template is **not** execution permission:
 
 ```text
 /goal Execute the approved revision of PLAN.md in standard mode using the installed
-prepare-implementation shared execution/review contracts. I authorize in-scope
+run-agent-team shared execution/review contracts. I authorize in-scope
 implementation, required checks, budgeted delegation, scoped task worktree setup
 from approved commits and one local commit per
 passing story across this eligible sequence. Preserve unrelated work and all
@@ -240,7 +241,7 @@ Another story may proceed only if independently eligible under dependencies and
 priority ordering and safely isolated from the preserved blocked candidate through
 implementation, staging, checks, and commit. Otherwise report the blocker and stop
 work; do not manufacture experiments or bookkeeping to sustain activity.
-The canonical [persistent blocker gate](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md#persistent-blockers-and-goal-resumption)
+The canonical [persistent blocker gate](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md#persistent-blockers-and-goal-resumption)
 is separate from evidence-reading budgets and leaves Ralph's explicit recovery
 handoffs and persisted counters unchanged.
 
@@ -318,16 +319,17 @@ Plan archival is required whenever the entire goal is reached. An unenrolled
 bounded task uses the installed archive helper's copy-only `--preserve-plan`
 mode, retaining active sources and writing a separate preservation receipt without
 claiming verified run archival. No extra PRD or invented delivery history is needed.
-If completion archival was missed, planning must preserve the old completed plan
-and verify its receipt/current hashes before authorized replacement. Failure
+If completion archival was missed, the authorized execution/closeout owner must
+preserve the old completed plan. Planning verifies the receipt/current hashes
+before authorized replacement and blocks if preservation is missing. Failure
 blocks replacement; unfinished plans stay intact. Old journal/memory retirement
 requires scoped reconciliation before a new run can execute.
 
-For verified full-run archival, planning owns the saved PRD inventory and work-run
-binding; requirements drafting adds no runner/archive metadata.
+For verified full-run archival, execution verifies and binds the saved PRD
+inventory and work-run metadata before the first checkpoint; requirements drafting adds no runner/archive metadata.
 
 For an enrolled run, with one active plan per worktree, archive only after all
-tasks are verified and required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
+tasks are verified and required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md):
 invoke the installed archive_run.py automatically under the existing scoped
 archival/removal grant, passing the exact primary PRD and absolute worktree root.
 The optional PRD work-run manifest declares the task source and associated PRDs; committed
@@ -364,14 +366,12 @@ Sources: [Follow a goal](https://developers.openai.com/codex/use-cases/follow-go
 
 ## Explicit parallel agent teams
 
-For authorized substantial independent stories, prepare-implementation discovers
-run-agent-team. It requires concurrent dispatch before waiting when capability,
-authority and capacity permit, with exact logged serial exceptions. One Sol
-multi-agent-coordinator owns dispatch and integration; Luna workers use assigned
-worktrees. Astra escalation does not add a review gate or renew budgets. The
-coordinator reads the exact existing plan/revision and releases dependencies only
-after integration delivery. Parent-direct guidance adoption is a disclosed
-fallback for unavailable nesting/capacity, not a native role invocation claim.
-Missing required story-reviewer selection still blocks execution. Existing
-requirements, checks/review, commits and archival remain authoritative. See
-[team verification](agent-team-verification.md) before claiming activation.
+Invoke run-agent-team explicitly for authorized team execution of an existing
+approved plan. Planning produces stories, criteria, a DAG and recommended
+expertise; it never starts execution. The Sol-selected main thread owns dispatch,
+version control, merging and task state. Luna workers use assigned worktrees.
+Fill eligible capacity before waiting and release dependencies only after verified
+integration delivery. Astra escalation stays within existing review/remediation
+budgets and retains the exact dedicated reviewer. Missing native reviewer controls
+block execution. See [team verification](agent-team-verification.md) before
+claiming activation.

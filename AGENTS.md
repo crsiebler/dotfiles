@@ -36,9 +36,11 @@ defines the native role contract.
   bundles. create-mcp-server is instruction-only, with no runtime dependencies;
   see [MCP skill verification](docs/create-mcp-server-verification.md).
 - `coding` adds `run-agent-team` for explicit Codex parallel execution using the
-  existing plan-aware `multi-agent-coordinator`; Ralph remains serial. One batch
-  lead owns dispatch and integration, with native capability/model/pin preflight.
-  Source delivery does not activate installed roles or prove native team execution.
+  existing approved plan; Ralph remains serial. The main thread owns dispatch,
+  Git, merging and canonical task state, with native capability/model/pin preflight.
+  The checkout-local `bin/swarm` starts a fresh top-level Sol Codex session using
+  `ai/codex/swarm.md`; it is not a native custom-primary registry entry. No global
+  installation is performed. Source delivery does not prove native team execution.
 - `coding` uses `develop-code` for feature/fix/refactor methods and independent
   `review-code` for read-only scopes/lenses. The three former development bundles
   are retired; no aliases remain. Keep the project template optional and preserve
@@ -51,7 +53,7 @@ defines the native role contract.
   concatenation or normalization. This root file is repository-only guidance.
 - Codex configuration sources are `ai/codex/config.toml` and `astra.config.toml`.
   OpenCode configuration and native prompts remain under `ai/opencode/`.
-- Coding runtime/model selection policy lives in the prepare-implementation skill; see
+- Coding runtime/model selection policy lives in the run-agent-team skill; see
   [selection and rollout](docs/runtime-selection.md). Reusable roles omit model
   and effort pins; preserve their expertise and permission/review contracts.
   Global subagent/build defaults must not silently override session selection.
@@ -159,7 +161,7 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   the exact GitHub review command/API payload and obtain explicit confirmation
   before any `gh` review write, regardless of available MCP write permissions.
 - Shared story execution and the canonical review protocol/JSON schema live in
-  `ai/plugins/coding/skills/prepare-implementation/references/story-execution.md`
+  `ai/plugins/coding/skills/run-agent-team/references/story-execution.md`
   and `story-review.md`. Executors load both in full relative to the advertised
   installed skill, never via checkout or hardcoded plugin-cache paths, and supply
   the full review protocol to the native reviewer wrapper.
@@ -189,7 +191,7 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   Small bounded tasks may hold outcome, scope and acceptance directly in the
   plan, without a separate PRD or archival enrollment. Larger tasks use PRDs and
   explicit validated dependency edges. Requirements authoring does not own
-  runner/archive metadata; planning binds it only for enrolled archival runs,
+  runner/archive metadata; execution binds it before an enrolled run begins,
   preserving existing manifests and all archival integrity checks.
   Resolve active-harness identity from trusted runtime context or the invoking
   native entry point; `ai/opencode/commands/plan-work.md` supplies the JSON default.
@@ -276,7 +278,7 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 - One active plan belongs to each worktree. Keep task sources and `memory.json`
   at the root; create the journal only for a permitted execution checkpoint, never
   during planning/PRD drafting. Do not read or migrate legacy execution logs.
-- Completed-run archival follows the installed prepare-implementation skill's
+- Completed-run archival follows the installed run-agent-team skill's
   `references/completed-run-archive.md` and `scripts/archive_run.py`. PRDs declare
   the run ID, exact task source and associated PRDs in a work-run JSON block.
   Root `progress.md` carries truthful pre-commit story-result records; the script

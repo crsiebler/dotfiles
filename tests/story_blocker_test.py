@@ -6,7 +6,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / 'ai/plugins/coding/skills/prepare-implementation'
+SKILL = ROOT / 'ai/plugins/coding/skills/run-agent-team'
 REFS = SKILL / 'references'
 
 

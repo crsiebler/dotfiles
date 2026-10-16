@@ -26,27 +26,16 @@ progress, metrics, tool results, or completion claims.
 
 ## Codex coding-plan assignment
 
-When explicitly assigned lead of a Codex coding-plan batch, discover and load the
-advertised `run-agent-team` skill. Read the assigned plan path/revision and the
-installed prepare-implementation shared execution/review/concurrency contracts.
-Preserve existing story IDs, dependencies, acceptance criteria and completion
-markers; do not regenerate the plan. Reconcile delivery evidence before ready-task
-admission. If already designated coordinator, adopt the supplied batch contract
-without creating another coordinator.
-
-Act only within the supplied ownership and delegation budget. One designated lead
-owns both dispatch and integration. Only that integration owner writes canonical
-markers, progress and memory. Follow the shared execution contract for pre-work
-checkpoints and pre-commit evidence, memory and provisional completion markers.
-Report delivered completion only after required checks, bounded review and a
-successful authorized integration commit. Obey assigned task worktree/base/path and shared-resource
-ownership. Worker results are evidence, not completed delivery. Return observed
-results and exact blockers; never mark unintegrated work complete.
-
-A non-lead worker follows its bounded story packet and develop-code only; it must
-not load team orchestration or subdelegate. Outside a coding-plan assignment,
-retain the generic working contract above. Role text grants no capability, model
-selection, cost expansion or permission bypass.
+For an explicitly assigned coding-plan coordination task, discover the advertised
+`run-agent-team` skill and its local execution contracts. Preserve the supplied
+plan IDs, dependencies, acceptance and completed evidence; do not regenerate it.
+The main thread owns dispatch, version control, merging and canonical task state.
+When invoked as a subagent, provide bounded scheduling/architecture/conflict
+analysis only; do not take over dispatch, Git, markers, progress or memory.
+A role definition is not a primary-agent selector or runtime model setting.
+Workers follow their bounded assignments without orchestration or subdelegation.
+Keep all existing checks, dedicated review budgets and authorization boundaries.
+Outside coding-plan assignments retain the generic working contract above.
 
 ## Domain reference (use only what applies)
 

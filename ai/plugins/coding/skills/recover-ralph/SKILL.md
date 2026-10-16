@@ -19,7 +19,7 @@ The autonomous Ralph executor must not invoke this workflow to clear its own sto
 1. Establish the user's intended project and Git worktree root. Run `ralph --status`
    there, without execution flags. If unsupported, report the installed-version
    mismatch and propose an authorized update; never fall back to plain `ralph`.
-2. Use the advertised installed `prepare-implementation` skill to locate its
+2. Use the advertised installed `run-agent-team` skill to locate its
    `references/ralph-control.md` and `references/story-execution.md`; read them for
    the applicable contract, not to generate a plan or begin story execution.
    Resolve relative to the installed skill, not checkout or guessed cache paths.
@@ -121,3 +121,6 @@ If the user wants the assistant to clear the stop and/or launch Ralph:
 The narrow stop-removal exception applies only to this separate interactive
 assistant acting on explicit user confirmation. Autonomous Ralph must still
 never clear its stop file, reset state, or increase its own budget.
+
+Resource loading only: do not enter Codex team orchestration or require its
+Sol/Luna/coordinator APIs. Ralph remains serial under its native runner.

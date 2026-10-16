@@ -38,7 +38,7 @@ execution notes or require/create the journal while drafting requirements.
    not follow out-of-project symlinks. If approval is withheld or preservation
    fails, leave the original unchanged and return the draft in the response.
 4. Never archive `PLAN.md`, `plan.json`, `memory.json`, or `progress.md` as a
-   drafting side effect. Completed-run archival belongs to prepare-implementation's
+   drafting side effect. Completed-run archival belongs to execution's
    deterministic helper after verified execution, including the run-owned PRDs.
    PRD replacement is a separate preservation guard. Preserve unrelated files.
 
@@ -62,7 +62,7 @@ Use the fuller PRD below for larger or interdependent outcomes, significant
 uncertainty or coordination, or an explicit PRD request. Do not drop acceptance
 coverage because a brief is shorter. Do not invent phases, task-source adapters,
 prepared branch names, run IDs, archive manifests, execution logs or launch grants.
-prepare-implementation owns those planning/execution concerns and can optionally
+Downstream planning owns story/DAG data; execution owns lifecycle enrollment and can optionally
 enroll saved PRDs for deterministic archival. Preserve any existing work-run
 metadata unchanged while revising requirements; report a conflict rather than
 silently rebinding it. A new requirements document needs no work-run block.

@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / 'ai/plugins/coding/skills/prepare-implementation/scripts/archive_run.py'
+SCRIPT = ROOT / 'ai/plugins/coding/skills/run-agent-team/scripts/archive_run.py'
 sys.dont_write_bytecode = True
 SPEC = importlib.util.spec_from_file_location('archive_run', SCRIPT)
 ARCHIVE = importlib.util.module_from_spec(SPEC)

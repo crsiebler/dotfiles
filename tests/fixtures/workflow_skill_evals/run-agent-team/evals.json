@@ -7,7 +7,7 @@
       "expected_output": "Dispatch two workers before waiting; one Sol lead owns integration.",
       "files": [],
       "expectations": [
-        "Native selected coordinator and explicit Luna workers",
+        "Sol-selected main thread and explicit Luna workers; main thread owns Git and task state",
         "Two dispatches before any wait",
         "No duplicate parent manager or tracker",
         "Observed overlap is separate from dispatch compliance"
@@ -26,19 +26,19 @@
     },
     {
       "id": 3,
-      "prompt": "Installed coordinator pins Astra, and the available generic spawn API has no native story-reviewer selector. Run a standard substantial batch.",
-      "expected_output": "Block before worker calls; report exact conflicting pin and missing reviewer capability.",
+      "prompt": "The main thread selects Sol, but available spawn API has no native story-reviewer selector. Run a standard substantial batch.",
+      "expected_output": "Block before worker calls; report exact missing reviewer capability.",
       "files": [],
       "expectations": [
         "No generic reviewer roleplay",
         "No model substitution or automatic install",
-        "Parent-direct fallback cannot cure missing mandatory reviewer"
+        "Direct main-thread dispatch cannot cure missing mandatory reviewer"
       ]
     },
     {
       "id": 4,
       "prompt": "Native nesting unavailable; the Sol parent can select Luna workers and the exact required reviewer. Execute the independent approved plan.",
-      "expected_output": "Use disclosed parent-direct coordinator guidance with one owner.",
+      "expected_output": "The Sol main thread dispatches direct Luna workers and retains all Git and task state.",
       "files": [],
       "expectations": [
         "No child coordinator or proxy-spawning",
@@ -59,11 +59,11 @@
     },
     {
       "id": 6,
-      "prompt": "Resume after uncertain coordinator spawn and a final blocked story review. Start a new manager and reviewer.",
+      "prompt": "Resume after uncertain worker spawn and a final blocked story review. Start another worker and reviewer.",
       "expected_output": "Inspect native sessions and candidate evidence; preserve budget and stop affected story.",
       "files": [],
       "expectations": [
-        "No duplicate possibly-live coordinator",
+        "No duplicate possibly-live worker",
         "No refreshed review budget",
         "Material-resolution evidence required"
       ]
@@ -71,7 +71,7 @@
     {
       "id": 7,
       "prompt": "Prepare a plan only; use a swarm later. Also inspect a RalphJSON request.",
-      "expected_output": "Prepare the handoff without execution state or agents; keep Ralph serial.",
+      "expected_output": "Do not enter execution; report the missing approved plan or planning-only boundary and keep Ralph serial.",
       "files": [],
       "expectations": [
         "No execution during planning",
@@ -88,6 +88,72 @@
         "No false archive success",
         "No automatic cleanup retry",
         "No unintegrated completion markers"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Execute a swarm without an approved story plan.",
+      "expected_output": "Report missing plan input without invoking a planning skill.",
+      "files": [],
+      "expectations": [
+        "No implicit prepare-implementation invocation",
+        "No invented story plan or execution state"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "The coordinator is a child and asks to own merging and mark stories complete.",
+      "expected_output": "Keep dispatch, Git, merging and canonical task state in the main thread; return bounded advice.",
+      "files": [],
+      "expectations": [
+        "No child-owned canonical writes",
+        "No proxy-spawning",
+        "Preserve existing delivery gates"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "All stories are committed and verified. Archive automatically under the previously granted closeout scope using the bound tasks/prd-search.md.",
+      "expected_output": "Invoke the discovered installed archive_run.py with the exact worktree/PRD paths, report actual status and preserve a flat archive.",
+      "files": [],
+      "expectations": [
+        "No repeated approval request under unchanged authority",
+        "No LLM-written copy/remove commands",
+        "PRD is alongside plan/progress/memory",
+        "No implicit push"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Ralph's last agent reports completion, but its supervisor is still running. Archive the run.",
+      "expected_output": "Wait for supervisor validation and successful exit; preserve active artifacts.",
+      "files": [],
+      "expectations": [
+        "No archival inside the final iteration",
+        "No removal of plan.json before supervisor validation",
+        "No manufactured completion evidence"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Archive an old run with checked boxes but no structured review/check records. The helper failed during source removal; retry cleanup.",
+      "expected_output": "Report missing evidence or partial state and preserve files pending scoped reconciliation.",
+      "files": [],
+      "expectations": [
+        "No invented story-result records",
+        "No automatic cleanup retry",
+        "No replacement of the helper with shell commands"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Continue the next eligible story under the existing explicit sequence implementation/test/delegation/local-commit grant.",
+      "expected_output": "Carry the existing grant across story boundaries, verifying scope and all delivery safeguards without another activation prompt.",
+      "files": [],
+      "expectations": [
+        "No repeated approval for unchanged scope",
+        "Native Goal and Ralph remain alternative workers",
+        "Branch/candidate/review/commit gates preserved"
       ]
     }
   ]

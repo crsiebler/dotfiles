@@ -11,55 +11,42 @@ installation, publication and live model experiments remain separately scoped.
 Use trusted runtime identity; this execution adapter is Codex-only. RalphJSON
 remains serial. Do not start a new controller, scheduler, service, or task registry.
 
+## Shared-resource consumers
+
+RalphJSON and recovery discover this bundle only to read story-execution.md,
+story-review.md and ralph-control.md. That resource-loading path does not enter
+the Codex team preflight, require Sol/Luna/coordinator APIs or change Ralph's
+serial runner. Native wrappers select their explicit adapter/profile.
+
 ## Entry and ownership
 
-Honor the supplied assignment before selecting a mode:
-- A worker follows its bounded story packet and the advertised `develop-code`
-  method only. It must not route back here, spawn a coordinator, or subdelegate.
-- An already designated batch lead adopts the supplied contract directly; it
-  must not create another coordinator.
-- An initial caller establishes one batch lead through the preflight below.
+Invoke this workflow explicitly or from an assigned multi-agent-coordinator.
+Do not make requirements, planning or ordinary coding methods call it implicitly.
+An adequate approved story plan is required input. If missing, report the exact
+input gap; do not invoke a planner or regenerate the plan. Normal coding skill
+discovery applies when coding begins; no particular development skill is an
+orchestration prerequisite.
 
-For an explicit swarm/team request without an adequate plan, discover
-`prepare-implementation` and prepare the missing bounded plan/handoff first.
-Preserve approved requirements, scope, acceptance and state. Reuse existing
-execution, delegation, worktree and commit grants; request only genuinely missing
-scope. Planning-only work creates neither agents nor execution state. Do not
-silently treat an explicit team request as serial execution.
-
-Prefer native `multi-agent-coordinator` on explicitly selected `gpt-6.1-sol` as
-both sole dispatch owner and sole integration owner for the batch. The parent
-supervises scope after handoff; it does not also dispatch, stage, commit, or edit
-canonical trackers. Workers return changes and evidence. The coordinator owns
-integration checks, existing review gates, authorized story commits, completion
-markers, append-only progress and bounded memory. Give the owner explicit
-integration root/branch, plan path/revision, grant, limits and role.
-
-When nesting or manager capacity is unavailable, an already selected Sol parent
-may load the discovered coordinator's instructions and be the sole lead with
-direct workers. Disclose guidance adoption, not native custom-role invocation.
-Do not use parent proxy-spawning for a coordinating child. This fallback still
-requires all worker, model and dedicated-reviewer capabilities. Missing required
-native review is a blocker, never grounds to substitute a generic reviewer.
+The main thread is the sole dispatch and integration owner. It owns version
+control, merging, conflicts, canonical task markers, append-only progress and
+bounded memory. Workers return bounded changes and evidence. A coordinating
+subagent may provide analysis, but cannot take over Git, trackers or dispatch.
+Do not proxy-spawn for a child or create recursive managers. A native role file
+cannot promote a child to primary or change the main thread's selected model.
 
 ## Preflight and dispatch
 
-Use one compact capability/ownership preflight. Inspect actual native tool
-schemas, available role registrations and installed model pins. Every mode needs
-supported worker model selection, known capacity accounting, and required native
-`story-reviewer` selection plus same-session continuation before worker calls.
-Delegated mode additionally needs exact coordinator invocation/model selection and
-permitted nesting. Parent-direct mode instead needs a selected Sol parent and
-readable discovered coordinator guidance; it does not require a coordinator child
-or nesting. Never let that fallback weaken the worker or reviewer gates.
-A file, label, source change or generic child is not proof of these capabilities.
-Record requested settings, selection evidence and unobserved effective settings
-honestly. A conflicting role pin blocks that model path; never install or alter
-settings automatically to make the preflight pass.
+Use one compact capability/ownership preflight. Verify the main thread's selected
+`gpt-6.1-sol` setting, callable worker model controls, capacity accounting and exact
+native story-reviewer selection/same-session continuation when the budget requires
+it. Record selection evidence and unknown effective settings honestly. A conflicting
+installed pin blocks that model path; never alter runtime settings to pass.
+Missing required reviewer capability blocks execution, not permission to substitute
+a generic reviewer. Inspect actual tool schemas; names and files prove no capability.
 
-Select `gpt-6-luna` explicitly for implementation workers. For justified ambiguity,
-security or difficult failure, use `gpt-6-astra` only within the existing advisor,
-review or remediation allowance and actual model-use scope. Keep the coordinator
+Select `gpt-6-luna` explicitly for implementation workers. Use `gpt-6-astra` for reviews, conflict analysis, architecture and cross-domain
+analysis under [runtime selection](references/runtime-selection.md), within existing
+advisor/review/remediation allowances and actual model-use scope. Keep the main thread
 on Sol. A model change does not reset review attempts, add a second gate or grant
 an autonomous retry. Role definitions remain reusable without model pins.
 
@@ -80,12 +67,15 @@ separate verification result.
 
 ## Execute and deliver
 
-Discover `prepare-implementation`; load its `references/story-execution.md`,
-`references/story-review.md`, `references/codex-concurrency.md` and
-`references/completed-run-archive.md` relative to its advertised installed base.
-They remain canonical for graph/ownership, review schemas/budgets, commits,
-persistent blockers and archival. Do not use hardcoded checkout/cache/sibling
-paths or duplicate those contracts here.
+Read this skill's [story execution](references/story-execution.md),
+[review protocol](references/story-review.md),
+[concurrency](references/codex-concurrency.md) and
+[archival](references/completed-run-archive.md) contracts in full, relative to
+this advertised installed bundle. They own execution, runtime selection, review,
+state and delivery. No planning skill is a runtime dependency. For enrolled runs,
+verify/bind run metadata before the first checkpoint under actual scoped authority;
+preserve existing manifests. Ralph still requires its clean committed plan before
+launch; invoking Ralph does not authorize setup commits.
 
 Read the exact existing Codex plan and revision. Preserve story IDs, dependency
 edges, acceptance criteria and completed evidence. Validate all references,
@@ -106,7 +96,7 @@ Integrate one bounded candidate at a time through the shared checks and risk-bas
 review. Use permitted self-review only where that budget allows; otherwise invoke
 exact native `story-reviewer` with full protocol/profile and preserve its session.
 Allow one initial and at most one targeted pass per attempt. Do not add a worker
-staged review, coordinator approval or reviewer-of-reviewer cycle. Follow shared
+staged review, extra coordinator approval or reviewer-of-reviewer cycle. Follow shared
 pre-commit evidence and provisional marker finalization; report delivered completion
 only after successful authorized integration commit. Keep evidence in progress,
 not plan narratives or a new registry.
@@ -116,8 +106,8 @@ only safely isolated eligible work. Reconcile uncertain spawn/results through
 native session state before any retry. Never duplicate a possibly-live owner.
 Resume from observed plan revision, roots/branches/bases, live IDs, delivery
 commits, reviewer session/passes and resource ownership. Transfer ownership only
-after the prior lead is quiescent and the handoff is reconciled. Persistent final
-review blockers require material-resolution evidence, not a new agent/model.
+after the prior lead is quiescent and the handoff is reconciled. Apply the persistent blocker gate before further story work or review. Persistent
+final review blockers require material-resolution evidence, not a new agent/model.
 
 After the entire goal is delivered and writers are quiescent, perform required
 archival under the shared contract and actual authority. Report pending closeout

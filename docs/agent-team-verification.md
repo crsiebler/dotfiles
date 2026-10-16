@@ -2,7 +2,7 @@
 
 The run-agent-team coding skill and plan-aware multi-agent-coordinator define a
 native Codex invocation procedure. They provide no scheduler or runtime API.
-Ralph remains serial; the shared prepare-implementation execution/review/archive
+Ralph remains serial; the shared run-agent-team execution/review/archive
 contracts remain authoritative.
 
 ## Verification scope
@@ -34,3 +34,12 @@ Parent-direct fallback still needs every required reviewer/model capability.
 Missing native gates block the smoke; do not substitute generic labels or claim
 that a fixture validated the installed workflow. No global install, cache cleanup,
 model smoke, publication, deployment or service change is part of source testing.
+
+## Review revision boundary
+
+Planning and coding methods no longer route into team execution. The main thread
+owns dispatch, Git, merging and trackers. A coordinator child is advisory only.
+The earlier smoke limitations above remain historical observations, not evidence
+of this revised contract running. Swarm is a source-checkout launcher for a fresh top-level Codex session, using
+explicit Sol selection and initial instructions. No native primary-agent registry
+entry, installed settings changes or live execution is implied.

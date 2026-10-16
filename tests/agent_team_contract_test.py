@@ -11,7 +11,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / 'ai/plugins/coding/skills/run-agent-team'
-CONCURRENCY = ROOT / 'ai/plugins/coding/skills/prepare-implementation/references/codex-concurrency.md'
+CONCURRENCY = ROOT / 'ai/plugins/coding/skills/run-agent-team/references/codex-concurrency.md'
 
 
 def reference_functions():
@@ -39,6 +39,36 @@ class AgentTeamContractTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
         for case in evaluations['evals']:
             self.assertTrue(case['prompt'] and case['expected_output'] and case['expectations'])
+
+    def test_planning_is_atomic_and_execution_resources_have_one_owner(self):
+        planning = ROOT / 'ai/plugins/coding/skills/prepare-implementation'
+        develop = ROOT / 'ai/plugins/coding/skills/develop-code/SKILL.md'
+        self.assertNotIn('run-agent-team', develop.read_text())
+        for source in planning.rglob('*.md'):
+            self.assertNotIn('run-agent-team', source.read_text(), str(source))
+            for link in re.findall(r'\]\(([^)]+)\)', source.read_text()):
+                if '://' not in link and not link.startswith('#'):
+                    target = (source.parent / link.split('#')[0]).resolve()
+                    self.assertTrue(target.is_relative_to(planning.resolve()))
+                    self.assertTrue(target.is_file(), link)
+        for name in ('story-execution.md', 'story-review.md', 'ralph-control.md',
+                     'codex-concurrency.md', 'completed-run-archive.md',
+                     'runtime-selection.md'):
+            self.assertTrue((BUNDLE / 'references' / name).is_file())
+            self.assertFalse((planning / 'references' / name).exists())
+        self.assertFalse((planning / 'scripts/archive_run.py').exists())
+        self.assertTrue((BUNDLE / 'scripts/archive_run.py').is_file())
+        for consumer in ('ai/opencode/agents/ralph.md',
+                         'ai/opencode/agents/ralph-reviewer.md',
+                         'ai/codex/agents/story-reviewer.toml',
+                         'ai/plugins/coding/skills/recover-ralph/SKILL.md'):
+            text = (ROOT / consumer).read_text()
+            self.assertIn('run-agent-team', text)
+            self.assertNotIn('prepare-implementation', text)
+        entry = ' '.join((BUNDLE / 'SKILL.md').read_text().split())
+        self.assertIn('main thread is the sole dispatch and integration owner', entry)
+        self.assertIn('cannot take over Git, trackers or dispatch', entry)
+        self.assertIn('do not invoke a planner', entry)
 
     def test_ready_frontier_requires_integration_delivery_not_worker_results(self):
         ready = reference_functions()['ready_story_ids']

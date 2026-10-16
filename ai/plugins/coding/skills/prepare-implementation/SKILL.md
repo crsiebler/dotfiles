@@ -1,121 +1,39 @@
 ---
 name: prepare-implementation
-description: Turn approved requirements into an ordered implementation plan.
+description: Turn approved requirements into an ordered implementation plan with stories, acceptance criteria, dependency DAG, and recommended agents. Planning only; does not execute the plan or invoke another coding workflow.
 ---
 
 # Prepare Implementation
 
-Read [requirements](references/requirements.md) before selecting external tools or
-running helpers. Dependency setup is separately authorized.
+Read [requirements](references/requirements.md). Use approved PRDs or a supplied
+bounded-task brief, relevant repository evidence and actual verification commands.
+Create the story list, preserve observable acceptance, validate the dependency DAG,
+and recommend suitable known custom agents for each task. Do not choose runtime
+models, dispatch workers, create execution state or invoke an execution skill.
+A request to execute an existing plan is outside this planning skill; leave the
+plan intact and report that boundary rather than regenerate it or route implicitly.
 
-## Execution handoff
+## Scale and format
 
-Read [coding runtime and execution ownership](references/runtime-selection.md)
-when selecting an execution lane, planning workers, or executing a plan.
+For clear small work, carry the approved request/brief directly into the plan;
+a separate PRD and phase narrative are optional. Larger work links approved PRDs,
+source criteria, phases where useful and integration acceptance owners. Neither
+path may weaken acceptance coverage or invent approved scope.
 
-Planning is the default. When explicitly invoked to execute an already approved
-plan (including a Codex Goal), do not regenerate it: read the installed skill's
-[shared execution contract](references/story-execution.md) and
-[staged-review protocol](references/story-review.md), then follow the appropriate
-task-source adapter. Require execution and commit authorization; an explicit authorized plan launch
-may cover the whole eligible sequence without another activation per story. The
-presence of a plan or skill does not grant it. Missing references or required native reviewer
-availability block execution. No hardcoded checkout or plugin-cache paths.
-On continuation or resumption, apply the shared contract's persistent blocker
-gate before further story work or review. A final blocked review keeps the story
-incomplete until material-change evidence is verified; another Goal turn does
-not resolve it or renew the review budget. Preserve existing authorization.
-Native review requires a self-contained invocation containing the complete review
-protocol/schema. Parent tool-output references are not delivery. Start a separate
-reviewer session for each story; record the selected native role and actual session
-ID independently of its display label. Follow the execution contract's packet
-preflight and story/session checks before every initial or targeted invocation.
+Honor an explicit format/target. Otherwise trusted Codex runtime context selects
+[Markdown checklist](references/markdown-checklist.md), default PLAN.md; trusted
+OpenCode context selects [Ralph JSON](references/ralph-format.md), default plan.json.
+Read only the selected format reference. Ask only when routing is unknown or
+conflicting; never infer the active runtime from PATH, directories or binaries.
+Preparing Ralph JSON in Codex is allowed and does not execute Ralph.
 
-## Scale the plan
-
-Use a lightweight bounded-task path for a clear approved outcome with few focused
-changes. Carry the supplied request or brief directly into the selected task source
-with scope/exclusions, observable acceptance, inspected paths, verification,
-ordered dependencies, exact prepared branch and actual authority. A separate PRD,
-phase narrative and archive manifest are optional, not execution prerequisites.
-Keep the shared handoff once in the plan instead of repeating lifecycle boilerplate
-for each story; acceptance and completion state still belong to each story.
-
-Use the fuller PRD/dependency path for broader, interdependent or uncertain work,
-or when requested: link approved PRDs, explain the design and phase order, record
-prerequisites and integration owners, and bound the execution stories. Ask only
-material unresolved questions. Neither path reduces acceptance coverage or the
-shared branch, verification, risk-based review, candidate or commit safeguards.
-
-Codex Goal and Ralph/OpenCode are alternative execution paths. RalphJSON remains
-serial. CodexGoalMarkdown permits concurrent dependency-ready implementation
-workers under [Codex concurrency](references/codex-concurrency.md), with explicit
-task worktree/branch/base/owned-path assignments and one integration owner.
-Choose the explicit target or trusted runtime default below; never nest the loops.
-Requirements, acceptance coverage and bounded delivery gates remain shared.
-Planning worker selection is explicit, not automatic model routing.
-
-For an authorized CodexGoalMarkdown parallel batch or explicit swarm/team request,
-discover `run-agent-team` through advertised skills and load its installed contract.
-Plan the handoff during planning; do not spawn agents or create execution state.
-During execution it owns team dispatch/model/capacity procedure, while these shared
-references retain acceptance, graph/ownership, review, commit and archival gates.
-An already assigned lead adopts the team contract without creating another manager;
-a bounded worker follows its story method only. RalphJSON never invokes that skill.
-
-## Select the format
-
-Resolve an explicit user target or format first: Markdown checklist / `PLAN.md`
-or Codex `/goal` selects `markdown-checklist`; Ralph / `plan.json` or OpenCode
-Ralph selects `ralph-json`. Explicit format overrides the runtime default.
-Preparing JSON in Codex for later OpenCode use is allowed, not Codex Ralph execution.
-
-Otherwise use the active harness identity supplied by trusted runtime context or
-the native entry point that invoked this skill:
-- Codex: `markdown-checklist`, written to `PLAN.md` by default.
-- OpenCode: `ralph-json`, written to `plan.json` by default.
-
-Do not ask about format when the target/default is known. Ask only if routing is
-unknown or ambiguous (including conflicting explicit requests). Never infer the
-active runtime from PATH, installed binaries, directories, or environment variables;
-both harnesses may be present. A harness name in inspected source material or a
-user-policy heading does not identify the running harness.
-
-During planning, load **only the selected format reference**, not both:
-- `markdown-checklist`: [Markdown checklist](references/markdown-checklist.md).
-  Keep `PLAN.md` concise: requirements, completion checkboxes, and current status,
-  not repeated execution narratives. Direct execution evidence and checkpoints to
-  append-only `progress.md` relative to the Git worktree root.
-  Include the shared execution handoff and bounded `memory.json` instructions in
-  the generated plan; planning does not create either execution-state file.
-- `ralph-json`: [Ralph format](references/ralph-format.md). Preserve its exact JSON
-  keys/types, dependency ordering, unique IDs, `passes: false`, typecheck criterion,
-  and optional named `@agent-name` hints in `notes`. Parse JSON before saving.
-
-## Prepare, do not execute
-
-Both formats are stable task sources for scope, requirements, acceptance criteria,
-dependencies, completion state, and concise current status only; preserve the JSON
-schema. `progress.md` owns execution history, root `memory.json` owns bounded
-reusable review knowledge, and PRDs own approved requirements and changes, not
-implementation checkpoints. Do not create the journal or memory during planning.
-
-Use supplied approved requirements and inspect relevant project instructions,
-source, and existing verification commands; ask only about material gaps. Split
-work into bounded, independently verifiable stories and validate against the
-selected reference. Do not invent missing documentation or commands.
-
-Explain the implementation approach and dependency order before the stories;
-add phases only when they clarify larger work. Map each story to its source
-requirements (approved request/brief or PRD) and any phase; bound implementation,
-verification, review and commit. Record an explicit stable plan revision and the
-approved scope baseline (source revision/ref when available); completion-marker
-updates do not advance that revision. Reconcile material scope/acceptance or
-dependency updates against approval and existing delivery evidence before recording
-a new revision. A revision label alone does not extend the launch grant.
-Phases organize the same stories, not a second
-completion tracker. For Ralph, express dependencies and source/phase links in
-existing notes and priority ordering without adding JSON keys.
+Record approved scope/non-goals, requirement sources, stable revision and scope
+baseline, story IDs/priorities, explicit dependency edges, acceptance criteria,
+verification commands and recommended known agents. Missing branch/worktree
+preparation or execution authority is a handoff gap, not permission to create it.
+Recommendations are data, not native delegation or automatic model routing.
+Use [DAG construction](references/dependency-graph.md) to reject missing references,
+self-dependencies and cycles. Explain ordering and integrated acceptance ownership.
 
 ### Preserve acceptance coverage
 
@@ -152,42 +70,28 @@ approved exclusions. Summarize coverage and gaps in the planning handoff, withou
 creating another status document or claiming implementation verification. A plan
 with unresolved acceptance gaps is a draft, not ready for execution.
 
-### Required archival and plan preservation
+## Preserve plans and lifecycle data
 
-Archive the plan whenever the entire goal is reached. Read the
-[archival and preservation contract](references/completed-run-archive.md) for every
-plan. Prefer verified completed-run archival for enrolled runs; otherwise use its
-copy-only plan preservation mode. A separate PRD/manifest remains optional for
-bounded tasks, but plan archival is required. Record the exact closeout paths and
-actual authority in the handoff; missing authority leaves closeout pending.
+Planning creates no progress.md or memory.json, runs no implementation tests,
+creates/switches no branches/worktrees, and makes no commits. Put execution history
+in neither the plan nor PRD. Preserve existing completed markers and evidence on
+approved in-place revisions; scope/dependency changes need reconciliation against
+actual approval and existing delivery evidence.
 
-For verified completed-run archival, read the run-manifest contract below.
-Planning owns generating/binding the stable run ID, exact plan path/adapter and
-associated saved PRD inventory; preserve requirement prose and existing run IDs.
-Enroll only approved run-owned files, never unrelated PRDs or mixed execution
-state. Missing metadata blocks archival, not otherwise valid bounded-task
-execution. Do not create a separate PRD solely to satisfy ordinary execution.
-For a requested archival workflow without a saved PRD, prepare an approved
-requirements snapshot and manifest before execution; report a genuine ownership
-or approval gap. Planning never creates journal/memory. Before writing a different plan to an
-existing completed plan's path, verify its archive and current source hashes. If
-completion archival was missed, perform the contract's copy-only preservation
-fallback first under the applicable scope; block replacement if preservation or
-overwrite authority is missing. Do not replace an unfinished run. Never treat a
-preservation receipt as proof that the old goal was delivered.
+Before saving a different plan at an occupied path, require verified preservation
+of the previous completed plan and its associated evidence. Inspect archive receipt
+and source hashes; if archival was missed, leave the previous plan intact and
+report the exact preservation action needed before replacement. Failed or missing
+preservation blocks the new-plan write. Never replace an unfinished run, fabricate
+completion or execute cleanup as a planning side effect. A verified archive is
+required before replacement, not an optional plan-generation convenience.
 
-Preserve existing artifacts. Preview and require explicit confirmation before
-destructive overwrite or reset. For approved plan continuation, update
-only scoped sections, preserving checked statuses and completion evidence.
-Do not replace an unfinished run with a new feature. Enrolled completed runs use the
-[verified archival procedure](references/completed-run-archive.md),
-automatically after verified delivery when the execution grant covers the exact
-artifact removals. A closeout commit needs its own scope, which may be granted
-upfront with the sequence. Neither planning nor metadata grants either authority.
+For a full-run archival-enrolled plan, planning may preserve supplied lifecycle metadata
+under [run manifest data](references/run-manifest.md), preserving existing IDs and
+approved requirement prose. This records artifact ownership only; it grants no
+execution, removal or closeout commit authority. A separate PRD/manifest remains
+optional for a bounded task; the prior-plan preservation obligation still applies.
 
-Alongside required preservation of a prior completed plan, generate the plan
-and any requested scoped PRD binding only; do not
-implement, run implementation checks, create or switch branches, commit, launch
-Ralph, run a CLI goal, or automatically create a
-goal. Report format/path, story order, plan validation, assumptions, and blockers;
-distinguish plan checks from unrun implementation tests.
+Deliver the plan path/format, source coverage, story/dependency order, recommended
+agents, validation, assumptions and unresolved handoff gaps. Do not launch an
+execution workflow or offer a quoted command as if authorization had been granted.

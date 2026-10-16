@@ -138,10 +138,10 @@ retain at most two evidence-gathering turns and remediation-only scope for targe
 review; the same profile is required on resumption.
 
 Both wrappers receive the complete
-[shared review protocol/schema](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md)
+[shared review protocol/schema](../ai/plugins/coding/skills/run-agent-team/references/story-review.md)
 from the executor, which loads it and
-[story-execution.md](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
-in full relative to the advertised installed `prepare-implementation` skill.
+[story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+in full relative to the advertised installed `run-agent-team` skill.
 Neither wrapper owns a duplicate schema or resolves checkout/cache paths. Missing
 protocol blocks review. Native review is project-local read/staged-Git-only,
 with one initial pass and at most one targeted pass in the same actual session;
@@ -274,11 +274,9 @@ comparative model evaluation was waived, not passed.
 
 ## Plan-aware multi-agent coordinator
 
-The existing multi-agent-coordinator role has a conditional Codex coding-plan
-contract: an explicitly assigned batch lead loads run-agent-team, consumes the exact
-plan/revision, preserves story IDs/dependencies/acceptance and releases ready work
-only against delivery evidence. It owns dispatch and integration alone. Non-lead
-workers use bounded story methods without orchestration recursion; generic uses
-retain the role's original working contract. Model choices belong to the team
-invocation, not native role fields. This source contract cannot manufacture native
-role selection, nesting, permissions, worktree isolation or execution evidence.
+The role may explicitly load run-agent-team for a coding-plan assignment. The
+main thread owns dispatch, Git, integration and canonical trackers. A coordinating
+child provides bounded advice only. Preserve the exact plan/revision and all
+review/delivery gates. Reusable role metadata stays model independent; team
+runtime selection belongs to the execution skill. A source role cannot promote a
+child to primary, activate settings or establish actual native invocation.

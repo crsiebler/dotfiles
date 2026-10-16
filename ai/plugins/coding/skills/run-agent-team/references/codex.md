@@ -8,37 +8,31 @@ unsupported execution path rather than guessing argument names or role support.
 
 In the existing execution checkpoint, record:
 - Exact plan path/revision, approved outcome and branch/base scope.
-- Sole dispatch owner and sole integration owner (the same batch lead), actual
+- Sole dispatch owner and sole integration owner (the main thread), actual
   native role/session when observed, integration root and exact branch.
 - Worker limit, total delegation/model-use budget, occupied capacity, whether the
   runtime counts open or active threads, required reviewer capacity and release API.
-- Exact callable coordinator/worker/reviewer role/model and follow-up facilities;
-  observed nesting support, installed pin conflicts and requested model/effort.
+- Exact callable worker/reviewer role/model and follow-up facilities;
+  main-thread selection evidence, installed pin conflicts and requested model/effort.
 - Actual grants for execution, subdelegation, worktrees, story commits and closeout;
   missing capabilities or authority. Planning does not create this checkpoint.
 
-Do not spawn just to discover whether nesting works without applicable live-test
-scope. If role/model/nesting evidence is unavailable, report that gap. If the
-parent is verifiably selected Sol and direct native workers plus dedicated review
-remain available, use disclosed parent-direct mode. Otherwise block the affected
-batch. Self-review is only the existing risk-budget decision, not a fallback for
-missing native reviewer support. Never bypass installed pins or runtime restrictions.
+Do not spawn capability-probe agents. Verify actual schemas and settings before
+work. The Sol-selected main thread dispatches direct workers and retains all Git,
+merging and canonical tracker duties. A coordinator child is advisory only.
+Missing required worker/reviewer controls blocks execution; self-review is only
+the risk-budget decision, not a capability fallback.
 
 ## Packets and nonrecursive entry
-
-The initial caller's coordinator packet includes `Batch role: lead`, approved
-plan path/revision, integration root/branch/base, exact authorization/limits, model
-policy, shared contract loading instructions and the statement that it is the sole
-batch owner. The already designated coordinator adopts that packet; it never
-spawns another coordinator. Parent supervision does not create a second writer.
 
 Every implementation packet includes `Batch role: worker`, story ID and criteria,
 source requirements, delivered prerequisite commits, absolute task worktree,
 exact branch/full base, owned paths/interfaces, private outputs, resource
 constraints, requested Luna selection and exact check commands. State explicitly:
-use develop-code only; no team orchestration, subdelegation, canonical tracker
-changes, or completion claims. Local worker commits require actual scope; even
-then they are handoff evidence, not integration delivery.
+follow the bounded coding assignment; no team orchestration, subdelegation,
+canonical tracker changes or completion claims. Workers do not stage, commit,
+merge or mutate canonical Git state. The main thread owns all version-control
+operations and integration delivery.
 
 Return the actual task/session ID, base/candidate identity, owned changed paths,
 checks with results, any scoped local revision, blockers and integration notes.
@@ -48,7 +42,7 @@ this file does not define a replacement reviewer packet.
 
 ## Selection, admission and capacity
 
-Request Sol for the coordinator and Luna for implementation through supported
+Verify Sol for the main thread and Luna for implementation through supported
 native controls. Resolve custom-role pins after defaults/spawn selection. Use a
 suitable advertised existing specialist role when its task and metadata fit;
 otherwise use an available unpinned native worker when appropriate. Do not add
@@ -68,8 +62,7 @@ C's assigned clean base. Do not silently rebase/reset pending work.
 
 Use min(requested worker limit, safely available native slots, authorized model-use
 budget, project resource capacity). Default requested worker limit is two; it is
-not proof that two slots exist. Count the parent and delegated coordinator where
-the runtime counts them, and all other occupied sessions. Reserve a review slot
+not proof that two slots exist. Count the main thread where the runtime counts it, and all other occupied sessions. Reserve a review slot
 or establish supported release of a completed worker before that gate. A completed
 but still-open native thread may continue consuming capacity. Retain an actual
 reviewer session through its possible targeted pass. Never assume closing a label
@@ -86,8 +79,8 @@ Append actual ownership, model source, IDs, branches/bases, candidate identity,
 check/review evidence and consumed passes to progress.md under its shared contract.
 Do not rewrite earlier entries, fabricate structured outcomes, or read legacy logs.
 After interruption query native session state and inspect owned files/resources
-before resuming or respawning. An uncertain coordinator may still be alive; do not
-start a second one. Missing session identity or unresolved ownership blocks the
+before resuming or respawning. An uncertain worker may still be alive; do not
+start a duplicate. Missing session identity or unresolved ownership blocks the
 affected work. Final blocked review preserves its candidate and consumed budget;
 changing manager/model/session is not material resolution.
 

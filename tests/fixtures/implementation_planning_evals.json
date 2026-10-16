@@ -111,7 +111,7 @@
       "id": "long-native-goal-plan",
       "context": "Codex default. Approved PRD needs twelve bounded stories; no project typecheck command exists.",
       "request": "Prepare the checklist for /goal.",
-      "expected": ["Unique IDs, ordered priorities, prior-only acyclic dependencies", "Research, implementation, verification, mode-aware staged review, remediation and authorized story commit", "Embed installed-skill loading for story-execution.md and story-review.md", "Append execution status and evidence to worktree-root progress.md; bounded validated review knowledge in memory.json", "Keep PLAN.md limited to the plan and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Require an exact prepared branch before execution", "Offer explicit execution and story-commit launch authorization; do not execute it"],
+      "expected": ["Unique IDs, ordered priorities, explicit acyclic dependency DAG", "Observable source acceptance and integrated acceptance owners", "Recommend suitable known agents without model selection or invocation", "Keep PLAN.md limited to plan data and completion checkboxes", "Record unavailable typecheck honestly as a blocker if required", "Report branch preparation and execution authority as downstream gaps", "No embedded orchestration callbacks or execution state"],
       "prohibited": ["Force fresh sessions", "Force compaction or add hooks", "Run /compact in a shell", "Create or reset progress.md or memory.json during planning", "Invent commands or completed results", "Claim Codex enforces Ralph's hard iteration limit"]
     },
     {
@@ -293,15 +293,15 @@
       "id": "bounded-task-no-prd",
       "context": "Trusted runtime identifies Codex. Approved request requires correcting one CLI error message while preserving exit codes and behavior. No separate PRD, archive metadata, journal or memory exists.",
       "request": "Prepare a concise bounded task plan; do not implement.",
-      "expected": ["Carry approved scope, exclusions and observable acceptance directly into PLAN.md", "Record inspected paths, real checks, exact prepared branch and actual authority", "Include shared execution/review handoff once; preserve risk-based review and candidate/commit gates", "Do not create journal or memory while planning"],
+      "expected": ["Carry approved scope, exclusions and observable acceptance directly into PLAN.md", "Record inspected paths, real checks, exact prepared branch and actual authority", "Keep planning atomic; execution owns runtime, review and delivery instructions", "Do not create journal or memory while planning"],
       "prohibited": ["Require a separate PRD or work-run manifest for execution", "Repeat lifecycle checklist for each story", "Omit exit-code preservation", "Invoke tests or execute Goal"]
     },
     {
       "id": "large-prd-dependency-path",
       "context": "Approved PRD spans persistence, API and UI with reload acceptance and two upstream prerequisites; deterministic archival requested.",
       "request": "Prepare the dependency plan and enroll this run for archival.",
-      "expected": ["Explain useful phases and source-linked bounded stories in dependency order", "Assign integrated API/UI/reload verification to the final eligible contributor", "Planning creates/binds stable run ID, exact adapter/task path and declared saved PRD inventory", "Report actual execution/archival/closeout authority separately", "Preserve requirement prose"],
-      "prohibited": ["Reduce acceptance to component existence", "Put execution notes or archive metadata in requirements authoring", "Add Ralph schema keys", "Treat manifest as authority"]
+      "expected": ["Explain useful phases and source-linked bounded stories in dependency order", "Assign integrated API/UI/reload verification to the final eligible contributor", "Preserve supplied metadata; report execution-owned run enrollment without creating run IDs or invoking execution", "Report actual execution/archival/closeout authority separately", "Preserve requirement prose"],
+      "prohibited": ["Reduce acceptance to component existence", "Put execution notes or archive metadata in requirements authoring", "Add Ralph schema keys", "Treat manifest as authority", "Perform archival or enroll runtime during planning"]
     },
     {
       "id": "goal-sequence-launch-authority",

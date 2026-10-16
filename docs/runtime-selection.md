@@ -1,8 +1,8 @@
 # Runtime and model selection
 
 Coding runtime selection and execution ownership live in the coding plugin's
-[runtime-selection reference](../ai/plugins/coding/skills/prepare-implementation/references/runtime-selection.md),
-loaded by prepare-implementation. The general [personal policy](../ai/AGENTS.md)
+[runtime-selection reference](../ai/plugins/coding/skills/run-agent-team/references/runtime-selection.md),
+loaded by run-agent-team. The general [personal policy](../ai/AGENTS.md)
 is copied unchanged to both user-level harnesses and contains no coding execution
 procedure. Roles supply expertise, permitted tools and outputs;
 runtime profiles and explicit launch arguments supply model and effort choices.
@@ -62,5 +62,5 @@ through supported native controls. Material ambiguity or evidenced hard failure
 may use Astra within existing advisor/review/remediation limits. This workflow
 profile does not add pins to reusable roles or change ordinary session inheritance.
 Installed role pins take precedence and must be reconciled through separately
-authorized activation; no skill edits runtime settings automatically. Parent-direct
-fallback requires a selected Sol parent plus all required worker/reviewer APIs.
+authorized activation; no skill edits runtime settings automatically. The selected Sol main thread owns direct dispatch, Git and task state;
+coordinating children advise only. Required worker/reviewer APIs must be available.

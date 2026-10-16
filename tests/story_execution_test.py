@@ -8,8 +8,10 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / 'ai/plugins/coding/skills/prepare-implementation'
+SKILL = ROOT / 'ai/plugins/coding/skills/run-agent-team'
 REFS = SKILL / 'references'
+PLANNING = ROOT / 'ai/plugins/coding/skills/prepare-implementation'
+PLAN_REFS = PLANNING / 'references'
 
 
 class StoryExecutionTest(unittest.TestCase):
@@ -162,18 +164,17 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertIn('does not give targeted review a new 40-call', targeted)
 
     def test_both_adapters_require_installed_shared_contract(self):
-        markdown = (REFS / 'markdown-checklist.md').read_text()
-        template = markdown.split('```markdown\n', 1)[1].split('\n```', 1)[0]
+        team = (SKILL / 'SKILL.md').read_text()
         ralph = (ROOT / 'ai/opencode/agents/ralph.md').read_text()
-        for adapter in (template, ralph):
+        for adapter in (team, ralph):
             for name in ('story-execution.md', 'story-review.md',
-                         'progress.md', 'memory.json'):
+                         'progress', 'memory'):
                 self.assertIn(name, adapter)
             self.assertIn('installed', adapter)
             self.assertNotIn('ai/plugins/', adapter)
-        self.assertIn('story-reviewer', template)
+        self.assertIn('story-reviewer', team)
         self.assertIn('`ralph-reviewer`', ralph)
-        self.assertNotIn('#### Evidence', template)
+        self.assertIn('Resource loading only', ralph)
 
     def test_ralph_recovery_is_explicit_and_not_a_goal_controller(self):
         ralph = (ROOT / 'ai/opencode/agents/ralph.md').read_text()
@@ -223,23 +224,19 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertIn('approved conversion', execution)
 
     def test_compact_plan_retains_delivery_contract_without_prd_or_archive_metadata(self):
-        markdown = (REFS / 'markdown-checklist.md').read_text()
+        markdown = (PLAN_REFS / 'markdown-checklist.md').read_text()
         template = markdown.split('```markdown\n', 1)[1].split('\n```', 1)[0]
         for required in (
-            'Scope / non-goals:', 'Plan revision:', 'Working branch:', 'Authorization:',
-            'Verification:', 'Depends on:', 'Acceptance criteria',
-            'story-execution.md', 'story-review.md', 'story-reviewer',
-            'progress.md', 'memory.json', 'immutable during',
-            'at most one initial plus one targeted', 'authorized local commit',
+            'Scope / non-goals:', 'Plan revision:', 'Working branch:',
+            'Authorization gaps:', 'Verification:', 'Depends on:',
+            'Acceptance criteria', 'Recommended agents:',
         ):
-            with self.subTest(contract=required):
-                self.assertIn(required, template)
-        for optional in ('Archive PRD:', 'Run ID:', 'Closeout:', 'archive_run.py',
-                         'work-run', '#### Execution checklist'):
-            self.assertNotIn(optional, template)
-        plan = ' '.join((SKILL / 'SKILL.md').read_text().split())
-        self.assertIn('A separate PRD, phase narrative and archive manifest are optional', plan)
-        self.assertIn('Neither path reduces acceptance coverage', plan)
+            self.assertIn(required, template)
+        for forbidden in ('story-execution.md', 'story-review.md', 'run-agent-team',
+                          'archive_run.py', 'progress.md', 'memory.json'):
+            self.assertNotIn(forbidden, template)
+        plan = ' '.join((PLANNING / 'SKILL.md').read_text().split())
+        self.assertIn('Neither path may weaken acceptance coverage', plan)
         execution = ' '.join((REFS / 'story-execution.md').read_text().split())
         self.assertIn('no separate PRD or archive manifest is required', execution)
         self.assertIn('Missing metadata blocks verified run archival, not otherwise valid execution', execution)
@@ -255,7 +252,7 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertNotIn('```work-run', reference)
         archive = (REFS / 'completed-run-archive.md').read_text()
         self.assertIn('## Required plan archival; optional full-run enrollment', archive)
-        self.assertIn('prepare-implementation generates the stable run ID', archive)
+        self.assertIn('the authorized execution owner generates the stable run ID', archive)
         # Enrollment remains compatible with the unchanged helper's declared schema.
         manifest = json.loads(re.search(r'```work-run\n(.*?)\n```', archive, re.S)[1])
         self.assertEqual(set(manifest), {
@@ -372,11 +369,13 @@ class StoryExecutionTest(unittest.TestCase):
         ):
             with self.subTest(contract=required):
                 self.assertIn(required, reference)
-        markdown = (REFS / 'markdown-checklist.md').read_text()
+        markdown = (PLAN_REFS / 'markdown-checklist.md').read_text()
         template = markdown.split('```markdown\n', 1)[1].split('\n```', 1)[0]
-        for field in ('Integration owner:', 'Worker assignment:', 'Owned paths:',
-                      'Shared resources:', 'codex-concurrency.md'):
-            self.assertIn(field, template)
+        for field in ('Worker assignment:', 'Owned paths:', 'Shared resources:'):
+            self.assertNotIn(field, template)
+        packet = (REFS / 'codex.md').read_text()
+        self.assertIn('absolute task worktree', packet)
+        self.assertIn('main thread', packet)
         execution = ' '.join((REFS / 'story-execution.md').read_text().split())
         self.assertIn('RalphJSON executes one story at a time', execution)
         self.assertIn('Ralph never creates, switches, or repairs a branch', execution)

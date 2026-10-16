@@ -13,7 +13,7 @@ Read [coding runtime and execution ownership](runtime-selection.md) in full when
 selecting a lane or executing. It owns runtime/model selection and worker
 ownership; general personal policy remains suitable for non-coding interaction.
 
-Load `prepare-implementation` through the active harness's advertised installed
+Load `run-agent-team` through the active harness's advertised installed
 skill identifier. Resolve this file and sibling `story-review.md` relative to
 that loaded skill's base directory (`references/`); read both in full before
 execution. Do not depend on the dotfiles checkout or hardcode plugin-cache paths.
@@ -52,8 +52,8 @@ Read notes before editing;
 recommendations are optional. For CodexGoalMarkdown, read codex-concurrency.md
 in full and validate the entire dependency graph before admitting ready stories.
 For an authorized parallel/team batch, discover the advertised run-agent-team skill
-and use its dispatch procedure. Its designated coordinator is the sole batch lead
-for dispatch and integration; the parent supervises scope without competing writes.
+and use its dispatch procedure. Its main thread is the sole batch lead
+for dispatch, version control, integration and canonical task state.
 An existing lead adopts the contract directly, and workers never route back into
 orchestration. Keep RalphJSON serial; the team skill does not extend its grants.
 Worker completion alone does not satisfy dependencies. Keep every story bounded
@@ -98,7 +98,8 @@ use linked requirement sources. Both paths keep the same branch, checks, review,
 candidate and commit safeguards.
 
 Plan archival is required at full goal completion. For verified run archival,
-planning binds associated saved PRDs with
+the authorized execution owner verifies/binds associated saved PRDs before the
+first checkpoint with
 the work-run manifest in [completed-run archival](completed-run-archive.md). Read
 that contract for an enrolled run. Its manifest and actual grant identify whether
 automatic archival/removal and a closeout commit are authorized. Missing metadata
@@ -208,17 +209,11 @@ verification, or the staged-review gate.
 
 ## Implementation and candidate state
 
-After the authorization, branch, dependency and state guards above pass, use the
-advertised `develop-code` skill when available for the selected story's feature,
-diagnosis/fix or refactor method. Resolve it through native skill discovery and
-its references relative to that installed bundle, never sibling/checkout paths.
-If it is unavailable, report that limitation and follow the project-required
-implementation method under this contract; never claim an unavailable skill ran.
-This optional method handoff does not weaken any required check or reviewer gate.
-This executor retains task selection, state, authorization, profiles, schemas,
-budgets, native session identity, blocker/recovery and commit finalization ownership.
-Generic development/review/helpers do not call back into orchestration, create
-execution state, add another review cycle or replace required dedicated reviewers.
+After the authorization, branch, dependency and state guards pass, implement the
+bounded assignment with normal coding skill discovery. No particular development
+skill is a prerequisite or mandatory callback. Generic coding methods do not
+route back into orchestration, add review cycles, own canonical state or replace
+required dedicated reviewers. The main thread retains execution ownership.
 
 Each executor/worker implements only its assigned story using existing patterns
 and minimal changes. Codex workers use explicit assigned paths for every file,
@@ -725,8 +720,9 @@ For an unenrolled bounded or legacy plan, invoke the same helper's copy-only
 `--preserve-plan` mode after delivery, with exact associated PRDs if any. Preserve
 active sources and report `preserved`, not verified run archival. Missing authority
 or failed preservation leaves archival pending: report the exact blocker and keep
-the old plan. Before a later new-plan write, planning must finish preservation and
-verify the old bytes still match its receipt. A new run must not reuse old journal
+the old plan. Before a later new-plan write, the authorized execution/closeout
+owner finishes preservation. Planning only verifies existing receipts and matching
+current source bytes; missing or mismatched evidence blocks replacement. A new run must not reuse old journal
 or memory; retiring those active copies requires separately scoped reconciliation.
 Ralph's invoking assistant applies this only after supervisor validation and exit;
 there is no new CLI hook or change to serial execution.

@@ -295,10 +295,10 @@ session profiles, model-agnostic roles, verification limits and separate activat
 The interactive Astra profile does not expand Ralph's model allowlist.
 
 Both Ralph and Codex Goal follow the full shared
-[story execution contract](ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
-and [review protocol/schema](ai/plugins/coding/skills/prepare-implementation/references/story-review.md).
+[story execution contract](ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+and [review protocol/schema](ai/plugins/coding/skills/run-agent-team/references/story-review.md).
 Executors load both references in full from the advertised installed
-`prepare-implementation` skill, not checkout paths, and pass the full review
+`run-agent-team` skill, not checkout paths, and pass the full review
 protocol to the reviewer. Ralph's review gate uses self-review where allowed or
 the dedicated three-step, project-local `ralph-reviewer`, with at most one same-session follow-up after
 substantive fixes. It never substitutes a general-purpose reviewer. Checks include
@@ -337,7 +337,7 @@ verify its receipt/current hashes before authorized replacement. Failed
 preservation blocks replacement; never replace an unfinished run or reuse old
 execution state without scoped reconciliation.
 Runs enrolled for verified full-run archival use the
-[completed-run archive procedure](ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
+[completed-run archive procedure](ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md):
 
 1. Verify all tasks, required checks/reviews, and story commits. For Ralph, wait
    until the runner validates completion and exits before changing active state.
@@ -599,10 +599,17 @@ for ownership, shared-directory scope, and preserved conflicts.
 
 ### Codex parallel agent teams
 
-Use the coding `run-agent-team` skill for explicitly authorized swarm/team coding
-or substantial independent Codex plan stories. A single Sol coordinator owns
-dispatch and integration; Luna workers run in prepared task worktrees. Native
-role/model/reviewer capability, installed pins, grants and capacity are preflighted
-before dispatch. Independent eligible work dispatches concurrently when possible;
-Ralph remains serial. [Verification and activation limits](docs/agent-team-verification.md)
-separate source contract checks from actual native execution.
+Use `run-agent-team` explicitly for authorized swarm/team coding with an approved
+plan. Planning stays independent. The Sol main thread owns dispatch, version
+control, merging and task state. Luna workers run in prepared task worktrees.
+Verify native model/reviewer controls, installed pins, grants and capacity before
+dispatch. Fill eligible capacity before waiting; Ralph remains serial.
+[Verification and activation limits](docs/agent-team-verification.md) distinguish
+source checks from actual native execution.
+
+Launch a fresh top-level Swarm session from this checkout with
+`./bin/swarm --project /absolute/project --plan PLAN.md --scope "<actual grant>"`.
+Use `--dry-run` to inspect the request without starting Codex. This explicitly
+selects Sol and supplies [Swarm instructions](ai/codex/swarm.md); it is a CLI
+entry point rather than a native named primary-agent setting. No global install
+or security-policy override is performed. See [Swarm launch](docs/swarm.md).

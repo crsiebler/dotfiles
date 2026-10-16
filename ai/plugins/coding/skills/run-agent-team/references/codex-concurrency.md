@@ -7,17 +7,12 @@ add no scheduler, background controller, duplicate task store or nested Ralph lo
 
 ## Team execution ownership
 
-For authorized Codex parallel/team execution, discover and load run-agent-team
-relative to its advertised installed base. That skill owns native role/model
-preflight, bounded capacity and dispatch-before-wait procedure. This reference
-remains canonical for dependency readiness, task worktrees and integration.
-There is one dispatch owner and one integration owner, both the designated batch
-lead. In delegated mode this is native multi-agent-coordinator, not its parent;
-the parent supervises scope without another dispatch loop or canonical writes.
-In supported parent-direct mode the parent is the sole lead and explicitly
-reports adoption of the coordinator guidance. Never create recursive managers.
-Workers follow bounded packets, not team entry routing. No mode waives native
-reviewer availability, authorization or the shared delivery gates.
+For authorized Codex parallel/team execution, follow this bundle's team entry
+contract. The main thread is the sole dispatch and integration owner, including
+Git, merging, task markers, progress and memory. Coordinating children may advise
+but never own dispatch, integration or canonical state. Workers follow bounded
+packets and never route back into orchestration. No mode waives required reviewer
+availability, authority or delivery gates.
 
 ## Admission and ownership
 
@@ -96,6 +91,16 @@ exhausted budget or replace the reviewer to obtain another pass. Dependencies
 become ready only after verified integration delivery and the lead's marker update.
 Missing native roles/tools or effective model selection are runtime prerequisites;
 source instructions do not activate installed skills or model-routing settings.
+
+## Existing Python environment
+
+The optional reference below uses only Python's standard library. Prefer the
+already active Conda `python` when that is the host's configured interpreter;
+validate `python -c 'import sys; assert sys.version_info >= (3, 11)'` before use.
+An existing newer interpreter exposed only as `python3` is equally valid after
+validation. Noninteractive commands need not source personal shell configuration.
+Use the repository's existing Conda environment for its own checks; never create
+an environment or install Python just to run this optional example.
 
 ## Optional deterministic reference
 

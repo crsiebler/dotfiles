@@ -18,7 +18,7 @@ operations, and global changes still require separate approval where permitted.
 
 ## Required shared contract
 
-Before execution, load the installed `prepare-implementation` skill using the
+Before execution, load the installed `run-agent-team` skill using the
 active runtime's skill tool and advertised identifier. From that loaded skill's
 base directory, read **both** `references/story-execution.md` and
 `references/story-review.md` in full. Follow the shared execution contract and
@@ -95,3 +95,6 @@ when its execution grant includes the declared active-copy removals; one closeou
 commit needs its own scope. Preserve the bound PRDs and root progress.md until
 then, including truthful pre-commit story-result records as the shared contract
 requires. A CLI-only supervisor does not implement an automatic archival hook.
+
+Resource loading only: do not enter Codex team orchestration or require its
+Sol/Luna/coordinator APIs. Ralph remains serial under its native runner.

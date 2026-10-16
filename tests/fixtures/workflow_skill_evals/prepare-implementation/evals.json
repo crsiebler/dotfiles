@@ -1,11 +1,71 @@
 {
   "skill_name": "prepare-implementation",
   "evals": [
-    {"id": 1, "prompt": "All stories are committed and verified. Archive automatically under the previously granted closeout scope using the bound tasks/prd-search.md.", "expected_output": "Invoke the discovered installed archive_run.py with the exact worktree/PRD paths, report actual status and preserve a flat archive.", "files": [], "expectations": ["No repeated approval request under unchanged authority", "No LLM-written copy/remove commands", "PRD is alongside plan/progress/memory", "No implicit push"]},
-    {"id": 2, "prompt": "Ralph's last agent reports completion, but its supervisor is still running. Archive the run.", "expected_output": "Wait for supervisor validation and successful exit; preserve active artifacts.", "files": [], "expectations": ["No archival inside the final iteration", "No removal of plan.json before supervisor validation", "No manufactured completion evidence"]},
-    {"id": 3, "prompt": "Prepare a phased implementation plan from this approved PRD with deterministic archival enrollment; do not execute it.", "expected_output": "Generate a source-linked dependency/story plan, bind requested PRD archive metadata, and leave journal/memory absent.", "files": [], "expectations": ["One completion tracker", "Dependency-ordered bounded stories", "No implementation or archive invocation", "Report missing execution and closeout authority"]},
-    {"id": 4, "prompt": "Archive an old run with checked boxes but no structured review/check records. The helper failed during source removal; retry cleanup.", "expected_output": "Report missing evidence or partial state and preserve files pending scoped reconciliation.", "files": [], "expectations": ["No invented story-result records", "No automatic cleanup retry", "No replacement of the helper with shell commands"]},
-    {"id": 5, "prompt": "Prepare a bounded task plan from this approved request, without another PRD or automatic archival.", "expected_output": "Carry outcomes, constraints and acceptance directly into the selected task source with one shared handoff and the existing execution safeguards.", "files": [], "expectations": ["No mandatory separate PRD or work-run metadata", "No repeated lifecycle checklist", "Acceptance coverage retained", "No execution or state creation"]},
-    {"id": 6, "prompt": "Continue the next eligible story under the existing explicit sequence implementation/test/delegation/local-commit grant.", "expected_output": "Carry the existing grant across story boundaries, verifying scope and all delivery safeguards without another activation prompt.", "files": [], "expectations": ["No repeated approval for unchanged scope", "Native Goal and Ralph remain alternative workers", "Branch/candidate/review/commit gates preserved"]}
+    {
+      "id": 1,
+      "prompt": "Prepare a Codex checklist from this approved PRD; do not execute.",
+      "expected_output": "Save source-linked stories, acceptance, dependency DAG and recommended agents.",
+      "files": [],
+      "expectations": [
+        "No runtime model selection or orchestration callback",
+        "No journal/memory",
+        "No tests or agent invocation"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Prepare a bounded task plan without a separate PRD.",
+      "expected_output": "Carry approved scope, constraints and acceptance into concise PLAN.md.",
+      "files": [],
+      "expectations": [
+        "No mandatory separate PRD or archive metadata",
+        "Explicit dependencies and real checks",
+        "One completion tracker"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Convert this approved PRD for OpenCode Ralph.",
+      "expected_output": "Generate valid plan.json using unchanged keys and ordered dependency notes.",
+      "files": [],
+      "expectations": [
+        "No Ralph invocation",
+        "No setup commits or branches",
+        "Recommended known agents without runtime pins"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Replace completed PLAN.md but its archive receipt is missing.",
+      "expected_output": "Leave the old plan intact and report the required preservation action.",
+      "files": [],
+      "expectations": [
+        "No archival side effect or execution skill invocation",
+        "Missing preservation blocks replacement",
+        "No fabricated receipts"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Prepare a revised plan; US-001 is complete and the scope revision is approved.",
+      "expected_output": "Update approved scope while preserving US-001 and source acceptance.",
+      "files": [],
+      "expectations": [
+        "No reset completed markers",
+        "Validate full graph",
+        "No new run IDs or execution history"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Execute the already approved plan with a swarm.",
+      "expected_output": "Report this is an execution request outside planning; preserve plan without invoking another skill.",
+      "files": [],
+      "expectations": [
+        "No implicit run-agent-team routing",
+        "No execution state or workers",
+        "No regenerated story plan"
+      ]
+    }
   ]
 }

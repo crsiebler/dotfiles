@@ -1,45 +1,14 @@
 # Requirements
 
-## Required and conditional dependencies
+Planning is instruction-only and needs no installed runner or Python package.
+Use adequate native reads to inspect approved requirements and project commands.
+Git is conditional for revision/branch evidence; no branch or worktree mutations
+occur during planning. Resolve harness identity from trusted runtime context, not
+installed executables. Dependency/model/runtime setup belongs to the selected
+execution environment and is not a dependency of this skill.
 
-Planning needs no external package or installed runner. Resolve harness identity
-from trusted runtime context or the invoking entry point; installed executables
-do not determine the active harness.
-
-Parallel execution additionally discovers run-agent-team for supported native
-role/model/nesting/capacity preflight. Missing required native review blocks worker
-launch; a generic subagent is not a substitute. That workflow adds no runtime
-package and never installs settings to make itself available.
-
-Execution handoff is conditional: Git and the exact prepared branch/commit;
-Codex Goal with its native `story-reviewer`, or OpenCode/Ralph with native
-`ralph-reviewer`. Those are separate execution contracts, not prerequisites
-for writing a plan. Ralph requires Python 3.11+, Git, POSIX process groups/flock,
-OpenCode, and matching runner guidance. Ruby and jq are repository test fixtures,
-not Ralph runtime dependencies.
-
-The bundled archive helper, including copy-only plan preservation, needs
-Python 3.11+, Git, and POSIX filesystem/locking support. Its Python imports are standard library; no pip package is required.
-Archival/removal and closeout commits need their own applicable authorization.
-
-## Installation and checks
-
-For missing Python/Git on macOS with existing Homebrew and setup approval:
-
-```sh
-brew install python@3.11 git
-python3.11 --version
-git --version
-```
-
-Use [Python downloads](https://www.python.org/downloads/) and
-[Git downloads](https://git-scm.com/downloads) for other supported hosts.
-Obtain OpenCode through its [official installation guide](https://opencode.ai/docs/).
-Codex/native reviewer setup belongs to the selected harness's reviewed
-configuration; discovering a TOML/Markdown role file does not prove invocation.
-
-Ralph is delivered by the owning dotfiles checkout's `bin/ralph`. Review that
-checkout's installation guide rather than using a broad shell/dotfiles install
-as dependency bootstrap. An installed `ralph --help` and `opencode --version`
-check availability; they do not prove a prepared execution or recovery is safe.
-No dependency setup or story execution occurs while drafting requirements/plans.
+Do not install tools, source personal shell configuration, execute the plan, or
+invoke another coding skill merely to prepare a plan. Report unavailable source
+or verification commands as gaps. JSON output must parse using an existing native
+parser or available interpreter; the planning workflow has no exact Python binary
+name requirement. Existing Conda interpreters may be used without provisioning.

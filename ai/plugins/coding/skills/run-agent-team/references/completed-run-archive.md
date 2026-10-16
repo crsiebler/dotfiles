@@ -24,7 +24,7 @@ retroactively fabricate structured observations or completed task evidence.
 ## Run manifest
 
 Each associated PRD contains exactly one fenced `work-run` JSON block. All PRDs
-for a run contain the same manifest; bind the task source during planning, without
+for a run contain the same manifest; bind the task source before the first execution checkpoint, without
 changing the Ralph task-source schema. Paths are relative to the Git worktree
 root, even when the PRD or plan is in another directory.
 
@@ -51,10 +51,10 @@ root `progress.md` and `memory.json`. Missing memory is normal; missing PRD,
 task source, journal, manifest, or completion evidence blocks archival.
 
 Requirements authoring does not create run metadata. For an enrolled archival
-workflow, prepare-implementation generates the stable run ID and binds adapter,
-task_source and associated PRD inventory before execution. Preserve existing run
+workflow, the authorized execution owner generates the stable run ID and binds adapter,
+task_source and associated PRD inventory before the first execution checkpoint. Preserve existing run
 IDs and approved requirement prose during scoped revisions. Legacy unbound
-metadata may be reconciled by planning under that same scoped authority. Metadata
+metadata may be reconciled before execution under that same scoped authority; never fabricate legacy evidence. Metadata
 expresses intended behavior, not user authorization.
 
 ## Completion and authority
@@ -64,9 +64,9 @@ automatic archival/removal of its exact declared active artifacts and one
 closeout commit. Once granted, carry that authority through continuation; do not
 request it again. If archival/removal or commit authority is genuinely missing,
 preview the exact paths/result and request only the missing scope. Narrower
-instructions and runtime restrictions still apply. Planning may perform only the
-copy-only preservation fallback before an authorized completed-plan replacement;
-it never removes execution state or claims delivery through that fallback.
+instructions and runtime restrictions still apply. Planning only verifies existing preservation receipts and current hashes before
+authorized replacement; missing or mismatched evidence blocks replacement. The
+authorized execution/closeout owner performs preservation, never planning itself.
 
 For each delivered story, the executor stages a structured `story-result` block
 in `progress.md` with the completion marker, after passing checks and review but
@@ -89,7 +89,7 @@ archive; do not claim that the supervisor implements a post-run hook.
 
 ## Invoke the installed helper
 
-Discover `prepare-implementation` and resolve `scripts/archive_run.py` relative
+Discover `run-agent-team` and resolve `scripts/archive_run.py` relative
 to its advertised installed base. Never use checkout or hardcoded cache paths
 in generated plans. The following placeholders are data, not executable examples:
 

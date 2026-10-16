@@ -27,7 +27,7 @@ and connection setup are separate, explicitly authorized operations.
 | `ai/codex/astra.config.toml` | Standalone opt-in model evaluation profile |
 | `ai/opencode/{opencode.json,tui.json,astra.json,sol.json,opencode-notifier.json}` | OpenCode config, terminal UI, model overlays, and notifier settings |
 | `ai/codex/agents/*.toml` | 128 canonical custom-agent sources; all copied unchanged to Codex, Markdown generated for OpenCode |
-| `ai/plugins/coding/skills/prepare-implementation/references/story-execution.md`, `story-review.md` | Shared execution contract and canonical staged-review protocol/JSON schema for Ralph and Codex Goal |
+| `ai/plugins/coding/skills/run-agent-team/references/story-execution.md`, `story-review.md` | Shared execution contract and canonical staged-review protocol/JSON schema for Ralph and Codex Goal |
 | `ai/opencode/agents/*.md` | Three native OpenCode-only agents: `sprite-artist`, `ralph`, and `ralph-reviewer`; copied unchanged |
 | `ai/opencode/commands/` | `/create-sprite`, `/define-requirements`, `/plan-work`, `/ship`, `/find-agents`, `/recover-ralph`, and unchanged `/review-pr` |
 | `scripts/install-ai.py`, `scripts/render-agents.py` | Local installer and two-harness agent renderer |
@@ -204,7 +204,7 @@ requests return proposed content instead of saving. Directory-based discovery
 requires no new command, agent, or installer special case.
 
 The [runtime selection guide](runtime-selection.md) describes the coding plugin
-policy loaded by prepare-implementation. Base Codex selects Sol 6.1; Astra is an explicit opt-in profile
+policy loaded by run-agent-team. Base Codex selects Sol 6.1; Astra is an explicit opt-in profile
 with high effort. OpenCode's overlays select the session model without hidden
 build/subagent pins. Reusable roles omit model and effort settings. Ralph inherits
 OpenCode settings unless explicit launch selectors are supplied. Verify account
@@ -591,7 +591,7 @@ execution or create execution logs/memory. Goal inherits Ralph's full shared
 execution, memory, review, prepared-branch, and per-story commit contract, using
 Markdown checkboxes rather than JSON `passes`. Both executors load
 `references/story-execution.md` and `references/story-review.md` in full relative
-to the advertised installed `prepare-implementation` skill, never checkout or
+to the advertised installed `run-agent-team` skill, never checkout or
 hardcoded plugin-cache paths. The executor sends the full canonical protocol to
 the reviewer wrapper; wrappers do not own separate schemas.
 
@@ -641,10 +641,10 @@ Create the journal only for a permitted execution checkpoint, never during plann
 or requirements drafting. Do not read or migrate legacy execution logs. Bounded
 tasks may keep approved requirements in the plan without a separate PRD or
 work-run manifest. Larger work retains PRDs, explicit dependencies and integrated
-acceptance owners. Archival is optional planning enrollment; existing enrolled
+acceptance owners. Plan archival is required; full-run enrollment belongs to execution and is optional; existing enrolled
 runs retain their manifest and safeguards. After full verified delivery of an
 enrolled run, automatically invoke the installed
-[completed-run archive helper](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md)
+[completed-run archive helper](../ai/plugins/coding/skills/run-agent-team/references/completed-run-archive.md)
 under the execution grant's exact archival/removal scope. Bound work-run metadata
 in the PRDs selects the task source and associated PRDs; pre-commit story-result
 records in root progress.md provide structured observed check/review evidence.
@@ -842,12 +842,10 @@ not install configuration, read keys, or run live calls.
 
 ### Codex agent-team execution
 
-The coding run-agent-team skill supplies explicit native dispatch for authorized
-parallel plans or swarm requests. One Sol multi-agent-coordinator is both dispatch
-and integration owner, with explicit Luna workers and budgeted Astra escalation.
-Its conditional role contract consumes the exact Codex plan; parent supervision
-and worker method routing do not create competing managers. The shared planning
-references retain graph/ownership, review, commit and required archival gates.
-Ralph remains serial. See [team verification](agent-team-verification.md) for source
-checks and missing native execution/activation evidence. Installation is separate;
-role files, model pins and callable APIs must be verified in a fresh runtime.
+Invoke run-agent-team explicitly or through assigned coordinator guidance with an
+existing approved plan. The Sol main thread owns dispatch, Git, merging and task
+state; coordinating children advise only. Luna workers use isolated assigned
+worktrees; Astra escalation retains existing budgets and exact dedicated reviewers.
+Execution contracts and the archive helper belong to run-agent-team. Ralph loads
+shared resources without entering Codex preflight and remains serial. Source
+changes do not activate settings. See [team verification](agent-team-verification.md).

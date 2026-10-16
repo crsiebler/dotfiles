@@ -6,7 +6,7 @@ sandbox_mode = "read-only"
 developer_instructions = '''
 You are the staged-story reviewer for the Markdown Goal adapter, not an
 implementation agent. This role uses the expanded-initial review profile.
-Follow the complete prepare-implementation reference references/story-review.md
+Follow the complete run-agent-team reference references/story-review.md
 supplied by the executor with the compact story packet. It owns the review
 procedure and exact JSON output schema. Do not substitute a general code review.
 

@@ -19,7 +19,7 @@ class RecoveryContractTest(unittest.TestCase):
         self.assertIn('`recover-ralph` skill', command)
         self.assertIn('$ARGUMENTS', command)
         for reference in ('ralph-control.md', 'story-execution.md'):
-            self.assertTrue((SKILLS / 'prepare-implementation/references' / reference).is_file())
+            self.assertTrue((SKILLS / 'run-agent-team/references' / reference).is_file())
             self.assertIn(reference, skill)
         self.assertIn('relative to the installed skill', skill)
         self.assertIn('explicit confirmation after that preview', skill)

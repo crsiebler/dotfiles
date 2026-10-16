@@ -1,57 +1,24 @@
 # Ralph implementation plan
 
-Convert approved bounded-task requirements or fuller PRDs to Ralph plan.json.
+Convert approved requirements into `plan.json`. Preserve the JSON keys/types
+below. This adapter produces task data only; it does not launch Ralph, run
+checks, assign models, create execution state or invoke another skill.
 
----
+Use bounded task details or approved PRDs. Preserve source criteria, stable
+revision and useful phase/dependency references in existing description/notes.
+Recommend available specialist agents by expertise. No separate PRD or manifest
+is required for a bounded task. Optional [run metadata](run-manifest.md) describes
+ownership without granting execution or archival authority.
 
-## The Job
+Validate unique IDs and the complete [dependency graph](dependency-graph.md).
+Order prerequisites before dependents using numeric priorities and explicit IDs
+in notes; do not add JSON keys. Record a known branch or report preparation as
+pending; planning creates or switches no branches. Preserve existing completion
+markers during scoped revisions, and never replace an unfinished run.
 
-Take an approved request/brief or PRD and convert it to `plan.json` in the Ralph
-working directory where the `ralph` primary agent expects to read it.
-
-This is a planning adapter, not execution authorization. Approved execution uses
-[Bounded Story Execution](story-execution.md) and the full sibling
-[Story Review](story-review.md) protocol, loaded relative to the installed
-`prepare-implementation` skill. Preserve the JSON keys and types below. Ralph
-maps `branchName`, `userStories`, and `passes` to the shared execution contract;
-the runner still owns external iterations and their maximum. Prepare a committed
-worktree on that exact branch before execution; never use `main`, `master`, or
-detached HEAD. A clear authorized Ralph launch covers scoped implementation,
-required checks, budgeted delegation and local commits across the eligible
-sequence; do not request another activation per story. A bare Ralph label, plan
-or quoted command grants no authority. Honor narrower instructions; migrations
-and Docker operations still require their own applicable approvals.
-
-If `plan.json` already exists, preserve it and require confirmation for scoped
-updates. Do not overwrite an unfinished run with a different feature. Completed
-runs require plan archival after the runner validates completion and exits.
-Use the [archival procedure](completed-run-archive.md) under its applicable grant.
-If archival was missed, conversion must first use copy-only preservation and
-verify its receipt/current hashes before authorized replacement; failure blocks
-replacement. Conversion never removes execution state.
-
-Keep `plan.json` a stable task source with concise planning context in `notes`,
-not execution narratives. Append execution evidence only to worktree-root
-`progress.md`; bounded reusable review knowledge stays in root `memory.json`.
-Planning creates neither state file and never resets them.
-
-Use the bounded-task path for clear small work: retain source outcomes, exclusions,
-verification and dependencies directly in the existing description/story fields.
-No separate PRD or archive manifest is required. Larger work uses fuller PRDs and
-phase/dependency explanations. Encode source/phase/dependency references in
-existing notes and priority order; add no JSON keys or second completion tracker.
-Record the stable approved plan revision and scope baseline in the handoff and
-existing description/notes fields. Completion `passes` updates do not advance the
-revision. Reconcile material scope/acceptance/dependency changes against approval
-and delivery evidence before a new revision; labels cannot extend launch authority.
-
-When deterministic archival is requested, planning generates/binds associated
-saved PRDs' work-run metadata to RalphJSON and the actual plan path. Include the
-exact primary PRD path and actual archival/removal plus closeout commit authority
-in the handoff. Missing metadata blocks archival, not otherwise valid execution.
-Ralph/OpenCode and Codex native Goal remain alternative workers, never nested loops.
-
----
+Before replacing a completed plan, verify existing archive/preservation receipts
+and current hashes. Missing/mismatched evidence blocks replacement. Planning
+does not perform archival, remove execution state or invoke execution workflows.
 
 ## Output Format
 
@@ -359,41 +326,14 @@ tool; new tasks currently default to pending. Preserve that default.
 
 ---
 
-## Archiving Completed Runs
+## Checklist before saving
 
-Every completed goal requires plan archival. After all stories pass checks/review and
-their commits succeed, the invoking
-assistant waits for runner completion validation and successful exit, then
-automatically invokes the installed script under the [archival contract](completed-run-archive.md)
-for an enrolled run when the scoped grant covers the declared PRDs, plan.json, root progress.md and
-existing memory.json. The script archives them flat with a verified receipt.
-The story agent must not archive inside an iteration or remove the plan before
-runner validation. A CLI-only runner has no post-run archive hook. One closeout
-commit requires its own scope, which may be authorized upfront. Without full-run
-enrollment, the invoking assistant uses copy-only plan preservation instead.
-Missing authority or preservation failure leaves archival pending and blocks
-replacement of the old plan; it never permits fabricated completion records.
-
----
-
-## Checklist Before Saving
-
-Before writing plan.json, verify:
-
-- [ ] No unfinished run is being replaced; a completed prior plan has verified archival or copy-only preservation before authorized replacement
-- [ ] Source criteria/dependencies, approved plan revision/baseline and any useful phases are mapped in existing fields without new JSON keys
-- [ ] Shared acceptance-coverage audit completed; coverage, integration owners, approved exclusions and unresolved gaps reported in the handoff
-- [ ] If archival was requested, associated saved PRDs have bound work-run metadata and the handoff identifies actual archival/closeout authority
-- [ ] Each story is completable in one iteration (small enough)
-- [ ] Stories are ordered by dependency (schema to backend to UI)
-- [ ] Every story has "Typecheck passes" as criterion
-- [ ] Stories with testable logic have "Tests pass" as criterion
-- [ ] UI stories have "Verify in browser using verify-interface skill" as criterion
-- [ ] Each story's `notes` includes 0-2 relevant recommended development agents
-- [ ] Acceptance criteria are verifiable (not vague)
-- [ ] Exact dependency references are present, acyclic and earlier; no story depends on itself or a later story
-- [ ] Story IDs are unique
-- [ ] Priorities are ordered by dependency and execution sequence
-- [ ] Every story starts with `passes: false`
-- [ ] Generated output is valid JSON
-- [ ] Existing `plan.json` overwrite or archive behavior was confirmed when needed
+- [ ] Source criteria, revision and dependencies mapped without new JSON keys
+- [ ] Acceptance coverage and integrated acceptance owners verified
+- [ ] Stories are bounded, uniquely identified and dependency ordered
+- [ ] Complete dependency graph has no unknown edges, self-dependencies or cycles
+- [ ] Relevant tests, typecheck, lint and browser criteria recorded honestly
+- [ ] Useful known agents recommended without invoking them or selecting models
+- [ ] New stories start with `passes: false`; existing completion state preserved
+- [ ] Output parses as valid JSON
+- [ ] No unfinished plan replaced; prior completed bytes have verified preservation

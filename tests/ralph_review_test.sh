@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 AGENT_FILE="$ROOT_DIR/ai/opencode/agents/ralph-reviewer.md"
 RALPH_FILE="$ROOT_DIR/ai/opencode/agents/ralph.md"
-REFERENCES="$ROOT_DIR/ai/plugins/coding/skills/prepare-implementation/references"
+REFERENCES="$ROOT_DIR/ai/plugins/coding/skills/run-agent-team/references"
 EXECUTION_FILE="$REFERENCES/story-execution.md"
 REVIEW_FILE="$REFERENCES/story-review.md"
 
