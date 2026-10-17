@@ -268,6 +268,118 @@
         "No Luna implementation or Astra reviewer prerequisite",
         "No automatic model switching or role replacement"
       ]
+    },
+    {
+      "id": 25,
+      "prompt": "A slow SDK verification for candidate A yields with a running command handle. B is independent, substantial, dependency-ready and has a clean prepared base. A safely available worker slot, private outputs and authority are verified; the integration queue is below its limit.",
+      "expected_output": "Dispatch B before waiting again on the existing SDK command; preserve A and its shared-resource freeze.",
+      "files": [],
+      "expectations": [
+        "Reassess readiness, ownership, capacity and queue pressure at the yield",
+        "Reuse the check handle; no duplicate SDK command or busy polling",
+        "A long check alone does not pause isolated work",
+        "Report actual check results; dispatch alone does not prove overlap or delivery"
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "Worker A hands off an adapter that needs substantial bounded source repair. Its original worker is available under the existing budget. The coordinator has a copy of the candidate; no review is active, and unrelated B remains eligible below the queue limit.",
+      "expected_output": "Reconcile the exact candidate and transfer exclusive source ownership back to A for repair, keeping Git, shared integration files and delivery coordination with the main thread.",
+      "files": [],
+      "expectations": [
+        "Verify prior writer quiescence and confirm root, revision and owned paths before worker edits",
+        "Provide failure evidence and feasible focused rechecks; no simultaneous coordinator edits",
+        "Receive actual recheck results and transfer ownership back before integration",
+        "Reassess at remediation finish and continue eligible independent work",
+        "No expanded delegation, advisor, remediation or review budget"
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "Worker A discovers its task worktree lacks the shared generated SDK build hook. Focused source tests can run, but compilation needs the integration owner's existing hook. A source-only handoff is necessary.",
+      "expected_output": "Report the constraint early, run feasible checks and arrange a minimal integration compile checkpoint; explicitly label the handoff unqualified.",
+      "files": [],
+      "expectations": [
+        "Packet identifies compilation/check commands, required hooks and private output locations",
+        "Report passed, failed and unrun checks separately with actual results",
+        "No broad build-system duplication, automatic dependency installation or claimed compilation pass",
+        "Source-only candidate counts toward queue pressure and cannot release dependencies",
+        "Required integrated checks and bounded review still precede delivery"
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "The recorded queue limit is two with two feasible workers and adequate private storage. A is integrating; B and C await integration, and D is dependency-ready. A previously active worker E hands off while the coordinator is still checking A.",
+      "expected_output": "Do not dispatch D. Preserve E even though the queue temporarily exceeds two, then prioritize qualification, remediation and delivery until admission is safe.",
+      "files": [],
+      "expectations": [
+        "Explain the limit using worker capacity and project resources in the existing checkpoint",
+        "Distinguish active implementation, awaiting integration, integrating, remediation and review",
+        "Count source-only and worker-remediation candidates outside the integration lane",
+        "No limit inflation, discarded candidate or live-writer termination to hide saturation",
+        "Reassess after review/commit and refill when queue, capacity and resource gates permit"
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "Session inspection lists idle A, completed B and pending-init C, but the exposed labels do not establish whether they occupy capacity. A confirmed occupied worker can continue safely, and an existing candidate can be integrated. Another spawn would rely on the uncertain slot.",
+      "expected_output": "Consult documented capacity semantics and supported inspection; distinguish observed occupancy from uncertainty and defer only admission relying on the unconfirmed slot.",
+      "files": [],
+      "expectations": [
+        "Do not assume any label consumes or releases capacity",
+        "No duplicate possibly-live owner, unsupported lifecycle control or pending-work discard",
+        "Record the concrete capacity effect and continue safely eligible existing work",
+        "No repeated unchanged polling or capability-probe agents"
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "The exact native reviewer has finished its initial pass with actionable findings. Its session appears idle and the runtime documents that retained sessions occupy slots. The same story may need its single targeted pass; another ready worker would require releasing this reviewer.",
+      "expected_output": "Retain the reviewer session and its occupied capacity; arrange bounded remediation and the permitted same-session targeted continuation.",
+      "files": [],
+      "expectations": [
+        "No release, replacement reviewer or new initial pass to gain capacity",
+        "Candidate remains frozen during active review; transfer repair ownership only afterward",
+        "One initial and at most one targeted pass remain the budget",
+        "A review-finished checkpoint does not imply a released slot"
+      ]
+    },
+    {
+      "id": 31,
+      "prompt": "A slow SDK check holds the only supported shared output/resource mechanism. Ready B requires that resource; C depends on A, whose integration commit has not happened. No independently eligible story remains.",
+      "expected_output": "Serialize B's conflicting operation and keep C pending; record these concrete resource and dependency constraints before waiting.",
+      "files": [],
+      "expectations": [
+        "No forced occupancy, artificial work splitting or invented lock/service",
+        "A yielding check does not by itself authorize conflicting work",
+        "Release the resource only when safe under the project mechanism",
+        "Dispatch C only from a clean base containing A's verified integration delivery commit"
+      ]
+    },
+    {
+      "id": 32,
+      "prompt": "Held-out combined sequence: two workers hand off while A's SDK check yields; the queue reaches its recorded limit. B needs repair, A's initial review then needs targeted continuation, and the runtime cannot confirm whether C's completed session frees a slot. After authorized A delivery, a dependent becomes ready. Assess decisions through the next handoff and commit, not just the initial dispatch.",
+      "expected_output": "Walk each event against queue, ownership, capacity, resource and delivery gates; qualify and deliver work while preserving pending candidates and required reviewer continuity.",
+      "files": [],
+      "expectations": [
+        "Prioritize draining saturated work; transfer bounded B repair without simultaneous writers",
+        "Retain A reviewer for permitted targeted continuation; uncertainty is separate from observed occupancy",
+        "Reassess on handoff, long-check yield, remediation finish, review finish and commit",
+        "Refill only safely eligible capacity after pressure drops; verify dependent base ancestry",
+        "Evaluate sustained useful concurrency and verified delivery, not full slot occupancy",
+        "Static walkthrough is not a live performance measurement"
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "A qualified worker candidate needs a tiny integration import fix. Sending it back would cost more coordination than the edit; the main thread owns the candidate and no reviewer is currently reading it.",
+      "expected_output": "Keep the small fix with the main thread, run affected checks and preserve the normal review/commit gates.",
+      "files": [],
+      "expectations": [
+        "Do not delegate every fix or introduce another approval gate",
+        "Do not reuse stale check/review evidence after the content changes",
+        "No extra worker staged review or reset of consumed passes"
+      ]
     }
   ]
 }
