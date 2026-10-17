@@ -57,15 +57,25 @@ establish unattended operation, model quality or installed discovery.
 
 ## Explicit agent-team profile
 
-The run-agent-team skill selects Sol coordination and explicit Luna implementation
-through supported native controls. Material ambiguity or evidenced hard failure
-may use Astra within existing advisor/review/remediation limits. This workflow
-profile does not add pins to reusable roles or change ordinary session inheritance.
-Installed role pins take precedence and must be reconciled through separately
-authorized activation; no skill edits runtime settings automatically. The normal
-Sol-selected main AI session is the sole dispatcher and retains Git, integration and
+The run-agent-team skill keeps the current main session and prefers Sol
+coordination, Luna implementation and Astra review/analysis through supported
+native controls. These model choices are preferences, not prerequisites. Respect
+installed pins and use native inheritance/defaults when preferred selection is
+unavailable. Record unknown main-session telemetry and fallback reasons without
+blocking or repeating approval. Explicit user model requirements and cost limits
+still apply; an unavailable required selection blocks the affected path.
+
+The exact native story-reviewer, its review protocol and required same-session
+continuation remain mandatory. A Luna-pinned native reviewer can satisfy these
+gates; a generic Astra worker cannot substitute for that role. Model preferences
+never reset attempts or invalidate an otherwise valid passing review. Reconcile
+the candidate and evidence before finalizing a pending commit under existing
+authority. No skill edits runtime settings automatically.
+
+The main AI session is the sole dispatcher and retains Git, integration and
 canonical state. No custom primary/coordinator selection, nested manager or
 role-guidance adoption is required. The optional coordinator supplies advice only
 within existing budgets. Reconcile any quiescent prior dispatcher and all live
 assignments before takeover. No proxy-spawning or competing loops; required
-worker/reviewer/model APIs and review continuation remain mandatory.
+worker/reviewer APIs and review continuation remain mandatory. Explicit model
+selection controls are needed only when a user constraint requires them.

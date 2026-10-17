@@ -1,9 +1,11 @@
 # Requirements
 
 Instruction-only inspection needs no package. Team execution requires
-native spawn/follow-up/wait/session inspection, explicit supported worker model
-selection and known capacity. The normal Sol-selected main session directly owns
-worker/reviewer dispatch, Git, worktree lifecycle, integration and canonical state.
+native spawn/follow-up/wait/session inspection and known capacity. Explicit model
+selection is optional unless needed to satisfy a user requirement; use
+[runtime selection](runtime-selection.md) for preferences, pins and fallbacks.
+The current main session directly owns worker/reviewer dispatch, Git, worktree
+lifecycle, integration and canonical state.
 A custom coordinator role, custom primary selection, nested manager or reading
 that role's instructions is not required.
 

@@ -14,10 +14,10 @@ select this skill, create an approved plan, allocate worktrees or authorize writ
 Select the skill, then set a goal naming the exact approved plan and existing
 execution scope. Do not assume combined slash-command/skill parsing.
 
-For example, after selecting run-agent-team and the Sol main model:
+For example, after selecting run-agent-team in the current main session:
 
 ```text
-/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Use up to two concurrent Luna implementation workers and the required Astra story-reviewer within the skill's budgets. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
+/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Use up to two concurrent implementation workers and the exact native story-reviewer within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
 ```
 
 This example is not an execution grant. Actual authorization must identify the

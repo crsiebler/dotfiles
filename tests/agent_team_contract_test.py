@@ -125,10 +125,11 @@ class AgentTeamContractTest(unittest.TestCase):
         self.assertIn('[Codex CLI entry](references/codex.md) only for a Codex CLI', entry)
         requirements = ' '.join((BUNDLE / 'references/requirements.md').read_text().split())
         for capability in ('spawn/follow-up/wait/session inspection',
-                           'explicit supported worker model selection',
                            'known capacity', 'same-session continuation',
                            'approved clean committed integration/task branches'):
             self.assertIn(capability, requirements)
+        self.assertIn('selection is optional unless needed to satisfy a user requirement',
+                      requirements)
 
     def test_core_workflow_is_harness_agnostic_and_capability_gated(self):
         for name in ('team-execution.md', 'task-concurrency.md', 'requirements.md',

@@ -177,7 +177,7 @@
         "No proxy-spawning",
         "No duplicate possibly-live owner",
         "No reset review budget",
-        "Direct dispatch needs observed Sol and required worker/reviewer controls"
+        "Direct dispatch needs required worker/reviewer controls; record model evidence or unknowns"
       ]
     },
     {
@@ -211,6 +211,62 @@
         "No fake native invocation",
         "No permission bypass or automatic installation",
         "No silent review-budget change"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Execute the approved plan with existing implementation, worktree and commit authority. Coordinator model telemetry is unavailable. The exact native story-reviewer is fixed to Luna and supports same-session continuation. No user model requirement exists; other gates pass.",
+      "expected_output": "Proceed with the current main session and exact Luna-pinned reviewer; record unknown coordinator model and the preference fallback once.",
+      "files": [],
+      "expectations": [
+        "No model-only blocker or renewed model approval",
+        "No unsupported override, generic reviewer substitution or runtime configuration edit",
+        "Preserve exact native role, protocol, checks and bounded review passes"
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "The user explicitly requires an Astra reviewer. The exact native story-reviewer is fixed to Luna and cannot be overridden.",
+      "expected_output": "Block the affected path on the explicit user constraint; report the fixed pin without substituting a model or role.",
+      "files": [],
+      "expectations": [
+        "Skill fallback does not override explicit user requirements",
+        "No generic Astra reviewer or automatic installation",
+        "Preserve existing candidate and review history"
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "The native worker API exposes inheritance but no model override. Main-session model telemetry is unknown. All ownership, capacity, reviewer and execution gates are satisfied; there is no explicit user model requirement.",
+      "expected_output": "Dispatch through the supported API using inheritance, recording unknown effective models and the unavailable preference controls.",
+      "files": [],
+      "expectations": [
+        "No invented model parameter or capability-probe agents",
+        "No repeated preflight on an unchanged model gap",
+        "Actual native reviewer and same-session gates remain required"
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "Resume after the revised model preference policy is activated and the prior dispatcher is quiescent. 26/122 stories are delivered. US-027 has a recovered passing native review and pending commit. Reconcile its unchanged candidate and existing check/review evidence under the existing commit grant.",
+      "expected_output": "Verify candidate/evidence and session history, preserve consumed passes, then complete pending authorized finalization if every delivery gate still holds.",
+      "files": [],
+      "expectations": [
+        "No new review solely to change model or renew a passing verdict",
+        "No delivery claim before successful commit",
+        "No assumed candidate validity from the reported story count",
+        "Unrelated blockers and exhausted review budgets remain authoritative"
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "Held-out: main is verified Astra, implementation workers are fixed to Sol, and the exact native reviewer is fixed to Luna. All required capabilities, grants and cost limits are satisfied. No user model constraint exists.",
+      "expected_output": "Keep the current coordinator, respect each fixed pin, and proceed under the normal isolation and delivery gates with recorded fallback reasons.",
+      "files": [],
+      "expectations": [
+        "No Sol coordinator prerequisite",
+        "No Luna implementation or Astra reviewer prerequisite",
+        "No automatic model switching or role replacement"
       ]
     }
   ]

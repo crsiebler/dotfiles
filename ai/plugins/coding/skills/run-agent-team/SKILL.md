@@ -46,16 +46,20 @@ takeover.
 
 Use one compact capability/ownership preflight. Inspect actual callable native
 worker/model/follow-up/session controls, installed pins and capacity. Require
-observed Sol main-session selection and direct worker/reviewer controls, including
-exact native story-reviewer selection and same-session continuation when the risk
-budget specifies it. Record selection evidence and unknown effective settings
+direct worker/reviewer controls, including exact native story-reviewer selection
+and same-session continuation when the risk budget specifies it. Record selection
+evidence and unknown effective settings
 honestly; never install settings, bypass pins or substitute a generic reviewer.
 A file or role label proves no invocation capability. No capability-probe agents.
 
-Use a verifiably selected `gpt-6.1-sol` main session for coordination. Select
-`gpt-6-luna` explicitly for implementation workers. Use `gpt-6-astra` for reviews,
-conflict analysis, architecture and cross-domain analysis under
-[runtime selection](references/runtime-selection.md), within existing
+Keep the current main session for coordination. Preferred models are
+`gpt-6.1-sol` for coordination, `gpt-6-luna` for implementation and `gpt-6-astra`
+for review, conflict analysis, architecture and cross-domain analysis. These are
+preferences, not execution prerequisites. Follow the fallback and explicit-user
+constraint rules in [runtime selection](references/runtime-selection.md).
+Unknown coordinator model telemetry or a different installed reviewer model alone
+does not block execution. Preserve the exact native reviewer role and all gates;
+never change roles to obtain a preferred model. Stay within existing
 advisor/review/remediation allowances and actual model-use scope. Do not silently
 switch the main thread's model or install settings.
 A model change does not reset review attempts, add a second gate or grant an

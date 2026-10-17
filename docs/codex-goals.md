@@ -372,13 +372,16 @@ execution of an approved plan. Use `/skills` in Codex CLI or the discovered
 execution scope. A goal alone does not select the skill. Planning produces
 stories, criteria, a DAG and recommended expertise without starting execution.
 
-The Sol-selected main thread owns direct dispatch, Git, worktree lifecycle,
+The current main thread owns direct dispatch, Git, worktree lifecycle,
 integration and canonical task state. No custom primary, nested coordinator or
 role-guidance adoption is required; multi-agent-coordinator is optional bounded
 advice. Dependencies become ready only after verified integration delivery.
 Before taking over an older run, quiesce its prior dispatcher and reconcile live
 worker/reviewer IDs, assignments, candidates and consumed budgets. Keep required
-worker/reviewer/model controls and existing grants. Luna workers use assigned task
-worktrees; Astra escalation preserves exact dedicated reviewers, continuation and
-bounded budgets. Fill eligible capacity before waiting. See
+worker/reviewer controls and existing grants. Workers use assigned task worktrees.
+Sol coordination, Luna implementation and Astra review/analysis are preferences;
+respect installed pins and use supported defaults when needed. Unknown coordinator
+model telemetry alone does not block. Explicit user model constraints, exact
+dedicated reviewers, continuation and bounded budgets remain required.
+Fill eligible capacity before waiting. See
 [team verification](agent-team-verification.md) for entry and activation limits.

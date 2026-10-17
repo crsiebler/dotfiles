@@ -843,11 +843,14 @@ not install configuration, read keys, or run live calls.
 
 ### Harness-agnostic agent-team execution
 
-The normal Sol-selected main AI session runs run-agent-team directly with an
+The current main AI session runs run-agent-team directly with an
 approved plan. It owns dispatch, Git, worktree lifecycle, integration and canonical
 task state. A custom coordinator or primary-agent selection is unnecessary;
 multi-agent-coordinator remains optional bounded advice. No nested dispatcher or
-role-guidance adoption is required. Preserve actual worker/reviewer/model controls,
+role-guidance adoption is required. Prefer Sol/Luna/Astra for coordination,
+implementation and review/analysis, with supported fallback to installed pins or
+native defaults. Unknown main model telemetry alone does not block; explicit user
+model constraints still apply. Preserve actual worker/reviewer controls,
 capacity, pins and same-session review continuation. Reconcile a quiescent prior
 dispatcher and its live assignments before takeover; never proxy-spawn or run
 competing loops. No automatic model/configuration changes.
