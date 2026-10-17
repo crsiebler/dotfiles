@@ -22,8 +22,10 @@ The main thread records in the existing execution checkpoint:
 - Main session as the only dispatcher and integration/Git/canonical state owner,
   with actual session identity and model evidence when available (otherwise
   unknown).
-- Worker/model/delegation limits, occupied capacity, open/active semantics and
-  required reviewer capacity, session continuation and supported release API.
+- Worker/model/delegation limits, observed occupied capacity versus uncertainty,
+  documented session semantics, required reviewer capacity and supported
+  inspection/continuation/release controls; queue limit and its rationale under
+  [capacity and queue control](task-concurrency.md#capacity-and-queue-control).
 - Actual native worker/model controls and installed pins; exact story-reviewer
   invocation and same-session continuation where required by the risk budget.
 - Existing execution, worktree, commit and closeout grants; missing scope/tools.
@@ -41,35 +43,56 @@ alone do not block; explicit user constraints and required native roles still ap
 
 Every worker packet includes story ID/criteria, source requirements, delivered
 prerequisite commits, absolute task worktree, exact branch/full base, bounded owned
-paths/interfaces, private outputs, resource constraints, model selection or
-inheritance/pin evidence, required specialist identity and real check commands.
+paths/interfaces, private output locations, resource constraints, model selection
+or inheritance/pin evidence and required specialist identity. Identify feasible
+compilation and focused verification commands with working directories, required
+build hooks/generated inputs, and any known unavailable checks or shared resources.
 Workers do not orchestrate, subdelegate, stage, commit, merge or modify canonical
-task state. Return actual IDs, base/candidate,
-changed paths, check evidence and blockers. Normal coding skill discovery applies.
+task state. Normal coding skill discovery applies.
 
 The main thread validates the DAG, prepares worktrees and verifies base ancestry
 before admission. Fill Kahn-ready capacity in priority then document order;
 fill the worker target with independent eligible stories before waiting when
-limits permit, dispatching at least two when available.
-Use min(requested worker limit, safely available native slots, model-use budget,
-project resource capacity). Default to a target of up to four workers. Calculate
-the worker capacity after accounting for other occupied sessions and reserving
-one required reviewer slot; an existing reviewer satisfies that reservation.
-Count the main thread only when the runtime's reported limit includes it. Honor
-open/active session semantics: idle sessions may still occupy slots. Four total
-slots allow two workers plus main/reviewer; six allow four. Refill eligible
-capacity as slots become available. Never close live writers or a reviewer needed
-for its same-session targeted pass; release completed handed-off sessions only
-through supported controls. Dependencies, overlapping ownership and exclusive
-resources can reduce the usable worker count below the target.
+limits permit, dispatching at least two when available. Apply the concurrency
+contract's capacity, queue and event rules before each wait; the worker target
+does not override qualification or delivery pressure.
+
+## Handoff and remediation
+
+Workers execute available relevant compilation and focused checks before handoff.
+Return actual session/story IDs, base/candidate, changed paths, commands/results,
+private output locations, failures, unrun checks and blockers. Distinguish checks
+passed on the worker candidate from qualification of the integrated candidate.
+Report missing shared build hooks early, before accumulating uncompiled work.
+The main thread arranges the smallest integration compile checkpoint using the
+existing hooks and resource controls; do not duplicate a broad build system or
+install dependencies automatically. A necessary source-only handoff is explicitly
+unqualified, includes the missing checks/reason and compile checkpoint, and cannot
+satisfy delivery until required checks pass. Run other feasible checks meanwhile.
+
+Return substantial bounded source remediation to the original worker when feasible
+within the existing authorization and delegation/remediation budgets. First verify
+that the prior writer is quiescent and explicitly transfer exclusive ownership of
+the exact candidate revision, worktree and bounded paths; record the transfer in
+the existing checkpoint and confirm it with the recipient before writes. Supply
+failure evidence, required changes and focused rechecks. The worker edits only
+its assigned source; the main thread retains shared integration files, Git/index,
+canonical state, review coordination and commits. Never allow simultaneous writers
+to a candidate or edit a candidate under active review. If repair needs shared
+integration changes, the main thread applies those in sequence. Reconcile returned
+changes and quiescence, transfer ownership back, then integrate and recheck.
+Keep small integration fixes with the main thread when delegation adds unnecessary
+overhead. If worker remediation is infeasible, record why and retain bounded local
+repair or block the affected story; no replacement worker or retry expands budgets.
 
 Integrate one candidate, run required checks, freeze that candidate/conflicting
 resources, then directly invoke the required reviewer. Supply the complete
 unchanged protocol/profile/schema in each packet, not an inherited reference;
 retain its actual native session for the permitted targeted pass. Other isolated
-workers may continue. The main thread owns remediation and final markers,
-progress/memory/authorized commit operations. Reconcile ownership before requesting
-worker remediation; never allow concurrent writers to one candidate. No extra gate.
+workers may continue. The main thread owns remediation coordination and final
+markers, progress/memory/authorized commit operations. Remediation changes
+invalidate affected check/review evidence; preserve the existing permitted passes
+and persistent blocker gate. No extra approval or review gate.
 
 Worker results do not release dependencies. Require successful integration
 checks/review, actual authorized commit and current plan revision, then verify

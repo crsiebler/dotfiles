@@ -39,7 +39,9 @@ trackers. Task admission and worker/resource ownership belong to the adapter.
   narratives in task sources.
 - `progress.md`: canonical append-only execution journal for commands/results,
   changed paths, staged-review findings/dispositions, blockers, actual approvals,
-  resumption checkpoints, actual advisor use, and commit status.
+  resumption checkpoints, actual advisor use, and commit status. Keep work phases,
+  ownership transfers and capacity/queue changes here under
+  [concurrency](task-concurrency.md), not in another task registry.
 - `memory.json`: bounded reusable review knowledge, not a general execution log.
 - PRDs: approved requirements, requirement changes, and open questions, not
   implementation checkpoints. Cross-reference approved changes in the journal.
@@ -170,12 +172,20 @@ required dedicated reviewers. The designated integration owner retains delivery 
 Each executor/worker implements only its assigned story using existing patterns
 and minimal changes. Use the exact assigned project root for file and check
 operations; actor labels never establish filesystem isolation.
+Apply [worker readiness and remediation](team-execution.md#handoff-and-remediation):
+execute feasible compilation/focused checks before handoff, report unavailable
+shared hooks early, and label source-only results unqualified. The main thread
+retains delivery ownership while substantial bounded repairs return to a worker
+through exclusive ownership transfer within existing budgets.
 Discover required formatter, typecheck, lint, and test commands from repository
 instructions, scripts, Makefile, and documentation. Follow test-first rules where
 applicable. Run configured formatters and required checks before review; rerun
 affected checks after fixes. Never call unavailable or unrun checks passing. If
 checks are unclear, use safe relevant validation and record gaps; an unmet
 required check blocks completion and commit. Do not commit broken code.
+At long-check yields and handoff/remediation/review/commit events, apply the
+concurrency contract's reassessment before waiting again. Continue eligible isolated
+work within the queue limit; do not duplicate checks or loosen delivery gates.
 
 For UI changes, load `verify-interface` and verify the affected browser flows.
 UI work is incomplete until browser verification passes. Record routes/flows,

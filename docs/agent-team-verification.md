@@ -54,6 +54,46 @@ model combination. These cases were inspected against the revised instructions;
 they have not been executed as live model evaluations. No installed skill was
 updated and no stopped run was resumed by these checks.
 
+### Sustained coordination source revision
+
+The source contract now keeps capacity, work phases, queue pressure and event
+checkpoints in task-concurrency.md, with worker readiness and exclusive repair
+ownership in team-execution.md. The waiting-candidate limit defaults to one with
+one feasible worker, otherwise two, reduced when project resources require it.
+Handed-off source-only and worker-remediation candidates count toward pressure;
+already active workers may finish even when their results exceed the limit.
+Review/session budgets and verified integration delivery remain unchanged.
+
+Static walkthrough of evaluation cases 25–31 and 33 against the revised source:
+
+| Cases | Source assessment |
+| --- | --- |
+| 25: slow SDK check | Event checkpoints now require reassessment at a yield and eligible dispatch before waiting again, using the existing check handle. Previously dispatch/refill was not tied to check yields. |
+| 26, 33: substantial repair versus tiny fix | Handoff rules now specify original-worker remediation, exclusive transfer in both directions and focused rechecks; small integration fixes remain with the main thread. Previously remediation ownership was left to the main thread without this distinction. |
+| 27: missing shared hooks | Worker packets and handoffs now require feasible checks and early hook constraints, with an explicitly unqualified source-only result and minimal integration compile checkpoint. |
+| 28: saturated queue | The explicit limit stops new-story admission; incoming results are preserved and qualification/delivery drains pressure before refill. Previously no waiting-candidate bound was defined. |
+| 29: uncertain capacity | Documented semantics and supported inspection now distinguish observed occupancy from unknown labels and identify the affected admission without stopping safely eligible work. |
+| 30: retained review session | The existing same-session safeguard is retained and explicitly applied to review-finished checkpoints; an idle label does not permit release. |
+| 31: justified serialization | Existing resource/dependency guards still prevent conflicting SDK use and premature dependent dispatch; event checkpoints do not override them. |
+
+Case 32 combines these events across delivery cycles and remains held out for a
+later authorized runtime evaluation. Existing planning/non-trigger and model
+fallback cases are retained. These assessments compare instruction coverage, not
+executed model behavior or measured performance.
+
+Local validation for this revision passed with the existing Conda `dotfiles`
+Python 3.11.16/PyYAML 6.0.3: create-skill `check` and bundle `validate`,
+`make validate-ai`, `git diff --check`, and 63 tests across agent-team,
+runtime-selection, story-execution, story-blocker, coding-workflow and agent-contract
+suites. Tests inspect all 33 evaluation records for structure/resource closure;
+they do not execute those prompts. The system command wrappers emitted temporary
+cache warnings during `make`, but validation completed with exit zero and reported
+valid AI sources. No standalone repository typecheck target exists.
+No live team, application plan, installed copy, publication or repository commit
+was part of this source validation. Runtime occupancy, check yielding and sustained
+delivery performance remain unmeasured; use the expanded verification reference
+under separate live-execution scope to establish them.
+
 Codex CLI 0.162.0 was inspected locally in October 2026. In the exposed task
 runtime, native custom-role selection for story-reviewer could not be established.
 Removing the coordinator dependency does not repair that separate review-tool gap.

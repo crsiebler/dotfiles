@@ -29,17 +29,74 @@ an idle worker. Preserve blocked candidates and consumed review passes.
 Assign exactly one integration owner for the plan, integration branch/index,
 completion markers, append-only progress and bounded memory. Workers return
 changes and evidence, not competing journals or completion trackers. Record each
-assignment in the existing plan/checkpoint, not a new registry:
+assignment in the existing execution checkpoint, not a new registry or plan
+narrative:
 
 - Stable story ID, scope, acceptance and exact verification commands.
 - Absolute task worktree path, exact task branch and approved full base commit.
 - Bounded repository-relative owned paths and agreed shared interface contracts.
 - Private build/output roots; shared output owner and host resource coordination.
 - Actual native worker identity and supported runtime/model/effort when observed.
+- Current phase: active implementation, awaiting integration, integrating,
+  remediation or review; candidate/write owner and relevant check/reviewer session.
 
 Allocate shared source paths to one owner or serialize their changes. Directory
 ownership includes descendants. Logical path checks are not symlink containment;
 verify actual paths stay within the assigned worktree and authorized scope.
+
+## Capacity and queue control
+
+Use min(requested worker limit, safely available native slots, model-use budget,
+project resource capacity), targeting up to four implementation workers by default.
+Use the runtime's documented session-capacity semantics and exposed inspection
+controls. Count the main session only if the reported limit includes it; account
+for advisors and retained sessions according to those semantics. Reserve one slot
+for required review; an occupied reviewer already satisfies that reservation.
+For a runtime counting all these sessions, four total slots allow two workers plus
+main/reviewer; six allow four workers.
+
+Record observed occupied capacity separately from uncertainty. Idle, completed or
+pending-init labels alone prove neither occupation nor release. Reconcile stale or
+uncertain results using supported inspection before admission or retry; never
+duplicate a possibly-live owner. Use only supported lifecycle controls within
+existing authority. Never terminate a live writer, discard pending work, or release
+a reviewer required for its permitted same-session continuation. A finished initial
+review is not evidence that its session can be released. If uncertainty persists,
+record its concrete effect (for example, one unconfirmed slot prevents another
+spawn) and continue work that is safely eligible without relying on that slot.
+
+Set an explicit completed-candidate queue limit in the existing checkpoint:
+default to one when only one worker is feasible, otherwise two. Lower it for tight
+build/storage resources; explain the chosen value using worker capacity and project
+resources. This small buffer feeds serial integration without admitting unlimited
+unfinished delivery. Do not raise it merely to hide a backlog or fill slots.
+Count all handed-off candidates outside the single integration/review lane,
+including source-only results and candidates returned for worker remediation;
+changing their phase does not erase queue pressure. Keep phase distinct from
+qualification evidence. No new registry or background scheduler.
+
+At or above the limit, stop admitting additional stories and prioritize
+qualification, remediation and delivery in dependency/priority order, preserving
+required review capacity. Already active isolated workers may finish; simultaneous
+handoffs can temporarily exceed the limit. Preserve those results and drain the
+queue below the limit before new admission, without terminating writers or
+discarding work.
+Consider imminent handoffs and actual integration/resource availability before
+refilling. A free native slot alone is not a reason to start another story.
+
+## Event checkpoints
+
+Reassess ready tasks, exclusive ownership, observed capacity and uncertainty,
+resource use and queue pressure when a worker hands off, a long-running check
+yields control, remediation finishes, review finishes, or a story is committed.
+Update only changed facts in the existing checkpoint; avoid repetitive bookkeeping.
+Before waiting again, dispatch useful independent work if authorization, dependency
+bases, capacity, resources and the queue limit permit. Reuse the running check's
+handle and result; do not restart it, launch duplicate checks, busy poll or split
+tiny work to manufacture occupancy. Use supported yielding checks and bounded
+event waits where available. A long verification command alone does not justify
+pausing unrelated isolated work. If the tool cannot yield, dispatch eligible work
+before starting it and record the actual coordination limitation.
 
 ## Prepared worktrees and native paths
 

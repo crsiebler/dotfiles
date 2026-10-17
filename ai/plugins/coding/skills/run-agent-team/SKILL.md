@@ -32,8 +32,12 @@ is an orchestration prerequisite.
 
 The main thread is the sole integration owner and the only dispatcher. It owns
 native worker/advisor/reviewer calls, version control, worktree lifecycle,
-merging/conflict writes, canonical task markers, append-only progress and bounded
-memory. Follow this skill directly; reading or invoking `multi-agent-coordinator`
+shared integration files, merging/conflict writes, staging, review coordination,
+commits, canonical task markers, append-only progress and bounded memory.
+Delivery ownership does not require doing every source repair: follow the
+[handoff and remediation rules](references/team-execution.md#handoff-and-remediation)
+to return substantial bounded repairs to a worker with exclusive write ownership.
+Follow this skill directly; reading or invoking `multi-agent-coordinator`
 is optional advice within the existing read-only advisor budget, never a required
 primary agent or child dispatcher. No custom coordinator selection, nested
 delegation or role-guidance adoption is required. Never proxy-spawn for a child,
@@ -66,23 +70,22 @@ A model change does not reset review attempts, add a second gate or grant an
 autonomous retry. Role definitions remain reusable without model pins.
 
 Default to a target of up to four implementation workers; honor explicit user
-limits and actual runtime/resource capacity. Count all occupied sessions using
-the runtime's actual open/active semantics, including the main session only when
-the reported limit includes it. Reserve one slot for required review; an occupied
-reviewer slot already satisfies that reservation. Other advisors and retained
-sessions also consume capacity. Four total slots therefore support two workers
-alongside the main session and reviewer; six total slots support four workers.
-Never close a live writer or a reviewer needed for the permitted same-session
-targeted pass. Release completed handed-off sessions only through supported
-controls, and do not assume an idle session has released its slot.
+limits and actual runtime/resource capacity. Apply
+[capacity and queue control](references/task-concurrency.md#capacity-and-queue-control):
+reserve required review capacity, distinguish observed occupancy from uncertainty,
+and record a small explicit integration queue limit in the existing checkpoint.
 
 When two or more eligible independent substantial coding tasks exist and the
-grant, resources and capacity permit, fill eligible capacity up to the worker
-target before waiting for results, dispatching at least two. Refill available
-capacity from ready tasks. Do not split tiny work merely to manufacture
-parallelism. Serial exceptions require an exact recorded reason:
+grant, resources, capacity and queue limit permit, fill eligible capacity up to
+the worker target before waiting for results, dispatching at least two. Refill available
+capacity from ready tasks at the concurrency contract's event checkpoints.
+Prioritize qualification, remediation and delivery when the queue is saturated;
+useful concurrency and verified delivery matter more than occupied slots.
+Do not split tiny work merely to manufacture parallelism. Serial exceptions
+require an exact recorded reason:
 dependency chain, overlapping ownership, exclusive resource, insufficient capacity,
-unavailable capability/authority, or work too small for useful partitioning.
+unavailable capability/authority, integration queue pressure, or work too small
+for useful partitioning.
 Dispatch-before-wait is the operational rule; observed wall-clock overlap is a
 separate verification result.
 
@@ -105,6 +108,9 @@ references, self-dependencies and cycles, then prepares clean task worktrees
 under its lifecycle grant. Workers edit/check only assigned roots/paths.
 The main thread owns admission, integration and shared state.
 Never invoke Ralph or its runner from this workflow.
+Worker packets identify feasible compilation/focused checks, required build hooks
+and private outputs. Require actual check results before handoff; an explicit
+source-only result remains unqualified until the required checks pass.
 
 Read the exact existing approved plan and revision. Preserve story IDs, dependency
 edges, acceptance criteria and completed evidence. Validate all references,
