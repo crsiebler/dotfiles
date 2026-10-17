@@ -118,8 +118,11 @@ Assign task worktrees/branches/bases and bounded owned paths explicitly. Native
 child spawn does not bind cwd: file operations, Git and check commands must use
 the assigned absolute worktree. One lead owns integration branch/index, canonical
 markers, progress and memory. Workers return patches and evidence without creating
-competing trackers. Required native tools/roles and model selection must be
-available in the actual runtime; this source change activates none of them.
+competing trackers. Required native tools/roles must be available and model use
+must be authorized. Explicit model-selection controls are optional unless needed
+to satisfy a user requirement; otherwise use supported inheritance or defaults
+under the installed skill's runtime-selection policy. This source change activates
+no runtime capabilities.
 
 Use private build/output roots where possible. Separate worktrees still share
 host resources and may reach shared caches/services/output paths. Designate one
