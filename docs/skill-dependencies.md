@@ -2,13 +2,13 @@
 
 ## Scope and findings
 
-This source audit covers all 29 repository-owned Craft skills under
+This source audit covers all 31 repository-owned Craft skills under
 `ai/plugins/*/skills/*/`. It examines skill entry points, supporting references,
 shipped helper imports/subprocesses, and declared Python requirements. It does
 not modify or inventory installed vendor skills, authenticate providers, install
 utilities, provision models, or establish live integration compatibility.
 
-All 29 bundles now contain `references/requirements.md`, linked from their
+All 31 bundles now contain `references/requirements.md`, linked from their
 `SKILL.md`. Ten existing requirements files gained installation instructions;
 19 new files document required/conditional utilities or explicitly state that
 baseline prose work needs none. Existing Python pins and tested-environment
@@ -43,11 +43,13 @@ are bundled pins, not recommendations to upgrade another project.
 | coding / [format-code](../ai/plugins/coding/skills/format-code/references/requirements.md) | None universal | Configured Ruff/pre-commit/Prettier/ESLint and project environment |
 | coding / [manage-changes](../ai/plugins/coding/skills/manage-changes/references/requirements.md) | Git for shipping | GitHub CLI/access for GitHub delivery; project checks; git-cliff for requested changelog generation |
 | coding / [map-codebase](../ai/plugins/coding/skills/map-codebase/references/requirements.md) | Native file/search access | ripgrep preferred shell search; Git for history/diffs |
-| coding / [prepare-implementation](../ai/plugins/coding/skills/prepare-implementation/references/requirements.md) | None for planning | Git/native harness/reviewer for execution; Python/POSIX for archive/Ralph |
+| coding / [prepare-implementation](../ai/plugins/coding/skills/prepare-implementation/references/requirements.md) | None for planning | Adequate native file reads; optional Git/source parser for planning evidence |
 | coding / [recover-ralph](../ai/plugins/coding/skills/recover-ralph/references/requirements.md) | Matching Ralph CLI; Python 3.11+, Git, POSIX for status | OpenCode/native ralph-reviewer for approved resume |
 | coding / [resolve-review-feedback](../ai/plugins/coding/skills/resolve-review-feedback/references/requirements.md) | None for supplied feedback | Git; GitHub CLI/access for live feedback; project repair tools |
 | coding / [review-code](../ai/plugins/coding/skills/review-code/references/requirements.md) | Native read/search access | Git/provider reads for selected evidence; no installs/tests during review |
+| coding / [run-agent-team](../ai/plugins/coding/skills/run-agent-team/references/requirements.md) | None for inspection/planning | Native worker/model/capacity/reviewer tools in the selected harness with main-session dispatch, Git and approved task worktrees; project checks |
 | coding / [run-tests](../ai/plugins/coding/skills/run-tests/references/requirements.md) | Project-configured runner | pytest/Vitest/coverage/browser/services only when configured |
+| coding / [archive-run](../ai/plugins/coding/skills/archive-run/references/requirements.md) | Python 3.11+, Git and POSIX | Exact-path archival authority; no packages or model/runtime dependency |
 | coding / [verify-interface](../ai/plugins/coding/skills/verify-interface/references/requirements.md) | One exposed/installed browser backend | Chrome baseline; Node/CLI or MCP; Computer Use plugin; other browsers targeted |
 | coding / [write-requirements](../ai/plugins/coding/skills/write-requirements/references/requirements.md) | None for supplied context | Selected reader/research skill prerequisites |
 | delegating / [use-subagents](../ai/plugins/delegating/skills/use-subagents/references/requirements.md) | POSIX shell; Python 3.11+ for discovery helper | Exposed native delegation capability/budget for invocation |

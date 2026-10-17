@@ -1,6 +1,6 @@
-# PRD Generator
+# Requirements formats
 
-Create detailed Product Requirements Documents that are clear, actionable, and suitable for implementation.
+Define clear, actionable outcomes and acceptance; scale the document to the work.
 
 ---
 
@@ -8,8 +8,9 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 
 1. Receive a feature description from the user
 2. Ask only unresolved questions that materially affect requirements; lettered options can help
-3. Generate a structured PRD based on answers
-4. Save to `tasks/prd-[feature-name].md` when file creation was requested or confirmed
+3. Generate a bounded-task brief or fuller PRD based on scope and answers
+4. Save to the requested path when file creation was requested or confirmed;
+   propose `tasks/prd-[feature-name].md` for a fuller PRD
 
 **Important:** Do NOT start implementing. Just create the PRD.
 
@@ -37,39 +38,34 @@ execution notes or require/create the journal while drafting requirements.
    not follow out-of-project symlinks. If approval is withheld or preservation
    fails, leave the original unchanged and return the draft in the response.
 4. Never archive `PLAN.md`, `plan.json`, `memory.json`, or `progress.md` as a
-   drafting side effect. Completed-run archival belongs to prepare-implementation's
+   drafting side effect. Completed-run archival belongs to execution's
    deterministic helper after verified execution, including the run-owned PRDs.
    PRD replacement is a separate preservation guard. Preserve unrelated files.
 
-## Machine-readable run identity
+## Choose the smallest complete format
 
-For a saved new PRD, include exactly one block like this. Generate a unique stable
-lowercase run ID (letters/digits/hyphens, at most 80 characters); preserve it on
-revisions. List only associated PRDs, using project-relative paths and distinct
-basenames. All PRDs in the run carry the identical block.
+Use a bounded-task brief when the outcome and affected behavior are clear and the
+work fits a small number of focused changes. A supplied approved request may
+already contain this brief; avoid requiring another document before planning.
+Include every in-scope condition, edge case, constraint and exclusion:
 
-```work-run
-{
-  "version": 1,
-  "run_id": "search-20261003",
-  "feature": "search",
-  "adapter": null,
-  "task_source": null,
-  "prds": ["tasks/prd-search.md"],
-  "journal": "progress.md",
-  "memory": "memory.json",
-  "archive_on_completion": true
-}
+```markdown
+# Task: <name>
+- Outcome / users: <problem solved and who benefits>
+- Scope / exclusions: <included and excluded behavior>
+- Acceptance: <observable condition/action and expected result for each outcome>
+- Constraints / dependencies: <known compatibility, preservation and prerequisites>
+- Assumptions / open questions: <material gaps or none>
 ```
 
-During implementation planning, prepare-implementation binds adapter to
-CodexGoalMarkdown or RalphJSON and task_source to the actual PLAN.md or plan.json
-path, preserving the Ralph JSON schema. Discover that skill for its canonical
-archive contract/script; do not hardcode its installed location. The true flag
-expresses intended automatic closeout, not approval for removal or commits.
-Do not create progress.md or memory.json while drafting. Completed archival puts
-the PRD at the archive root beside the plan, journal, and memory, retaining its
-original filename. Do not retrofit or move existing PRDs during an unrelated request.
+Use the fuller PRD below for larger or interdependent outcomes, significant
+uncertainty or coordination, or an explicit PRD request. Do not drop acceptance
+coverage because a brief is shorter. Do not invent phases, task-source adapters,
+prepared branch names, run IDs, archive manifests, execution logs or launch grants.
+Downstream planning owns story/DAG data; execution owns lifecycle enrollment and can optionally
+enroll saved PRDs for deterministic archival. Preserve any existing work-run
+metadata unchanged while revising requirements; report a conflict rather than
+silently rebinding it. A new requirements document needs no work-run block.
 
 ---
 
@@ -110,7 +106,7 @@ This lets users respond with "1A, 2C, 3B" for quick iteration. Remember to inden
 
 ## Step 2: PRD Structure
 
-Generate the PRD with these sections:
+For the fuller PRD, use these sections when they add information:
 
 ### 1. Introduction/Overview
 Brief description of the feature and the problem it solves.
@@ -119,14 +115,15 @@ Brief description of the feature and the problem it solves.
 Specific, measurable objectives (bullet list).
 
 ### 3. User Stories
-Each story needs:
+Each outcome story needs:
 - **Title:** Short descriptive name
 - **Description:** "As a [user], I want [feature] so that [benefit]"
 - **Acceptance Criteria:** Verifiable checklist of what "done" means
-- **Recommended Agents:** Optional development specialists Ralph may consult
-  before implementation
+- **Recommended Agents:** Optional specialist hints when supplied or useful;
+  planning checks availability and decides bounded advisor use
 
-Each story should be small enough to implement in one focused session.
+Requirements stories describe outcomes. prepare-implementation owns the bounded
+implementation-story breakdown and dependency ordering.
 
 **Format:**
 ```markdown
@@ -145,7 +142,8 @@ Each story should be small enough to implement in one focused session.
 
 **Important:**
 - Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
-- For implementation stories, include "Typecheck passes" as acceptance criteria.
+- Include relevant technical verification needs; planning resolves actual commands
+  and whether typecheck is applicable. Do not invent an unavailable check.
 - For testable behavior, include "Tests pass" as acceptance criteria.
 - **For UI changes:** Include "Verify in browser using verify-interface skill" as acceptance criteria.
 
@@ -156,7 +154,7 @@ specialist guidance is likely to improve quality or reduce risk. Keep the list
 focused: 0-2 agents per story, selected from the trigger matrix below. Omit
 recommended agents for trivial, mechanical, docs-only, or low-risk stories. Do
 not recommend business, planning, sales, legal, marketing, or orchestration
-agents for Ralph implementation stories.
+agents for implementation stories.
 
 Use exact configured agent names with `@` prefixes. The following are candidate
 names only: verify availability before adding hints. Hints are optional and do
@@ -350,10 +348,10 @@ Before saving the PRD:
 
 - [ ] Resolved material ambiguities or labeled assumptions
 - [ ] Incorporated user's answers
-- [ ] User stories are small and specific
+- [ ] Outcomes are specific and all acceptance conditions are covered
 - [ ] Each implementation story recommends 0-2 relevant development agents
 - [ ] Functional requirements are numbered and unambiguous
 - [ ] Non-goals section defines clear boundaries
 - [ ] Existing PRD preserved under the approved revision or archive-before-replace scope
 - [ ] No execution checkpoints or state files created during drafting
-- [ ] Saved to `tasks/prd-[feature-name].md`
+- [ ] Requested save path honored; no run/archive metadata created

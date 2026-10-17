@@ -98,6 +98,28 @@ it does not override stop files, plan/branch mismatches, active-session checks,
 invalid completion evidence, or exhausted retries. If no ledger exists, use a
 normal start after satisfying the clean-start requirements instead.
 
+An approved launch covers the authorized sequence's scoped implementation,
+checks, delegation, and local passing-story commits. It does not need another
+activation prompt at each story. Recovery confirmation here acknowledges the
+specific interrupted state; it does not turn a bare plan label into launch
+authority or authorize a sensitive operation that caused the stop.
+
+Model and effort overrides are optional and independent. For example:
+
+```sh
+ralph --resume --model openai/gpt-6.1-sol --effort medium --max-iterations 5
+```
+
+Omit `--model` or `--effort` to inherit the OpenCode runtime default for that
+selection. The runner passes `--effort` as OpenCode's provider-specific
+`--variant`; its accepted names are `none`, `minimal`, `low`, `medium`, `high`,
+`xhigh`, `max`, and `ultra`. Check support for the selected provider/model before
+launch: validating a name is not proof that every model supports it. Runtime
+context records explicit requests, or inherited values with actual selection
+unknown. It does not claim native automatic model routing or observe the model
+OpenCode ultimately loads. Ralph remains an OpenCode worker; native Codex Goal
+is a separate worker choice, not a nested loop.
+
 Immediately before approved removal/launch, recheck the stop identity, branch,
 HEAD, candidate, ledger iteration/story, and process state. Material changes
 invalidate the preview and require renewed confirmation. If the runner refuses,
@@ -111,8 +133,13 @@ OpenCode afterward; start a new Codex thread after refreshing its plugin. If an
 older runner rejects `--status`, update it rather than running plain `ralph` as a
 diagnostic fallback. Skill availability is not proof of an updated executable.
 
+The standalone executable probes `python3` first, then versioned Python 3.11+
+names and `python` on PATH, validating Python 3.11+ before launch. An older
+interpreter is skipped. Ensure a compatible interpreter is present on the rollout host; source tests and file existence do
+not establish installed-runtime readiness.
+
 The runner's exact handoff contract is in
-[`ralph-control.md`](../ai/plugins/coding/skills/prepare-implementation/references/ralph-control.md).
+[`ralph-control.md`](../ai/opencode/agents/ralph.md#ralph-runner-control).
 Status regression tests use isolated Git repositories and a fake harness, including
 unchanged-state checks. Skill scenarios specify expected assistant behavior; they
 are not evidence of live model recovery or a guarantee the next attempt succeeds.

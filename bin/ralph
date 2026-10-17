@@ -1,4 +1,15 @@
-#!/usr/bin/env python3
+#!/bin/sh
+""":"
+# Keep a single installed file while validating PATH interpreters before launch.
+for ralph_python in python3 python3.15 python3.14 python3.13 python3.12 python3.11 python; do
+    if command -v "$ralph_python" >/dev/null 2>&1 &&
+        "$ralph_python" -c 'import sys; sys.exit(sys.version_info < (3, 11))' >/dev/null 2>&1; then
+        exec "$ralph_python" "$0" "$@"
+    fi
+done
+printf '%s\n' 'Error: Ralph requires Python 3.11 or newer on PATH.' >&2
+exit 1
+":"""
 """Single-file, POSIX Ralph supervisor. Requires Python 3.11+ and Git."""
 
 import sys
@@ -32,8 +43,9 @@ MODELS = {
         "gpt-5.4-mini-fast", "gpt-5.5", "gpt-5.5-fast", "gpt-5.6-luna",
         "gpt-5.6-luna-fast", "gpt-5.6-sol", "gpt-5.6-sol-fast",
         "gpt-5.6-terra", "gpt-5.6-terra-fast", "gpt-6-astra", "gpt-6-luna",
-        "gpt-6-sol")
+        "gpt-6-sol", "gpt-6.1-sol")
 }
+EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra")
 HELP = """Usage: ralph [options]
   --max-iterations N     Sessions this invocation (1-999999999; default 10)
   --max-story-retries N  Recovery sessions per story (0-5; default 2).
@@ -42,16 +54,21 @@ HELP = """Usage: ralph [options]
   --resume              Approve reconciled interrupted/blocked work; never reset counts
   --status              Read-only diagnosis; cannot combine with execution options
   --mode MODE           fast, standard, deep (default standard)
-  --model MODEL         Allowlisted OpenCode model (default openai/gpt-6-astra)
+  --model MODEL         Allowlisted OpenCode model (omitted: inherit runtime default)
+  --effort EFFORT       none, minimal, low, medium, high, xhigh, max, ultra
+                        OpenCode variant; omitted: inherit runtime default.
+                        Provider/model must support the selected variant.
   -h, --help            Show help
 
-Invoking Ralph for execution grants routine scoped implementation, needed dependencies
-and checks, and one commit per passing story, as defined in the native agent.
+Invoking Ralph for execution grants routine scoped implementation, needed dependencies,
+checks, delegation and one commit per passing story across the authorized sequence,
+as defined in the native agent. Bare plan labels are not execution grants.
 Read-only --status grants no execution authority.
 Required checks and review must pass. Sensitive operations, external posts and pushes
 still require separate approval; no runtime permission is overridden.
 --auto and --authorize-story-commits are unsupported.
-Requires Python 3.11+, POSIX process groups/flock, Git, plan.json and a prepared
+The executable discovers and validates Python 3.11+ on PATH (python3 first).
+Requires POSIX process groups/flock, Git, plan.json and a prepared
 committed exact plan branch (not main/master/detached). OpenCode and its installed
 Ralph agent are needed only for incomplete plans. No jq dependency.
 A fresh run requires a clean prepared worktree, index and nonignored untracked
@@ -87,8 +104,8 @@ def options(args):
             raise SystemExit(0)
         return dict(status=True)
     values = dict(max_iterations=10, max_story_retries=None, iteration_timeout=0,
-                  mode="standard", model="openai/gpt-6-astra", resume=False,
-                  model_source="default")
+                  mode="standard", model=None, effort=None, resume=False,
+                  model_source="runtime default", effort_source="runtime default")
     while args:
         flag = args.pop(0)
         if flag in ("-h", "--help"):
@@ -98,7 +115,7 @@ def options(args):
             values["resume"] = True
             continue
         require(not flag.startswith("--auto"), "--auto has been removed")
-        require(flag in ("--max-iterations", "--max-story-retries", "--iteration-timeout", "--mode", "--model"),
+        require(flag in ("--max-iterations", "--max-story-retries", "--iteration-timeout", "--mode", "--model", "--effort"),
                 "unknown option or argument; use --help")
         require(args and args[0] and not args[0].startswith("--") and args[0] != "-h",
                 flag + " requires a value")
@@ -110,13 +127,17 @@ def options(args):
             require(not value.startswith("-") and not any(c.isspace() or ord(c) < 32 for c in value),
                     "--model must be a nonempty model identifier without whitespace")
             values["model_source"] = "explicit"
+        elif key == "effort":
+            require(value in EFFORTS, "--effort must be one of: " + ", ".join(EFFORTS))
+            values["effort_source"] = "explicit"
         else:
             low, high = (1, 999999999) if key == "max_iterations" else (0, 5 if key == "max_story_retries" else 86400)
             require(re.fullmatch(r"0|[1-9][0-9]{0,8}", value) and low <= int(value) <= high,
                     f"{flag} must be a {'positive integer' if low else 'nonnegative integer'} ({low}-{high})")
             value = int(value)
         values[key] = value
-    require(values["model"] in MODELS, "unsupported model for OpenCode; use an allowlisted provider/model identifier")
+    require(values["model"] is None or values["model"] in MODELS,
+            "unsupported model for OpenCode; use an allowlisted provider/model identifier")
     return values
 
 
@@ -495,8 +516,10 @@ def execute(opts, control, state, plan):
 - Iteration: {iteration} of {opts['max_iterations']}
 - Maximum iterations: {opts['max_iterations']}
 - Execution mode: {opts['mode']}
-- Model: {opts['model']}
+- Model: {opts['model'] or 'inherited; actual selection unknown'}
 - Model source: {opts['model_source']}
+- Effort: {opts['effort'] or 'inherited; actual selection unknown'}
+- Effort source: {opts['effort_source']}
 - Iteration ID: {iteration_id}
 - Selected story: {story_id}
 - Story attempt: {ledger['attempts']}; recoveries consumed: {ledger['retries']} of {state['budget']}
@@ -507,7 +530,12 @@ def execute(opts, control, state, plan):
                        RALPH_STORY_ID=story_id, RALPH_OUTCOME_FILE=str(outcome))
             env.pop("RALPH_STATE_DIR", None)
             require(not os.path.lexists(outcome), "outcome path already exists; refusing launch")
-            supervise(["opencode", "run", "--agent", "ralph", "-m", opts["model"], "--variant", "high", context], env, state, save, opts["iteration_timeout"])
+            command = ["opencode", "run", "--agent", "ralph"]
+            if opts["model"] is not None:
+                command += ["-m", opts["model"]]
+            if opts["effort"] is not None:
+                command += ["--variant", opts["effort"]]
+            supervise(command + [context], env, state, save, opts["iteration_timeout"])
             stopped()
             after_plan = plan_read()
             branch_check(after_plan)

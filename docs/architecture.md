@@ -89,16 +89,22 @@ acceptance-coverage section maps source outcomes into bounded stories and assign
 integrated verification ownership before handoff. This guidance is present in the
 uncommitted source snapshot, not verified as installed behavior.
 
-The execution and persistence contracts are centralized in prepare-implementation:
+Each alternative execution workflow owns tailored delivery and review instructions.
+Only actual executable archival functionality is shared:
 
 | Responsibility | Canonical source / consumer |
 | --- | --- |
-| Story selection, authorization, checks, review budget, finalization | [story-execution.md](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md), consumed by both adapters |
-| Review protocol and result schema | [story-review.md](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md), supplied to native staged reviewers |
-| Ralph executor | [ralph.md](../ai/opencode/agents/ralph.md), reads the installed shared contracts and writes the structured iteration outcome |
-| Ralph scheduling and recovery state | [bin/ralph](../bin/ralph), `main()`, `execute()`, `validate_delivery()` and `status_report()` |
-| Codex Goal adaptation | [Markdown plan reference](../ai/plugins/coding/skills/prepare-implementation/references/markdown-checklist.md), [story-reviewer.toml](../ai/codex/agents/story-reviewer.toml), [Goal guide](codex-goals.md) |
-| Completed-run preservation | [archive_run.py](../ai/plugins/coding/skills/prepare-implementation/scripts/archive_run.py), under the [archive contract](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md) |
+| Team delivery, evidence and finalization | [story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md) |
+| Team review protocol | [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md), supplied to native story-reviewer |
+| Serial Ralph lifecycle and controls | [ralph.md](../ai/opencode/agents/ralph.md) |
+| Complete Ralph review protocol | [ralph-reviewer.md](../ai/opencode/agents/ralph-reviewer.md), discovered by the executor and supplied in full |
+| Ralph supervisor | [bin/ralph](../bin/ralph), scheduling, state and delivery validation |
+| Team dispatch and worktrees | [run-agent-team](../ai/plugins/coding/skills/run-agent-team/SKILL.md); normal main session owns dispatch, Git and state; coordinator advice is optional |
+| Reusable archival code/API | [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md), bundled unchanged archive_run.py |
+
+Native Ralph files are copied byte-for-byte by installation. Its full protocol
+needs no new reference-asset installer. Tests compare compatible schema and guard
+invariants while preserving independent workflow text and runtime limits.
 
 Ralph's `execute()` persists `running`, launches `opencode run --agent ralph`,
 then validates the iteration's identity, outcome, exact selected-story plan
@@ -124,7 +130,7 @@ are external dependencies; dotfiles installation does not build/provision them.
 
 For a skill change, inspect its local references/scripts, plugin owner, matching
 native command, and focused tests; keep the [dependency inventory](skill-dependencies.md)
-aligned if prerequisites change. For shared delivery contracts, inspect both task
+aligned if prerequisites change. For delivery safeguard changes, inspect both workflow/task
 adapters and reviewer wrappers. For installer changes, inspect retirement,
 backup cleanup, and renderer consumers together. The [testing map](testing.md)
 identifies representative verification for these boundaries.

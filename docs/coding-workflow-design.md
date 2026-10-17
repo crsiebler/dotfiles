@@ -98,7 +98,7 @@ task-source mentions separately from active consumers; rerun before retirement.
 | `scripts/ai_retirement.py` and `tests/ai_retirement_test.py` | Generic verified ownership/backup reconciliation; no manufactured inventory or special-case deletion |
 | `ai/AGENTS.md` | No literal old skill identifiers; use obligation map, not name replacement |
 | `run-tests`, `format-code` | No literal old identifiers; narrow descriptions/adapters need US-010 generalization while preserving repository-native command selection |
-| `prepare-implementation` execution references, native reviewers, `/review-pr` | No literal old development consumers; preserve independent orchestration; any new method handoff must be one-way |
+| workflow-owned lifecycle/review instructions, native reviewers, `/review-pr` | No literal old development consumers; preserve independent orchestration; any new method handoff must be one-way |
 | Six targeted native role TOMLs | No literal old skill identifiers; inspect expertise/lifecycle statements individually in US-009, not bulk replacement |
 | README, root AGENTS, authoring/removal guides | No baseline literal old-name consumers outside the inventory above; add migration/activation instructions in US-012 |
 
@@ -110,13 +110,14 @@ not been inspected or changed.
 
 ## Dedicated review and execution invariants
 
-- `prepare-implementation/references/story-execution.md` owns adapter selection,
-  exact prepared-branch guards, explicit execution/commit authority, risk budgets,
-  staging, session provenance, blocker resumption, memory/journal, and finalization.
-- Sibling `story-review.md` owns the full packet protocol and exact JSON schema.
-  Codex `story-reviewer` requires `expanded-initial` (up to 40 small initial evidence
-  calls); native OpenCode `ralph-reviewer` requires `three-step` with `steps: 3`.
-  Targeted passes retain two evidence-gathering turns. Profiles grant no tools.
+- Codex delivery belongs to run-agent-team's story-execution.md; Ralph delivery
+  belongs to its native ralph.md. Each owns branch/authority guards, budgets,
+  staging, sessions, blockers, memory/journal and finalization for that workflow.
+- Codex's sibling story-review.md owns expanded-initial review (up to 40 small
+  initial evidence calls); native ralph-reviewer.md owns the complete three-step
+  protocol with steps: 3. Compatible schemas and safeguard invariants are tested
+  without requiring identical prose. Targeted passes retain two evidence-gathering
+  turns; neither profile grants tools or invokes the other workflow.
 - Preserve one initial and at most one targeted pass in the same actual story
   session, required full protocol delivery, staged evidence, and persistent
   blockers. Generic review and advisors cannot substitute for required reviewers.

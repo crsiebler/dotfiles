@@ -5,9 +5,8 @@ set -euo pipefail
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 AGENT_FILE="$ROOT_DIR/ai/opencode/agents/ralph-reviewer.md"
 RALPH_FILE="$ROOT_DIR/ai/opencode/agents/ralph.md"
-REFERENCES="$ROOT_DIR/ai/plugins/coding/skills/prepare-implementation/references"
-EXECUTION_FILE="$REFERENCES/story-execution.md"
-REVIEW_FILE="$REFERENCES/story-review.md"
+EXECUTION_FILE="$RALPH_FILE"
+REVIEW_FILE="$AGENT_FILE"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
@@ -16,8 +15,8 @@ fail() {
 
 [[ -f "$AGENT_FILE" ]] || fail "missing ralph-reviewer agent"
 [[ -f "$RALPH_FILE" ]] || fail "missing Ralph primary agent"
-[[ -f "$EXECUTION_FILE" ]] || fail "missing shared execution contract"
-[[ -f "$REVIEW_FILE" ]] || fail "missing shared review protocol"
+[[ -f "$EXECUTION_FILE" ]] || fail "missing Ralph delivery instructions"
+[[ -f "$REVIEW_FILE" ]] || fail "missing native Ralph review protocol"
 
 ruby -e '
   require "yaml"
@@ -65,12 +64,12 @@ ruby -e '
   abort "unexpected reviewer commands: #{allowed.join(", ")}" unless allowed == expected
 ' "$AGENT_FILE"
 
-grep -q 'references/story-review.md' "$AGENT_FILE" ||
-  fail "reviewer does not require the supplied shared protocol"
+grep -q 'BEGIN RALPH REVIEW PROTOCOL' "$AGENT_FILE" ||
+  fail "reviewer does not require the supplied full protocol"
 grep -q '"verdict": "pass|changes_requested|blocked"' "$REVIEW_FILE" ||
-  fail "shared output schema is missing verdict"
+  fail "native output schema is missing verdict"
 grep -q '"learning_candidates"' "$REVIEW_FILE" ||
-  fail "shared output schema is missing learning candidates"
+  fail "native output schema is missing learning candidates"
 grep -q 'retrieve only missing sections' "$REVIEW_FILE" ||
   fail "agent does not recover only missing evidence after truncation"
 
@@ -103,8 +102,8 @@ grep -q '`verify-interface`' "$EXECUTION_FILE" ||
 grep -q 'including local/test operations, need explicit approval' "$EXECUTION_FILE" ||
   fail 'Docker and migrations must not receive standing authorization'
 
-grep -q 'references/story-execution.md' "$RALPH_FILE" ||
-  fail "Ralph does not load shared execution rules"
+grep -q '^## Ralph Story Delivery' "$RALPH_FILE" ||
+  fail "Ralph does not load workflow-owned execution rules"
 grep -q 'Never substitute `code-reviewer`' "$EXECUTION_FILE" ||
   fail "shared gate permits general-purpose reviewer substitution"
 

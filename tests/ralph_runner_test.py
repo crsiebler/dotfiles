@@ -79,7 +79,7 @@ class RunnerTests(unittest.TestCase):
         agent.parent.mkdir(parents=True)
         agent.write_text("fixture")
         binary = self.root / "opencode"
-        binary.write_text(FAKE)
+        binary.write_text(FAKE.replace('#!/usr/bin/env python3', '#!' + sys.executable, 1))
         binary.chmod(0o755)
         self.env["PATH"] = str(self.root) + os.pathsep + os.environ["PATH"]
         self.git("init", "-q", "-b", "ralph/test")
@@ -334,6 +334,76 @@ class RunnerTests(unittest.TestCase):
                 runpy.run_path(str(RUNNER), run_name="ralph_version_test")
             self.assertNotEqual(exited.exception.code, 0)
             self.assertIn("Python 3.11", "".join(str(c) for c in stderr.write.call_args_list))
+
+    def test_executable_selects_python311_with_old_python3_on_path(self):
+        old = self.root / "python3"
+        old.write_text("#!/bin/sh\nprintf 'unexpected old python3\\n' >&2\nexit 91\n")
+        old.chmod(0o755)
+        (self.root / "python3.11").symlink_to(sys.executable)
+        result = subprocess.run([str(RUNNER), "--max-iterations", "1"],
+                                cwd=self.repo, env=self.env,
+                                text=True, capture_output=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.state()["status"], "completed")
+
+    def test_executable_uses_compatible_python3_without_versioned_name(self):
+        binaries = self.root / "python-only"
+        binaries.mkdir()
+        (binaries / "python3").symlink_to(sys.executable)
+        result = subprocess.run([str(RUNNER), "--help"], cwd=self.repo,
+                                env=dict(self.env, PATH=str(binaries)),
+                                text=True, capture_output=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Usage: ralph", result.stdout)
+        self.assertFalse((self.repo / ".git/ralph").exists())
+
+    def test_executable_reports_missing_compatible_python(self):
+        binaries = self.root / "no-python"
+        binaries.mkdir()
+        old = binaries / "python3"
+        old.write_text("#!/bin/sh\nexit 1\n")
+        old.chmod(0o755)
+        result = subprocess.run([str(RUNNER), "--help"], cwd=self.repo,
+                                env=dict(self.env, PATH=str(binaries)),
+                                text=True, capture_output=True, timeout=15)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Python 3.11 or newer", result.stderr)
+        self.assertFalse((self.repo / ".git/ralph").exists())
+
+    def test_inherited_model_and_effort_omit_overrides(self):
+        self.assertEqual(self.run_cli().returncode, 0)
+        call = json.loads((self.root / "log").read_text())
+        self.assertEqual(call["argv"][1:-1], ["run", "--agent", "ralph"])
+        context = call["argv"][-1]
+        self.assertIn("- Model: inherited; actual selection unknown", context)
+        self.assertIn("- Model source: runtime default", context)
+        self.assertIn("- Effort: inherited; actual selection unknown", context)
+        self.assertIn("- Effort source: runtime default", context)
+
+    def test_explicit_model_and_effort_overrides(self):
+        result = self.run_cli("--model", "openai/gpt-6.1-sol", "--effort", "medium")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        call = json.loads((self.root / "log").read_text())
+        self.assertEqual(call["argv"][1:-1], ["run", "--agent", "ralph", "-m",
+                                             "openai/gpt-6.1-sol", "--variant", "medium"])
+        for line in ("Model: openai/gpt-6.1-sol", "Model source: explicit",
+                     "Effort: medium", "Effort source: explicit"):
+            self.assertIn("- " + line, call["argv"][-1])
+
+    def test_effort_override_can_inherit_model(self):
+        result = self.run_cli("--effort", "low")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        call = json.loads((self.root / "log").read_text())
+        self.assertEqual(call["argv"][1:-1], ["run", "--agent", "ralph", "--variant", "low"])
+
+    def test_invalid_effort_does_not_launch_or_create_state(self):
+        for value in ("auto", "very-high", "medium high", "HIGH", "-x"):
+            with self.subTest(value=value):
+                result = self.run_cli("--effort", value)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("--effort must be one of", result.stderr)
+                self.assertFalse((self.root / "log").exists())
+                self.assertFalse((self.repo / ".git/ralph").exists())
 
     def test_unknown_exception_text_is_not_logged_or_persisted(self):
         bootstrap = "import runpy; from unittest.mock import patch; " \

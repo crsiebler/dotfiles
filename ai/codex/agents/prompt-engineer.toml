@@ -1,6 +1,4 @@
 name = "prompt-engineer"
-model = "gpt-6-luna"
-model_reasoning_effort = "high"
 
 description = "Design and evaluate prompts, role contracts and skill discovery for actual tasks, tools and models; distinguish static checks from observed model behavior."
 

@@ -54,7 +54,7 @@ Use a native tool when it adequately handles a simple document read. Production
 skills create files; researching extracts evidence; reporting owns synthesis and
 communication. Each new skill has its own Python requirements and validation guide.
 
-All 29 Craft skills link to a bundled `references/requirements.md` describing
+All 31 Craft skills link to a bundled `references/requirements.md` describing
 required/optional utilities, installation steps, and availability checks.
 See the [skill dependency audit and inventory](docs/skill-dependencies.md).
 Source updates require an authorized plugin refresh or skill installation before
@@ -263,8 +263,10 @@ without generating images or changing project files.
 
 Ralph's implementation loop runs through **OpenCode only**.
 
-1. Use `write-requirements` (OpenCode `/define-requirements`) to create a PRD.
-2. Use `prepare-implementation` (OpenCode `/plan-work`) to create `plan.json`.
+1. Use bounded outcome/scope/acceptance requirements for small work, or
+   `write-requirements` (OpenCode `/define-requirements`) for a larger PRD.
+2. Use `prepare-implementation` (OpenCode `/plan-work`) to create `plan.json`,
+   preserving acceptance coverage and ordered dependencies.
 3. Prepare a clean Git worktree with `plan.json` committed on exactly the plan's
    `branchName`, not detached HEAD, `main`, or `master`. Ralph does not switch branches.
 4. With OpenCode configured and Python 3.11+ available, run:
@@ -274,7 +276,9 @@ Ralph's implementation loop runs through **OpenCode only**.
    ```
 
 `make install` installs the executable; AI-only targets do not. The checkout
-entry point is the single-file Python supervisor `bin/ralph`. `--auto` and the old
+entry point is the single-file supervisor `bin/ralph`, whose shell launcher probes
+`python3`, versioned Python names and `python` on PATH and validates Python 3.11+
+before running the Python supervisor. `--auto` and the old
 `--authorize-story-commits` flag are unsupported. Invoking `ralph` itself
 authorizes passing-story commits, routine scoped implementation, necessary project
 dependencies, and relevant tests, not permission bypasses. Docker lifecycle,
@@ -283,19 +287,24 @@ sensitive actions still need separate approval.
 
 Modes are `fast` (minimal review for low-risk work), `standard` (risk-based), and
 `deep` (bounded reviewer for every story). Optional story notes recommend agents,
-not mandatory delegation. OpenCode defaults to `openai/gpt-6-astra`;
-`--model` must match the allowlist in `bin/ralph` and an available provider model.
+not mandatory delegation. Ralph inherits OpenCode's model/effort defaults;
+explicit `--model` must match the allowlist in `bin/ralph` and an available provider
+model. `--effort` selects a supported variant for the run, without forcing high
+effort on every story. See [runtime selection](docs/runtime-selection.md) for
+session profiles, model-agnostic roles, verification limits and separate activation.
 The interactive Astra profile does not expand Ralph's model allowlist.
 
-Both Ralph and Codex Goal follow the full shared
-[story execution contract](ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
-and [review protocol/schema](ai/plugins/coding/skills/prepare-implementation/references/story-review.md).
-Executors load both references in full from the advertised installed
-`prepare-implementation` skill, not checkout paths, and pass the full review
-protocol to the reviewer. Ralph's review gate uses self-review where allowed or
-the dedicated three-step, project-local `ralph-reviewer`, with at most one same-session follow-up after
-substantive fixes. It never substitutes a general-purpose reviewer. Checks include
-relevant typecheck, lint, tests, and `verify-interface` for UI changes.
+Ralph's delivery lifecycle belongs to its native
+[ralph role](ai/opencode/agents/ralph.md); its complete three-step protocol/schema
+belongs to [ralph-reviewer](ai/opencode/agents/ralph-reviewer.md). Codex uses its
+own [delivery](ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+and [review](ai/plugins/coding/skills/run-agent-team/references/story-review.md)
+references. Each executor supplies its complete workflow-specific protocol in
+every native review packet. Missing native routing, full protocol or same-session
+continuation blocks required review; a general reviewer never substitutes.
+Safeguard/schema compatibility is tested without forcing identical prose. Checks
+include relevant typecheck, lint, tests and `verify-interface` for UI changes.
+
 
 `verify-interface` defaults to Chrome, with conditional guidance for Playwright CLI,
 Playwright MCP/project tests, and Computer Use. Other browsers provide targeted
@@ -319,7 +328,18 @@ at the root; the journal is `progress.md`, independent of a custom plan path.
 Neither workflow reads or migrates legacy execution logs. PRDs retain requirements
 and open questions, not implementation checkpoints.
 
-Both workflows use the [completed-run archive procedure](ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
+Small tasks may keep approved requirements directly in the plan, without a separate
+PRD or archival metadata. Larger work uses PRDs and explicit dependencies.
+Plan archival is required at full goal completion. Unenrolled bounded/legacy plans
+use the installed archive helper's copy-only `--preserve-plan` mode: the exact
+plan, available journal/memory and named associated PRDs are copied and verified,
+with a distinct preservation receipt and no source removal or delivery claim.
+If completion archival was missed, preserve the completed previous plan and
+verify its receipt/current hashes before authorized replacement. Failed
+preservation blocks replacement; never replace an unfinished run or reuse old
+execution state without scoped reconciliation.
+Runs enrolled for verified full-run archival use the
+[completed-run archive procedure](ai/plugins/coding/skills/archive-run/references/completed-run-archive.md):
 
 1. Verify all tasks, required checks/reviews, and story commits. For Ralph, wait
    until the runner validates completion and exits before changing active state.
@@ -578,3 +598,20 @@ for ownership, shared-directory scope, and preserved conflicts.
     retirement affects other harnesses; customized/unverified/symlinked copies
     require separate exact-path reconciliation. Retain rollback archives and never
     delete caches manually. Follow the [activation and rollback steps](docs/remove-old-ai-files.md#consolidated-coding-workflows).
+
+### Parallel agent teams
+
+Select `run-agent-team` explicitly in the normal main AI session with an approved
+plan, using the active harness's supported skill mechanism. Its workflow contracts
+are harness agnostic; verify actual native tools and grants before dispatch.
+For Codex CLI only, use `/skills` to select it, then `/goal <objective>` naming the
+plan and existing execution scope. A goal alone does not select the skill.
+The Sol-selected main session owns dispatch, Git, worktree lifecycle, integration
+and canonical task state. The custom `multi-agent-coordinator` is optional advice;
+no custom primary or nested manager is required. Planning stays independent.
+
+Luna workers use isolated assigned worktrees; Astra escalation and dedicated
+story-reviewer invocation retain existing review budgets and session continuation.
+Fill eligible capacity before waiting. Reconcile uncertain prior ownership before
+takeover. Ralph remains serial. [Verification and activation limits](docs/agent-team-verification.md)
+distinguish source checks from actual native execution and provide a goal example.

@@ -44,6 +44,7 @@ class StatusTests(unittest.TestCase):
 
     def test_options_rejected(self):
         for args in (("--resume",), ("--mode", "fast"), ("--model", "secret"),
+                     ("--effort", "high"),
                      ("--max-iterations", "1"), ("--max-story-retries", "2"),
                      ("--iteration-timeout", "1"), ("--auto",)):
             result = self.status(*args)

@@ -8,6 +8,13 @@ the JSON default. If routing is unavailable or ambiguous, the skill asks rather
 than inferring the harness from `PATH`, installed tools, folders, environment
 variables, or policy headings.
 Both formats preserve bounded stories, dependency ordering, and verifiable criteria.
+For a clear bounded task, carry the approved request or brief directly into the
+plan; a separate PRD and archive manifest are optional. Larger work can use fuller
+PRDs, design/phase context and explicit dependency/integration coverage.
+`write-requirements` defines outcomes, scope and acceptance; planning owns story
+breakdown, dependency DAG and recommended expertise. Execution selects models,
+assigns workers and binds any optional archive enrollment. Codex Goal and
+Ralph/OpenCode are separate worker choices; never launch one inside the other.
 
 ## Prepare
 
@@ -19,12 +26,23 @@ it does not implement, run project tests, create branches, start a goal, or crea
 
 Each new Markdown story starts unchecked and contains:
 
-- Stable ID, priority, dependencies, user benefit, and relevant paths.
-- Observable acceptance criteria and applicable verification commands.
-- Research, implementation, verification, bounded staged review, and remediation steps.
-- An instruction to append execution checkpoints to `progress.md`, not the plan.
+- Stable ID, priority, explicit dependencies, user benefit and relevant paths.
+- Observable acceptance criteria, integration acceptance owner and real checks.
+- Recommended known specialist agents and any material planning gaps.
 
-The plan records the exact required working branch, not a branch suggestion.
+Execution assigns task worktrees/branches/bases, resources and worker models in
+its existing checkpoint. It appends actual evidence to progress.md; planning
+creates neither execution state nor orchestration callbacks.
+
+The plan records a stable approved revision and scope baseline, plus the exact
+required working branch. Completion checkboxes change without advancing the
+scope revision. Material scope, acceptance or dependency revisions require
+reconciliation against user approval and delivery evidence; a new revision label
+is not new authority. Missing/self/cyclic dependency references block planning.
+Ralph encodes dependencies in existing notes and priority order and executes
+serially. Codex admits dependency-ready native workers after Kahn-style graph
+validation, including missing-reference and cycle rejection. No independent
+scheduler or additional task store is required.
 Review the plan before execution. Existing plans, checked statuses, and evidence
 must be preserved unless their replacement/reset is explicitly approved. Missing
 commands or evidence are recorded as unknown, not invented.
@@ -35,66 +53,85 @@ Codex CLI 0.153.4 was inspected with goals enabled. Check `/goal` in your instal
 client; feature availability and account permissions remain runtime concerns. No
 Ralph profile or additional runner is required.
 
-Goal inherits Ralph's full shared execution, memory, review, prepared-branch, and
-per-story commit contract. The task adapter uses Markdown story checkboxes in
+Goal shares requirements, acceptance, memory, bounded review and per-story commit
+gates with Ralph. Its Markdown adapter permits concurrent implementation workers;
+Ralph's JSON adapter remains serial. The task adapter uses Markdown checkboxes in
 `PLAN.md` instead of JSON `passes` in `plan.json`; native runtime controls remain
 distinct. The canonical sources are
-[story-execution.md](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md)
-and [story-review.md](../ai/plugins/coding/skills/prepare-implementation/references/story-review.md).
+[story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
+and [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md).
 At execution time, load both in full relative to the advertised installed
-`prepare-implementation` skill, not through the dotfiles checkout or hardcoded
+`run-agent-team` skill, not through the dotfiles checkout or hardcoded
 plugin-cache paths. The executor supplies the full review protocol to the wrapper;
 the shared reference, not the native wrapper, owns the exact JSON schema.
 
-Before launching, prepare a Git worktree with an existing commit on the plan's
-exact working branch. Before any writes (including logs), and again before staging
-and committing, reject detached HEAD, `main`, `master`, and branch mismatch.
-Execution never creates, switches, or repairs the branch. Preserve unrelated work;
-overlapping story changes or unrelated staged content that cannot be safely
-isolated block execution.
+Before launching, prepare the lead's integration worktree with an existing commit
+on the plan's exact working branch. Each task worktree needs an established clean
+committed baseline and an explicit absolute path, exact branch, approved base and
+owned paths. Before writes (including logs), staging and committing, verify the
+assigned root/branch; reject detached HEAD, `main`, `master` and mismatch.
+Before dispatch, verify delivered prerequisite integration commits are ancestors
+of the task's assigned base. A clean pre-created worktree with a stale base blocks
+that assignment; prepare a suitable base under the lifecycle grant without
+silently resetting or rebasing pending work.
+An explicit scoped lifecycle grant permits Codex task branch/worktree creation
+from approved existing commits. Never switch the user's checkout, repair mismatch,
+or copy/commit dirty work to manufacture a baseline. Preserve unrelated work.
+Missing preparation, overlapping ownership or unrelated staged content that
+cannot be isolated blocks the affected task, not independently eligible work.
 
 Example goal, to enter only when choosing to authorize this scope after reviewing
 the plan. Quoting or documenting this template is **not** execution permission:
 
 ```text
-/goal Complete the approved stories in PLAN.md in standard mode. I authorize
-scoped implementation, necessary project dependencies, required checks, and one
-commit per successfully verified and reviewed story in this approved sequence,
-subject to repository rules and runtime approvals. Load the advertised installed
-prepare-implementation skill and read references/story-execution.md and
-references/story-review.md in full. Follow their shared contract using the
-CodexGoalMarkdown adapter and native story-reviewer when the mode/risk budget
-requires it. Require the plan's exact existing branch and an existing commit;
-reject main/master, detached HEAD, and mismatch before any writes. Do not create
-or switch branches. Keep the plan stable with completion state and concise current
-status in PLAN.md; append execution notes, evidence, dispositions, and resumption
-checkpoints to progress.md, and
-maintain bounded version-1 memory.json only as the shared contract permits.
-After all stories are delivered, automatically invoke the installed archive_run.py
-with this plan's bound primary PRD and worktree root. I authorize archival/removal
-of the exact run-owned PRDs/task source declared in its work-run manifest, root
-progress.md and existing memory.json after verified preservation, and one closeout
-commit on the prepared branch. Preserve unrelated files and runner controls.
-Preserve unrelated work. Stop with the story pending for missing required input,
-protocol, reviewer/session, permission, invalid memory, or failed checks, review,
-or commit. After a final blocked review, preserve the candidate and evidence and
-stop further review attempts until material-change evidence resolves the recorded
-blocker. Continuation, compaction, or a new reviewer does not reset the review
-budget. Carry forward existing authorization; ask only for genuinely missing
-authority or input. Continue another story only if independently eligible and
-safely isolated; otherwise report the blocker and stop work, honoring the native
-Goal status lifecycle. Report actual checks, review provenance, commit hashes,
-and remaining limitations. Do not push, deploy, post externally, or perform sensitive operations
-without separate explicit approval.
+/goal Execute the approved revision of PLAN.md in standard mode using the installed
+run-agent-team Codex execution/review contracts. I authorize in-scope
+implementation, required checks, budgeted delegation, scoped task worktree setup
+from approved commits and one local commit per
+passing story across this eligible sequence. Preserve unrelated work and all
+branch, review, permission and sensitive-operation boundaries.
 ```
+
+This clear plan launch covers the eligible sequence, including continuation,
+without another activation prompt per story. The executor verifies the grant and
+its limits and asks only for genuinely missing authority or input. Bare Goal or
+Ralph labels, plan approval and quoted examples do not grant execution or commits.
+Honor any narrower no-commit or delegation limits. No special launch wording is
+required when the user's actual request clearly grants the intended scope.
 
 The plan is a completion contract, not permission to bypass sandbox or MCP rules.
 Execution and story-commit authorization must be explicit and may cover the bounded
-approved sequence. A plan, mode, or shared protocol cannot grant it. Narrower
+approved sequence, including budgeted delegation when granted. A plan, mode, or shared protocol cannot grant it. Narrower
 planning-only, read-only, or no-commit requests remain binding and cannot establish
 delivered stories. Dependency approvals still follow project/runtime rules;
 Docker lifecycle, migrations including local/test, service operations, global
 changes, and other sensitive actions require separate approval.
+
+### Concurrent tasks and shared resources
+
+Read the installed skill's `references/task-concurrency.md` in full for this
+adapter. The lead admits stories by dependency readiness and priority; predecessor
+delivery requires integrated checks, review and an authorized commit. A worker
+completion claim or isolated commit does not release dependencies.
+
+Assign task worktrees/branches/bases and bounded owned paths explicitly. Native
+child spawn does not bind cwd: file operations, Git and check commands must use
+the assigned absolute worktree. One lead owns integration branch/index, canonical
+markers, progress and memory. Workers return patches and evidence without creating
+competing trackers. Required native tools/roles and model selection must be
+available in the actual runtime; this source change activates none of them.
+
+Use private build/output roots where possible. Separate worktrees still share
+host resources and may reach shared caches/services/output paths. Designate one
+owner and use project cross-worktree coordination for conflicting operations;
+otherwise serialize them or report the missing mechanism. Optional hooks are
+guardrails, not automatic path isolation or a substitute for resource ownership.
+
+Integrate and verify one bounded story candidate at a time in the lead's owned
+index. Freeze that candidate and conflicting resources through review and commit;
+unrelated implementation workers in separate worktrees may continue. Changed
+integration content invalidates old check/review evidence and does not reset
+review budgets. Keep required reviewer identity and the existing per-attempt gates.
 
 ### Shared review and delivery gate
 
@@ -111,7 +148,7 @@ The staged-review selection matrix is identical to Ralph's:
 | standard | Self | Native | Native | Native |
 | deep | Native | Native | Native | Native |
 
-Self-review uses the full shared protocol and schema; it is not independent review
+Self-review uses the full Codex protocol and schema; it is not independent review
 or a fallback for missing required native review. Codex native review uses exactly
 `story-reviewer`, not `code-reviewer`, a general specialist, or a human substitute.
 OpenCode Ralph uses its native `ralph-reviewer`; the generic generated OpenCode
@@ -204,7 +241,7 @@ Another story may proceed only if independently eligible under dependencies and
 priority ordering and safely isolated from the preserved blocked candidate through
 implementation, staging, checks, and commit. Otherwise report the blocker and stop
 work; do not manufacture experiments or bookkeeping to sustain activity.
-The canonical [persistent blocker gate](../ai/plugins/coding/skills/prepare-implementation/references/story-execution.md#persistent-blockers-and-goal-resumption)
+The canonical [persistent blocker gate](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md#persistent-blockers-and-goal-resumption)
 is separate from evidence-reading budgets and leaves Ralph's explicit recovery
 handoffs and persisted counters unchanged.
 
@@ -278,11 +315,24 @@ No global or plugin lifecycle hook is installed for it.
 
 ## Completed-run archival
 
-With one active plan per worktree, archive only after all tasks are verified and
-required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/prepare-implementation/references/completed-run-archive.md):
+Plan archival is required whenever the entire goal is reached. An unenrolled
+bounded task uses the installed archive helper's copy-only `--preserve-plan`
+mode, retaining active sources and writing a separate preservation receipt without
+claiming verified run archival. No extra PRD or invented delivery history is needed.
+If completion archival was missed, the authorized execution/closeout owner must
+preserve the old completed plan. Planning verifies the receipt/current hashes
+before authorized replacement and blocks if preservation is missing. Failure
+blocks replacement; unfinished plans stay intact. Old journal/memory retirement
+requires scoped reconciliation before a new run can execute.
+
+For verified full-run archival, execution verifies and binds the saved PRD
+inventory and work-run metadata before the first checkpoint; requirements drafting adds no runner/archive metadata.
+
+For an enrolled run, with one active plan per worktree, archive only after all
+tasks are verified and required story commits succeed. Follow the [shared archival procedure](../ai/plugins/coding/skills/archive-run/references/completed-run-archive.md):
 invoke the installed archive_run.py automatically under the existing scoped
 archival/removal grant, passing the exact primary PRD and absolute worktree root.
-PRD work-run metadata declares the task source and associated PRDs; committed
+The optional PRD work-run manifest declares the task source and associated PRDs; committed
 story-result records bind observed check/review results to completed story markers.
 The script verifies and archives PRDs, plan, root progress.md and existing
 memory.json together as peers in a unique timestamped directory, preserving
@@ -290,8 +340,9 @@ bytes and recording a receipt. It never resets history or creates new state.
 A closeout commit needs its own scope, which may be authorized upfront. Ralph's
 invoking assistant uses the same helper after supervisor validation and successful
 exit; CLI-only Ralph has no post-run hook. Neither workflow archives during
-requirements drafting. Legacy runs lacking metadata/records need scoped
-enrollment; never fabricate evidence or automatically relocate old journals.
+requirements drafting. Legacy runs lacking metadata/records use copy-only plan
+preservation; never fabricate evidence or automatically relocate old journals.
+Missing archival authority leaves closeout pending and must be reported.
 
 Archival is allowed on any branch, including `main`/`master`, even if the original
 branch was merged and deleted. Verify run ownership and delivery using retained
@@ -312,3 +363,22 @@ Static checks do not prove live Goal continuation, reviewer permissions, or comm
 Sources: [Follow a goal](https://developers.openai.com/codex/use-cases/follow-goals),
 [Using Goals in Codex](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex),
 [CLI slash commands](https://developers.openai.com/codex/cli/slash-commands).
+
+## Explicit parallel agent teams
+
+Select run-agent-team explicitly in the normal Codex main session for authorized
+execution of an approved plan. Use `/skills` in Codex CLI or the discovered
+`$run-agent-team` name, then `/goal <objective>` naming the plan and existing
+execution scope. A goal alone does not select the skill. Planning produces
+stories, criteria, a DAG and recommended expertise without starting execution.
+
+The Sol-selected main thread owns direct dispatch, Git, worktree lifecycle,
+integration and canonical task state. No custom primary, nested coordinator or
+role-guidance adoption is required; multi-agent-coordinator is optional bounded
+advice. Dependencies become ready only after verified integration delivery.
+Before taking over an older run, quiesce its prior dispatcher and reconcile live
+worker/reviewer IDs, assignments, candidates and consumed budgets. Keep required
+worker/reviewer/model controls and existing grants. Luna workers use assigned task
+worktrees; Astra escalation preserves exact dedicated reviewers, continuation and
+bounded budgets. Fill eligible capacity before waiting. See
+[team verification](agent-team-verification.md) for entry and activation limits.

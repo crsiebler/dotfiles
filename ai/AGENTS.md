@@ -25,18 +25,6 @@
 - Preserve existing work and truthful verification history. Never weaken
   assertions, hide failures or discard work to manufacture passing evidence.
 
-## Git Workflow
-
-**Mandatory Format:** `<type>(<scope>): <description>`
-
-**Types:** feat, fix, docs, style, refactor, test, chore
-
-**Body (Optional):** Explain motivation, context, and differences from previous behavior.
-
-**Footer (Optional):** Breaking changes (`BREAKING CHANGE:`) or issue tracking (`Fixes #123`).
-
-Commit only when explicitly requested or covered by the user's authorization.
-
 ## Boundaries
 
 Explicit user authorization can cover a bounded sequence of actions. Do not ask

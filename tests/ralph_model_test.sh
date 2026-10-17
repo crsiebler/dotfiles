@@ -97,7 +97,7 @@ reject 'unknown option' --authorize-story-commits=true
 reject 'unknown option' --authorize-story-commits false
 reject '--auto has been removed' --auto
 reject '--auto has been removed' --auto=true
-for option in --model --mode --max-iterations --max-story-retries --iteration-timeout; do
+for option in --model --effort --mode --max-iterations --max-story-retries --iteration-timeout; do
   reject 'requires a value' "$option"
   reject 'requires a value' "$option" --help
   reject 'requires a value' "$option" ''
@@ -115,11 +115,14 @@ reject 'unsupported model' --model unsupported/model
 reject 'model identifier' --model 'native model'
 reject 'model identifier' --model $'native\nmodel'
 reject 'unsupported model' --model native/provider/model
+for effort in auto invalid HIGH 'medium high'; do
+  reject 'effort must be one of' --effort "$effort"
+done
 reject 'unknown option' --bypass-review
 
 # A same-name tag must not change the identity of the prepared branch.
 git -C "$TEST_DIR" update-ref refs/tags/ralph/test HEAD
-run_ralph --model openai/gpt-5.4 --max-iterations 1 >/dev/null
+run_ralph --model openai/gpt-5.4 --effort high --max-iterations 1 >/dev/null
 {
   for expected in run --agent ralph -m openai/gpt-5.4 --variant high; do
     IFS= read -r actual
@@ -128,23 +131,37 @@ run_ralph --model openai/gpt-5.4 --max-iterations 1 >/dev/null
 } < "$TEST_DIR/opencode.args"
 for expected in 'ralph' 'openai/gpt-5.4' 'high' 'Harness: opencode' \
   'Execution mode: standard' 'Maximum iterations: 1' 'Iteration: 1 of 1' \
-  'Model: openai/gpt-5.4' 'Model source: explicit'; do
+  'Model: openai/gpt-5.4' 'Model source: explicit' \
+  'Effort: high' 'Effort source: explicit'; do
   grep -qx -- "\(- \)\{0,1\}$expected" "$TEST_DIR/opencode.args" || fail "missing argument/context: $expected"
 done
 if grep -Ei -- 'auto.approval|--auto|bypass|full-auto|dangerously' "$TEST_DIR/opencode.args"; then
   fail 'approval bypass in harness arguments/runtime'
 fi
 
-for model in openai/gpt-6-luna openai/gpt-6-sol; do
+for model in openai/gpt-6-luna openai/gpt-6-sol openai/gpt-6.1-sol; do
   write_plan
   run_ralph --model "$model" --max-iterations 1 >/dev/null
   grep -qx -- "- Model: $model" "$TEST_DIR/opencode.args" || fail "model not passed through: $model"
+  if grep -qx -- '--variant' "$TEST_DIR/opencode.args"; then
+    fail 'omitted effort must inherit runtime default'
+  fi
 done
 
 write_plan
 run_ralph --max-iterations 1 >/dev/null
-grep -q 'Model: openai/gpt-6-astra' "$TEST_DIR/opencode.args" || fail 'default model changed'
-grep -q 'Model source: default' "$TEST_DIR/opencode.args" || fail 'default source missing'
+grep -qx -- '- Model: inherited; actual selection unknown' "$TEST_DIR/opencode.args" || fail 'inherited model provenance missing'
+grep -qx -- '- Model source: runtime default' "$TEST_DIR/opencode.args" || fail 'default source missing'
+grep -qx -- '- Effort: inherited; actual selection unknown' "$TEST_DIR/opencode.args" || fail 'inherited effort provenance missing'
+if grep -qxE -- '-m|--variant' "$TEST_DIR/opencode.args"; then
+  fail 'omitted model/effort must omit OpenCode overrides'
+fi
+for effort in none minimal low medium high xhigh max ultra; do
+  write_plan
+  run_ralph --effort "$effort" --max-iterations 1 >/dev/null
+  grep -qx -- "- Effort: $effort" "$TEST_DIR/opencode.args" || fail 'effort context lost'
+  grep -qx -- '- Effort source: explicit' "$TEST_DIR/opencode.args" || fail 'effort source lost'
+done
 for mode in fast deep; do
   write_plan
   run_ralph --mode "$mode" --max-iterations 1 >/dev/null

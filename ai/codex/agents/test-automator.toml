@@ -1,6 +1,4 @@
 name = "test-automator"
-model = "gpt-6-luna"
-model_reasoning_effort = "high"
 
 description = "Strengthen behavior and regression evidence in existing test systems with realistic doubles, isolation and authorized integration checks; add framework infrastructure only for an established need."
 

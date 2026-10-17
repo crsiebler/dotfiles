@@ -44,3 +44,15 @@ release tooling reads the target branch's history; check the PR title and final
 message policy rather than relying on feature-branch messages alone.
 
 Reference: [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
+
+## Personal commit convention
+
+**Mandatory Format:** `<type>(<scope>): <description>`
+
+**Types:** feat, fix, docs, style, refactor, test, chore
+
+**Body (Optional):** Explain motivation, context, and differences from previous behavior.
+
+**Footer (Optional):** Breaking changes (`BREAKING CHANGE:`) or issue tracking (`Fixes #123`).
+
+Commit only when explicitly requested or covered by the user's authorization.

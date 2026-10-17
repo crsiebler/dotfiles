@@ -1,9 +1,9 @@
-# Shared staged-story review
+# Team staged-story review
 
 The executor supplies this complete protocol with the compact story packet to
-OpenCode `ralph-reviewer` or Codex `story-reviewer`. Review one immutable staged
-candidate and return one holistic result. You are a decision-support gate, not
-an implementation agent. This reference owns the exact response schema for both.
+native `story-reviewer`. Review one immutable staged candidate and return one holistic
+result. You are a decision-support gate, not an implementation agent. This
+workflow's protocol owns its exact response schema.
 The executor embeds this entire reference directly in each invocation message;
 references to inherited tool output are insufficient. Each session belongs to one
 story and one attempt. Validate the supplied story identity and worktree before
@@ -13,18 +13,18 @@ Display labels are not proof of role selection or session identity.
 
 ## Review Profile Selection
 
-The executor explicitly selects the review profile from its already-selected
-task-source adapter using `story-execution.md`. Every initial and targeted packet
+The executor explicitly selects the review profile for its approved checklist
+workflow using `story-execution.md`. Every initial and targeted packet
 must include `Review profile` and `Pass type`. For example, an initial packet for
-the Markdown Goal adapter includes these literal lines (not a default):
+the Markdown checklist workflow includes these literal lines (not a default):
 
 ```text
 Review profile: expanded-initial
 Pass type: initial
 ```
 
-The only profiles are `expanded-initial` and `three-step`, defined below. The
-native wrapper states its required profile directly. Before gathering evidence,
+This workflow requires `expanded-initial`. The native wrapper requires the same
+profile; other workflow profiles are invalid here. Before gathering evidence,
 verify that the packet's profile is known and matches the native wrapper. For a
 missing, unknown, or conflicting profile, return `blocked` and explain the exact
 profile problem in `residual_risks`. Do not choose a default, silently switch
@@ -34,8 +34,7 @@ Pass type must be `initial` or `targeted`, consistent with the requested pass.
 
 Do not infer the harness from tools, binaries, paths, or role names. A profile
 never grants tools or overrides tighter runtime limits. Missing required
-capabilities still block review; selecting `expanded-initial` cannot give the
-generated OpenCode `story-reviewer` shell access or make it a Ralph substitute.
+capabilities still block review; the profile supplies no missing tool permission.
 The profile is input metadata only; do not add it to the response JSON.
 
 ## Hard Boundaries
@@ -76,27 +75,18 @@ reads, and individual calls in a parallel batch; batching does not reset or evad
 the ceiling. The final JSON response is not an evidence call.
 
 This is a configurable reading budget expressed as behavioral instructions,
-not a native hard step cap or immutable sandbox/MCP enforcement. Native Codex
+not a native hard step cap or immutable sandbox/MCP enforcement. The dedicated
 `story-reviewer` uses this profile; the reviewer follows the explicit packet and
-wrapper selection rather than detecting Codex.
+wrapper selection rather than guessing from available tools.
 
-### three-step
-
-For an initial review, batch initial small evidence reads, allow at most one
-evidence-recovery tool turn, then return the JSON result. OpenCode Ralph's native
-`ralph-reviewer` uses this profile with its separately enforced `steps: 3` and
-exact Git allowlist. The `expanded-initial` profile does not extend those runtime
-limits. Apply the output-aware procedure below within the two evidence-gathering
-turns; block with exact missing sections if required coverage cannot be obtained.
-
-### Targeted passes under either profile
+### Targeted review
 
 Targeted review retains at most two evidence-gathering tool turns, then the result.
-Its evidence scope is only prior findings, remediation evidence, and remediation
-regressions, never a new initial audit. Keep the same profile on resumption;
-`expanded-initial` does not give targeted review a new 40-call initial budget.
+Its scope is only prior findings, remediation evidence and remediation regressions,
+never a new initial audit. Keep the same profile on resumption. This is not a new
+initial evidence budget.
 
-## Shared Output-Aware Evidence Procedure
+## Output-Aware Evidence Procedure
 
 Apply this procedure within the selected profile and pass budget. Parent runtime
 permissions and narrower tool limits still apply.
@@ -219,12 +209,10 @@ evidence required for resolution in `residual_risks`, using the existing schema.
 Preserve any evidenced findings; never invent findings to fill missing coverage.
 
 The executor must apply `story-execution.md`'s persistent blocker gate before
-another attempt. Goal continuation and new sessions do not resolve the blocker
+another attempt. Task continuation and new sessions do not resolve the blocker
 or reset review budgets. A blocked initial review cannot become a targeted pass.
 The one-initial/one-targeted same-session contract remains available for actionable
-findings and verified remediation from a valid initial review. These stopping
-rules do not change either profile's evidence-reading budget or Ralph's explicit
-runner recovery protocol and counters.
+findings and verified remediation from a valid initial review. These stopping rules do not change this workflow's evidence-reading limits.
 
 ## Learning Discipline
 

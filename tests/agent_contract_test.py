@@ -16,9 +16,7 @@ RESTRICTED = {
     "security-auditor", "compliance-auditor", "agent-installer",
     "powershell-security-hardening", "story-reviewer",
 }
-ASTRA_AGENTS = {
-    "game-audio-engineer", "knowledge-synthesizer", "multi-agent-coordinator",
-}
+ROUTING_FIELDS = {"model", "model_provider", "model_reasoning_effort"}
 
 
 def markdown(path):
@@ -91,6 +89,15 @@ class AgentContractTest(unittest.TestCase):
         before = path.read_bytes()
         self.success(self.run_cli("--output", self.output))
         self.assertEqual(before, path.read_bytes())
+
+    def test_omitted_model_settings_leave_runtime_selection_to_caller(self):
+        source = self.agent(sandbox_mode="read-only")
+        self.success(self.run_cli("--output", self.output))
+        meta, body = markdown(self.output / "Future.role.md")
+        self.assertEqual({"description", "mode", "permission"}, meta.keys())
+        self.assertEqual(tomllib.loads(source.read_text())["developer_instructions"], body)
+        self.assertEqual({"*": "deny", "read": "allow", "glob": "allow", "grep": "allow"},
+                         meta["permission"])
 
     def test_body_bytes_preserve_crlf_unicode_and_trailing_whitespace(self):
         body = '\r\nUse café evidence.  \r\n\tKeep this whitespace.\n\n'
@@ -277,12 +284,7 @@ class AgentContractTest(unittest.TestCase):
         for path in sorted(CANONICAL.glob("*.toml")):
             data = tomllib.loads(path.read_text())
             self.assertTrue({"name", "description", "developer_instructions"} <= data.keys())
-            expected_model = "gpt-6-astra" if data["name"] in ASTRA_AGENTS else "gpt-6-luna"
-            self.assertEqual(expected_model, data.get("model"))
-            if data["name"] in ASTRA_AGENTS:
-                self.assertNotIn("model_reasoning_effort", data)
-            else:
-                self.assertEqual("high", data.get("model_reasoning_effort"))
+            self.assertFalse(ROUTING_FIELDS & data.keys(), path.name)
             rows.append(data)
         reviewer = ROOT / "ai/opencode/agents/ralph-reviewer.md"
         native = {p.stem for p in reviewer.parent.glob("*.md")}
@@ -305,15 +307,30 @@ class AgentContractTest(unittest.TestCase):
             meta, rendered_body = markdown(self.output / f"{name}.md")
             self.assertEqual(body, rendered_body)
             expected = {"description": description, "mode": "subagent"}
-            expected["model"] = "openai/" + data["model"]
-            if "model_reasoning_effort" in data:
-                expected["options"] = {
-                    "reasoningEffort": data["model_reasoning_effort"]
-                }
             if name in RESTRICTED:
                 expected["permission"] = {"*": "deny", "read": "allow",
                                           "glob": "allow", "grep": "allow"}
             self.assertEqual(expected, meta)
+
+    def test_runtime_defaults_do_not_override_model_agnostic_subagents(self):
+        config = tomllib.loads((ROOT / "ai/codex/config.toml").read_text())
+        self.assertTrue(config["agents"]["enabled"])
+        self.assertNotIn("default_subagent_model", config["agents"])
+        self.assertNotIn("default_subagent_reasoning_effort", config["agents"])
+        # Worker/session profiles stay explicit; inheritance is not a router.
+        self.assertEqual("gpt-6.1-sol", config["model"])
+        astra = tomllib.loads((ROOT / "ai/codex/astra.config.toml").read_text())
+        self.assertEqual("gpt-6-astra", astra["model"])
+        self.assertEqual("high", astra["model_reasoning_effort"])
+
+    def test_native_reviewer_leaves_model_selection_to_runtime(self):
+        content = (ROOT / "ai/opencode/agents/ralph-reviewer.md").read_text()
+        frontmatter = content.split("---\n", 2)[1]
+        # Inspect only top-level YAML fields; the shell suite parses permissions.
+        fields = {line.split(":", 1)[0] for line in frontmatter.splitlines()
+                  if line and not line[0].isspace() and ":" in line}
+        self.assertFalse({"model", "model_provider", "options",
+                          "reasoningEffort", "model_reasoning_effort"} & fields)
 
 
 if __name__ == "__main__":

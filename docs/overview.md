@@ -17,7 +17,7 @@ AI installation, and backup cleanup.
 | Add or revise a native role | [Agent authoring](agent-authoring.md) | [Canonical TOML roles](../ai/codex/agents/), [renderer](../scripts/render-agents.py), [OpenCode-only roles](../ai/opencode/agents/) |
 | Add or revise a portable skill | [Skill dependencies](skill-dependencies.md), [coding workflow design](coding-workflow-design.md) | [Plugin marketplace](../.agents/plugins/marketplace.json), [skill sources](../ai/plugins/), [create-skill](../ai/plugins/coding/skills/create-skill/SKILL.md) |
 | Trace requirements, planning, and delivery | [Workflow flow](architecture.md#requirements-to-delivery), [Codex Goal guide](codex-goals.md) | [write-requirements](../ai/plugins/coding/skills/write-requirements/SKILL.md), [prepare-implementation](../ai/plugins/coding/skills/prepare-implementation/SKILL.md) |
-| Diagnose Ralph or adjust its supervisor | [Ralph recovery](ralph-recovery.md) | [Runner](../bin/ralph), [native executor](../ai/opencode/agents/ralph.md), [control contract](../ai/plugins/coding/skills/prepare-implementation/references/ralph-control.md) |
+| Diagnose Ralph or adjust its supervisor | [Ralph recovery](ralph-recovery.md) | [Runner](../bin/ralph), [native executor](../ai/opencode/agents/ralph.md), [control contract](../ai/opencode/agents/ralph.md#ralph-runner-control) |
 | Retire installed assets or remove backups | [Removal and migration guide](remove-old-ai-files.md), [README cleanup](../README.md#removing-backup-files) | [Retirement logic](../scripts/ai_retirement.py), [backup cleanup](../scripts/clean-install-backups.py) |
 | Work on media/document helpers or local models | [Document verification](document-skill-verification.md), [Bonsai setup](local-bonsai.md), [audio setup](../ai/plugins/producing/skills/create-audio/references/local-audio.md) | [Producing](../ai/plugins/producing/skills/), [researching](../ai/plugins/researching/skills/), [model shortcut](../aliases/.aliases) |
 
@@ -45,3 +45,7 @@ reviewed. Existing subject guides retain their own verification dates and limits
 No credentials, personal environment files, legacy execution journals, external
 services, or installed plugin caches were inspected for this map. No application
 tests, installers, models, or services were run as part of mapping.
+
+Ralph owns serial lifecycle/review rules in its native role files; run-agent-team
+owns the harness-agnostic team counterparts. Only [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md)
+shares executable archival functionality. Planning remains independent.

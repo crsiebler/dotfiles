@@ -1,0 +1,217 @@
+{
+  "skill_name": "run-agent-team",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Two ready independent substantial checklist stories; sufficient verified role/model/capacity and existing grants. Execute with an agent team.",
+      "expected_output": "Sol main session directly dispatches ready workers before waiting and owns integration.",
+      "files": [],
+      "expectations": [
+        "No custom coordinator or nested manager; explicit Luna workers",
+        "Two dispatches before any wait",
+        "No duplicate parent manager or tracker",
+        "Observed overlap is separate from dispatch compliance"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A and B workers returned patches, but only A has passed integration review and commit. C depends on A and B.",
+      "expected_output": "Keep C pending until B delivery and a clean base containing both integration commits.",
+      "files": [],
+      "expectations": [
+        "Worker completion does not release B",
+        "Validate prerequisite base ancestry",
+        "Preserve completed story evidence"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Normal Sol main can select Luna workers, but spawn lacks native story-reviewer selection. Run a standard substantial batch.",
+      "expected_output": "Block before worker calls; report exact missing reviewer capability.",
+      "files": [],
+      "expectations": [
+        "No generic reviewer roleplay",
+        "No model substitution or automatic install",
+        "Direct orchestration does not cure missing mandatory reviewer capability"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "No custom coordinator, primary selector or nesting is available. The Sol main can select Luna workers and the exact required reviewer. Execute the independent approved plan.",
+      "expected_output": "The Sol main thread dispatches direct Luna workers and retains all Git and task state.",
+      "files": [],
+      "expectations": [
+        "No child coordinator or proxy-spawning",
+        "Native reviewer and shared gates retained",
+        "Explicit subdelegation budget not exceeded"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Two ready stories overlap src/ and src/shared.py and use one shared output directory with no exclusion mechanism.",
+      "expected_output": "Serialize conflicting operations and report why while preserving safe independent work.",
+      "files": [],
+      "expectations": [
+        "No conflicting writes",
+        "No invented lock or automatic service",
+        "No automatic worktree isolation claim"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Resume after uncertain worker spawn and a final blocked story review. Start another worker and reviewer.",
+      "expected_output": "Inspect native sessions and candidate evidence; preserve budget and stop affected story.",
+      "files": [],
+      "expectations": [
+        "No duplicate possibly-live worker",
+        "No refreshed review budget",
+        "Material-resolution evidence required"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Prepare a plan only; use a swarm later. Also inspect a RalphJSON request.",
+      "expected_output": "Do not enter execution; report the missing approved plan or planning-only boundary and keep Ralph serial.",
+      "files": [],
+      "expectations": [
+        "No execution during planning",
+        "No team routing from Ralph",
+        "No mandatory manager for simple edits"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "All stories are integrated, reviewed and committed, but archival fails before the new plan is written.",
+      "expected_output": "Preserve state, report closeout pending, and block replacement until required preservation.",
+      "files": [],
+      "expectations": [
+        "No false archive success",
+        "No automatic cleanup retry",
+        "No unintegrated completion markers"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Execute a swarm without an approved story plan.",
+      "expected_output": "Report missing plan input without invoking a planning skill.",
+      "files": [],
+      "expectations": [
+        "No implicit prepare-implementation invocation",
+        "No invented story plan or execution state"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "The coordinator is a child and asks to own merging and mark stories complete.",
+      "expected_output": "Child returns advice only; main session owns direct dispatch, Git, merging and canonical task state.",
+      "files": [],
+      "expectations": [
+        "No child-owned canonical writes",
+        "No proxy-spawning",
+        "Preserve existing delivery gates",
+        "Only verified main-thread integration delivery releases dependencies"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "All stories are committed and verified. Archive automatically under the previously granted closeout scope using the bound tasks/prd-search.md.",
+      "expected_output": "Invoke the discovered installed archive_run.py with the exact worktree/PRD paths, report actual status and preserve a flat archive.",
+      "files": [],
+      "expectations": [
+        "No repeated approval request under unchanged authority",
+        "No LLM-written copy/remove commands",
+        "PRD is alongside plan/progress/memory",
+        "No implicit push"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Ralph's last agent reports completion, but its supervisor is still running. Archive the run.",
+      "expected_output": "Wait for supervisor validation and successful exit; preserve active artifacts.",
+      "files": [],
+      "expectations": [
+        "No archival inside the final iteration",
+        "No removal of plan.json before supervisor validation",
+        "No manufactured completion evidence"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Archive an old run with checked boxes but no structured review/check records. The helper failed during source removal; retry cleanup.",
+      "expected_output": "Report missing evidence or partial state and preserve files pending scoped reconciliation.",
+      "files": [],
+      "expectations": [
+        "No invented story-result records",
+        "No automatic cleanup retry",
+        "No replacement of the helper with shell commands"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Continue the next eligible story under the existing explicit sequence implementation/test/delegation/local-commit grant.",
+      "expected_output": "Carry the existing grant across story boundaries, verifying scope and all delivery safeguards without another activation prompt.",
+      "files": [],
+      "expectations": [
+        "No repeated approval for unchanged scope",
+        "Native Goal and Ralph remain alternative workers",
+        "Branch/candidate/review/commit gates preserved"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "The normal Sol main session can dispatch directly. An optional coordinator advisor starts its own worker loop.",
+      "expected_output": "Keep main session as sole dispatcher; reconcile and quiesce competing ownership before proceeding.",
+      "files": [],
+      "expectations": [
+        "No competing dispatch loops",
+        "Main thread owns dispatch, Git and task state",
+        "Optional advisor cannot become dispatcher"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Resume an older delegated run with uncertain coordinator outcome. Switch to main-session direct dispatch.",
+      "expected_output": "Inspect native state; block transfer until coordinator is quiescent and all assignments/reviewer sessions are reconciled.",
+      "files": [],
+      "expectations": [
+        "No proxy-spawning",
+        "No duplicate possibly-live owner",
+        "No reset review budget",
+        "Direct dispatch needs observed Sol and required worker/reviewer controls"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Set /goal for PLAN.md without selecting run-agent-team; assume it activates automatically.",
+      "expected_output": "Explicitly select the skill through /skills or its discovered skill name; a goal alone does not activate it.",
+      "files": [],
+      "expectations": [
+        "No custom primary selection",
+        "Do not invent combined slash-command parsing",
+        "Verify actual execution, worktree and commit scope"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Use run-agent-team in another AI harness whose normal main session exposes authorized native Luna workers, Sol coordination, the exact Astra story-reviewer and same-session continuation.",
+      "expected_output": "Use the actual native controls and direct main-session orchestration; do not require Codex or its CLI commands.",
+      "files": [],
+      "expectations": [
+        "No mandatory Codex session or custom primary",
+        "Preserve all isolation, capacity, review and delivery gates",
+        "Inspect actual host schemas"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Another harness lacks dedicated reviewer selection. Rename a generic worker story-reviewer and proceed.",
+      "expected_output": "Block the affected native review path with exact missing capability; a label supplies no native role or tools.",
+      "files": [],
+      "expectations": [
+        "No fake native invocation",
+        "No permission bypass or automatic installation",
+        "No silent review-budget change"
+      ]
+    }
+  ]
+}

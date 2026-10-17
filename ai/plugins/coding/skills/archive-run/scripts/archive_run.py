@@ -544,17 +544,69 @@ def execute(project, prd, dry_run, run_id=None):
             return result
 
 
+def preserve_plan(project, plan, prds, dry_run):
+    """Copy-only fallback; never assert delivery or remove active artifacts."""
+    require(git(project.root, 'rev-parse', '--show-toplevel').stdout.decode().strip()
+            == str(project.root), 'project must be the Git worktree root')
+    require(len(prds) <= 32, 'too many PRDs')
+    paths = [relative(plan), 'progress.md', 'memory.json', *map(relative, prds)]
+    names = [PurePosixPath(path).name.casefold() for path in paths]
+    require(len(set(names)) == len(names) and
+            not {'_preservation.json', '_archive.json', '_receipt.pending'}.intersection(names),
+            'flat preservation filename collision')
+    files = {plan: project.read(plan)}
+    for path in paths[1:]:
+        data = project.read(path, optional=path in ('progress.md', 'memory.json'))
+        if data is not None:
+            files[path] = data
+    head = git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip()
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%S%fZ')
+    directory = f'archive/{timestamp}-plan-preservation'
+    items = inventory(files)
+    result = {'status': 'preview' if dry_run else 'preserved',
+              'destination': directory, 'files': items, 'head': head,
+              'delivery_verified': False, 'active_sources_removed': False}
+    # No completion claim: even a malformed legacy plan can be preserved safely.
+    # Replacement still requires the caller's completion and overwrite gates.
+    with runner_guard(project, 'CodexGoalMarkdown', files[plan]):
+        if dry_run:
+            return result
+        with archive_lock(project):
+            project.mkdir(directory)
+            for item in items:
+                project.write_new(directory + '/' + item['name'], files[item['source']])
+            require(all(project.read(directory + '/' + item['name']) == files[item['source']]
+                        for item in items) and
+                    all(project.read(path) == data for path, data in files.items()) and
+                    git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head,
+                    'plan or copies changed; preserve partial state and reconcile')
+            # Written last: absent receipt means preservation did not complete.
+            receipt = dict(result, version=1, status='preserved')
+            project.write_new(directory + '/_preservation.json',
+                              json.dumps(receipt, indent=2).encode() + b'\n')
+            return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', required=True, help='absolute Git worktree root')
-    parser.add_argument('--prd', required=True, help='declared project-relative PRD path')
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--prd', help='declared project-relative PRD path')
+    mode.add_argument('--preserve-plan', help='copy-only preservation of this exact plan')
+    parser.add_argument('--include-prd', action='append', default=[],
+                        help='exact associated PRD to preserve; repeat as needed')
     parser.add_argument('--run-id', help='disambiguate a repeated invocation after PRD removal')
     parser.add_argument('--dry-run', action='store_true', help='validate and preview without writes')
     args = parser.parse_args()
     project = None
     try:
         project = Project(args.project)
-        result = execute(project, args.prd, args.dry_run, args.run_id)
+        if args.preserve_plan:
+            require(args.run_id is None, '--run-id applies only to verified run archival')
+            result = preserve_plan(project, args.preserve_plan, args.include_prd, args.dry_run)
+        else:
+            require(not args.include_prd, '--include-prd applies only to plan preservation')
+            result = execute(project, args.prd, args.dry_run, args.run_id)
         print(json.dumps(result))
         return 0
     except (Refusal, OSError) as error:
