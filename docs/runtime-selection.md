@@ -57,6 +57,24 @@ establish unattended operation, model quality or installed discovery.
 
 ## Explicit agent-team profile
 
+The default implementation target is up to four workers, bounded by ready
+independent work, user limits, model-use budget and actual runtime/resources.
+Reserve capacity for the main session and one required reviewer. Count the main
+session only when the runtime limit includes it, and do not double-count an
+already occupied reviewer slot. Advisors and other retained sessions also consume
+capacity. A four-total-slot runtime supports two workers; six total slots support
+four. Idle sessions are not assumed to release capacity.
+
+The checked-in Codex config sets
+`agents.max_concurrent_threads_per_session = 5`: four workers and one reviewer,
+excluding the primary session as specified in the official
+[configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+This is a source setting, not evidence of active session capacity. Apply it only
+through separately authorized configuration installation, refresh the coding
+skill, and verify effective capacity in a new session. A lower exposed runtime
+limit always takes precedence; no throughput improvement is claimed without a
+live comparison.
+
 The run-agent-team skill keeps the current main session and prefers Sol
 coordination, Luna implementation and Astra review/analysis through supported
 native controls. These model choices are preferences, not prerequisites. Respect

@@ -65,16 +65,22 @@ switch the main thread's model or install settings.
 A model change does not reset review attempts, add a second gate or grant an
 autonomous retry. Role definitions remain reusable without model pins.
 
-Default to two implementation workers; honor narrower user limits and actual
-runtime/resource capacity. Count all occupied sessions using the runtime's actual
-open/active semantics. Reserve a required review slot or verify
-supported release of a completed handed-off worker before review. Never close a
-live writer or a reviewer needed for the permitted same-session targeted pass.
+Default to a target of up to four implementation workers; honor explicit user
+limits and actual runtime/resource capacity. Count all occupied sessions using
+the runtime's actual open/active semantics, including the main session only when
+the reported limit includes it. Reserve one slot for required review; an occupied
+reviewer slot already satisfies that reservation. Other advisors and retained
+sessions also consume capacity. Four total slots therefore support two workers
+alongside the main session and reviewer; six total slots support four workers.
+Never close a live writer or a reviewer needed for the permitted same-session
+targeted pass. Release completed handed-off sessions only through supported
+controls, and do not assume an idle session has released its slot.
 
 When two or more eligible independent substantial coding tasks exist and the
-grant, resources and capacity permit, dispatch at least two before waiting for
-results. Refill available capacity from ready tasks. Do not split tiny work merely
-to manufacture parallelism. Serial exceptions require an exact recorded reason:
+grant, resources and capacity permit, fill eligible capacity up to the worker
+target before waiting for results, dispatching at least two. Refill available
+capacity from ready tasks. Do not split tiny work merely to manufacture
+parallelism. Serial exceptions require an exact recorded reason:
 dependency chain, overlapping ownership, exclusive resource, insufficient capacity,
 unavailable capability/authority, or work too small for useful partitioning.
 Dispatch-before-wait is the operational rule; observed wall-clock overlap is a

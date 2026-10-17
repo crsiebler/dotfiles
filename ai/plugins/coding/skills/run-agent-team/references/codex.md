@@ -17,7 +17,7 @@ execution scope. Do not assume combined slash-command/skill parsing.
 For example, after selecting run-agent-team in the current main session:
 
 ```text
-/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Use up to two concurrent implementation workers and the exact native story-reviewer within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
+/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Target up to four concurrent implementation workers within actual runtime/resource capacity, reserving capacity for the exact native story-reviewer within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
 ```
 
 This example is not an execution grant. Actual authorization must identify the
