@@ -49,11 +49,19 @@ changed paths, check evidence and blockers. Normal coding skill discovery applie
 
 The main thread validates the DAG, prepares worktrees and verifies base ancestry
 before admission. Fill Kahn-ready capacity in priority then document order;
-dispatch two independent eligible stories before waiting when limits permit.
+fill the worker target with independent eligible stories before waiting when
+limits permit, dispatching at least two when available.
 Use min(requested worker limit, safely available native slots, model-use budget,
-project resource capacity). Default to two workers. Count the main thread and all
-occupied sessions; reserve required review capacity. Do not close live writers or
-a reviewer needed for its same-session targeted pass.
+project resource capacity). Default to a target of up to four workers. Calculate
+the worker capacity after accounting for other occupied sessions and reserving
+one required reviewer slot; an existing reviewer satisfies that reservation.
+Count the main thread only when the runtime's reported limit includes it. Honor
+open/active session semantics: idle sessions may still occupy slots. Four total
+slots allow two workers plus main/reviewer; six allow four. Refill eligible
+capacity as slots become available. Never close live writers or a reviewer needed
+for its same-session targeted pass; release completed handed-off sessions only
+through supported controls. Dependencies, overlapping ownership and exclusive
+resources can reduce the usable worker count below the target.
 
 Integrate one candidate, run required checks, freeze that candidate/conflicting
 resources, then directly invoke the required reviewer. Supply the complete
