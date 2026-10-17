@@ -23,10 +23,34 @@
 
 ## Explicit team selection
 
-An authorized run-agent-team invocation selects Sol coordination and explicit Luna
-implementation, with justified Astra escalation under existing budgets. Use this bundle's capability/pin preflight and single-dispatcher contract. This
-is an explicit workflow profile, not global automatic routing or a role pin.
-Ordinary work outside that profile retains the selection policy above.
+An authorized run-agent-team invocation uses the current main session. Prefer
+`gpt-6.1-sol` for coordination, `gpt-6-luna` for implementation and `gpt-6-astra`
+for review, conflict analysis, architecture and cross-domain analysis when the
+runtime supports selection within the existing grant. These preferences are not
+mandatory model requirements. Use one capability/pin preflight and the
+single-dispatcher contract, with this precedence:
+
+1. Honor explicit user model/effort requirements and cost limits. If a required
+   selection is unavailable or cannot be verified to the requested standard,
+   stop the affected path and report the exact constraint. Do not silently relax
+   it. A skill preference or illustrative prompt is not a user requirement.
+2. Preserve installed role pins and runtime restrictions. Use the exact required
+   native role with its supported model, even when it differs from the preference.
+   Never override a fixed pin, change roles or install settings to obtain a model.
+3. Where supported and authorized, request the preferred worker/advisor model.
+   Otherwise omit overrides and use native inheritance or runtime defaults.
+   Explicit model-selection controls are optional unless a user constraint needs
+   them. Do not guess model identifiers or unsupported tool arguments.
+4. Record requested and observed models, selection source, fallback reason and
+   unknown telemetry once in the existing checkpoint. Unknown coordinator model
+   telemetry or unavailable preferred models alone does not block execution or
+   require renewed approval. Do not repeatedly probe an unchanged model gap.
+
+An available Luna-pinned story-reviewer satisfies the model policy when the user
+has not explicitly required another model. It must still be the exact native
+story-reviewer and support the required protocol and same-session continuation.
+No preference fallback changes review quality criteria, tool restrictions or
+consumed passes. This policy does not establish model quality or effective routing.
 
 ## Native execution ownership
 
@@ -44,14 +68,16 @@ Ordinary work outside that profile retains the selection policy above.
   project's mechanism. Freeze the reviewed candidate and conflicting resources;
   unrelated workers in separate worktrees may continue. Hooks are only guardrails.
 - Reconcile narrower project instructions before concurrent execution. Required
-  native roles/tools and model selection must actually be available; this policy
-  creates no runtime capability, installed activation or permission bypass.
+  native roles/tools and explicit user model constraints must be satisfied. This
+  policy creates no runtime capability, installed activation or permission bypass.
 
-For explicit team execution, use Astra for review, conflict analysis, architecture
-and cross-domain analysis through supported native selection and actual grants.
-The main thread is the dispatcher and retains conflict-resolution writes. Require
-observed Sol selection; do not silently switch the main thread. No custom
-coordinator or nested delegation is needed.
+The main thread is the dispatcher and retains conflict-resolution writes. Do not
+silently switch the main thread. No custom coordinator or nested delegation is
+needed.
 The exact native story-reviewer remains mandatory at the budget-selected native
 gate; selecting Astra never substitutes a generic reviewer or adds an extra pass.
-Respect existing advisor/review/remediation limits and record unavailable selection.
+Respect existing advisor/review/remediation limits. On resumption, reconcile the
+existing candidate, checks, reviewer session and consumed passes. A resolved
+model-policy blocker does not invalidate an otherwise valid passing review or
+authorize another review. Complete pending finalization only after verifying its
+candidate/evidence and existing commit authority; preserve unrelated blockers.

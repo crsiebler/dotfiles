@@ -20,7 +20,8 @@ required. The main AI session coordinates directly.
 The main thread records in the existing execution checkpoint:
 - Exact plan path/revision, approved outcome and integration root/branch/base.
 - Main session as the only dispatcher and integration/Git/canonical state owner,
-  with observed Sol selection and actual session identity.
+  with actual session identity and model evidence when available (otherwise
+  unknown).
 - Worker/model/delegation limits, occupied capacity, open/active semantics and
   required reviewer capacity, session continuation and supported release API.
 - Actual native worker/model controls and installed pins; exact story-reviewer
@@ -32,15 +33,18 @@ required. An optional coordinator may advise within the existing read-only advis
 budget when useful; it never owns dispatch, Git or trackers. Its definition need
 not be loaded to run the team. Missing required reviewer controls blocks affected
 execution; self-review follows only the existing risk budget. No automatic model
-switch, installation, capability-probe agents or proxy-spawning.
+switch, installation, capability-probe agents or proxy-spawning. Apply
+[runtime selection](runtime-selection.md): model preferences and unknown telemetry
+alone do not block; explicit user constraints and required native roles still apply.
 
 ## Direct packets and delivery
 
 Every worker packet includes story ID/criteria, source requirements, delivered
 prerequisite commits, absolute task worktree, exact branch/full base, bounded owned
-paths/interfaces, private outputs, resource constraints, explicit model/specialist
-selection and real check commands. Workers do not orchestrate, subdelegate, stage,
-commit, merge or modify canonical task state. Return actual IDs, base/candidate,
+paths/interfaces, private outputs, resource constraints, model selection or
+inheritance/pin evidence, required specialist identity and real check commands.
+Workers do not orchestrate, subdelegate, stage, commit, merge or modify canonical
+task state. Return actual IDs, base/candidate,
 changed paths, check evidence and blockers. Normal coding skill discovery applies.
 
 The main thread validates the DAG, prepares worktrees and verifies base ancestry
@@ -63,9 +67,9 @@ Worker results do not release dependencies. Require successful integration
 checks/review, actual authorized commit and current plan revision, then verify
 those prerequisite commits are ancestors of each dependent's assigned clean base.
 Record evidence in the existing checkpoint, not another queue or task registry.
-Select Sol for the main session, explicit Luna for implementation and budgeted
-Astra for review/conflicts/architecture/cross-domain analysis. Keep reusable role
-files unpinned; source text activates no installed settings.
+Use the current main session and supported model preferences or recorded fallbacks
+under runtime-selection.md. Keep reusable role files unpinned; respect any installed
+pins. Source text activates no installed settings.
 
 ## Failure and restart
 

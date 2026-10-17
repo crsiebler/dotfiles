@@ -12,13 +12,14 @@ Only after scoped authorization for model use, disposable worktree setup, checks
 fixture story commits and archival:
 1. Verify activated skill/role discovery in a fresh task in the selected harness. Preflight exact
    worker/model controls and required story-reviewer selection, same-session review
-   follow-up, observed Sol main selection and capacity. No global changes during
-   the smoke.
+   follow-up, current main session, model evidence/unknowns and capacity. No global
+   changes during the smoke.
 2. Use a project-local disposable Git repository with clean prepared integration
    and two task branches, an approved checklist plan, two independent substantial
    file-format adapters with focused tests, and a dependent integration story.
-3. Use the normal Sol main session to dispatch two Luna workers directly through
-   supported native controls, without reading or invoking multi-agent-coordinator.
+3. Use the current main session to dispatch two workers directly through supported
+   native controls, with preferred models or recorded fallbacks under
+   runtime-selection.md, without reading or invoking multi-agent-coordinator.
    Record returned role/session IDs, selection evidence,
    bases, paths/private outputs and actual start/finish events. Dispatch both
    before waiting; separately require observed active overlap to pass this smoke.
@@ -30,20 +31,27 @@ fixture story commits and archival:
    Report exact check results, any failures, requested versus observed model data,
    review sessions and remaining activation gaps. Preserve artifacts if blocked.
 
-Test unavailable worker/reviewer/model controls, conflicting pins, unclear
-ownership, stale bases, capacity pressure, uncertain spawn, review blockers and
+Test unavailable worker/reviewer controls, unavailable preferred model controls,
+unknown main-session telemetry, fixed reviewer pins, explicit user model
+constraints, unclear ownership, stale bases, capacity pressure, uncertain spawn, review blockers and
 archival failures with controlled fixtures/recorded transcripts. The main thread
 retains dispatch, Git, merging and trackers throughout. Keep exact native review
 where required. Do not perform unapproved live retries or claim a custom role was
-invoked from an ordinary worker's label.
+invoked from an ordinary worker's label. Unknown main model plus a Luna-pinned
+native story-reviewer should proceed when the other gates pass and no explicit
+user model constraint conflicts. A missing exact reviewer or an unsatisfied
+explicit model requirement must still block the affected path. Preserve a valid
+passing review and pending commit when reconciling a model-policy-only stall;
+do not consume another review pass merely because the preference policy changed.
 
 ## Activation boundary
 
 Source delivery does not activate installed skills, roles or configuration. Under
 separate installation authorization, preserve customized copies and coordinate
-the coding plugin, unpinned native roles and desired runtime settings. Restart and
-verify unique discovery in a fresh task. Installed worker/reviewer pins can defeat
-requested selection. No cache deletion or automatic installation.
+the coding plugin and any separately requested role/runtime changes. Restart and
+verify unique discovery in a fresh task. Respect installed worker/reviewer pins;
+changing them is unnecessary for preference fallback. No cache deletion or
+automatic installation.
 A runtime lacking required native specialist/reviewer selection cannot prove their
 invocation; no custom coordinator capability is needed. Missing required gates
 block this smoke rather than permit a generic substitute. Check the actual runtime

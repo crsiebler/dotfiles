@@ -606,12 +606,15 @@ plan, using the active harness's supported skill mechanism. Its workflow contrac
 are harness agnostic; verify actual native tools and grants before dispatch.
 For Codex CLI only, use `/skills` to select it, then `/goal <objective>` naming the
 plan and existing execution scope. A goal alone does not select the skill.
-The Sol-selected main session owns dispatch, Git, worktree lifecycle, integration
+The current main session owns dispatch, Git, worktree lifecycle, integration
 and canonical task state. The custom `multi-agent-coordinator` is optional advice;
 no custom primary or nested manager is required. Planning stays independent.
 
-Luna workers use isolated assigned worktrees; Astra escalation and dedicated
-story-reviewer invocation retain existing review budgets and session continuation.
+Workers use isolated assigned worktrees. Sol coordination, Luna implementation
+and Astra review/analysis are preferences with supported fallback to installed
+pins or native defaults. Unknown coordinator model telemetry alone does not block.
+Explicit user model constraints still apply. Dedicated story-reviewer invocation
+retains existing review budgets and session continuation.
 Fill eligible capacity before waiting. Reconcile uncertain prior ownership before
 takeover. Ralph remains serial. [Verification and activation limits](docs/agent-team-verification.md)
 distinguish source checks from actual native execution and provide a goal example.

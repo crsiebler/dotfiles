@@ -13,9 +13,10 @@ executable archival functionality.
 Use the active harness's actual skill-selection and native delegation mechanisms.
 The core team-execution.md, task-concurrency.md, delivery and review contracts do
 not require Codex, a custom primary or a child coordinator. A different harness
-may execute them only if the required native worker/model/capacity/reviewer and
+may execute them only if the required native worker/capacity/reviewer and
 session-continuation controls are actually available and authorized. Missing
 controls block the affected path; switching a label does not supply them.
+Preferred model controls are optional; explicit user model constraints still apply.
 
 ### Conditional Codex CLI entry
 
@@ -24,10 +25,10 @@ discovered `$run-agent-team` name in a normal request. Use the picker when quali
 names are ambiguous. Then set `/goal <objective>` naming the approved plan and
 existing execution scope. A goal alone does not select the skill or supply grants.
 Do not rely on undocumented combined slash-command/skill parsing. For example,
-after selecting the skill and Sol main model:
+after selecting the skill in the current main session:
 
 ```text
-/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Use up to two concurrent Luna implementation workers and the required Astra story-reviewer within the skill's budgets. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
+/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Use up to two concurrent implementation workers and the exact native story-reviewer within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
 ```
 
 The example grants no authority by itself. Confirm the existing actual integration
@@ -44,11 +45,22 @@ isolation/base ancestry. They do not spawn models, enforce an agent's cwd, or
 establish native role selection, model routing or observed overlap. Fixtures
 contain expected behavior, not passed model runs. No live team smoke is claimed.
 
+For the model-preference revision, local validation passed: create-skill bundle
+validation, `make validate-ai`, and 40 tests across agent-team, runtime-selection,
+coding-workflow and agent-contract suites. The evaluation fixture adds cases for
+unknown coordinator telemetry, a Luna-pinned reviewer, inheritance-only workers,
+an explicit Astra requirement, pending-commit recovery and a held-out alternate
+model combination. These cases were inspected against the revised instructions;
+they have not been executed as live model evaluations. No installed skill was
+updated and no stopped run was resumed by these checks.
+
 Codex CLI 0.162.0 was inspected locally in October 2026. In the exposed task
 runtime, native custom-role selection for story-reviewer could not be established.
 Removing the coordinator dependency does not repair that separate review-tool gap.
-Installed role pins and global defaults can also defeat requested model selection.
-Source omission does not establish installed inheritance. Required native review
+Installed role pins and global defaults can differ from preferred model selection.
+The revised policy accepts supported fallback models and unknown coordinator
+telemetry unless explicit user constraints prohibit them. Source omission does
+not establish installed inheritance. Required native review
 and same-session continuation still block affected execution if unavailable.
 
 ## Activation and recovery
@@ -59,9 +71,17 @@ configuration refresh, preserve customizations, restart and verify unique discov
 in a fresh task. Then use the loaded skill's disposable two-worker smoke in the
 selected harness under actual native-model/worktree/check/fixture-commit/archive scope. The main session
 must dispatch directly without reading or invoking the coordinator. Verify worker
-models/capacity, exact required reviewer and same-session continuation first.
+model evidence/fallbacks, capacity, exact required reviewer and same-session continuation first.
 No global installation, cache cleanup or live model experiment is part of source
 checks. Missing required gates block the smoke, not justify generic substitutes.
+
+For a run stopped only by the earlier mandatory Sol/Astra policy, activate the
+revised skill through separately authorized installation, or obtain an explicit
+user override of those installed model requirements for that run. In the resumed
+run, reconcile the existing candidate, passing review, reviewer session and
+consumed passes. Preserve valid delivery evidence and complete a pending commit
+only after checking the candidate and existing commit grant. This policy change
+does not resume a stopped goal, resolve unrelated blockers or grant another review.
 
 For older delegated runs, first quiesce the prior dispatcher and reconcile every
 live worker/reviewer, worktree/base assignment, candidate and consumed pass before

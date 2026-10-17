@@ -118,8 +118,11 @@ Assign task worktrees/branches/bases and bounded owned paths explicitly. Native
 child spawn does not bind cwd: file operations, Git and check commands must use
 the assigned absolute worktree. One lead owns integration branch/index, canonical
 markers, progress and memory. Workers return patches and evidence without creating
-competing trackers. Required native tools/roles and model selection must be
-available in the actual runtime; this source change activates none of them.
+competing trackers. Required native tools/roles must be available and model use
+must be authorized. Explicit model-selection controls are optional unless needed
+to satisfy a user requirement; otherwise use supported inheritance or defaults
+under the installed skill's runtime-selection policy. This source change activates
+no runtime capabilities.
 
 Use private build/output roots where possible. Separate worktrees still share
 host resources and may reach shared caches/services/output paths. Designate one
@@ -372,13 +375,16 @@ execution of an approved plan. Use `/skills` in Codex CLI or the discovered
 execution scope. A goal alone does not select the skill. Planning produces
 stories, criteria, a DAG and recommended expertise without starting execution.
 
-The Sol-selected main thread owns direct dispatch, Git, worktree lifecycle,
+The current main thread owns direct dispatch, Git, worktree lifecycle,
 integration and canonical task state. No custom primary, nested coordinator or
 role-guidance adoption is required; multi-agent-coordinator is optional bounded
 advice. Dependencies become ready only after verified integration delivery.
 Before taking over an older run, quiesce its prior dispatcher and reconcile live
 worker/reviewer IDs, assignments, candidates and consumed budgets. Keep required
-worker/reviewer/model controls and existing grants. Luna workers use assigned task
-worktrees; Astra escalation preserves exact dedicated reviewers, continuation and
-bounded budgets. Fill eligible capacity before waiting. See
+worker/reviewer controls and existing grants. Workers use assigned task worktrees.
+Sol coordination, Luna implementation and Astra review/analysis are preferences;
+respect installed pins and use supported defaults when needed. Unknown coordinator
+model telemetry alone does not block. Explicit user model constraints, exact
+dedicated reviewers, continuation and bounded budgets remain required.
+Fill eligible capacity before waiting. See
 [team verification](agent-team-verification.md) for entry and activation limits.

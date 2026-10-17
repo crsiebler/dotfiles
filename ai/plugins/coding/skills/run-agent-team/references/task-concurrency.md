@@ -94,8 +94,10 @@ Changed integration content invalidates earlier checks/review; preserve the one
 initial and at most one targeted same-session pass per attempt. Do not reset an
 exhausted budget or replace the reviewer to obtain another pass. Dependencies
 become ready only after verified integration delivery and the lead's marker update.
-Missing native roles/tools or effective model selection are runtime prerequisites;
-source instructions do not activate installed skills or model-routing settings.
+Required native roles/tools and explicit user model constraints remain prerequisites.
+Preferred models and unknown telemetry alone do not block; follow
+[runtime selection](runtime-selection.md). Source instructions do not activate
+installed skills or model-routing settings.
 
 ## Existing Python environment
 
