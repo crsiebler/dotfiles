@@ -3,7 +3,9 @@
 ## Communication Style
 
 - Technical and concise responses.
-- No emojis unless explicitly requested, including when the user invokes a skill whose output template specifies emojis.
+- Avoid emojis in ordinary assistant commentary and responses unless the user
+  requests them. Permit emojis in generated content when an applicable repository
+  instruction or skill specifies them.
 - Use GitHub-flavored Markdown; avoid nested lists unless needed to express hierarchy.
 - Focus on facts and evidence over validation or praise.
 - State the result or decision early. Avoid canned conclusions and repetitive framing.
