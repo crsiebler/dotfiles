@@ -1,10 +1,6 @@
 # Native task concurrency
 
-This reference applies to the parallel Markdown checklist workflow. RalphJSON
-remains serial under its own native execution instructions. Requirements, stable
-story IDs, acceptance, authorization, review budgets and per-story delivery gates
-remain shared. Use native subagents;
-add no scheduler, background controller, duplicate task store or nested Ralph loop.
+This reference applies to the parallel Markdown checklist workflow.
 
 ## Team execution ownership
 
@@ -115,8 +111,11 @@ than silently resetting or rebasing it. Missing ancestry evidence blocks dispatc
 A clear launch may explicitly authorize necessary task branch/worktree creation
 from approved existing commits. Otherwise reuse a suitable prepared worktree or
 report the missing lifecycle grant. Never switch/reset the user's checkout,
-silently copy dirty work or commit it to manufacture a baseline. Changes needed
-from a dirty checkout require separate reconciliation, preservation and authority.
+silently copy dirty work or commit unrelated/pre-existing implementation to
+manufacture a baseline. The initial approved-plan/checkpoint commit is permitted
+under [commit authority](story-execution.md#authorization-and-prepared-branch);
+finish it before admitting workers against the resulting clean committed base.
+Other dirty-checkout changes require reconciliation, preservation and authority.
 Do not create a worktree outside approved filesystem roots to bypass a denial.
 
 Do not assume native child spawn binds cwd or creates isolation; inspect the

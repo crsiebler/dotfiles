@@ -19,8 +19,9 @@ recommendations. Mark unresolved attribution when source history is unavailable.
 For missing services, generated outputs, runtime configuration, dependency versions
 or production evidence, name what cannot be established and why it matters.
 
-Audit means read-only source and supplied-evidence assessment. No scanning tools,
-tests, exploit execution, installs, migrations, service operations, deployment,
-posting or automatic fixes are authorized by this scope. Do not read credentials
+Audit combines source and supplied evidence with authorized focused verification
+under the root boundary. No broad scanning, exploit execution, installs,
+migrations, service operations, deployment, posting or automatic fixes are
+authorized by this scope. Do not read credentials
 to fill a configuration gap. Report findings, inspected coverage, uninspected
-surfaces, uncertainty and useful next verification steps without executing them.
+surfaces, uncertainty and useful next verification steps, distinguishing executed checks from proposals.

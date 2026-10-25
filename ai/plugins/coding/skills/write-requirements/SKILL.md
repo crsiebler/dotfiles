@@ -23,6 +23,29 @@ Keep optional specialist hints as exact configured `@agent-name` values, not
 mandatory delegation. Include typecheck, meaningful tests, and browser criteria
 where applicable. Do not start implementation.
 
+## Acceptance for autonomous implementation
+
+Default to implemented outcomes with agent-executable, noninteractive verification
+and required independent agent review. Do not add manual QA, human confirmation
+of test results, stakeholder sign-off, or routine deployment verification to the
+PRD. Include deployment or deployment checks only when explicitly requested and
+automatable within the intended authorized environment.
+
+Keep behavioral acceptance observable and automation-compatible. Planning owns
+the exact commands, fixtures, automation dependencies and readiness evidence;
+requirements drafting neither runs checks nor requires tests to exist already.
+New test automation may be scoped implementation work. Automated tests do not
+replace the product outcome they verify, and a green check is not evidence of an
+unexecuted deployment or manual acceptance.
+
+If supplied requirements explicitly demand human acceptance or another
+non-automatable operation, preserve the source requirement and surface the
+conflict for upfront scope or method resolution. Do not silently remove it,
+approve it yourself, or add it as a manual execution/closeout checkbox. Optional
+human follow-up stays outside implementation completion. Record unresolved
+conflicts as open questions for planning; do not label them approved autonomous
+acceptance or create a second readiness tracker. Reuse existing user resolutions.
+
 Keep requirements at the outcome level: problem, users, scope/exclusions,
 observable acceptance, constraints/dependencies, assumptions and open questions.
 Requirements do not create the execution story list, dependency matrix or select
@@ -36,6 +59,8 @@ Return a draft unless saving was requested. Default proposed path:
 `tasks/prd-[feature-name].md`. Check the target before saving. For replacement,
 preview the exact archive destination and replacement, require explicit approval
 to archive the existing PRD, and verify its contents are preserved before writing.
+Carry existing exact-path archival/replacement approval forward when unchanged;
+do not request it again merely because another skill or turn handles the save.
 Never overwrite an archive; on refusal or failure leave the PRD unchanged and
 return the draft. A new-PRD request alone is not replacement approval. Explicit
 same-PRD revisions update only approved requirements in place. Report assumptions and

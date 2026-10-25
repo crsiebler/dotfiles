@@ -1,4 +1,4 @@
-# Personal defaults. Preserve the configured model; opt in with --profile astra.
+# Personal defaults. Select a different model directly when needed.
 # Credentials are read at runtime, never interpolated into this file by install.
 approval_policy = "on-request"
 model = "gpt-6.1-sol"

@@ -82,10 +82,13 @@ endpoint and `gh pr comment` create conversation comments, not threaded review
 replies. The pull review-comments creation endpoint creates a new inline comment,
 not a reply. Do not use either as a fallback.
 
-Ask for explicit confirmation after preview (`yes`, `y`, `confirm`, `fix it`, or
-`go ahead`); treat other responses as cancellation or clarify. Batch approval
-applies only to the displayed, unchanged batch. Re-read relevant state if the
-PR changed before execution; invalidate approval when targets/content change.
+Obtain explicit, unambiguous natural-language confirmation after preview; no
+magic words are required. Clarify ambiguous replies such as "fix it" when they
+could mean code repair rather than posting. A negative reply cancels; an absent
+reply leaves writes pending. Carry approval for the unchanged batch through
+continuation without another prompt. Re-read relevant state if the PR changed
+before execution; changed targets, actions, or content require a new preview and
+approval. Mechanical encoding alone does not change the approved operation.
 
 ## Verify and recover
 

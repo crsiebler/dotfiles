@@ -7,6 +7,14 @@ The user reports downloading the weights. Live model verification is pending.
 
 ## Files and defaults
 
+The October 24 V2 source migration uses `providers.bonsai`,
+`package: aisdk:@ai-sdk/openai-compatible`, and provider `settings` for the
+endpoint and existing timeouts. Model `capabilities` advertise text and tools;
+`compatibility.reasoningField` preserves `reasoning_content`. V1 boolean
+`reasoning` and `temperature` metadata were removed because V2 ignores them;
+this does not change the MLX server generation defaults. V2 live integration
+is still unverified. See [V2 configuration](opencode-v2.md).
+
 - `ai/opencode/opencode.json`: the sole local coding provider, `bonsai`, using
   `http://127.0.0.1:8081/v1` and model ID
   `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit`.
@@ -98,13 +106,11 @@ opencode --model bonsai/prism-ml/Ternary-Bonsai-2-27B-mlx-2bit
 ```
 
 Alternatively, choose Bonsai through `/models`. No separate local profile is
-needed. The base configuration preserves cloud defaults for explicitly pinned
-agents and the small model; selecting Bonsai does not make every auxiliary task
-local. Confirm the active model and avoid the Astra overlay for local work.
+needed. Reusable roles have no model pins; the separately configured small model
+remains a cloud model, so selecting Bonsai does not make every auxiliary task local. Confirm the active model for local work.
 
 The model card recommends temperature 1.0, top-p 0.95, top-k 20, and min-p 0 for
-thinking mode. Exact sampling forwarding through OpenCode remains unverified;
-removing the selection overlay also removes its agent-level sampling overrides.
+thinking mode. Exact sampling forwarding through OpenCode remains unverified.
 
 ## Verification before daily use
 

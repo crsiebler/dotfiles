@@ -19,6 +19,6 @@ when they affect the contract.
 
 Use source paths and supplied logs/tests with their actual provenance. Identify
 the exact failure sequence, observable impact, remaining uncertainty and verification
-needed. Do not inject faults, restart services, run tests, operate infrastructure
-or fix code during review. Recommend bounded checks for later authorized work;
+needed. Do not inject faults, restart services, operate infrastructure or fix code during
+review. Focused tests follow the root verification boundary;
 do not claim the system recovered because a recovery function merely exists.

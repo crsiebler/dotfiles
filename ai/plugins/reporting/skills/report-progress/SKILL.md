@@ -21,7 +21,10 @@ Preserve exactly these labels and order: `Date:`, `What I completed:`,
 tested, and deployed work. Estimate remaining engineering effort only when
 supportable; include `Excludes QA testing.` without inventing an ETA.
 
-Default to draft. Before any external post, preview the issue/site, full comment,
-and exact exposed tool name and payload; require explicit approval. Re-preview
-if anything changes. Verify the returned comment identity and report its link
+Default to draft. Before an external post, show the issue/site, full comment,
+and exact exposed tool name and payload. Reuse existing authorization for the same
+target and content when the user explicitly approved posting them; otherwise ask
+for approval of the prepared result. Carry that grant through continuation.
+A changed destination, body, or effect needs a new preview and approval; mechanical
+encoding alone does not. Verify the returned comment identity and report its link
 when available. Do not transition issues, change code, merge, or deploy.

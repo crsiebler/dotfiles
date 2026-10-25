@@ -10,7 +10,7 @@ guides and repository instructions.
 [Makefile](../Makefile) defines `install` as the default goal. It first invokes
 `install-zsh-extensions`, then copies the configured alias/Zsh files into the user
 home, creates or synchronizes `.env`, sets the global Git excludes file, invokes
-`install-opencode`, and installs `bin/ralph` with sudo. This is a mutating setup
+`install-opencode`. This is a mutating setup
 path, not a verification command. AI-only targets do not traverse the shell path.
 
 The source runtime flow is:
@@ -48,7 +48,7 @@ the existing guidance intact for a separately scoped correction.
 | [ai/AGENTS.md](../ai/AGENTS.md) | Installer copies unchanged bytes to both user-level instruction destinations |
 | [ai/codex](../ai/codex/) and [ai/opencode](../ai/opencode/) configuration files | Managed JSON/TOML source bytes replace same-named installed files; changed files receive backups |
 | [ai/codex/agents](../ai/codex/agents/) | Renderer copies native TOML to Codex and renders OpenCode Markdown |
-| [ai/opencode/agents](../ai/opencode/agents/) | OpenCode-only Ralph, Ralph reviewer, and sprite artist copied unchanged |
+| [ai/opencode/agents](../ai/opencode/agents/) | OpenCode-only sprite artist copied unchanged |
 | [ai/opencode/commands](../ai/opencode/commands/) | Native commands route to skills or own a specific workflow such as PR review |
 | [Marketplace](../.agents/plugins/marketplace.json) and [plugin sources](../ai/plugins/) | Codex local plugin registration; OpenCode skill copies through the skills CLI |
 
@@ -81,48 +81,24 @@ and active assets. See [removal guidance](remove-old-ai-files.md).
 
 ## Requirements to delivery
 
-[define-requirements.md](../ai/opencode/commands/define-requirements.md) loads
-write-requirements; [plan-work.md](../ai/opencode/commands/plan-work.md) loads
-prepare-implementation with the OpenCode JSON default. The planning skill selects
-Markdown for trusted Codex context unless explicitly overridden. Its current
-acceptance-coverage section maps source outcomes into bounded stories and assigns
-integrated verification ownership before handoff. This guidance is present in the
-uncommitted source snapshot, not verified as installed behavior.
-
-Each alternative execution workflow owns tailored delivery and review instructions.
-Only actual executable archival functionality is shared:
-
-| Responsibility | Canonical source / consumer |
+| Responsibility | Owner |
 | --- | --- |
-| Team delivery, evidence and finalization | [story-execution.md](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md) |
-| Team review protocol | [story-review.md](../ai/plugins/coding/skills/run-agent-team/references/story-review.md), supplied to native story-reviewer |
-| Serial Ralph lifecycle and controls | [ralph.md](../ai/opencode/agents/ralph.md) |
-| Complete Ralph review protocol | [ralph-reviewer.md](../ai/opencode/agents/ralph-reviewer.md), discovered by the executor and supplied in full |
-| Ralph supervisor | [bin/ralph](../bin/ralph), scheduling, state and delivery validation |
-| Team dispatch and worktrees | [run-agent-team](../ai/plugins/coding/skills/run-agent-team/SKILL.md); normal main session owns dispatch, Git and state; coordinator advice is optional |
-| Reusable archival code/API | [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md), bundled unchanged archive_run.py |
+| Requirements | write-requirements |
+| Markdown plan and dependency graph | prepare-implementation |
+| Ordinary implementation | develop-code |
+| Explicit parallel execution, integration and state | run-agent-team in the main session |
+| Generic independent judgment and focused checks | reviewer with review-code |
+| Staged-story protocol and JSON schema | review-story, supplied by the workflow |
+| Verified archival / copy-only preservation | archive-run deterministic helper |
 
-Native Ralph files are copied byte-for-byte by installation. Its full protocol
-needs no new reference-asset installer. Tests compare compatible schema and guard
-invariants while preserving independent workflow text and runtime limits.
-
-Ralph's `execute()` persists `running`, launches `opencode run --agent ralph`,
-then validates the iteration's identity, outcome, exact selected-story plan
-transition, and committed delivery before continuing. Its state and lock live
-in per-worktree Git metadata; outcome and stop files live at project root. Goal
-uses native continuation rather than this supervisor. Neither a final message nor
-a checkbox alone replaces committed delivery evidence. Recovery belongs to the
-[Ralph runbook](ralph-recovery.md), not a fresh execution loop.
-
-Task sources own completion; root `progress.md` owns append-only execution
-evidence; root `memory.json` owns bounded operational knowledge; PRDs own approved
-requirements. `archive_run.py` reads the PRD work-run manifest, checks committed
-story-result evidence and runner state, then preserves declared artifacts under
-its own lock and removal authorization. Mapping does not read or mutate run state.
+See [agent workflows](agent-workflows.md). No external iteration runner or
+specialized staged-review role is installed. Runtime permissions, candidate
+identity, bounded passes, persistent blockers and actual commit authority remain
+mandatory. Source configuration does not prove installed native behavior.
 
 ## External boundaries and change impact
 
-MCP definitions live under Codex `mcp_servers` and OpenCode `mcp`, with
+MCP definitions live under Codex `mcp_servers` and OpenCode V2 `mcp.servers`, with
 harness-specific tool approval rules. The [connection guide](ai-configuration.md#connecting-applications)
 owns authentication, trusted-project opt-in, and local mcp-suite integration.
 The local PostgreSQL/Jev servers, model weights, credentials, and provider runtimes

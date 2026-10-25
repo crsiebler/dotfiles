@@ -1,5 +1,4 @@
 ---
-name: ship
 description: Prepare a scoped GitHub shipping sequence with preview and explicit approval
 ---
 

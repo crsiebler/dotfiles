@@ -6,9 +6,10 @@ skip when the installed CLI explicitly rejects strict mode for MCP listing.
 All subprocesses
 start with an allowlisted environment and scratch HOME beneath tests/.
 
-Schema evidence reviewed 2026-09-05:
-https://opencode.ai/config.json ($defs.McpLocalConfig, McpRemoteConfig,
-Config.properties.lsp): lsp accepts boolean (including true) or an object.
+OpenCode V2 field projection reviewed 2026-10-24:
+https://opencode.ai/v2/docs/mcp-servers and
+https://github.com/anomalyco/opencode/blob/dev/packages/schema/src/config/mcp.ts.
+Codex schema evidence reviewed 2026-09-05:
 https://raw.githubusercontent.com/openai/codex/rust-v0.153.4/
 codex-rs/core/config.schema.json; installed version is checked at runtime and
 native parsing is preferred; 0.153.4 explicitly rejects strict mode for MCP.
@@ -56,7 +57,7 @@ class MCPConfigurationTest(unittest.TestCase):
         self.opencode = json.loads(OPENCODE.read_text())
         self.servers = {
             'codex': self.codex['mcp_servers'],
-            'opencode': self.opencode['mcp'],
+            'opencode': self.opencode['mcp']['servers'],
         }
         scratch = tempfile.TemporaryDirectory(prefix='mcp-contract-',
                                                dir=ROOT / 'tests')
@@ -92,11 +93,11 @@ class MCPConfigurationTest(unittest.TestCase):
                 self.assertTrue((GLOBAL | OPT_IN) <= servers.keys())
                 self.assertFalse({'aws', 'elastic'} & servers.keys())
                 self.assertEqual({n for n, s in servers.items()
-                                  if s.get('enabled') is True}, GLOBAL)
+                                  if (s.get('enabled') is True if harness == 'codex' else s.get('disabled') is False)}, GLOBAL)
                 for name, server in servers.items():
-                    self.assertIs(type(server.get('enabled')), bool, name)
+                    self.assertIs(type(server.get('enabled' if harness == 'codex' else 'disabled')), bool, name)
                     if name not in GLOBAL:
-                        self.assertIs(server['enabled'], False, name)
+                        self.assertIs(server['enabled' if harness == 'codex' else 'disabled'], harness != 'codex', name)
 
     def test_codex_mcp_fields_match_versioned_schema(self):
         for name, server in self.servers['codex'].items():
@@ -138,7 +139,7 @@ class MCPConfigurationTest(unittest.TestCase):
         for harness in self.servers:
             with self.subTest(harness=harness):
                 server = self.servers[harness]['docker']
-                self.assertIs(server['enabled'], False)
+                self.assertIs(server['enabled' if harness == 'codex' else 'disabled'], harness != 'codex')
                 if harness == 'codex':
                     self.assertEqual(server['command'], 'docker')
                     self.assertEqual(server['args'], [
@@ -159,7 +160,7 @@ class MCPConfigurationTest(unittest.TestCase):
             with self.subTest(server=name):
                 server = self.servers['codex'][name]
                 self.assertEqual(server['default_tools_approval_mode'], 'prompt')
-                permissions = self.opencode['permission']
+                permissions = {rule['action']: rule['effect'] for rule in self.opencode['permissions']}
                 self.assertEqual(permissions[name + '_*'], 'ask')
                 # Exact read exceptions and negative write controls are covered
                 # independently in mcp_permissions_test.py.
@@ -277,7 +278,7 @@ class MCPConfigurationTest(unittest.TestCase):
                     timeout_ms = server['tool_timeout_sec'] * 1000
                     environment = server['env']
                 else:
-                    timeout_ms = server.get('timeout', 5000)
+                    timeout_ms = server['timeout']['execution']
                     environment = server['environment']
                 self.assertEqual(timeout_ms, 60000)
                 self.assertGreater(timeout_ms, int(environment['JEV_TIMEOUT_MS']))
@@ -292,7 +293,7 @@ class MCPConfigurationTest(unittest.TestCase):
         for harness in self.servers:
             with self.subTest(harness=harness):
                 server = self.servers[harness]['jev']
-                self.assertIs(server['enabled'], False)
+                self.assertIs(server['enabled' if harness == 'codex' else 'disabled'], harness != 'codex')
                 if harness == 'codex':
                     self.assertEqual(server['command'], 'sh')
                     self.assertEqual(server['args'], ['-c', f'exec node "$HOME{entry}"'])
@@ -369,16 +370,13 @@ class MCPConfigurationTest(unittest.TestCase):
                     self.assertTrue(secret not in result.stderr,
                                     'secret leaked to launcher error')
 
-    def test_opencode_published_schema_mcp_shapes_and_lsp(self):
+    def test_opencode_v2_mcp_shapes(self):
         # Offline focused projection of published schema; never bootstrap OpenCode.
-        lsp = self.opencode.get('lsp', False)
-        self.assertIn(type(lsp), (bool, dict),
-                      'published OpenCode schema accepts boolean or object lsp')
         for name, server in self.servers['opencode'].items():
             with self.subTest(server=name):
                 kind = server['type']
                 self.assertIn(kind, ('local', 'remote'))
-                allowed = {'type', 'enabled', 'timeout'} | (
+                allowed = {'type', 'disabled', 'timeout'} | (
                     {'command', 'cwd', 'environment'} if kind == 'local'
                     else {'url', 'headers', 'oauth'})
                 self.assertFalse(server.keys() - allowed)

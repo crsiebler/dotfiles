@@ -1,5 +1,11 @@
 # Agent-team verification and activation limits
 
+Historical record: the runner and dedicated story role described below were
+retired on 2026-10-24. Their previous measurements are retained as recorded, not
+claims about the replacement. Current behavior and validation are in
+[story review verification](story-review-verification.md).
+
+
 The run-agent-team coding skill defines a harness-agnostic native team procedure.
 The normal main AI session owns dispatch, Git, integration and canonical task
 state. The optional multi-agent-coordinator supplies advice, not essential policy,
@@ -23,16 +29,20 @@ Preferred model controls are optional; explicit user model constraints still app
 For Codex CLI only, select run-agent-team with `/skills`, or explicitly use its
 discovered `$run-agent-team` name in a normal request. Use the picker when qualification or
 names are ambiguous. Then set `/goal <objective>` naming the approved plan and
-existing execution scope. A goal alone does not select the skill or supply grants.
+existing execution scope. The command alone does not select the skill or supply
+grants; a user objective to implement the approved plan includes its initial
+and subsequent scoped local commits.
 Do not rely on undocumented combined slash-command/skill parsing. For example,
 after selecting the skill in the current main session:
 
 ```text
-/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Target up to four concurrent implementation workers within actual runtime/resource capacity, reserving capacity for the exact native story-reviewer within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
+/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Target up to four concurrent implementation workers within actual runtime/resource capacity, reserving capacity for an independent reviewer with the complete reviewer and review-story contracts within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Preserve pending work and report missing worktree authority or native capability.
 ```
 
 The example grants no authority by itself. Confirm the existing actual integration
-root/branch, task-worktree lifecycle, local story-commit and closeout scope.
+root/branch and task-worktree lifecycle. When actually requested by the user,
+this plan implementation authorizes its scoped initial, story and closeout local
+commits without a second approval; it does not authorize archival/removal.
 Official [command syntax](https://learn.chatgpt.com/docs/developer-commands?surface=cli)
 and [skill invocation](https://learn.chatgpt.com/docs/build-skills) support these
 separate entry steps; neither a skill nor goal creates missing host tools.
@@ -111,9 +121,10 @@ configuration refresh, preserve customizations, restart and verify unique discov
 in a fresh task. Then use the loaded skill's disposable two-worker smoke in the
 selected harness under actual native-model/worktree/check/fixture-commit/archive scope. The main session
 must dispatch directly without reading or invoking the coordinator. Verify worker
-model evidence/fallbacks, capacity, exact required reviewer and same-session continuation first.
+model evidence/fallbacks, capacity, supported reviewer binding and same-session continuation first.
 No global installation, cache cleanup or live model experiment is part of source
-checks. Missing required gates block the smoke, not justify generic substitutes.
+checks. Missing required gates block the smoke. Contract-supplied binding is
+supported when the selector alone is absent and those gates are satisfied.
 
 For a run stopped only by the earlier mandatory Sol/Astra policy, activate the
 revised skill through separately authorized installation, or obtain an explicit
@@ -129,3 +140,47 @@ the main session takes ownership. Never duplicate a possibly-live owner or reset
 review budgets. Planning and ordinary coding remain independent; Ralph never
 loads team contracts. The earlier removed launcher remains recoverable in Git
 commit 4864f67; no launcher or OpenCode migration is introduced here.
+
+## Reviewer binding correction (2026-10-24)
+
+A reported runtime prompt asked for an exception because spawn had no native
+role-selection parameter. Source inspection found that both the entry skill and
+story execution required exact native selection, and evaluation case 3 expected
+a blocker. This was an instruction mismatch, not evidence that independent
+delegation itself was unavailable.
+
+The workflow now supports native-role selection or full contract delivery to a
+fresh independent generic agent. Both preserve candidate restrictions, pins,
+complete review-story packets and same-session budgets. Explicit native-role
+requirements, missing contracts, unsupported enforcement, unavailable independent
+delegation or missing continuation still block. The review record names reviewer
+as the responsibility and records the actual binding/type in evidence.
+
+Case 3 now covers the reported missing-selector path. Cases 34–39 cover pins,
+explicit native-role requirements, missing instructions, implementer independence,
+targeted continuation and unavailable continuation. These are authored evaluation
+cases, not executed model results. Static resource/contract tests cannot prove
+that a future agent will avoid the prompt. Historical runtime results above are
+unchanged. Installed activation remains separate.
+
+## Plan-launch commit authority (2026-10-24)
+
+The execution contract previously said a launch "may cover" local commits and
+separately required explicit story-commit authorization. The reported initial
+commit prompt exposed that ambiguity. An explicit request to implement an
+approved plan now covers the initial and subsequent scoped local commits,
+including continuation and closeout of authorized artifacts. No extra commit
+wording or repeated approval is required.
+
+The initial checkpoint is limited to the approved plan and required task-owned
+metadata. Implementation still needs checks/review; unrelated work, narrower
+no-commit instructions, runtime denials and external/destructive-action boundaries
+remain protected. Archival/removal authority is distinct from committing its
+authorized result.
+
+The new instruction-contract regression failed against the previous wording,
+then passed after the update. The full suite ran 279 tests: 278 passed and one
+existing Codex strict-mode check was skipped. Evaluation cases 40–47 cover
+initial/continuing authority, planning-only and no-commit requests, dirty state,
+failed gates, closeout and external actions. They are authored cases, not live
+agent results. Installed configuration was not changed.

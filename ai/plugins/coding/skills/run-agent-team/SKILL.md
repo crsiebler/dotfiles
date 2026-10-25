@@ -1,6 +1,6 @@
 ---
 name: run-agent-team
-description: Execute an authorized coding plan with parallel agents, a swarm, or an agent team using the normal main session as coordinator, dependency-ready workers, isolated worktrees, and existing delivery gates. Use for explicit multi-agent coding requests or planned parallel execution; not planning-only work, simple edits, or Ralph execution.
+description: Execute an authorized coding plan autonomously with parallel agents in the normal main session, isolated worktrees, automated verification and bounded review. Use for explicit multi-agent requests; not planning-only work, simple edits, or installing a separate runner.
 ---
 
 # Run Agent Team
@@ -11,13 +11,13 @@ Dependency setup, installation, publication and live model experiments remain
 separately scoped.
 Use trusted runtime identity and inspect actual native capabilities. This skill
 is AI harness agnostic; no particular harness or custom primary is required.
-RalphJSON remains a separate serial workflow. Do not start a new controller,
+Do not start a new controller,
 scheduler, service, or task registry.
 
 ## Harness-specific entry (conditional)
 
 Use the active harness's supported skill-selection mechanism. Read the
-[Codex CLI entry](references/codex.md) only for a Codex CLI goal/skill invocation.
+[Codex CLI entry](references/codex.md) only for a Codex CLI skill invocation.
 For other harnesses, inspect their actual entry and native delegation controls;
 never assume those CLI commands or synthesize missing tools.
 
@@ -25,6 +25,11 @@ never assume those CLI commands or synthesize missing tools.
 
 Invoke this workflow explicitly in the normal main AI session.
 Do not make requirements, planning or ordinary coding methods call it implicitly.
+An explicit user request to implement an approved plan, including a goal,
+authorizes its initial and subsequent scoped local commits without another
+approval prompt. Follow [commit authority](references/story-execution.md#authorization-and-prepared-branch)
+for initial plan/checkpoint contents, continuation and exclusions. A bare goal
+label or planning request does not authorize execution.
 An adequate approved story plan is required input. If missing, report the exact
 input gap; do not invoke a planner or regenerate the plan. Normal coding skill
 discovery applies when coding begins; no development skill or coordinator role
@@ -37,23 +42,40 @@ commits, canonical task markers, append-only progress and bounded memory.
 Delivery ownership does not require doing every source repair: follow the
 [handoff and remediation rules](references/team-execution.md#handoff-and-remediation)
 to return substantial bounded repairs to a worker with exclusive write ownership.
-Follow this skill directly; reading or invoking `multi-agent-coordinator`
-is optional advice within the existing read-only advisor budget, never a required
-primary agent or child dispatcher. No custom coordinator selection, nested
-delegation or role-guidance adoption is required. Never proxy-spawn for a child,
-delegate orchestration or run competing dispatch loops. Before taking over a
+Follow this skill directly. No custom coordinator selection, nested
+delegation or primary-agent switch is required. The five custom roles supply task
+contracts, not another dispatcher. Do not proxy-spawn for a child, delegate
+orchestration or run competing dispatch loops. Before taking over a
 prior run, verify its former dispatcher is quiescent and reconcile all live
 worker/reviewer IDs, assignments and consumed budgets. Uncertain ownership blocks
 takeover.
 
 ## Preflight and dispatch
 
+Before implementation edits or worker dispatch, check the approved plan's
+execution-readiness record against the actual scope, environment and capabilities.
+All applicable approval gates and manual prerequisites must be resolved for
+unattended launch; a blocked record is not an executable handoff. Reuse unchanged
+grants and verified evidence. For a legacy plan without a record, assess these
+gates before starting without regenerating the plan or invoking a planning skill.
+Do not defer known human dependencies into a story. New mandatory gates stop
+affected work; conversational approval never bypasses runtime permission prompts.
+
+Apply [autonomous execution scope](references/story-execution.md#autonomous-execution-scope)
+at launch and in every worker/reviewer packet. Carry the approved implementation
+endpoint forward without adding manual QA, human test confirmation or release
+gates. Unattended work in the current session is supported; it does not require
+a separate runner, daemon or controller.
+
 Use one compact capability/ownership preflight. Inspect actual callable native
 worker/model/follow-up/session controls, installed pins and capacity. Require
-direct worker/reviewer controls, including exact native story-reviewer selection
-and same-session continuation when the risk budget specifies it. Record selection
+direct worker/reviewer controls and same-session continuation when the risk
+budget specifies it. Apply [reviewer binding](references/story-execution.md#reviewer-binding):
+use native role selection when supported, otherwise supply the complete reviewer
+contract to an independent agent. No extra approval is needed solely because a
+role-selection parameter is absent. Record selection
 evidence and unknown effective settings
-honestly; never install settings, bypass pins or substitute a generic reviewer.
+honestly; never install settings, bypass pins or omit the supplied review contract.
 A file or role label proves no invocation capability. No capability-probe agents.
 
 Keep the current main session for coordination. Preferred models are
@@ -62,8 +84,8 @@ for review, conflict analysis, architecture and cross-domain analysis. These are
 preferences, not execution prerequisites. Follow the fallback and explicit-user
 constraint rules in [runtime selection](references/runtime-selection.md).
 Unknown coordinator model telemetry or a different installed reviewer model alone
-does not block execution. Preserve the exact native reviewer role and all gates;
-never change roles to obtain a preferred model. Stay within existing
+does not block execution. Preserve the reviewer contract and all gates;
+never bypass a role pin to obtain a preferred model. Stay within existing
 advisor/review/remediation allowances and actual model-use scope. Do not silently
 switch the main thread's model or install settings.
 A model change does not reset review attempts, add a second gate or grant an
@@ -91,12 +113,13 @@ separate verification result.
 
 ## Execute and deliver
 
-Read this bundle's [story delivery](references/story-execution.md), complete
-[review protocol](references/story-review.md),
+Read this bundle's [story delivery](references/story-execution.md),
 [concurrency](references/task-concurrency.md) and
 [runtime selection](references/runtime-selection.md) contracts. Resolve resources
-relative to this advertised installed bundle. Delivery and review belong to
-this team workflow; no planning or alternative execution workflow is invoked.
+relative to this advertised installed bundle. Separately discover review-story
+and load its complete contract; embed it with the workflow packet on every
+reviewer invocation. This workflow owns delivery; the skill owns review procedure
+and schema. No planning or alternative execution workflow is invoked.
 At full completion discover archive-run for its executable archival capability;
 resolve its helper/API contract from that loaded bundle, never sibling paths.
 For enrolled runs, verify/bind metadata before the first checkpoint under actual
@@ -107,7 +130,6 @@ branch, rejecting main/master/detached HEAD. The main thread validates missing
 references, self-dependencies and cycles, then prepares clean task worktrees
 under its lifecycle grant. Workers edit/check only assigned roots/paths.
 The main thread owns admission, integration and shared state.
-Never invoke Ralph or its runner from this workflow.
 Worker packets identify feasible compilation/focused checks, required build hooks
 and private outputs. Require actual check results before handoff; an explicit
 source-only result remains unqualified until the required checks pass.
@@ -130,8 +152,8 @@ resources; serialize conflicts if exclusion cannot be established.
 
 Integrate one bounded candidate at a time through the shared checks and risk-based
 review. Use permitted self-review only where that budget allows; otherwise directly
-invoke exact native `story-reviewer` with the full protocol/profile and preserve
-its session.
+invoke an independent agent bound to `reviewer` with the full protocol/profile
+and preserve its session.
 Allow one initial and at most one targeted pass per attempt. Do not add a worker
 staged review, extra coordinator approval or reviewer-of-reviewer cycle. Follow
 pre-commit evidence and provisional marker finalization; report delivered completion
@@ -148,7 +170,7 @@ integration and canonical state remain owned by the main thread. Apply the
 persistent blocker gate before further story work or review. Persistent
 final review blockers require material-resolution evidence, not a new agent/model.
 
-After the entire goal is delivered and writers are quiescent, perform required
+After the entire plan is delivered and writers are quiescent, perform required
 archival under the shared contract and actual authority. Report pending closeout
 rather than fabricating success. No implicit push, post, install, deployment,
 worktree removal or global configuration change.
@@ -156,4 +178,7 @@ worktree removal or global configuration change.
 Report actual dispatch/integration owners, task/session/model selection evidence,
 parallel/serial decisions, worktree/base/path assignments, delivered commits,
 checks/review, preserved blockers and archival status. Use
-[verification](references/verification.md) for evaluation and activation gates.
+[verification](references/verification.md) only for separately scoped workflow
+evaluation or activation, not additional per-plan delivery gates.
+
+For coordination advice, load [the focused reference](references/coordination-advice.md) only when relevant.

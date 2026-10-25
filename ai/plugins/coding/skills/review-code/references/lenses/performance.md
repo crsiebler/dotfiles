@@ -18,6 +18,7 @@ parallelism always helps. Preserve correctness and lifecycle in proposed changes
 
 Use supplied profiles/benchmarks only with their input, revision, configuration and
 measurement basis. Name missing representative measurements and propose focused
-verification. Do not run benchmarks, queries or load tests, install a profiler,
-or rewrite code during review. Prioritize demonstrated costs over speculative
+verification. Bounded local benchmarks may run under the root verification
+boundary. Do not run external queries or load tests, install a profiler or rewrite
+code during review. Prioritize demonstrated costs over speculative
 micro-optimizations and do not prescribe universal performance targets.

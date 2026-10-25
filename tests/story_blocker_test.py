@@ -24,7 +24,7 @@ class StoryBlockerTest(unittest.TestCase):
             '## Bounded memory and durable knowledge',
         )
         cls.review = section(
-            REFS / 'story-review.md',
+            ROOT / 'ai/plugins/coding/skills/review-story/references/contract.md',
             '### Final blocked verdict versus evidence recovery',
             '## Learning Discipline',
         )
@@ -91,20 +91,16 @@ class StoryBlockerTest(unittest.TestCase):
             'Do not manufacture additional experiments or bookkeeping to sustain activity',
         ))
 
-    def test_lifecycle_and_ralph_cannot_reset_story_gate(self):
+    def test_optional_lifecycle_cannot_reset_story_gate(self):
         self.assert_contracts(self.gate, (
             'story-review stop is immediate',
             'native lifecycle capabilities when their runtime conditions are met',
             'lifecycle restart after user resumption does not reset this story gate',
             'Never invent a restart loop, continuation controller, unsupported runtime setting',
         ))
-        docs = ' '.join((ROOT / 'docs/codex-goals.md').read_text().split())
-        self.assert_contracts(docs, (
-            'at least three consecutive Goal turns, including the original turn',
-            'User resumption starts a fresh native blocked audit',
-            "Follow the actual runtime's lifecycle instructions",
-            'without repeating reviews or inventing activity',
-        ))
+        docs = ' '.join((ROOT / 'docs/agent-workflows.md').read_text().split())
+        self.assertIn('goal API is optional', docs)
+        self.assertIn('No restart controller', docs)
 
     def test_skill_handoff_and_manual_evaluations_cover_gate(self):
         skill = ' '.join((SKILL / 'SKILL.md').read_text().split())

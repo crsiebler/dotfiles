@@ -2,6 +2,11 @@
 
 Research date: 2026-08-23
 
+Historical V1 assessment, not current setup guidance. The October 24 V2 migration
+replaces the notifier with built-in CLI notifications and removes the V1 image
+plugin from active configuration. Use [current V2 guidance](opencode-v2.md);
+recommendations and agent counts below describe the original research date.
+
 This assessment evaluates OpenCode plugins against the current setup:
 
 - macOS and Zsh

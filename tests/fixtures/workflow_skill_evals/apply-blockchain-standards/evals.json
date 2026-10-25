@@ -1,0 +1,38 @@
+{
+  "skill_name": "apply-blockchain-standards",
+  "status": "not-run",
+  "evals": [
+    {
+      "id": 1,
+      "split": "representative",
+      "prompt": "Review a smart contract diff from supplied code with no chain access.",
+      "expected_output": "Inspect invariants, reentrancy, authorization and upgrade/storage compatibility.",
+      "files": [],
+      "expectations": [
+        "Inspect invariants, reentrancy, authorization and upgrade/storage compatibility.",
+        "Do not sign, deploy or spend funds."
+      ],
+      "reference": "references/smart-contracts.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    },
+    {
+      "id": 2,
+      "split": "held-out",
+      "prompt": "Write local tests for a contract upgrade with existing fixtures.",
+      "expected_output": "Preserve storage layout and test stated invariants locally.",
+      "files": [],
+      "expectations": [
+        "Preserve storage layout and test stated invariants locally.",
+        "Do not connect a wallet or upgrade a live contract."
+      ],
+      "reference": "references/smart-contracts.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    }
+  ]
+}

@@ -11,6 +11,7 @@ Follow [browser considerations](browser.md) and the selected backend reference.
 | --- | --- | --- |
 | Playwright CLI | Node.js 18+ and npm, `@playwright/cli`, selected browser | CLI-supported extension/CDP attachment for an existing authorized session |
 | Project Playwright tests | Project-compatible Node/package manager and declared Playwright package | Matching browser binaries, configured fixtures/services |
+| Project axe scans | Existing Playwright suite and project-local `@axe-core/playwright` | Its resolved `axe-core` engine, matching browser, safe app fixture |
 | Playwright MCP | An exposed configured MCP server with its declared runtime and browser | Extension/CDP attachment supported by that server/version |
 | Chrome DevTools MCP | Exposed configured server and its documented Node/Chrome requirements | Authorized existing Chrome attachment |
 | Computer Use | Enabled computer/browser plugin, supported OS/app, exposed runtime APIs and granted permissions | Chrome support/session selected through that runtime |
@@ -48,6 +49,16 @@ the required browser using its installed CLI, for example
 `./node_modules/.bin/playwright install chromium` for managed Chromium.
 This is not branded Chrome. Browser downloads/native OS dependencies are separate
 setup actions; check local help before choosing a browser/channel.
+
+For axe scans, inspect the project's manifest/lockfile and installed package tree
+for Playwright, `@axe-core/playwright` and its resolved `axe-core` version. A
+separate direct `axe-core` dependency is not automatically needed. Check the
+configured browser and app fixture as well as package availability. If absent,
+report the missing prerequisite; do not install it. When setup is separately
+approved, add the adapter as a project development dependency using the existing
+package manager and approved compatible version, updating the lockfile through
+that manager. No global package or new MCP server is required for this path.
+See [Playwright accessibility setup](https://playwright.dev/docs/accessibility-testing).
 
 For MCP, use [Playwright MCP setup](https://github.com/microsoft/playwright-mcp)
 or [Chrome DevTools MCP setup](https://github.com/ChromeDevTools/chrome-devtools-mcp).

@@ -1,5 +1,11 @@
 # Implementation acceptance coverage verification
 
+Historical record: the runner and dedicated story role described below were
+retired on 2026-10-24. Their previous measurements are retained as recorded, not
+claims about the replacement. Current behavior and validation are in
+[story review verification](story-review-verification.md).
+
+
 ## Scope
 
 The 2026-10-07 revision strengthens prepare-implementation's planning handoff:

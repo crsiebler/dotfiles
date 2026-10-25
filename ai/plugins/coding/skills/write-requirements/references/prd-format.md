@@ -14,8 +14,10 @@ Define clear, actionable outcomes and acceptance; scale the document to the work
 
 **Important:** Do NOT start implementing. Just create the PRD.
 
-If the user did not explicitly ask to save a file, preview the target filename
-and ask before writing. Apply the preservation guard before every save.
+If the user requested a conversational draft, return it without a save prompt.
+A request to create or save a document authorizes a new project-local file in
+scope; resolve routine naming from the request and project. Apply the preservation
+guard before every save.
 
 ## PRD lifecycle and preservation
 
@@ -31,8 +33,9 @@ execution notes or require/create the journal while drafting requirements.
    to replace one. Explicit revisions of the same PRD update only approved scope.
 2. For replacement, preview the existing path, a unique project-local archive
    destination such as `archive/YYYY-MM-DD-feature-name-prd/tasks/prd-feature.md`,
-   and the proposed replacement. Obtain explicit user approval to archive the
-   existing PRD before writing the replacement; never overwrite an archive.
+   and the proposed replacement. Carry forward existing exact-path
+   archival/replacement approval when unchanged; otherwise obtain the missing
+   scope before writing the replacement. Never overwrite an archive.
 3. Recheck source/destination and approved scope, copy the existing PRD to the
    archive, and verify identical contents before replacing the active file. Do
    not follow out-of-project symlinks. If approval is withheld or preservation
@@ -125,6 +128,15 @@ Each outcome story needs:
 Requirements stories describe outcomes. prepare-implementation owns the bounded
 implementation-story breakdown and dependency ordering.
 
+Use the parent's [autonomous acceptance scope](../SKILL.md#acceptance-for-autonomous-implementation).
+Acceptance checks must be agent-executable and noninteractive. Do not introduce
+manual test verification, human sign-off or routine deployment checks. Explicit
+non-automatable source requirements remain visible as unresolved scope/method
+conflicts, not silently removed requirements or manual completion checkboxes.
+Deployment checks require explicit scope and an automatable path. Planning
+resolves concrete commands and runtime readiness; drafting need not prove a
+future test already exists. Optional human follow-up is outside goal completion.
+
 **Format:**
 ```markdown
 ### US-001: [Title]
@@ -133,67 +145,51 @@ implementation-story breakdown and dependency ordering.
 **Acceptance Criteria:**
 - [ ] Specific verifiable criterion
 - [ ] Another criterion
-- [ ] Typecheck passes
-- [ ] Tests pass, if behavior is testable
-- [ ] **[UI stories only]** Verify in browser using verify-interface skill
+- [ ] Applicable automated typecheck passes
+- [ ] Automated tests verify the specified behavior and edge cases
+- [ ] **[UI stories only]** Agent-executable browser checks verify the affected flow using verify-interface
 
-**Recommended Agents:** @agent-name, @agent-name
+**Recommended Agents:** @reviewer
 ```
 
 **Important:**
 - Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
 - Include relevant technical verification needs; planning resolves actual commands
   and whether typecheck is applicable. Do not invent an unavailable check.
-- For testable behavior, include "Tests pass" as acceptance criteria.
-- **For UI changes:** Include "Verify in browser using verify-interface skill" as acceptance criteria.
+- For testable behavior, include automated checks of the stated outcome and edge
+  cases; tests passing alone is not the product requirement.
+- For UI changes, require agent-executable browser verification with
+  verify-interface, not a person clicking through the flow or approving results.
 
-### Recommended Development Agents
+### Optional role and skill hints
 
-For each implementation story, add a short `Recommended Agents` line only when
-specialist guidance is likely to improve quality or reduce risk. Keep the list
-focused: 0-2 agents per story, selected from the trigger matrix below. Omit
-recommended agents for trivial, mechanical, docs-only, or low-risk stories. Do
-not recommend business, planning, sales, legal, marketing, or orchestration
-agents for implementation stories.
+For each implementation story, include 0-2 role hints only when they clarify
+ownership or independent assessment. Verify actual native availability first;
+hints neither invoke agents nor grant authority. Custom role hints use researcher,
+planner, reviewer, auditor or operator.
 
-Use exact configured agent names with `@` prefixes. The following are candidate
-names only: verify availability before adding hints. Hints are optional and do
-not prove the agent is loaded or require native invocation.
+Ordinary source work stays in the main session or an available native execution
+agent, with an independent reviewer when required. Codex uses worker; OpenCode
+delegation can use general. Record the actual choice during execution preflight,
+not as an assumed custom role or mandatory delegation step.
+Researcher investigates; planner authors a plan without starting it. Auditor
+preserves inspection-only scope. Operator is for explicitly authorized live
+operations, not an automatic part of a code story. The main session coordinates.
 
-- General implementation: `@backend-developer`, `@frontend-developer`,
-  `@fullstack-developer`, `@cli-developer`, `@tooling-engineer`
-- Debugging and quality: `@debugger`, `@test-automator`,
-  `@refactoring-specialist`, `@architect-reviewer`, `@performance-engineer`
-- Build and dependencies: `@build-engineer`, `@dependency-manager`
-- Security and compliance: `@security-engineer`, `@security-auditor`,
-  `@compliance-auditor`
-- Documentation: `@documentation-engineer`, `@technical-writer`
-- UI, UX, and accessibility: `@react-specialist`, `@nextjs-developer`,
-  `@vue-expert`, `@angular-architect`, `@ui-designer`, `@ux-researcher`,
-  `@accessibility-tester`
-- API and backend architecture: `@api-designer`, `@graphql-architect`,
-  `@websocket-engineer`, `@microservices-architect`
-- Databases and data: `@sql-pro`, `@postgres-pro`, `@database-optimizer`,
-  `@database-administrator`, `@data-engineer`
-- DevOps and infrastructure: `@devops-engineer`, `@deployment-engineer`,
-  `@kubernetes-specialist`, `@terraform-engineer`, `@cloud-architect`,
-  `@platform-engineer`, `@sre-engineer`
-- Language and framework specialists: `@typescript-pro`, `@javascript-pro`,
-  `@python-pro`, `@golang-pro`, `@rust-engineer`, `@java-architect`,
-  `@spring-boot-engineer`, `@csharp-developer`, `@dotnet-core-expert`,
-  `@php-pro`, `@laravel-specialist`, `@rails-expert`, `@django-developer`
-- Mobile and native: `@mobile-developer`, `@flutter-expert`,
-  `@swift-expert`, `@kotlin-specialist`, `@electron-pro`
-- AI and integrations: `@ai-engineer`, `@ml-engineer`, `@llm-architect`,
-  `@nlp-engineer`, `@mcp-developer`, `@payment-integration`,
-  `@slack-expert`, `@wordpress-master`
+Select knowledge separately through matching advertised skills and only relevant
+references. Examples: React uses apply-web-standards; database changes use
+apply-database-standards; AI work uses apply-ai-standards; MCP uses
+create-mcp-server. Do not add a role per technology or require every custom role.
 
 Examples:
-
-- Database migration story: `Recommended Agents: @database-optimizer, @sql-pro`
-- React UI story: `Recommended Agents: @react-specialist, @accessibility-tester`
-- CLI script story: `Recommended Agents: @cli-developer, @test-automator`
-- Dependency upgrade story: `Recommended Agents: @dependency-manager, @build-engineer`
+- React interface story: Recommended Agents: @reviewer;
+  relevant knowledge: apply-web-standards and verify-interface.
+- Database query repair: Recommended Agents: @reviewer;
+  relevant knowledge: apply-database-standards.
+- Inspection-only control assessment: Recommended Agents: @auditor;
+  relevant knowledge: assess-controls.
+- Authorized service recovery: Recommended Agents: @operator;
+  relevant knowledge: operate-systems and relevant infrastructure standards.
 
 ### 4. Functional Requirements
 Numbered list of specific functionalities:
@@ -268,10 +264,10 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 
 **Acceptance Criteria:**
 - [ ] Add priority column to tasks table: 'high' | 'medium' | 'low' (default 'medium')
-- [ ] Generate and run migration successfully
+- [ ] Automated migration checks preserve existing records and assign medium priority by default in an authorized test environment
 - [ ] Typecheck passes
 
-**Recommended Agents:** @database-optimizer, @sql-pro
+**Recommended Agents:** @reviewer
 
 ### US-002: Display priority indicator on task cards
 **Description:** As a user, I want to see task priority at a glance so I know what needs attention first.
@@ -280,9 +276,9 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Each task card shows colored priority badge (red=high, yellow=medium, gray=low)
 - [ ] Priority visible without hovering or clicking
 - [ ] Typecheck passes
-- [ ] Verify in browser using verify-interface skill
+- [ ] Agent-executable browser checks verify the affected flow using verify-interface
 
-**Recommended Agents:** @react-specialist, @accessibility-tester
+**Recommended Agents:** @reviewer
 
 ### US-003: Add priority selector to task edit
 **Description:** As a user, I want to change a task's priority when editing it.
@@ -292,9 +288,9 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Shows current priority as selected
 - [ ] Saves immediately on selection change
 - [ ] Typecheck passes
-- [ ] Verify in browser using verify-interface skill
+- [ ] Agent-executable browser checks verify the affected flow using verify-interface
 
-**Recommended Agents:** @frontend-developer, @accessibility-tester
+**Recommended Agents:** @reviewer
 
 ### US-004: Filter tasks by priority
 **Description:** As a user, I want to filter the task list to see only high-priority items when I'm focused.
@@ -304,9 +300,9 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Filter persists in URL params
 - [ ] Empty state message when no tasks match filter
 - [ ] Typecheck passes
-- [ ] Verify in browser using verify-interface skill
+- [ ] Agent-executable browser checks verify the affected flow using verify-interface
 
-**Recommended Agents:** @frontend-developer, @ux-researcher
+**Recommended Agents:** @researcher
 
 ## Functional Requirements
 

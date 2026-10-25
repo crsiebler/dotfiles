@@ -19,8 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 class InstallTest(unittest.TestCase):
     def test_configuration_files_replace_exact_bytes_and_keep_backups(self):
         m = self.module()
-        names = ('config.toml', 'astra.config.toml', 'opencode.json',
-                 'tui.json', 'astra.json', 'sol.json', 'opencode-notifier.json')
+        names = ('config.toml', 'opencode.json',
+                 'cli.json')
         with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
             root = Path(directory)
             for name in names:
@@ -48,9 +48,7 @@ class InstallTest(unittest.TestCase):
     def test_real_configuration_sources_can_be_reinstalled(self):
         m = self.module()
         for relative in ('ai/opencode/opencode.json', 'ai/codex/config.toml',
-                         'ai/codex/astra.config.toml', 'ai/opencode/tui.json',
-                         'ai/opencode/astra.json', 'ai/opencode/sol.json',
-                         'ai/opencode/opencode-notifier.json'):
+                         'ai/opencode/cli.json'):
             with self.subTest(source=relative):
                 source = ROOT / relative
                 self.assertEqual(m.config_bytes(source, source), source.read_bytes())
@@ -99,7 +97,7 @@ class InstallTest(unittest.TestCase):
             root = Path(directory)
             managed = root / 'managed.toml'
             managed.write_text(m.toml_dump(source))
-            companion = root / 'astra.config.toml'
+            companion = root / 'custom.config.toml'
             companion.write_text(m.toml_dump(unsafe))
             with self.assertRaisesRegex(ValueError, 'reconcile'):
                 m.config_bytes(companion, managed)
@@ -204,6 +202,68 @@ class InstallTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'required on PATH'):
                 m.main()
             execute.assert_not_called()
+
+    def test_cli_prerequisite_check_returns_before_sources_or_destinations(self):
+        for version in ('2.1.2', 'opencode 2.1.4', 'opencode v2.1.4\n',
+                        'v2.1.4', 'opencode v2.1.4-next.1', '3.0.0'):
+            with self.subTest(version=version):
+                m = self.module()
+                with patch.object(sys, 'argv', ['install-ai.py', 'opencode', '--check-prerequisites']), \
+                        patch.object(m.shutil, 'which', return_value='fixture'), \
+                        patch.object(m, 'run', return_value=version) as execute, \
+                        patch.object(m, 'check_agent_sources') as sources:
+                    m.main()
+                    execute.assert_called_once_with(['opencode', '--version'])
+                    sources.assert_not_called()
+
+    def test_cli_prerequisite_check_rejects_v1_and_malformed_versions(self):
+        for version in ('1.18.34', 'opencode v1.18.34', 'opencode v2',
+                        'opencode v2.1.4 extra', 'unknown\nopencode v2.1.4', ''):
+            with self.subTest(version=version):
+                m = self.module()
+                with patch.object(sys, 'argv', ['install-ai.py', 'opencode', '--check-prerequisites']), \
+                        patch.object(m.shutil, 'which', return_value='fixture'), \
+                        patch.object(m, 'run', return_value=version), \
+                        patch.object(m, 'check_agent_sources') as sources:
+                    with self.assertRaisesRegex(ValueError, 'OpenCode V2'):
+                        m.main()
+                    sources.assert_not_called()
+
+    def test_full_install_rejects_v1_before_any_mutating_step_even_in_parallel(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
+            root = Path(directory)
+            home, binaries = root / 'home', root / 'bin'
+            home.mkdir()
+            binaries.mkdir()
+            marker = root / 'mutation-attempted'
+            original = home / '.zshrc'
+            original.write_text('preserve personal shell settings\n')
+            for name, body in (
+                    ('opencode', '#!/bin/sh\nprintf "1.18.34\\n"\n'),
+                    ('skills', '#!/bin/sh\nexit 0\n'),
+                    ('python-check', '#!/bin/sh\n'
+                     'case "$1" in\n'
+                     '  scripts/install-ai.py) exec "$INSTALL_TEST_PYTHON" "$@" ;;\n'
+                     '  *) touch "$INSTALL_TEST_MARKER"; exit 9 ;;\n'
+                     'esac\n'),
+                    ('cp', '#!/bin/sh\ntouch "$INSTALL_TEST_MARKER"; exit 9\n'),
+                    ('git', '#!/bin/sh\ntouch "$INSTALL_TEST_MARKER"; exit 9\n')):
+                executable = binaries / name
+                executable.write_text(body)
+                executable.chmod(0o755)
+            result = subprocess.run(
+                ['make', '-j4', '-f', str(ROOT / 'Makefile'), 'install',
+                 f'PYTHON={binaries / "python-check"}'], cwd=ROOT,
+                env=dict(os.environ, HOME=str(home), PATH=f'{binaries}:{os.environ["PATH"]}',
+                         INSTALL_TEST_PYTHON=sys.executable, INSTALL_TEST_MARKER=str(marker),
+                         MAKEFLAGS='', MAKEOVERRIDES=''),
+                capture_output=True, text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('OpenCode V2', result.stderr)
+            self.assertFalse(marker.exists(), result.stdout + result.stderr)
+            self.assertEqual(original.read_text(), 'preserve personal shell settings\n')
+            self.assertEqual(list(home.iterdir()), [original])
 
     def test_codex_updates_with_required_capabilities_reach_source_preparation(self):
         for version in ('0.153.4', '0.160.0', '0.200.0'):
@@ -313,6 +373,7 @@ class InstallTest(unittest.TestCase):
         m = self.module()
         self.assertTrue(hasattr(m, 'check_github_token'))
         for config in [
+            {'mcp': {'servers': {'github': {'disabled': False, 'headers': {'Authorization': 'Bearer {env:GITHUB_MCP_TOKEN}'}}}}},
             {'mcp': {'github': {'enabled': True, 'headers': {'Authorization': 'Bearer {env:GITHUB_MCP_TOKEN}'}}}},
             {'mcp_servers': {'github': {'bearer_token_env_var': 'GITHUB_MCP_TOKEN'}}},
         ]:
@@ -320,8 +381,29 @@ class InstallTest(unittest.TestCase):
                 m.check_github_token(config, {})
             m.check_github_token(config, {'GITHUB_MCP_TOKEN': 'fixture-only-not-a-token'})
             table = config.get('mcp', config.get('mcp_servers'))
-            table['github']['enabled'] = False
+            if 'servers' in table:
+                table['servers']['github']['disabled'] = True
+            else:
+                table['github']['enabled'] = False
             m.check_github_token(config, {})
+
+    def test_v2_prompt_conflicts_preserve_resource_and_duplicate_rules(self):
+        m = self.module()
+        source = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
+        m.check_prompt_conflicts(source, source)
+        for action, resource, effect in [('github_*', '*', 'allow'),
+                                         ('github_push_files', 'repo/*', 'allow'),
+                                         ('exa_future_write', '*', 'ask')]:
+            rules = [{'action': action, 'resource': resource, 'effect': effect},
+                     {'action': action, 'resource': 'other', 'effect': 'deny'}]
+            for old in ({'permissions': rules}, {'agents': {'custom': {'permissions': rules}}}):
+                with self.subTest(action=action, old=old), self.assertRaisesRegex(ValueError, 'reconcile'):
+                    m.check_prompt_conflicts(old, source)
+        m.check_prompt_conflicts({'permissions': [
+            {'action': 'github_get_file_contents', 'resource': '*', 'effect': 'allow'}]}, source)
+        with self.assertRaisesRegex(ValueError, 'reconcile'):
+            m.check_prompt_conflicts({'permissions': [
+                {'action': 'exa_*', 'resource': '*', 'effect': 'deny'}]}, source)
 
     def test_toml_roundtrip(self):
         m = self.module()
@@ -432,11 +514,13 @@ class InstallTest(unittest.TestCase):
         plugins = dict(m.local_plugins(ROOT, manifest))
         skills = plugins['researching'] / 'skills'
         self.assertEqual({p.parent.name for p in skills.glob('*/SKILL.md')},
-                         {'search-web', 'read-docx', 'read-pptx', 'read-xlsx', 'read-pdf'})
+                         {'search-web', 'read-docx', 'read-pptx', 'read-xlsx', 'read-pdf',
+                          'analyze-data', 'research-users'})
         source = skills / 'search-web'
         self.assertEqual({p.relative_to(source).as_posix()
                           for p in source.rglob('*') if p.is_file()},
-                         {'SKILL.md', 'references/exa.md', 'references/requirements.md'})
+                         {'SKILL.md', 'references/exa.md', 'references/requirements.md',
+                          'references/domain-research.md', 'references/domain-research-topics.md'})
 
     def test_review_feedback_skill_discovery_and_reference(self):
         m = self.module()
@@ -451,8 +535,8 @@ class InstallTest(unittest.TestCase):
         self.assertIn('(references/github.md)',
                       (source / 'SKILL.md').read_text())
         permissions = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
-        self.assertEqual(permissions['permission']['skill'],
-                         {'resolve-review-feedback': 'allow'})
+        self.assertEqual([r for r in permissions['permissions'] if r['action'] == 'skill'],
+                         [{'action': 'skill', 'resource': 'resolve-review-feedback', 'effect': 'allow'}])
 
     def test_isolated_install_replace_and_repeat(self):
         self.module()
@@ -469,15 +553,14 @@ class InstallTest(unittest.TestCase):
             role = put('ai/codex/agents/example.toml',
                        'name = "example"\ndescription = "Fixture"\n'
                        'developer_instructions = "Rendered fixture"\n')
-            for name in ('config.toml', 'astra.config.toml'):
-                put(f'ai/codex/{name}', 'model = "fixture"\n')
+            put('ai/codex/config.toml', 'model = "fixture"\n')
             instruction_bytes = '# Personal café — 共通\r\nKeep exact bytes.  \r\n\r\n\r\n'.encode('utf-8')
             instructions = root / 'ai/AGENTS.md'
-            reviewer = put('ai/opencode/agents/ralph-reviewer.md',
+            reviewer = put('ai/opencode/agents/fixture-native-reviewer.md',
                            '---\nmode: subagent\nsteps: 3\n---\nExact reviewer\n')
             native = put('ai/opencode/agents/native-only.md',
                          '---\ndescription: Native fixture\nmode: primary\n'
-                         'permission: {"*": "deny", "read": "allow"}\n---\n\nExact café body\n')
+                         'permissions: [{"action": "*", "resource": "*", "effect": "deny"}, {"action": "read", "resource": "*", "effect": "allow"}]\n---\n\nExact café body\n')
             put('tests/.fixture', '')
             plugins = []
             for name in ('coding', 'reporting', 'researching', 'delegating', 'producing'):
@@ -488,13 +571,13 @@ class InstallTest(unittest.TestCase):
             put('.agents/plugins/marketplace.json', json.dumps({'name': 'craft', 'plugins': plugins}))
             put('ai/plugins/coding/skills/coding/scripts/__pycache__/helper.pyc', 'generated cache')
             put('ai/plugins/coding/skills/coding/metadata.json', '{"installer":"metadata"}')
-            put('ai/opencode/opencode.json', json.dumps({'model': 'test/model', 'mcp': {
-                'shared': {'enabled': False}, 'github': {'enabled': True,
-                    'headers': {'Authorization': 'Bearer {env:GITHUB_MCP_TOKEN}'}}}}))
-            put('ai/opencode/astra.json', '{"model":"test/astra"}')
-            put('ai/opencode/sol.json', '{"model":"test/sol"}')
-            put('ai/opencode/opencode-notifier.json', '{"notification":true}')
+            put('ai/opencode/opencode.json', json.dumps({'model': 'test/model', 'mcp': {'servers': {
+                'shared': {'disabled': True}, 'github': {'disabled': False,
+                    'headers': {'Authorization': 'Bearer {env:GITHUB_MCP_TOKEN}'}}}}}))
+            put('ai/opencode/cli.json', '{"theme":{"name":"fixture"},"attention":{"notifications":true}}')
             target = put('home/xdg/opencode/opencode.json', '{"custom":"preserved","mcp":{"private":{"token":"{env:SECRET}"}}}')
+            legacy_tui = put('home/xdg/opencode/tui.json', '{"theme":"old-custom"}')
+            legacy_notifier = put('home/xdg/opencode/opencode-notifier.json', '{"sound":false}')
             old_role = put('home/xdg/opencode/agents/example.md', 'previous role')
             custom_role = put('home/xdg/opencode/agents/custom.md', 'keep custom')
             old_skill = put('home/xdg/opencode/skills/use-exa/SKILL.md', 'old installed skill')
@@ -508,11 +591,25 @@ if sys.argv[1] == 'add':
                         ignore=shutil.ignore_patterns('metadata.json', '.git', '__pycache__', '__pypackages__'))
 ''')
             fake.chmod(0o755)
+            opencode = put('fakebin/opencode', '#!/bin/sh\nprintf "2.0.29\\n"\n')
+            opencode.chmod(0o755)
             early_codex = put('fakebin/codex', '#!/bin/sh\nprintf "%s\\n" "--json --marketplace --available"\n')
             early_codex.chmod(0o755)
             env = dict(os.environ, HOME=str(root / 'home'), CODEX_HOME=str(root / 'home/codex'),
                        XDG_CONFIG_HOME=str(root / 'home/xdg'), PATH=str(root / 'fakebin'))
             env.pop('GITHUB_MCP_TOKEN', None)
+            # Reject V1 before any installed files or plugin state are touched.
+            opencode.write_text('#!/bin/sh\nprintf "1.18.34\\n"\n')
+            before_home = {p.relative_to(root / 'home'): p.read_bytes()
+                           for p in (root / 'home').rglob('*') if p.is_file()}
+            version_failure = subprocess.run(
+                [sys.executable, str(root / 'scripts/install-ai.py'), 'opencode'],
+                env=env, cwd=root, capture_output=True, text=True)
+            self.assertNotEqual(version_failure.returncode, 0)
+            self.assertIn('OpenCode V2', version_failure.stderr)
+            self.assertEqual(before_home, {p.relative_to(root / 'home'): p.read_bytes()
+                                          for p in (root / 'home').rglob('*') if p.is_file()})
+            opencode.write_text('#!/bin/sh\nprintf "opencode v2.1.4\\n"\n')
             for harness in ('validate', 'opencode', 'codex', 'all'):
                 with self.subTest(missing_instructions=harness):
                     before_home = {p.relative_to(root / 'home'): p.read_bytes()
@@ -544,15 +641,20 @@ if sys.argv[1] == 'add':
                 self.assertEqual(list(target.parent.glob('AGENTS.md.backup.*')), [])
             value = json.loads(target.read_text())
             self.assertNotIn('custom', value)
-            self.assertNotIn('private', value['mcp'])
+            self.assertNotIn('private', value['mcp']['servers'])
             self.assertEqual(target.read_bytes(),
                              (root / 'ai/opencode/opencode.json').read_bytes())
-            self.assertFalse(value['mcp']['shared']['enabled'])
+            self.assertTrue(value['mcp']['servers']['shared']['disabled'])
             self.assertEqual(len(list(target.parent.glob('opencode.json.backup.*'))), 1)
             self.assertEqual((target.parent / 'AGENTS.md').read_bytes(), instruction_bytes)
-            self.assertEqual(json.loads((target.parent / 'astra.json').read_text())['model'], 'test/astra')
-            self.assertEqual(json.loads((target.parent / 'sol.json').read_text())['model'], 'test/sol')
-            self.assertTrue(json.loads((target.parent / 'opencode-notifier.json').read_text())['notification'])
+            self.assertEqual(json.loads((target.parent / 'cli.json').read_text())['theme']['name'], 'fixture')
+            self.assertEqual({p.name for p in target.parent.glob('*.json')},
+                             {'opencode.json', 'cli.json',
+                              'tui.json', 'opencode-notifier.json',
+                              '.install-ai-skills.json'})
+            self.assertEqual(legacy_tui.read_text(), '{"theme":"old-custom"}')
+            self.assertEqual(legacy_notifier.read_text(), '{"sound":false}')
+            self.assertTrue(json.loads((target.parent / 'cli.json').read_text())['attention']['notifications'])
             self.assertEqual(value['model'], 'test/model')
             self.assertIn('Managed scope:', result.stderr)
             self.assertNotIn(env['GITHUB_MCP_TOKEN'], target.read_text())
@@ -565,7 +667,7 @@ if sys.argv[1] == 'add':
             self.assertEqual((target.parent / 'agents/example.md').read_text(),
                              '---\ndescription: "Fixture"\nmode: "subagent"\n'
                              '---\nRendered fixture')
-            self.assertEqual((target.parent / 'agents/ralph-reviewer.md').read_bytes(),
+            self.assertEqual((target.parent / 'agents/fixture-native-reviewer.md').read_bytes(),
                              reviewer.read_bytes())
             backups = list(old_role.parent.glob('example.md.backup.*'))
             self.assertEqual(len(backups), 1)
@@ -620,9 +722,7 @@ else:
             codex_home = root / 'home/codex'
             self.assertEqual((codex_home / 'AGENTS.md').read_bytes(), instruction_bytes)
             self.assertEqual(tomllib.loads((codex_home / 'config.toml').read_text())['model'], 'fixture')
-            self.assertEqual(tomllib.loads((codex_home / 'astra.config.toml').read_text()),
-                             tomllib.loads((root / 'ai/codex/astra.config.toml').read_text()))
-            self.assertFalse((codex_home / 'ralph.config.toml').exists())
+            self.assertEqual([p.name for p in codex_home.glob('*.toml')], ['config.toml'])
             codex_agents = root / 'home/codex/agents'
             self.assertEqual((codex_agents / role.name).read_bytes(), role.read_bytes())
             self.assertEqual([p.name for p in codex_agents.iterdir()], ['example.toml'])

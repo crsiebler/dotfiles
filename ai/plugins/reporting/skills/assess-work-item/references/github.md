@@ -55,8 +55,11 @@ fictional issue destination. Default to a draft. Do not create issues, change
 project fields/statuses, assign work or transition items during assessment.
 
 Posting is available only to a verified actual issue/PR comment target. Preview
-the complete six-field comment and exact exposed tool/gh payload, obtain explicit
-approval, then verify its returned identity/URL. A project URL or draft item is
+the complete six-field comment and exact exposed tool/gh payload. Reuse explicit
+posting approval for the same target, content, and effect; otherwise obtain it.
+Continuation and mechanical encoding do not invalidate unchanged approval.
+Material changes require a new preview and approval. Verify the returned
+identity/URL. A project URL or draft item is
 not an issue comment target. After ambiguous writes, inspect existing comments
 before retrying to avoid duplicates. No unrelated external changes are allowed.
 

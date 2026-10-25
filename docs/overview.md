@@ -10,14 +10,15 @@ AI installation, and backup cleanup.
 
 | Task or subject | Documentation owner | Source entry points |
 | --- | --- | --- |
-| Understand configuration flows and change impact | [Architecture map](architecture.md) | [Makefile](../Makefile), [AI installer](../scripts/install-ai.py), [Ralph](../bin/ralph) |
+| Choose generic roles and technology knowledge | [Role selection](../ai/plugins/delegating/skills/use-subagents/references/core-roles.md) | [Native roles](../ai/codex/agents/), [coding skills](../ai/plugins/coding/skills/) |
+| Understand configuration flows and change impact | [Architecture map](architecture.md) | [Makefile](../Makefile), [AI installer](../scripts/install-ai.py) |
 | Choose verification for a change | [Testing map](testing.md) | [Tests](../tests/), [Environment manifest](../environment.yml) |
 | Change shell behavior or custom extensions | [README shell setup](../README.md#custom-zsh-plugins-and-theme), [shell flow](architecture.md#shell-configuration) | [Zsh configuration](../zsh/.zshrc), [shared environment](../zsh/.zshenv), [aliases](../aliases/), [extension registry](../scripts/install-zsh-extensions.py) |
 | Install AI assets or change MCP connections | [AI configuration guide](ai-configuration.md) | [Installer](../scripts/install-ai.py), [Codex config](../ai/codex/config.toml), [OpenCode config](../ai/opencode/opencode.json) |
 | Add or revise a native role | [Agent authoring](agent-authoring.md) | [Canonical TOML roles](../ai/codex/agents/), [renderer](../scripts/render-agents.py), [OpenCode-only roles](../ai/opencode/agents/) |
 | Add or revise a portable skill | [Skill dependencies](skill-dependencies.md), [coding workflow design](coding-workflow-design.md) | [Plugin marketplace](../.agents/plugins/marketplace.json), [skill sources](../ai/plugins/), [create-skill](../ai/plugins/coding/skills/create-skill/SKILL.md) |
-| Trace requirements, planning, and delivery | [Workflow flow](architecture.md#requirements-to-delivery), [Codex Goal guide](codex-goals.md) | [write-requirements](../ai/plugins/coding/skills/write-requirements/SKILL.md), [prepare-implementation](../ai/plugins/coding/skills/prepare-implementation/SKILL.md) |
-| Diagnose Ralph or adjust its supervisor | [Ralph recovery](ralph-recovery.md) | [Runner](../bin/ralph), [native executor](../ai/opencode/agents/ralph.md), [control contract](../ai/opencode/agents/ralph.md#ralph-runner-control) |
+| Trace requirements, planning, and delivery | [Workflow flow](architecture.md#requirements-to-delivery), [Agent workflow guide](agent-workflows.md) | [write-requirements](../ai/plugins/coding/skills/write-requirements/SKILL.md), [prepare-implementation](../ai/plugins/coding/skills/prepare-implementation/SKILL.md) |
+| Review a staged story | [Agent workflows](agent-workflows.md) | [review-story](../ai/plugins/coding/skills/review-story/SKILL.md), [reviewer](../ai/codex/agents/reviewer.toml) |
 | Retire installed assets or remove backups | [Removal and migration guide](remove-old-ai-files.md), [README cleanup](../README.md#removing-backup-files) | [Retirement logic](../scripts/ai_retirement.py), [backup cleanup](../scripts/clean-install-backups.py) |
 | Work on media/document helpers or local models | [Document verification](document-skill-verification.md), [Bonsai setup](local-bonsai.md), [audio setup](../ai/plugins/producing/skills/create-audio/references/local-audio.md) | [Producing](../ai/plugins/producing/skills/), [researching](../ai/plugins/researching/skills/), [model shortcut](../aliases/.aliases) |
 
@@ -46,6 +47,6 @@ No credentials, personal environment files, legacy execution journals, external
 services, or installed plugin caches were inspected for this map. No application
 tests, installers, models, or services were run as part of mapping.
 
-Ralph owns serial lifecycle/review rules in its native role files; run-agent-team
-owns the harness-agnostic team counterparts. Only [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md)
-shares executable archival functionality. Planning remains independent.
+run-agent-team owns team delivery; review-story supplies the generic reviewer
+contract. [archive-run](../ai/plugins/coding/skills/archive-run/SKILL.md) owns
+executable archival functionality. Planning remains independent.

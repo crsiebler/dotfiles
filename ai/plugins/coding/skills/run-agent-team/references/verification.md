@@ -11,7 +11,7 @@ unknown telemetry. Never report a fixture's expected result as a live result.
 Only after scoped authorization for model use, disposable worktree setup, checks,
 fixture story commits and archival:
 1. Verify activated skill/role discovery in a fresh task in the selected harness. Preflight exact
-   worker/model controls and required story-reviewer selection, same-session review
+   worker/model controls and required reviewer selection, same-session review
    follow-up, current main session, model evidence/unknowns and capacity. No global
    changes during the smoke.
 2. Use a project-local disposable Git repository with clean prepared integration
@@ -19,7 +19,7 @@ fixture story commits and archival:
    file-format adapters with focused tests, and a dependent integration story.
 3. Use the current main session to dispatch two workers directly through supported
    native controls, with preferred models or recorded fallbacks under
-   runtime-selection.md, without reading or invoking multi-agent-coordinator.
+   runtime-selection.md, without reading or invoking planner.
    Record returned role/session IDs, selection evidence,
    bases, paths/private outputs and actual start/finish events. Dispatch both
    before waiting; separately require observed active overlap to pass this smoke.
@@ -65,12 +65,15 @@ Test unavailable worker/reviewer controls, unavailable preferred model controls,
 unknown main-session telemetry, fixed reviewer pins, explicit user model
 constraints, unclear ownership, stale bases, capacity pressure, uncertain spawn, review blockers and
 archival failures with controlled fixtures/recorded transcripts. The main thread
-retains dispatch, Git, merging and trackers throughout. Keep exact native review
-where required. Do not perform unapproved live retries or claim a custom role was
-invoked from an ordinary worker's label. Unknown main model plus a Luna-pinned
-native story-reviewer should proceed when the other gates pass and no explicit
-user model constraint conflicts. A missing exact reviewer or an unsatisfied
-explicit model requirement must still block the affected path. Preserve a valid
+retains dispatch, Git, merging and trackers throughout. Keep independent review
+where required using [reviewer binding](story-execution.md#reviewer-binding).
+Test both native-role and contract-supplied packets. Do not perform unapproved
+live retries or claim a custom native role was loaded from an ordinary agent's label. Unknown main model plus a Luna-pinned
+native reviewer should proceed when the other gates pass and no explicit
+user model constraint conflicts. Missing independent delegation, required contracts/session controls, an
+unpreservable role restriction or an unsatisfied explicit model/native-role
+requirement must still block the affected path. A missing role selector alone
+should use contract-supplied binding without asking for an exception. Preserve a valid
 passing review and pending commit when reconciling a model-policy-only stall;
 do not consume another review pass merely because the preference policy changed.
 
@@ -82,10 +85,11 @@ the coding plugin and any separately requested role/runtime changes. Restart and
 verify unique discovery in a fresh task. Respect installed worker/reviewer pins;
 changing them is unnecessary for preference fallback. No cache deletion or
 automatic installation.
-A runtime lacking required native specialist/reviewer selection cannot prove their
-invocation; no custom coordinator capability is needed. Missing required gates
-block this smoke rather than permit a generic substitute. Check the actual runtime
-on every execution attempt.
+A runtime without a custom-role selector can use contract-supplied binding,
+provided independent review and all required constraints are supported. Verify
+full role/protocol delivery and the actual same-session mapping; do not claim
+native custom-role selection. Missing required gates still block this smoke.
+Check the actual runtime on every execution attempt.
 
 Verify takeover from an older run waits for its quiescent dispatcher and reconciles
 every live worker/reviewer ID and consumed pass. No proxy-spawning or competing

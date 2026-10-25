@@ -8,11 +8,26 @@ description: Implement features, diagnose and fix bugs, or refactor code while p
 Read [requirements](references/requirements.md) before selecting external tools or
 running helpers. Dependency setup is separately authorized.
 
+When the task needs technology-specific guidance, discover the relevant
+apply-*-standards skill for the actual project stack and load only matching
+references. MCP work uses create-mcp-server. These supply knowledge within this
+workflow's scope; they do not require specialist agents or expand permissions.
+
 Establish the requested outcome and authority before edits or commands. Read
 applicable project instructions, relevant code, callers and tests, and existing
 changes. Preserve user work. Identify required behavior, compatibility, errors,
 side effects and material unknowns; do not silently drop requirements to simplify
 the solution. Use supplied context first and inspect only affected contracts.
+
+For implementation of an approved plan, check its execution-readiness record
+before implementation edits. All applicable approval gates and manual prerequisites
+must be resolved for unattended launch; a blocked record is not an executable
+handoff. Verify the recorded authority and capability evidence against the current
+scope/environment, reusing unchanged grants. For a legacy plan without a record,
+assess the required gates before starting without regenerating the plan or invoking
+a planning workflow. Do not defer known human dependencies into implementation.
+New mandatory gates stop affected work; runtime denials remain binding. Direct
+coding requests without a plan do not require creating a plan or readiness tracker.
 
 Select the action and read its bundled reference relative to this loaded skill:
 
@@ -64,8 +79,23 @@ Inspect the final diff for scope and compatibility. Report the actual change,
 causal or equivalence evidence, commands/results, actual test order and remaining
 limitations. A passing test establishes only the behavior it exercises.
 
-This method grants no authority to create/switch branches, stage, commit, push,
+An explicit user request to implement an approved plan includes its initial and
+subsequent scoped local commits, unless narrower instructions exclude them. Carry
+that grant through continuation; do not ask for repeated commit approval. Inspect
+and stage only task-owned paths, preserve unrelated work and satisfy applicable
+verification/review gates. Planning alone grants no implementation or commits.
+
+This method itself grants no authority to create/switch branches, stage, commit, push,
 post, install, deploy, migrate or perform other restricted operations. Preserve
 the caller's execution and review gates. Do not start an execution controller,
-create plan/journal/memory state, invoke orchestration, or substitute for a required
-native reviewer. Delegation is never automatic and requires applicable authority.
+create plan/journal/memory state, invoke orchestration, or replace required
+independent review with implementation self-review. Delegation is never automatic
+and requires applicable authority.
+
+For engineering contracts, load [the focused reference](references/engineering-contracts.md) only when relevant.
+
+For diagnosis and preservation, load [the focused reference](references/diagnosis-and-preservation.md) only when relevant.
+
+For builds and dependencies, load [the focused reference](references/builds-and-dependencies.md) only when relevant.
+
+For performance analysis, load [the focused reference](references/performance-analysis.md) only when relevant.

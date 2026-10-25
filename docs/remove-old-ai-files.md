@@ -10,6 +10,17 @@ Run only commands for individually reviewed paths. Do not paste this document as
 a script or delete an entire configuration directory. If an AI agent performs
 cleanup, approve the exact paths before any move, edit, uninstall, or deletion.
 
+## OpenCode V2 legacy settings
+
+After separately authorized V2 installation and verification of `cli.json`,
+review `<OpenCode root>/tui.json`, `tui.jsonc`, and `opencode-notifier.json`.
+These active legacy files are preserved by the installer and `make clean`.
+Retain needed customizations/rollback copies and approve their exact paths before
+removal. The former notifier and V1 image plugin entries disappear when the
+managed `opencode.json` is replaced; do not delete plugin caches manually.
+`make clean` recognizes timestamped backups of `cli.json` and both old JSON
+files, while preserving active configuration. See [V2 checks](opencode-v2.md).
+
 ## 1. Locate your configuration
 
 Save work and quit active OpenCode, Codex, and Ralph sessions. Do not install or
@@ -247,15 +258,16 @@ replacements, review these exact obsolete installed paths under the verified
 Back up each reviewed file outside discovery roots and obtain explicit approval
 before manually removing that exact path. The installer neither migrates nor
 deletes these files and installs no aliases. Do not bulk-delete commands or agents.
-Preserve `$opencode_root/commands/review-pr.md`, `$opencode_root/agents/ralph.md`,
-and `$opencode_root/agents/ralph-reviewer.md`. The Ralph executable, `prd.json`,
-`progress.txt`, and bundled discovery helper `subagents` are not renamed.
+Preserve the active review-pr command and bundled subagents discovery helper.
+Retired runner/agent cleanup follows the exact-path inventory below; project
+plans and historical execution data are not command aliases.
 
 ### Consolidated PowerShell agents
 
-1. Verify an authorized installation of `powershell-expert` in each selected
-   harness before retiring its predecessors. Keep `powershell-ui-architect` and
-   the read-only `powershell-security-hardening` assessment role.
+1. Use the [current role contracts](../ai/plugins/delegating/skills/use-subagents/references/core-roles.md). Verify
+   native execution plus the PowerShell language/UI references, and
+   auditor plus the inspection-only security reference, after authorized
+   installation. Preserve their distinct permission boundaries.
 2. Compare each old installed file with any personal customizations and preserve
    needed copies outside discovery roots. Use the verified roots from step 1.
 3. Obtain explicit approval for each exact path below before manual removal.
@@ -263,12 +275,12 @@ and `$opencode_root/agents/ralph-reviewer.md`. The Ralph executable, `prd.json`,
 
 | Obsolete installed path | Replacement |
 | --- | --- |
-| `$codex_root/agents/powershell-5.1-expert.toml` | `$codex_root/agents/powershell-expert.toml` |
-| `$codex_root/agents/powershell-7-expert.toml` | `$codex_root/agents/powershell-expert.toml` |
-| `$codex_root/agents/powershell-module-architect.toml` | `$codex_root/agents/powershell-expert.toml` |
-| `$opencode_root/agents/powershell-5.1-expert.md` | `$opencode_root/agents/powershell-expert.md` |
-| `$opencode_root/agents/powershell-7-expert.md` | `$opencode_root/agents/powershell-expert.md` |
-| `$opencode_root/agents/powershell-module-architect.md` | `$opencode_root/agents/powershell-expert.md` |
+| `$codex_root/agents/powershell-5.1-expert.toml` | `Native Codex worker + PowerShell skills` |
+| `$codex_root/agents/powershell-7-expert.toml` | `Native Codex worker + PowerShell skills` |
+| `$codex_root/agents/powershell-module-architect.toml` | `Native Codex worker + PowerShell skills` |
+| `$opencode_root/agents/powershell-5.1-expert.md` | `Native OpenCode general/build + PowerShell skills` |
+| `$opencode_root/agents/powershell-7-expert.md` | `Native OpenCode general/build + PowerShell skills` |
+| `$opencode_root/agents/powershell-module-architect.md` | `Native OpenCode general/build + PowerShell skills` |
 
 4. Review project-local registrations separately, restart the selected harness,
    and verify discovery without duplicates. No automatic deletion, global cleanup,
@@ -276,33 +288,15 @@ and `$opencode_root/agents/ralph-reviewer.md`. The Ralph executable, `prd.json`,
 
 ## 4. Review old Codex agents and configuration
 
-These three roles are native OpenCode-only sources with no Codex counterparts.
-Review older Codex copies of:
+sprite-artist is the only current OpenCode-only native role. Inventory obsolete
+generated Codex copies of that role and former runner roles by declared name,
+preserving customizations before any exact-path removal. The retired runner and
+story role are listed in the retirement section below.
 
-```text
-ralph                 ralph-reviewer       sprite-artist
-```
-
-Older generated copies may still exist under `$codex_root/agents` or project
-`.codex/agents`. Check the declared `name`, not only the filename. Back up and
-remove only confirmed obsolete generated definitions, including older
-`godot-sprite-artist` copies. Preserve all three current native sources in
-`ai/opencode/agents/` and their installed OpenCode copies.
-
-Preserve `ad-security-reviewer`, `agent-installer`, `architect-reviewer`,
-`code-reviewer`, `compliance-auditor`, `security-auditor`,
-`powershell-security-hardening`, and `story-reviewer`: they are supported
-native Codex roles with `sandbox_mode = "read-only"` and read-only guidance, not
-cleanup candidates by name. Compare customized copies with `ai/codex/agents/`
-before any approved replacement. Codex receives all 128 TOML sources unchanged;
-there is no exclusions file. See [agent authoring](agent-authoring.md) for source
-ownership and the distinct Codex sandbox, MCP, and OpenCode tool boundaries.
-
-The new `story-reviewer.toml` adds a role; it retires no installed paths. Preserve
-its generically generated OpenCode `story-reviewer.md` counterpart too: the 128
-generated agents plus three native sources total 131 OpenCode agents. That
-read/glob/grep-only counterpart does not replace native `ralph-reviewer.md`.
-No additional deletion or migration is needed for this addition.
+Keep the five custom roles: researcher, planner, reviewer, auditor and operator. Auditor retains inspection-only metadata; reviewer supports
+authorized focused checks. OpenCode also retains the minimal sprite-artist
+provider adapter. Source replacement does not automatically remove retired
+installed roles. Follow [core-role activation](#core-role-activation).
 
 Privately inspect user/project `config.toml` and companion profiles for obsolete
 `[agents.<role>]` tables and `config_file` references. Aliases may use different
@@ -312,8 +306,8 @@ only confirmed obsolete registrations in an editor.
 If a previous installation supplied `$codex_root/ralph.config.toml`, review and
 back it up before removing that exact profile. The current installer does not
 install it or scan for old copies. Also remove any explicit selection of the
-`ralph` profile from your launcher; preserve `config.toml`, the Astra profile,
-credentials, and unrelated profiles.
+`ralph` profile from your launcher; preserve `config.toml`, credentials, and
+unrelated profiles.
 
 Also review old Jira/PostgreSQL launchers and associated fields in both harnesses.
 Current `jira` uses Atlassian Rovo v2; `postgresql` uses the built local Node
@@ -377,7 +371,7 @@ sudo rm -- /usr/local/bin/subagents
 ```
 
 Check a symlink's target separately and preserve the target. If another package
-manager owns the executable, use that manager instead. Keep `/usr/local/bin/ralph`.
+manager owns the executable, use that manager instead. Handle the retired runner executable under its separate exact-path cleanup scope.
 The current discovery helper is bundled with the `use-subagents` skill.
 
 ## 7. Remove selected backups
@@ -409,3 +403,46 @@ Follow [current installation](ai-configuration.md), restart the selected harness
 and use a new Codex thread. Verify expected skills and agents are available and
 duplicates are gone. No model invocation, live MCP call, or installation is needed
 merely to inspect the filesystem. Keep private backups until verification is done.
+
+## Retired runner and story role
+
+Source retirement removes the runner, its two native agents, recovery command and
+skill, and dedicated story-reviewer role. The review-story skill now supplies the
+contract to reviewer, which permits authorized focused verification. Coordinate coding plugin
+refresh with native role/policy installation; plugin refresh alone leaves stale
+no-test instructions. Installation remains separately authorized.
+
+Before deleting installed remnants, inventory the actual configured roots,
+preserve customizations and obtain exact-path removal authority. Candidate paths:
+the installed ralph executable (historically /usr/local/bin/ralph), OpenCode
+agents/ralph.md, agents/ralph-reviewer.md, agents/story-reviewer.md,
+commands/recover-ralph.md, Codex agents/story-reviewer.toml, and discovered
+recover-ralph skill copies. Never delete plugin caches manually. Managed skill
+retirement uses installer inventories; native role and executable cleanup is not
+automatic. Keep user-created plans, historical archives, stop/outcome files and
+Git metadata controls unless separately reconciled and authorized. Do not kill or
+restart a still-running process as a cleanup shortcut.
+
+Verify unique review-story discovery, callable generic reviewer and its
+runtime permissions after restart in a fresh session. Plain session invocation
+must work without /goal. Test inspection-only and scoped execute modes in an
+authorized disposable project before claiming installed behavior.
+
+## Core-role activation
+
+Source changes leave installed configuration unchanged. Inspect the actual
+installed catalog against current source roles using validated roots. Expand
+exact paths and compare content before proposing deletion; a name is not proof
+of ownership. Inspect project registrations separately.
+
+Coordinate all five affected plugin refreshes/copies and five native role files
+under installation authority. Preserve customizations, changed-copy backups,
+retirement archives and coherent rollback sources. Keep the sprite-artist
+adapter and its ask permissions. Restart and verify unique skills and callable
+core roles in a fresh session; exercise reviewer continuation and auditor limits
+only within a separately scoped validation task.
+
+Remove obsolete installed files only under exact-path authorization. Do not
+edit inventories, manually delete caches, replace whole roots, create aliases or
+rewrite historical review evidence. Old code-reviewer provenance remains valid
+for archived enrolled runs; new execution requires reviewer.

@@ -21,11 +21,13 @@ Constrain JQL to the approved project, ticket, and reporting interval; escape
 values as data. Do not read unrelated issues to fill a narrative.
 
 Before a write, show the exact exposed tool name, site and issue, complete body
-in the format required by that schema, and populated payload. Require explicit
-approval after preview. If the API requires structured document content, preview
-both readable text and the actual structure; do not assume Markdown, plain text,
-or ADF is accepted. Re-preview any change. Read back ambiguous outcomes before
-retrying. Return actual IDs/URLs; do not fabricate a link from an unknown base.
+in the format required by that schema, and populated payload. Reuse explicit
+posting approval for the same target, content, and effect; otherwise obtain it
+after preview. If the API requires structured document content, show both readable
+text and the actual structure; do not assume Markdown, plain text, or ADF is
+accepted. Re-preview material changes; unchanged approval survives continuation
+and mechanical encoding. Read back ambiguous outcomes before retrying. Return
+actual IDs/URLs; do not fabricate a link from an unknown base.
 
 If no suitable operation exists, return a draft and state the unsupported
 capability. Asana is unsupported here

@@ -10,7 +10,7 @@ there is no cycle. Kahn's algorithm: compute each node's prerequisite count, emi
 zero-count nodes by priority then document order, remove their outgoing edges and
 repeat. If un-emitted nodes remain, report the exact cycle/unresolved prerequisites
 and keep the plan a draft. Use the same validated edges in Markdown Depends on or
-Ralph's existing notes/priorities; add no JSON keys or second tracker.
+the selected plan's requirement references and priorities; add no second tracker.
 
 This computes a valid planning order. It does not dispatch agents, declare a
 prerequisite delivered, allocate worktrees or choose runtime models. Preserve

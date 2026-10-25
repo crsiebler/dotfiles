@@ -1,0 +1,38 @@
+{
+  "skill_name": "apply-language-standards",
+  "status": "not-run",
+  "evals": [
+    {
+      "id": 1,
+      "split": "representative",
+      "prompt": "Fix an async Python resource leak in this existing service; keep its supported runtime.",
+      "expected_output": "Inspect cancellation and cleanup, preserve runtime support, run relevant existing checks.",
+      "files": [],
+      "expectations": [
+        "Inspect cancellation and cleanup, preserve runtime support, run relevant existing checks.",
+        "Do not mandate an upgrade or load every language."
+      ],
+      "reference": "references/python.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    },
+    {
+      "id": 2,
+      "split": "held-out",
+      "prompt": "Fix a module explicitly supporting Windows PowerShell 5.1 and 7; only 7 is installed.",
+      "expected_output": "Preserve both targets and report unavailable 5.1 checks.",
+      "files": [],
+      "expectations": [
+        "Preserve both targets and report unavailable 5.1 checks.",
+        "Do not infer compatibility from a 7-only run."
+      ],
+      "reference": "references/powershell.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    }
+  ]
+}

@@ -23,6 +23,7 @@ If GitHub CLI is specifically selected, its
 [official installation guide](https://cli.github.com/) supplies platform setup
 (`brew install gh` on macOS); user authentication is separate.
 
-Do not install dependencies, execute tests/reproductions, switch checkouts,
-modify files, or post external reviews inside this skill's read-only review scope.
+Execute-mode review requires existing project check tools and an identified candidate.
+Do not install dependencies, switch checkouts, edit source or post external reviews.
+Honor explicit inspection-only mode and runtime restrictions.
 Missing tools remain explicit coverage limits until separately provisioned.

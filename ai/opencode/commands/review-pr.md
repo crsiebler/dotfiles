@@ -1,11 +1,10 @@
 ---
-name: review-pr
-description: Review a GitHub pull request with OpenCode specialist reviewers
+description: Review a GitHub pull request with OpenCode's generic reviewer
 ---
 
 # Review Pull Request
 
-Review a GitHub pull request using OpenCode specialist reviewers and local
+Review a GitHub pull request using OpenCode's generic reviewer and local
 repository context. By default, generate a local review report only. Do not post
 comments or submit a GitHub review unless the user passes `--post` and then
 explicitly confirms the exact payload.
@@ -68,7 +67,7 @@ Commits on the PR branch compared with the base branch:
 
 ## PR Review Standards
 
-Use these standards for all specialist PR review passes and for the consolidated
+Use these standards for all PR review passes and for the consolidated
 report. These standards are self-contained in this command; do not read external
 review standards files.
 
@@ -113,7 +112,7 @@ Return findings as structured items with these fields:
   "start_side": "RIGHT|LEFT|null",
   "end_line": 123,
   "end_side": "RIGHT|LEFT|null",
-  "source": "code-reviewer|qa-expert|security-engineer|security-auditor|documentation-engineer|compliance-auditor|ui-designer|ux-researcher|summary"
+  "source": "reviewer|auditor|summary"
 }
 ```
 
@@ -165,132 +164,55 @@ mapped to a valid diff-visible line. The summary should include:
 - If GitHub context is missing or ambiguous, ask for the PR number or URL rather
   than guessing.
 
-### Specialist Reviewer Guidance
+## Review delegation
 
-- `code-reviewer`: Focus on correctness, maintainability, error handling, API
-  contracts, concurrency, data flow, and project conventions. Prioritize defects
-  that can be shown from the diff and local code context.
-- `qa-expert`: Focus on missing or weak tests, brittle assertions, fixture gaps,
-  regression risk, and validation coverage. Only report missing tests when the
-  behavior is important enough to justify a required change.
-- `security-engineer`: Use when the diff touches secure coding risk, subprocess
-  or shell execution, filesystem mutation, network calls, secrets or environment
-  variables, authentication, authorization, permissions, encryption, dependency
-  changes, deserialization, parsing untrusted input, logging sensitive values,
-  or deployment/configuration surfaces. Focus on implementation-level security
-  defects. Do not use for local-only scripts, tests, docs, formatting, or
-  refactors unless one of these risk surfaces is present.
-- `security-auditor`: Use only for deeper security, compliance, or policy review
-  when the diff touches authentication, authorization, secrets, credential
-  handling, dependency or supply-chain risk, deployment, regulated data,
-  auditability, trust boundaries, or externally reachable behavior. Do not run
-  both security reviewers unless the change is explicitly security-sensitive or
-  high-risk.
-- `documentation-engineer`: Use when the diff changes user-facing behavior,
-  commands, APIs, environment variables, configuration, installation, or
-  operational behavior. Focus on stale, missing, or misleading docs that would
-  affect users or operators.
-- `compliance-auditor`: Use when the diff touches PII, PHI, financial data,
-  retention, consent, audit trails, licensing, accessibility, or regulated
-  workflows. Focus on compliance obligations, evidence, policy alignment, and
-  merge-blocking gaps.
-- `ui-designer`: Use when frontend components, pages, layouts, routes,
-  templates, styles, design tokens, icons, images, animations, interaction
-  behavior, accessibility-relevant markup, responsive behavior, or
-  rendering-related frontend dependencies/configuration changed. It must load and
-  use the `verify-interface` skill to verify affected flows for UX quality,
-  accessibility, visual consistency, responsive behavior, interaction clarity,
-  and industry best practices. Do not use for backend-only code, local-only
-  scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
-  rendered UI impact.
-- `ux-researcher`: Use when user flows, task completion paths, navigation,
-  forms, modals, onboarding, dashboards, validation messages, empty/error/loading
-  states, accessibility-affecting behavior, responsive behavior, or user-facing
-  copy changed. It must load and use the `verify-interface` skill to verify the
-  changed frontend experience for UX standards, accessibility, flow consistency,
-  usability heuristics, and industry best practices. Do not use for internal
-  implementation changes that do not alter visible behavior or interaction flow.
+The main session gathers PR context, invokes native OpenCode subagents and
+consolidates their evidence. It owns all dispatch and any authorized posting.
+Review agents do not delegate or write externally. Do not call provider APIs
+directly or simulate a native review pass.
 
-## Specialist Subagent Workflow
+| Role | Activation | Responsibility |
+| --- | --- | --- |
+| `reviewer` | Default: one pass | Assess correctness, regression coverage and the relevant review lenses together; perform authorized focused verification. |
+| `auditor` | Optional: a distinct controls assessment is needed | Inspect policy, security or compliance evidence within an explicitly bounded scope; no tests, browser execution or remediation. |
 
-Run specialist review passes against the gathered PR context before producing
-the consolidated report. OpenCode's subagent system handles the specialist work;
-do not call model provider APIs directly.
+Use `review-code` for the review method and select lenses from actual changed
+behavior. Security defects, testing quality, documentation and accessibility are
+concerns within the same reviewer pass, not reasons to dispatch another role or
+duplicate the reviewer. Load applicable standards skills only for the actual stack.
+An auditor adds value only when a separate control or obligation needs assessment;
+security-sensitive code alone does not require both roles.
 
-Delegation contract:
+For rendered UI changes, the reviewer uses `verify-interface` for affected flows,
+including accessibility and interaction behavior. Use `run-tests` for relevant
+project checks when needed. Honor inspection-only mode: no tests, builds or browser
+flows. In execute mode, supply authorized commands, time/resource limits, the
+candidate revision and worktree, and any existing app/server provenance. Missing
+dependencies or a running app are verification gaps, not installation or service
+startup authority. Do not claim rendered verification from source inspection.
 
-- The primary agent gathers PR context, selects specialists, and consolidates
-  findings.
-- Specialist passes must be invoked through OpenCode's Task/subagent mechanism
-  when available.
-- If a required specialist is unavailable, disclose that the pass was skipped or
-  simulated and lower confidence in the residual risks.
-- Do not silently replace specialist review with generic primary-agent analysis.
+For each invoked role, provide PR metadata, changed files, diff, commits,
+repository instructions, selected concerns, the candidate identity and the shared
+finding schema in this command. Require candidate preservation and
+actual check results, including failed or unavailable checks. Do not run tests
+against a mixed candidate and attribute them to the PR head. Recheck identity and
+tracked state after any execution. Ordinary PR review does not require story
+packets, execution journals or story-review cycles.
 
-Always run these default specialist passes:
-- `code-reviewer`: correctness, maintainability, error handling, API contracts,
-  data flow, and project conventions.
-- `qa-expert`: missing or weak tests, brittle assertions, fixture gaps,
-  regression risk, and validation coverage.
+Verify that the intended native role is callable. If required independent review
+is unavailable, report the missing pass and its impact; do not label the main
+session's analysis as independent review or claim the gate passed. An invoked role
+with no actionable findings returns an empty findings list plus residual risks
+and checks not run.
 
-Conditionally add these specialist passes when the changed file list or diff
-content indicates their domain is relevant:
-- `security-engineer`: include when files or diff content touch secure coding
-  risk, subprocess or shell execution, filesystem mutation, network calls,
-  secrets or environment variables, authentication, authorization, permissions,
-  encryption, dependency changes, deserialization, parsing untrusted input,
-  logging sensitive values, or deployment/configuration surfaces. Do not run for
-  local-only scripts, tests, docs, formatting, or refactors unless one of these
-  risk surfaces is present.
-- `security-auditor`: include only for deeper security, compliance, or policy
-  review when files or diff content touch authentication, authorization, secrets,
-  credential handling, dependency or supply-chain risk, deployment, regulated
-  data, auditability, trust boundaries, or externally reachable behavior. Do not
-  run both `security-engineer` and `security-auditor` unless the change is
-  explicitly security-sensitive or high-risk.
-- `documentation-engineer`: include when files or diff content touch
-  user-facing behavior, commands, APIs, environment variables, configuration,
-  installation, or operational behavior.
-- `compliance-auditor`: include when files or diff content touch PII, PHI,
-  financial data, retention, consent, audit trails, licensing, accessibility,
-  or regulated workflows.
-- `ui-designer`: include when frontend components, pages, layouts, routes,
-  templates, styles, design tokens, icons, images, animations, interaction
-  behavior, accessibility-relevant markup, responsive behavior, or
-  rendering-related frontend dependencies/configuration changed. It must load and
-  use the `verify-interface` skill to verify affected flows for UX quality,
-  accessibility, visual consistency, responsive behavior, interaction clarity,
-  and industry best practices. Do not run for backend-only code, local-only
-  scripts, CLIs, tests, docs, comments, logging, formatting, or refactors with no
-  rendered UI impact.
-- `ux-researcher`: include when user flows, task completion paths, navigation,
-  forms, modals, onboarding, dashboards, validation messages, empty/error/loading
-  states, accessibility-affecting behavior, responsive behavior, or user-facing
-  copy changed. It must load and use the `verify-interface` skill to verify the
-  changed frontend experience for UX standards, accessibility, flow consistency,
-  usability heuristics, and industry best practices. Do not run for internal
-  implementation changes that do not alter visible behavior or interaction flow.
+Consolidate results before writing the final report:
 
-Specialist selection must be strict. For low-risk local code changes, run only
-`code-reviewer` and `qa-expert`. Optional specialists should be added only when
-their trigger conditions are clearly present in the changed files or diff.
-
-For each specialist pass, provide the PR metadata, changed file summary, diff,
-commits, repository instructions, and PR review standards. Require every
-specialist to return findings using the shared finding schema from the standards.
-If a specialist has no actionable findings, it should explicitly return
-an empty findings list and note residual risks or checks not run.
-
-Merge specialist results before writing the final report:
-- Deduplicate findings that describe the same root cause, even when different
-  specialists report them with different wording or adjacent line references.
-- Keep the highest severity among duplicates and preserve the clearest body.
-- Combine useful remediation details from duplicate findings without repeating
-  the same issue in multiple report entries.
-- Preserve the `source` field for the primary specialist finding, or list
-  multiple sources in the body when that context is important.
-- Discard generic, praise-only, speculative, or unchanged-code findings that do
-  not satisfy the PR review standards' noise-reduction rules.
+- Deduplicate root causes, preserving the best-supported severity and clearest
+  evidence; do not raise severity solely because two reviewers repeated a claim.
+- Combine useful remediation details without repeating the same issue.
+- Preserve the finding's actual `source`; identify supporting sources when useful.
+- Discard speculative, generic or unchanged-code findings outside the requested
+  scope under the review standards' noise-reduction rules.
 
 ## Inline Comment Mapping
 
@@ -368,29 +290,21 @@ The API payload must include the review `body`, `event`, and the validated
 `comments` array from the inline payload preview. Do not include malformed,
 unmappable, or summary-only findings in `comments`.
 
-After showing the posting preview, ask the user to confirm before running any
-GitHub write command. Accepted confirmation values are exactly:
+After showing the posting preview, obtain explicit, unambiguous natural-language
+confirmation before running any GitHub write command. No magic words are required.
+Carry approval for the unchanged preview through continuation without asking again.
+A negative response cancels posting; an absent response leaves it pending and an
+ambiguous response requires clarification. Keep the local review report available.
 
-- `yes`
-- `y`
-- `confirm`
-- `post it`
-- `go ahead`
-
-Treat all other responses, including empty, ambiguous, or negative responses,
-as cancellation. On cancellation, report that nothing was posted and leave the
-local review report available in the conversation.
-
-Only after receiving an accepted confirmation value may you run the previewed
-`gh pr review` command or `gh api` request. Do not post if the command or API
-payload has changed since the user confirmed; show the updated preview and ask
-again.
+Only then run the previewed `gh pr review` command or `gh api` request. A changed
+target, review action, or content requires a new preview and approval; mechanical
+payload encoding alone does not invalidate approval for the same operation.
 
 ## Review Instructions
 
 Use the PR review standards in this command as the source of truth for review
 objectives, severity levels, finding schema, noise-reduction rules, summary
-versus inline comment rules, posting safety requirements, and specialist
+versus inline comment rules, posting safety requirements, and review
 reviewer guidance.
 
 Produce a consolidated local review report using this schema:
@@ -399,7 +313,7 @@ Produce a consolidated local review report using this schema:
 ## PR Review Report
 - PR: <title> - <url>
 - Branches: <base> <- <head>
-- Specialist passes: <agents used and why>
+- Review passes: <roles invoked, selected concerns and actual verification>
 - Findings: <ordered by severity, with file/line when valid>
 - Summary-only findings: <findings not safely mappable inline>
 - Inline payload preview: <valid GitHub review comment fields only>
@@ -408,4 +322,5 @@ Produce a consolidated local review report using this schema:
 ```
 
 Do not post the review to GitHub unless `--post` is present and the user gives
-one of the accepted confirmation values after seeing the exact payload.
+unambiguous confirmation after seeing the exact payload. Carry that unchanged
+approval forward; do not require another confirmation on continuation.

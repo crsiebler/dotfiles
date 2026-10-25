@@ -25,11 +25,11 @@
     },
     {
       "id": 3,
-      "prompt": "Convert this approved PRD for OpenCode Ralph.",
-      "expected_output": "Generate valid plan.json using unchanged keys and ordered dependency notes.",
+      "prompt": "Convert this approved PRD for OpenCode.",
+      "expected_output": "Generate PLAN.md with explicit dependency edges and preserved acceptance.",
       "files": [],
       "expectations": [
-        "No Ralph invocation",
+        "No execution or runner invocation",
         "No setup commits or branches",
         "Recommended known agents without runtime pins"
       ]

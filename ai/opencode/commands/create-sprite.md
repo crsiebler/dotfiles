@@ -1,5 +1,4 @@
 ---
-name: create-sprite
 description: Generate pixel-art sprites and optionally integrate approved assets
 agent: sprite-artist
 ---
@@ -10,8 +9,9 @@ $ARGUMENTS
 
 Inspect the active workspace before choosing paths, frame dimensions, animation
 names, or integration targets. Present the asset contract and planned
-subscription-backed image calls and require explicit approval before invoking
-the exposed OpenCode `gpt_imagegen` provider. Use only
+image API calls and their billing. Carry existing batch authority forward;
+ask only for missing generation/spending scope before invoking the exposed
+OpenCode `gpt_imagegen` provider. Use only
 project-relative image paths and inspect each result. Load the skill's Godot
 reference only for Godot requests or relevant Godot project context; validate
 any Godot resource or scene changes with the installed `godot` command.

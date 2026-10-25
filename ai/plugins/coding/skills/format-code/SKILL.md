@@ -16,7 +16,10 @@ files; other languages use their verified project configuration without forcing
 these adapters. Repository commands and installed versions are authoritative.
 Resolve bundled references relative to this loaded skill, not a sibling skill.
 
-Read-only review and planning do not authorize formatting or lint execution.
+Planning and explicit inspection-only review do not authorize command execution.
+A reviewer with verification authority may run authorized check-only lint, but
+must not format or auto-fix the candidate. Formatting requires edit scope; carry
+existing scoped authority forward without another prompt.
 This helper stays within the caller's scope; it does not create execution state,
 start implementation/orchestration, or replace required review gates. If no tool
 is configured or available, report the limitation rather than choose/install one.

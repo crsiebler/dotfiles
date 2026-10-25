@@ -4,7 +4,7 @@
 Supported portable fields: name, description, developer_instructions, model,
 model_provider (OpenCode requires openai and an explicit model),
 model_reasoning_effort. OpenCode maps
-model to openai/<model> and effort to options.reasoningEffort; omitted values
+model to openai/<model>#<effort> when effort is explicit; omitted values
 inherit runtime defaults. Provider-qualified native model IDs are rejected.
 
 Native sandbox_mode="read-only" maps to an OpenCode deny-by-default read/glob/grep
@@ -16,7 +16,7 @@ closed for both targets; extend validation deliberately when adding a documented
 native option.
 References: github.com/openai/codex/blob/main/codex-rs/agent-roles/src/
 agent_role_config.rs (role metadata plus flattened ConfigToml),
-developers.openai.com/codex/config-reference/, opencode.ai/docs/agents/.
+developers.openai.com/codex/config-reference/, opencode.ai/v2/docs/agents/.
 
 Every TOML source is copied to Codex or rendered for OpenCode. OpenCode-native
 Markdown is owned separately and copied by the installer, not this renderer.
@@ -119,11 +119,17 @@ def render_opencode(data):
         raise ValueError(f"{data['name']}: model_provider requires an explicit model for OpenCode")
     meta = {"description": data["description"], "mode": "subagent"}
     if data.get("sandbox_mode") == "read-only":
-        meta["permission"] = {"*": "deny", "read": "allow", "glob": "allow", "grep": "allow"}
+        meta["permissions"] = [
+            {"action": action, "resource": "*", "effect": effect}
+            for action, effect in (("*", "deny"), ("read", "allow"),
+                                   ("glob", "allow"), ("grep", "allow"))
+        ]
     if "model" in data:
         meta["model"] = "openai/" + data["model"]
     if "model_reasoning_effort" in data:
-        meta["options"] = {"reasoningEffort": data["model_reasoning_effort"]}
+        if "model" not in data:
+            raise ValueError(f"{data['name']}: model_reasoning_effort requires an explicit model for OpenCode V2")
+        meta["model"] += "#" + data["model_reasoning_effort"]
     frontmatter = "".join(f"{key}: {yaml_json(value)}\n"
                           for key, value in meta.items())
     return ("---\n" + frontmatter + "---\n" + data["developer_instructions"]).encode("utf-8")

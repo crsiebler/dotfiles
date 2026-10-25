@@ -1,27 +1,31 @@
-# Codex CLI entry (conditional)
+# Codex session entry
 
-Read this reference only when trusted runtime context identifies Codex CLI and
-the user wants its goal/skill entry commands. Other harnesses use their actual
-skill-discovery and task-entry mechanisms; these commands are not portable.
-The workflow and capability checks belong to team-execution.md, not this adapter.
+Invoke the discovered run-agent-team skill in the current main session with the
+approved plan and actual execution scope. A normal request is sufficient; /goal
+is optional. The command alone does not select this skill or grant authority;
+a user-supplied objective to implement an approved plan authorizes its initial
+and subsequent scoped local commits without a separate commit confirmation.
 
+Example after selecting the skill:
 
-Select run-agent-team using the client's skill picker (`/skills` in Codex CLI),
-or explicitly name `$run-agent-team` in a normal request when discovered under
-that name. Use the picker if plugin qualification or duplicate names are unclear.
-`/goal <objective>` attaches an objective to the active chat; it does not by itself
-select this skill, create an approved plan, allocate worktrees or authorize writes.
-Select the skill, then set a goal naming the exact approved plan and existing
-execution scope. Do not assume combined slash-command/skill parsing.
+> Execute the approved PLAN.md using run-agent-team. This main session owns
+> orchestration. Target up to four concurrent implementation workers within actual
+> runtime/resource capacity, reserving review capacity for reviewer with the
+> complete review-story contract. Preserve pending work and report missing
+> worktree authority or capability.
 
-For example, after selecting run-agent-team in the current main session:
+For unattended execution, use the approved readiness record and
+[autonomous execution scope](story-execution.md#autonomous-execution-scope).
+Complete scoped automated checks and bounded agent review without adding manual
+QA, human confirmation of test results, or release gates. Required human or
+runtime approval conflicts must be resolved before affected implementation, not
+deferred to final delivery. This does not require a separate background runner.
 
-```text
-/goal Execute the approved PLAN.md using run-agent-team. This main session owns orchestration. Target up to four concurrent implementation workers within actual runtime/resource capacity, reserving capacity for the exact native story-reviewer within the skill's budgets. Apply the skill's model preferences and supported fallbacks. Follow the already-approved execution, worktree and local-commit scope. Preserve pending work and report any missing authority or native capability.
-```
-
-This example is not an execution grant. Actual authorization must identify the
-integration branch/root, allowed task-worktree lifecycle, local story commits and
-closeout scope. No push, post, install or deployment follows implicitly.
-Official syntax: [developer commands](https://learn.chatgpt.com/docs/developer-commands?surface=cli)
-and [explicit skill invocation](https://learn.chatgpt.com/docs/build-skills).
+This example is not an execution grant. Actual scope identifies the integration
+branch/root and task-worktree lifecycle. When the user actually requests this
+plan implementation, its scoped initial, story and local closeout commits are
+authorized; narrower no-commit instructions override. Archival/removal still
+needs its applicable scope. No push, post,
+installation or deployment follows implicitly. The main session owns dispatch,
+integration and canonical state. Use actual native controls; do not create a
+controller or emulate a goal lifecycle to continue an ordinary request.

@@ -1,0 +1,35 @@
+{
+  "skill_name": "apply-database-standards",
+  "status": "not-run",
+  "evals": [
+    {
+      "id": 1,
+      "split": "representative",
+      "prompt": "Diagnose a slow PostgreSQL query from supplied EXPLAIN output only.",
+      "expected_output": "Use supplied query plan and preserve semantics; propose evidence-based checks.",
+      "files": [],
+      "expectations": [
+        "Use supplied query plan and preserve semantics; propose evidence-based checks.",
+        "Do not connect to a database, execute SQL or assert measured gains."
+      ],
+      "reference": "references/postgresql.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    },
+    {
+      "id": 2,
+      "split": "held-out",
+      "prompt": "Prepare a PostgreSQL recovery procedure from supplied backup records.",
+      "expected_output": "State assumptions, recovery prerequisites and a verification plan.",
+      "files": [],
+      "expectations": [
+        "State assumptions, recovery prerequisites and a verification plan.",
+        "Do not restore or access production without scope."
+      ],
+      "role": "operator",
+      "reference": "references/postgresql.md"
+    }
+  ]
+}

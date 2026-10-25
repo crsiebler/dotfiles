@@ -35,9 +35,12 @@ gh pr create --base "<verified-base>" --head "<verified-head>" --title "<title>"
 ```
 
 This is a preview template, not authorization. Show the populated command and
-contents and obtain explicit approval before the external write. The preview
-may cover one bounded sequence of commit, push and PR creation. Do not request
-the same approval again while the approved targets/content remain valid.
+contents and check existing authority before the external write. An explicit
+request to push the scoped branch or create its PR authorizes that action within
+the identified scope; a request merely to prepare shipping does not. Ask only
+for missing authority. One grant may cover a bounded sequence of commit, push
+and PR creation. Do not request the same approval again while the approved
+targets/content remain valid; obtain scope for material changes.
 Ambiguous responses do not grant writes. Pushes require the exact approved
 remote and branch/refspec, without force or main/master delivery. Verify the
 remote branch after pushing and check for an existing matching PR before creation
@@ -51,7 +54,7 @@ inspect that commit along with the implementation commits. The archive helper
 does not stage or commit. If archive changes are still uncommitted, explain that
 state and include only an explicitly authorized closeout commit in the shipping
 preview; never reset them or silently ignore them. Stage exact returned artifact
-removals and archive files, excluding archive/.archive.lock and Ralph controls.
+removals and archive files, excluding Git metadata locks and unrelated files.
 Preserve unrelated unstaged/staged work. Do not require a PR before local run
 archival, and do not claim a created PR has been merged or deployed.
 

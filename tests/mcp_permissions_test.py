@@ -53,8 +53,8 @@ class MCPPermissionsTest(unittest.TestCase):
 
     def permission(self, server, tool):
         name = f'{server}_{tool}'
-        matches = [action for pattern, action in self.opencode['permission'].items()
-                   if fnmatch.fnmatchcase(name, pattern)]
+        matches = [rule['effect'] for rule in self.opencode['permissions']
+                   if fnmatch.fnmatchcase(name, rule['action']) and rule['resource'] == '*']
         self.assertTrue(matches, f'{name}: missing explicit permission')
         return matches[-1]
 
@@ -67,8 +67,9 @@ class MCPPermissionsTest(unittest.TestCase):
                             if settings.get('approval_mode') == 'approve'}
                 self.assertEqual(approved, names)
                 oc = {name.removeprefix(server + '_')
-                      for name, value in self.opencode['permission'].items()
-                      if name.startswith(server + '_') and value == 'allow'}
+                      for rule in self.opencode['permissions']
+                      for name in [rule['action']]
+                      if name.startswith(server + '_') and rule['effect'] == 'allow'}
                 self.assertEqual(oc, names)
                 for name in names:
                     self.assertEqual(self.permission(server, name), 'allow')
@@ -99,7 +100,7 @@ class MCPPermissionsTest(unittest.TestCase):
                              READ_TOOLS[server])
         for server in ('chrome', 'playwright', 'jam', 'elevenlabs'):
             self.assertNotIn(server, self.codex['mcp_servers'])
-            self.assertIs(self.opencode['mcp'][server]['enabled'], False)
+            self.assertIs(self.opencode['mcp']['servers'][server]['disabled'], True)
             self.assertEqual(self.permission(server, 'any_tool'),
                              'ask' if server == 'elevenlabs' else 'allow')
         self.assertEqual(self.permission('docker', 'any_tool'), 'ask')

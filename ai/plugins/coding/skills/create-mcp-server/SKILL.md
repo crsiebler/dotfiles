@@ -62,6 +62,10 @@ unknowns; do not invent verified SDK APIs or runnable integration results.
   [task evaluations](references/evaluation.md). Distinguish deterministic contract
   tests, real agent runs, and manual reviews; never manufacture answers or metrics.
 
+For broader client/session/resource work, load the conditional
+[MCP domain reference](references/mcp-domain.md), supplementing the design and
+verification procedure above.
+
 ## Deliver
 
 Provide the source, relevant tests, setup/permissions documentation, and a client

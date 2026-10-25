@@ -1,5 +1,11 @@
 # Coding workflow ownership and evaluation baseline
 
+Historical record: the runner and dedicated story role described below were
+retired on 2026-10-24. Their previous measurements are retained as recorded, not
+claims about the replacement. Current behavior and validation are in
+[story review verification](story-review-verification.md).
+
+
 US-001 captures the source before instruction replacement. It specifies intended
 ownership and evaluations; it does not establish model performance or activation.
 Requirements: [PRD](../tasks/prd-coding-workflows-and-review-architecture.md).

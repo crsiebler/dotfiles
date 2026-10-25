@@ -18,7 +18,12 @@ class CodingWorkflowContractTest(unittest.TestCase):
         expected = {'develop-code', 'review-code', 'resolve-review-feedback',
                     'format-code', 'run-tests', 'verify-interface', 'manage-changes',
                     'write-requirements', 'prepare-implementation', 'run-agent-team', 'archive-run', 'map-codebase',
-                    'recover-ralph', 'create-skill', 'create-mcp-server'}
+                    'review-story', 'create-skill', 'create-mcp-server',
+                    'apply-language-standards', 'apply-web-standards',
+                    'apply-app-standards', 'apply-infrastructure-standards',
+                    'apply-database-standards', 'apply-integration-standards',
+                    'apply-blockchain-standards', 'apply-ai-standards',
+                    'operate-systems', 'assess-controls'}
         actual = {path.parent.name for path in SKILLS.glob('*/SKILL.md')}
         self.assertEqual(actual, expected)
         for path in SKILLS.glob('*/SKILL.md'):

@@ -1,0 +1,38 @@
+{
+  "skill_name": "apply-app-standards",
+  "status": "not-run",
+  "evals": [
+    {
+      "id": 1,
+      "split": "representative",
+      "prompt": "Fix an Electron IPC handler while preserving the existing security configuration.",
+      "expected_output": "Inspect process boundaries, sender validation and lifecycle; verify relevant behavior.",
+      "files": [],
+      "expectations": [
+        "Inspect process boundaries, sender validation and lifecycle; verify relevant behavior.",
+        "Do not disable sandboxing or context isolation."
+      ],
+      "reference": "references/electron.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    },
+    {
+      "id": 2,
+      "split": "held-out",
+      "prompt": "Assess freezing PowerShell GUI event handlers without an interactive desktop.",
+      "expected_output": "Inspect lifecycle and thread affinity; report missing visual checks.",
+      "files": [],
+      "expectations": [
+        "Inspect lifecycle and thread affinity; report missing visual checks.",
+        "Do not infer 5.1 from a Windows GUI or claim UI validation."
+      ],
+      "reference": "references/powershell-ui.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    }
+  ]
+}
