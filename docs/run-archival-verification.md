@@ -1,5 +1,11 @@
 # Run archival and workflow verification
 
+Historical record: the runner and dedicated story role described below were
+retired on 2026-10-24. Their previous measurements are retained as recorded, not
+claims about the replacement. Current behavior and validation are in
+[story review verification](story-review-verification.md).
+
+
 Source changes implement deterministic, manifest-selected, flat run archives,
 root progress.md journals, phase/story planning, scoped GitHub shipping, and a
 GitHub issue/Projects assessment adapter. Existing installed skills, historical

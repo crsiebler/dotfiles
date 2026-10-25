@@ -19,8 +19,9 @@ data. Cite locations and redacted shapes, never copy credentials or private data
 into findings. Do not read credential stores to confirm a suspected exposure.
 Report uncertainty about runtime configuration and enforcement explicitly.
 
-Use supplied evidence or source tracing only. This lens does not authorize active
-security tests, exploit execution, auth changes, security-feature disabling,
+Use source tracing, supplied evidence and focused local regression checks under
+the root verification boundary. This lens does not authorize exploit execution,
+active external security testing, auth changes, security-feature disabling,
 infrastructure operations or external posts. Recommend the smallest appropriate
-remediation and verification for an authorized implementer. Do not invent legal
+remediation and verification for an authorized implementation worker. Do not invent legal
 or compliance conclusions or demand unrelated hardening programs.

@@ -169,10 +169,9 @@ def manifest_read(data, prd):
                 re.fullmatch(r'[a-z0-9][a-z0-9-]{0,79}', value[key]),
                 'run ID and feature must be lowercase path-safe identifiers')
     require(value['archive_on_completion'] is True, 'automatic archival is disabled')
-    require(value['adapter'] in ('CodexGoalMarkdown', 'RalphJSON'), 'unknown adapter')
+    require(value['adapter'] in ('MarkdownPlan', 'CodexGoalMarkdown'), 'unknown adapter')
     relative(value['task_source'])
-    require(value['task_source'].endswith('.md' if value['adapter'] == 'CodexGoalMarkdown'
-                                         else '.json'), 'task source does not match adapter')
+    require(value['task_source'].endswith('.md'), 'task source does not match adapter')
     require(value['journal'] == 'progress.md' and value['memory'] == 'memory.json',
             'journal and memory must use root progress.md and memory.json')
     prds = value['prds']
@@ -190,27 +189,19 @@ def manifest_read(data, prd):
     return value
 
 
-def tasks_read(data, adapter):
-    if adapter == 'RalphJSON':
-        value = decode(data)
-        require(isinstance(value, dict) and isinstance(value.get('userStories'), list),
-                'invalid Ralph task source')
-        stories = value['userStories']
-        require(all(isinstance(story, dict) for story in stories), 'invalid Ralph story')
-        tasks = [(story.get('id'), story.get('passes') is True) for story in stories]
-    else:
-        try:
-            content = data.decode('utf-8')
-        except UnicodeError:
-            raise Refusal('invalid Markdown task source') from None
-        # Only the top-level story completion marker, not nested acceptance boxes.
-        sections = re.findall(r'^### (US-[0-9]+) - [^\n]+\n(.*?)(?=^### |^## |\Z)',
-                              content, re.M | re.S)
-        tasks = []
-        for story_id, section in sections:
-            markers = re.findall(r'^- \[([ xX])\] Story complete[ \t]*\r?$', section, re.M)
-            require(len(markers) == 1, 'story needs one explicit completion marker')
-            tasks.append((story_id, markers[0].lower() == 'x'))
+def tasks_read(data):
+    try:
+        content = data.decode('utf-8')
+    except UnicodeError:
+        raise Refusal('invalid Markdown task source') from None
+    # Only the top-level story completion marker, not nested acceptance boxes.
+    sections = re.findall(r'^### (US-[0-9]+) - [^\n]+\n(.*?)(?=^### |^## |\Z)',
+                          content, re.M | re.S)
+    tasks = []
+    for story_id, section in sections:
+        markers = re.findall(r'^- \[([ xX])\] Story complete[ \t]*\r?$', section, re.M)
+        require(len(markers) == 1, 'story needs one explicit completion marker')
+        tasks.append((story_id, markers[0].lower() == 'x'))
     require(tasks and len(tasks) <= 1000 and
             all(isinstance(story_id, str) and re.fullmatch(r'US-[0-9]+', story_id)
                 for story_id, _ in tasks), 'invalid or empty story inventory')
@@ -243,8 +234,10 @@ def evidence_check(record, adapter):
             isinstance(review.get('evidence'), str) and review['evidence'].strip(),
             'missing passing review evidence')
     if review.get('kind') == 'native':
-        role = 'story-reviewer' if adapter == 'CodexGoalMarkdown' else 'ralph-reviewer'
-        require(review.get('role') == role and isinstance(review.get('session_id'), str)
+        # Legacy enrolled runs retain their original reviewer provenance.
+        roles = ('story-reviewer', 'code-reviewer', 'reviewer') if adapter == 'CodexGoalMarkdown' \
+            else ('code-reviewer', 'reviewer')
+        require(review.get('role') in roles and isinstance(review.get('session_id'), str)
                 and review['session_id'].strip(), 'missing required reviewer provenance')
     else:
         require(review.get('kind') == 'self' and isinstance(review.get('reason'), str)
@@ -307,7 +300,7 @@ def delivery(project, manifest, files):
     staged = git(project.root, 'diff', '--cached', '--quiet', '--', *files, optional=True)
     require(staged.returncode == 0, 'run artifacts have staged changes')
     task_path = manifest['task_source']
-    tasks = tasks_read(files[task_path], manifest['adapter'])
+    tasks = tasks_read(files[task_path])
     require(all(tasks.values()), 'run has incomplete stories')
     records = results_read(files['progress.md'], manifest)
     require(set(records) == set(tasks), 'story evidence does not match task inventory')
@@ -323,7 +316,7 @@ def delivery(project, manifest, files):
         if plan.returncode or journal.returncode:
             continue
         try:
-            historical_tasks = tasks_read(plan.stdout, manifest['adapter'])
+            historical_tasks = tasks_read(plan.stdout)
             historical_records = results_read(journal.stdout, manifest)
         except Refusal:
             # Earlier runs/legacy documents at the same paths are not this run's
@@ -340,58 +333,6 @@ def delivery(project, manifest, files):
     return head, branch.stdout.decode().strip() or None, [
         {'id': story_id, 'commit': commits[story_id], 'result': records[story_id]}
         for story_id in tasks]
-
-
-@contextmanager
-def runner_guard(project, adapter, task_data):
-    require(project.read('.ralph-stop', optional=True) is None, 'stop file blocks archival')
-    lock_fd = None
-    try:
-        control = git(project.root, 'rev-parse', '--git-path', 'ralph').stdout.decode().strip()
-        control_path = Path(control)
-        if not control_path.is_absolute():
-            control_path = project.root / control_path
-        if control_path.exists() or control_path.is_symlink():
-            require(control_path == control_path.resolve() and control_path.is_dir(),
-                    'unsafe Ralph control directory')
-            lock_path = control_path / 'lock'
-            if lock_path.exists() or lock_path.is_symlink():
-                lock_fd = os.open(lock_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-                require(stat.S_ISREG(os.fstat(lock_fd).st_mode), 'invalid Ralph lock')
-                try:
-                    fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                except BlockingIOError:
-                    raise Refusal('Ralph runner is still active') from None
-            state_path = control_path / 'state.json'
-            if state_path.exists() or state_path.is_symlink():
-                fd = os.open(state_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-                with os.fdopen(fd, 'rb') as stream:
-                    require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode), 'unsafe runner state')
-                    data = stream.read(LIMIT + 1)
-                    require(len(data) <= LIMIT, 'runner state exceeds limit')
-                state = decode(data)
-                require(isinstance(state, dict) and type(state.get('version')) is int and
-                        state['version'] == 1 and state.get('status') == 'completed',
-                        'unresolved runner state blocks archival')
-                if adapter == 'RalphJSON':
-                    require(state.get('expected_plan') == decode(task_data),
-                            'Ralph completion state belongs to another plan')
-                for key in ('runner_pid', 'child_pid'):
-                    pid = state.get(key)
-                    if type(pid) is int and pid > 0:
-                        try:
-                            os.kill(pid, 0)
-                        except ProcessLookupError:
-                            continue
-                        raise Refusal('recorded runner process is still alive')
-            else:
-                require(adapter != 'RalphJSON', 'Ralph completion state is missing')
-        else:
-            require(adapter != 'RalphJSON', 'Ralph completion state is missing')
-        yield
-    finally:
-        if lock_fd is not None:
-            os.close(lock_fd)
 
 
 @contextmanager
@@ -485,63 +426,62 @@ def execute(project, prd, dry_run, run_id=None):
     if memory is not None:
         memory_check(memory)
         files['memory.json'] = memory
-    with runner_guard(project, manifest['adapter'], files[manifest['task_source']]):
-        head, branch, stories = delivery(project, manifest, files)
-        timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%S%fZ')
-        directory = f'archive/{timestamp}-{manifest["feature"]}'
-        items = inventory(files)
-        result = {'status': 'preview' if dry_run else 'archived', 'run_id': manifest['run_id'],
-                  'destination': directory, 'files': items, 'stories': stories,
-                  'head': head, 'branch': branch}
-        if dry_run:
-            return result
-        # One archive writer per worktree; never reset/delete its metadata lock.
-        with archive_lock(project):
-            require(existing_archive(project, prd, manifest['run_id']) is None,
-                    'run was archived concurrently')
-            staging = 'archive/.pending-' + manifest['run_id']
-            project.mkdir(staging)
-            receipt = {'version': 1, 'status': 'preserved', 'run_id': manifest['run_id'],
-                       'source_prd': prd, 'manifest': manifest, 'head': head, 'branch': branch,
-                       'stories': stories, 'files': items, 'destination': directory}
-            for item in items:
-                project.write_new(staging + '/' + item['name'], files[item['source']])
-            project.write_new(staging + '/_archive.json',
-                              json.dumps(receipt, indent=2).encode() + b'\n')
-            for item in items:
-                require(project.read(staging + '/' + item['name']) == files[item['source']],
-                        'copy verification failed; sources preserved')
-            require(git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head and
-                    all(project.read(path) == data for path, data in files.items()),
-                    'active run changed; sources preserved')
-            # mkdir reserves the final name without replacing any existing directory.
-            project.mkdir(directory)
-            with project.parent(staging + '/entry') as (src_fd, _):
-                with project.parent(directory + '/entry') as (dst_fd, _):
-                    for name in [item['name'] for item in items] + ['_archive.json']:
-                        os.rename(name, name, src_dir_fd=src_fd, dst_dir_fd=dst_fd)
-                    os.fsync(src_fd)
-                    os.fsync(dst_fd)
-            with project.parent(staging) as (fd, leaf):
-                os.rmdir(leaf, dir_fd=fd)
-                os.fsync(fd)
-            # Verify the complete published archive and all sources before any removal.
-            require(all(project.read(directory + '/' + item['name']) == files[item['source']]
-                        for item in items) and
-                    all(project.read(path) == data for path, data in files.items()) and
-                    git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head and
-                    git(project.root, 'diff', '--cached', '--quiet', '--', *files,
-                        optional=True).returncode == 0,
-                    'published archive or sources changed; cleanup refused')
-            for path, data in files.items():
-                project.unlink_verified(path, data)
-            receipt['status'] = 'archived'
-            project.write_new(directory + '/_receipt.pending',
-                              json.dumps(receipt, indent=2).encode() + b'\n')
-            with project.parent(directory + '/_archive.json') as (fd, leaf):
-                os.replace('_receipt.pending', leaf, src_dir_fd=fd, dst_dir_fd=fd)
-                os.fsync(fd)
-            return result
+    head, branch, stories = delivery(project, manifest, files)
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%S%fZ')
+    directory = f'archive/{timestamp}-{manifest["feature"]}'
+    items = inventory(files)
+    result = {'status': 'preview' if dry_run else 'archived', 'run_id': manifest['run_id'],
+              'destination': directory, 'files': items, 'stories': stories,
+              'head': head, 'branch': branch}
+    if dry_run:
+        return result
+    # One archive writer per worktree; never reset/delete its metadata lock.
+    with archive_lock(project):
+        require(existing_archive(project, prd, manifest['run_id']) is None,
+                'run was archived concurrently')
+        staging = 'archive/.pending-' + manifest['run_id']
+        project.mkdir(staging)
+        receipt = {'version': 1, 'status': 'preserved', 'run_id': manifest['run_id'],
+                   'source_prd': prd, 'manifest': manifest, 'head': head, 'branch': branch,
+                   'stories': stories, 'files': items, 'destination': directory}
+        for item in items:
+            project.write_new(staging + '/' + item['name'], files[item['source']])
+        project.write_new(staging + '/_archive.json',
+                          json.dumps(receipt, indent=2).encode() + b'\n')
+        for item in items:
+            require(project.read(staging + '/' + item['name']) == files[item['source']],
+                    'copy verification failed; sources preserved')
+        require(git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head and
+                all(project.read(path) == data for path, data in files.items()),
+                'active run changed; sources preserved')
+        # mkdir reserves the final name without replacing any existing directory.
+        project.mkdir(directory)
+        with project.parent(staging + '/entry') as (src_fd, _):
+            with project.parent(directory + '/entry') as (dst_fd, _):
+                for name in [item['name'] for item in items] + ['_archive.json']:
+                    os.rename(name, name, src_dir_fd=src_fd, dst_dir_fd=dst_fd)
+                os.fsync(src_fd)
+                os.fsync(dst_fd)
+        with project.parent(staging) as (fd, leaf):
+            os.rmdir(leaf, dir_fd=fd)
+            os.fsync(fd)
+        # Verify the complete published archive and all sources before any removal.
+        require(all(project.read(directory + '/' + item['name']) == files[item['source']]
+                    for item in items) and
+                all(project.read(path) == data for path, data in files.items()) and
+                git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head and
+                git(project.root, 'diff', '--cached', '--quiet', '--', *files,
+                    optional=True).returncode == 0,
+                'published archive or sources changed; cleanup refused')
+        for path, data in files.items():
+            project.unlink_verified(path, data)
+        receipt['status'] = 'archived'
+        project.write_new(directory + '/_receipt.pending',
+                          json.dumps(receipt, indent=2).encode() + b'\n')
+        with project.parent(directory + '/_archive.json') as (fd, leaf):
+            os.replace('_receipt.pending', leaf, src_dir_fd=fd, dst_dir_fd=fd)
+            os.fsync(fd)
+        return result
 
 
 def preserve_plan(project, plan, prds, dry_run):
@@ -568,23 +508,22 @@ def preserve_plan(project, plan, prds, dry_run):
               'delivery_verified': False, 'active_sources_removed': False}
     # No completion claim: even a malformed legacy plan can be preserved safely.
     # Replacement still requires the caller's completion and overwrite gates.
-    with runner_guard(project, 'CodexGoalMarkdown', files[plan]):
-        if dry_run:
-            return result
-        with archive_lock(project):
-            project.mkdir(directory)
-            for item in items:
-                project.write_new(directory + '/' + item['name'], files[item['source']])
-            require(all(project.read(directory + '/' + item['name']) == files[item['source']]
-                        for item in items) and
-                    all(project.read(path) == data for path, data in files.items()) and
-                    git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head,
-                    'plan or copies changed; preserve partial state and reconcile')
-            # Written last: absent receipt means preservation did not complete.
-            receipt = dict(result, version=1, status='preserved')
-            project.write_new(directory + '/_preservation.json',
-                              json.dumps(receipt, indent=2).encode() + b'\n')
-            return result
+    if dry_run:
+        return result
+    with archive_lock(project):
+        project.mkdir(directory)
+        for item in items:
+            project.write_new(directory + '/' + item['name'], files[item['source']])
+        require(all(project.read(directory + '/' + item['name']) == files[item['source']]
+                    for item in items) and
+                all(project.read(path) == data for path, data in files.items()) and
+                git(project.root, 'rev-parse', 'HEAD').stdout.decode().strip() == head,
+                'plan or copies changed; preserve partial state and reconcile')
+        # Written last: absent receipt means preservation did not complete.
+        receipt = dict(result, version=1, status='preserved')
+        project.write_new(directory + '/_preservation.json',
+                          json.dumps(receipt, indent=2).encode() + b'\n')
+        return result
 
 
 def main():

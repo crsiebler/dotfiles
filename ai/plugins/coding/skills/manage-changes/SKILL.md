@@ -22,11 +22,16 @@ For commit drafting or validation, read [commit messages](references/commit-mess
 For requested changelog work, read [git-cliff](references/git-cliff.md); it is
 optional and is not run on every commit by default.
 
-Create branches or commits only when requested. Run required tests, lint, and
+An explicit request to implement an approved plan includes its initial and
+subsequent scoped local commits. Honor that existing grant without asking again;
+explicit no-commit or planning-only instructions take precedence. Scope expansion
+and external writes still need their applicable authority.
+Create branches or commits only within actual scope. Run required tests, lint, and
 typecheck before a commit; stage intended paths only. Do not amend, rebase shared
 history, force-push, bypass hooks, or merge implicitly.
 
-Prepare the complete shipping sequence before asking for its write approval:
+For actions whose authority is missing, prepare the complete shipping sequence
+before asking for its write approval:
 validation, intended file/commit scope if needed, exact push remote/ref, and PR
 head/base/title/body/payload. One explicit approval may cover that bounded
 sequence; carry it forward without repeated requests. If its target or material

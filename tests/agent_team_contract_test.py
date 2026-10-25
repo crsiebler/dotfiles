@@ -52,25 +52,21 @@ class AgentTeamContractTest(unittest.TestCase):
                     target = (source.parent / link.split('#')[0]).resolve()
                     self.assertTrue(target.is_relative_to(planning.resolve()))
                     self.assertTrue(target.is_file(), link)
-        for name in ('story-execution.md', 'story-review.md'):
+        for name in ('story-execution.md',):
             self.assertTrue((BUNDLE / 'references' / name).is_file())
             self.assertFalse((planning / 'references' / name).exists())
         self.assertFalse((planning / 'scripts/archive_run.py').exists())
         self.assertTrue((ARCHIVE / 'scripts/archive_run.py').is_file())
         self.assertFalse((BUNDLE / 'scripts/archive_run.py').exists())
-        for consumer in ('ai/opencode/agents/ralph.md',
-                         'ai/opencode/agents/ralph-reviewer.md',
-                         'ai/plugins/coding/skills/recover-ralph/SKILL.md'):
-            text = (ROOT / consumer).read_text()
-            self.assertNotIn('story-delivery', text)
-            self.assertNotIn('run-agent-team', text)
-            self.assertNotIn('prepare-implementation', text)
-        reviewer = (ROOT / 'ai/codex/agents/story-reviewer.toml').read_text()
-        self.assertIn('run-agent-team', reviewer)
+        review = ROOT / 'ai/plugins/coding/skills/review-story'
+        self.assertTrue((review / 'references/contract.md').is_file())
+        self.assertFalse((BUNDLE / 'references/story-review.md').exists())
+        reviewer = (ROOT / 'ai/codex/agents/reviewer.toml').read_text()
+        self.assertIn('workflow-supplied review contract', reviewer)
         entry = ' '.join((BUNDLE / 'SKILL.md').read_text().split())
         self.assertIn('main thread is the sole integration owner', entry)
         self.assertIn('main thread is the sole integration owner and the only dispatcher', entry)
-        self.assertIn('multi-agent-coordinator', entry)
+        self.assertNotIn('multi-agent-coordinator', entry)
         self.assertIn('No custom coordinator selection, nested delegation', entry)
         self.assertIn('do not invoke a planner', entry)
 
@@ -90,16 +86,13 @@ class AgentTeamContractTest(unittest.TestCase):
         self.assertFalse((ROOT / 'ai/plugins/coding/skills/story-delivery').exists())
         entry = (BUNDLE / 'SKILL.md').read_text()
         self.assertIn('archive-run', entry)
-        self.assertIn('Never invoke Ralph', entry)
+        self.assertIn('review-story', entry)
 
     def test_main_session_dispatches_without_custom_coordinator_or_primary(self):
-        role = ROOT / 'ai/codex/agents/multi-agent-coordinator.toml'
-        self.assertTrue(role.is_file())
-        self.assertFalse((role.parent / 'multi-agent-orchestration.toml').exists())
-        text = ' '.join(role.read_text().split())
-        self.assertIn('optional role is not an orchestration prerequisite', text)
-        self.assertIn('run-agent-team', text)
-        self.assertIn('never dispatch workers/reviewers, stage, commit, merge', text)
+        names = {p.stem for p in (ROOT / 'ai/codex/agents').glob('*.toml')}
+        self.assertEqual(names, {'researcher', 'planner',
+                                 'reviewer', 'auditor', 'operator'})
+        self.assertFalse((ROOT / 'ai/codex/agents/multi-agent-coordinator.toml').exists())
         packet = ' '.join((BUNDLE / 'references/team-execution.md').read_text().split())
         for guard in ('main AI session directly owns dispatch, Git, integration',
                       'quiesce', 'proxy-spawning', 'required reviewer',
@@ -107,7 +100,7 @@ class AgentTeamContractTest(unittest.TestCase):
                       'Worker results do not release dependencies'):
             self.assertIn(guard.lower(), packet.lower())
         self.assertIn('No coordinator role, primary-agent switch, nesting', packet)
-        self.assertIn('Its definition need not be loaded', packet)
+        self.assertIn('main session follows this workflow directly', packet)
         for path in ('bin/swarm', 'ai/codex/swarm.md', 'docs/swarm.md',
                      'tests/swarm_launcher_test.py'):
             self.assertFalse((ROOT / path).exists(), path)
@@ -116,11 +109,10 @@ class AgentTeamContractTest(unittest.TestCase):
 
     def test_goal_entry_explicitly_selects_skill_and_keeps_host_prerequisites(self):
         packet = ' '.join((BUNDLE / 'references/codex.md').read_text().split())
-        for text in ('/skills', '$run-agent-team', '/goal <objective>',
-                     'it does not by itself select this skill',
-                     'Do not assume combined slash-command/skill parsing',
-                     'This example is not an execution grant'):
-            self.assertIn(text, packet)
+        for text in ('normal request is sufficient', '/goal is optional',
+                     'This example is not an execution grant',
+                     'complete review-story contract'):
+            self.assertIn(text.lower(), packet.lower())
         entry = (BUNDLE / 'SKILL.md').read_text()
         self.assertIn('[Codex CLI entry](references/codex.md) only for a Codex CLI', entry)
         requirements = ' '.join((BUNDLE / 'references/requirements.md').read_text().split())
@@ -133,7 +125,7 @@ class AgentTeamContractTest(unittest.TestCase):
 
     def test_core_workflow_is_harness_agnostic_and_capability_gated(self):
         for name in ('team-execution.md', 'task-concurrency.md', 'requirements.md',
-                     'runtime-selection.md', 'story-execution.md', 'story-review.md',
+                     'runtime-selection.md', 'story-execution.md',
                      'verification.md'):
             text = (BUNDLE / 'references' / name).read_text()
             with self.subTest(reference=name):
@@ -147,7 +139,7 @@ class AgentTeamContractTest(unittest.TestCase):
         contract = ' '.join((BUNDLE / 'references/team-execution.md').read_text().split())
         for guard in ('inspect the tools actually exposed',
                       'inspect actual entry/tool schemas',
-                      'exact story-reviewer invocation and same-session continuation',
+                      'reviewer binding and same-session continuation',
                       'No custom coordinator selection or nested manager is needed'):
             self.assertIn(guard.lower(), contract.lower())
 

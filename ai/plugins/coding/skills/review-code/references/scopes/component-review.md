@@ -6,8 +6,8 @@ relevant callers and dependencies from actual source and supplied evidence.
 Bound the inspection to those contracts rather than expanding to every neighbor.
 
 Trace success/failure behavior and important invariants. Existing tests can show
-which contracts are asserted, but are not execution evidence. Do not run tests,
-reproduce defects actively or edit a proposed fix. Apply only concerns whose
+which contracts are asserted, but are not execution evidence. Run focused verification only within the root verification boundary; never
+edit a proposed fix. Apply only concerns whose
 surface is present; distinguish static deductions from observed runtime behavior.
 
 Pre-existing defects are in scope for an existing component. State attribution

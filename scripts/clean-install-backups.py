@@ -73,8 +73,8 @@ def main():
     codex = checked_root(os.environ.get('CODEX_HOME', str(home / '.codex')), 'CODEX_HOME')
     xdg = checked_root(os.environ.get('XDG_CONFIG_HOME', str(home / '.config')), 'XDG_CONFIG_HOME')
     opencode = checked_root(str(xdg / 'opencode'), 'OpenCode configuration')
-    roots = ((codex, ('config.toml', 'astra.config.toml', 'AGENTS.md'), '.toml'),
-             (opencode, ('opencode.json', 'tui.json', 'astra.json', 'sol.json',
+    roots = ((codex, ('config.toml', 'AGENTS.md'), '.toml'),
+             (opencode, ('opencode.json', 'cli.json', 'tui.json',
                          'opencode-notifier.json', 'AGENTS.md'), '.md'))
     paths = candidates(home, roots)
     for path in paths:

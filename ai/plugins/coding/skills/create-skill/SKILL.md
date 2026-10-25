@@ -39,3 +39,5 @@ explicitly authorized workflow, never an automatic prerequisite or fallback.
 
 Modified 2026-09-17 from Anthropic skill-creator, Apache-2.0; see
 [provenance](references/provenance.md) and [license](LICENSE.txt).
+
+For prompt evaluation, load [the focused reference](references/prompt-evaluation.md) only when relevant.

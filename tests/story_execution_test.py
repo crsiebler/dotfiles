@@ -13,15 +13,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 TEAM = ROOT / 'ai/plugins/coding/skills/run-agent-team'
 TEAM_REFS = TEAM / 'references'
-RALPH = ROOT / 'ai/opencode/agents/ralph.md'
-REVIEWER = ROOT / 'ai/opencode/agents/ralph-reviewer.md'
+REVIEW = ROOT / 'ai/plugins/coding/skills/review-story'
 ARCHIVE = ROOT / 'ai/plugins/coding/skills/archive-run'
-
-
-def marked(text, name):
-    begin, end = f'<!-- BEGIN {name} -->', f'<!-- END {name} -->'
-    assert text.count(begin) == text.count(end) == 1
-    return text.split(begin, 1)[1].split(end, 1)[0].strip()
 
 
 def examples(text, language='json'):
@@ -36,18 +29,15 @@ def compact(text):
 class StoryExecutionTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.lives = {'team': (TEAM_REFS / 'story-execution.md').read_text(),
-                     'ralph': RALPH.read_text()}
-        cls.protocols = {'team': (TEAM_REFS / 'story-review.md').read_text(),
-                         'ralph': marked(REVIEWER.read_text(), 'RALPH REVIEW PROTOCOL')}
+        cls.lives = {'team': (TEAM_REFS / 'story-execution.md').read_text()}
+        cls.protocols = {'team': (REVIEW / 'references/contract.md').read_text()}
 
-    def test_workflows_own_distinct_complete_protocols_with_compatible_schema(self):
+    def test_review_skill_owns_one_complete_schema(self):
         schemas = {name: examples(text) for name, text in self.protocols.items()}
         self.assertTrue(all(len(values) == 1 for values in schemas.values()))
-        self.assertEqual(schemas['team'][0], schemas['ralph'][0])
         schema = schemas['team'][0]
         self.assertEqual(set(schema), {
-            'verdict', 'pass_type', 'findings', 'resolved_findings',
+            'verdict', 'pass_type', 'verification', 'findings', 'resolved_findings',
             'executor_feedback', 'residual_risks', 'learning_candidates'})
         self.assertEqual(set(schema['findings'][0]), {
             'id', 'severity', 'lens', 'title', 'body', 'path', 'line',
@@ -57,52 +47,60 @@ class StoryExecutionTest(unittest.TestCase):
                 self.assertIn('All listed keys are required', text)
                 self.assertIn('must explain missing input in', text)
                 self.assertIn('Never return `pass` with unresolved', text)
-        self.assertNotEqual(self.protocols['team'], self.protocols['ralph'])
 
-    def test_each_workflow_has_only_its_own_profile_and_native_role(self):
-        for name, profile, role, other in (
-            ('team', 'expanded-initial', 'story-reviewer', 'three-step'),
-            ('ralph', 'three-step', 'ralph-reviewer', 'expanded-initial')):
-            text = self.protocols[name]
-            self.assertIn(f'Review profile: {profile}', text)
-            self.assertIn(role, text)
-            self.assertNotIn(other, text)
-            self.assertIn('missing, unknown, or conflicting profile', compact(text))
-            self.assertIn('Do not infer the harness', text)
-        codex = tomllib.loads((ROOT / 'ai/codex/agents/story-reviewer.toml').read_text())
-        self.assertEqual(codex['sandbox_mode'], 'read-only')
-        self.assertIn('run-agent-team', codex['developer_instructions'])
-        self.assertNotIn('story-delivery', codex['developer_instructions'])
 
-    def test_initial_and_targeted_budgets_are_workflow_specific(self):
-        codex, ralph = (compact(self.protocols[key]) for key in ('team', 'ralph'))
-        self.assertIn('permit up to 40 small, read-only evidence-gathering calls', codex)
-        self.assertIn('Count each call separately', codex)
-        self.assertIn('40 calls is a ceiling, not a target', codex)
-        self.assertIn('at most one evidence-recovery tool turn', ralph)
-        self.assertIn('steps: 3', ralph)
-        self.assertNotIn('40 calls', ralph)
-        for text in (codex, ralph):
-            self.assertIn('at most two evidence-gathering tool turns', text)
-            self.assertIn('one initial pass and at most one targeted remediation pass', text)
-            self.assertIn('same actual native session', text)
-            self.assertIn('Do not broaden a targeted pass into a fresh audit', text)
+    def test_generic_reviewer_inherits_runtime_and_uses_supplied_contract(self):
+        data = tomllib.loads((ROOT / 'ai/codex/agents/reviewer.toml').read_text())
+        self.assertNotIn('sandbox_mode', data)
+        self.assertNotIn('model', data)
+        text = compact(data['developer_instructions'])
+        for obligation in ('inspection-only', 'authorized focused verification',
+                           'workflow-supplied review contract', 'Do not edit source',
+                           'before and after execution', 'bypass denials'):
+            self.assertIn(obligation, text)
+        self.assertFalse((ROOT / 'ai/codex/agents/story-reviewer.toml').exists())
 
-    def test_evidence_recovery_retains_staged_authority_and_hard_boundaries(self):
-        for name, raw in self.protocols.items():
-            text = compact(raw)
-            with self.subTest(workflow=name):
-                for safeguard in (
-                    'before patch reads', 'internal coverage checklist',
-                    'not a file or an added JSON field',
-                    'retrieve only missing sections', 'same oversized request',
-                    'cannot replace missing authoritative staged evidence',
-                    'unlisted shell commands, pipelines, or external reads',
-                    'Do not spend a targeted pass retrying a blocked initial review',
-                    'No MCP, external-directory, credential-store, or network access',
-                    'Do not edit files, run checks, browse, fetch documentation, delegate work, stage changes, commit',
-                ):
-                    self.assertIn(safeguard, text)
+    def test_verification_preserves_candidate_and_separates_evidence_provenance(self):
+        text = compact(self.protocols['team'])
+        for obligation in ('inspection-only', 'execute mode',
+                           'mixed staged/unstaged content', 'before checks',
+                           'identity and tracked status again afterward',
+                           'Candidate drift', 'unexpected tracked writes',
+                           'required check cannot run', 'Optional unavailable checks',
+                           'Prior supplied results and reviewer-executed results are distinct',
+                           'per-command timeouts', 'Count commands and polls'):
+            self.assertIn(obligation, text)
+        schema = examples(self.protocols['team'])[0]
+        self.assertEqual(set(schema['verification'][0]),
+                         {'command', 'provenance', 'candidate', 'result', 'evidence'})
+        self.assertEqual(schema['verification'][0]['provenance'], 'supplied|executed')
+
+    def test_review_reading_and_verification_budgets_are_separate(self):
+        text = compact(self.protocols['team'])
+        for obligation in ('40 small, read-only evidence-gathering calls',
+                           'Count individual calls in parallel batches separately',
+                           '40 calls is a ceiling, not a target',
+                           'at most two evidence-gathering tool turns',
+                           'one initial pass and at most one targeted remediation pass',
+                           'same actual native session',
+                           'cannot be used to evade reading budgets'):
+            self.assertIn(obligation, text)
+        self.assertIn('120-second timeout', self.lives['team'])
+        self.assertIn('360-second total', self.lives['team'])
+
+    def test_skill_resources_resolve_after_isolated_copy(self):
+        import shutil
+        with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
+            destination = Path(directory) / 'review-story'
+            shutil.copytree(REVIEW, destination)
+            for path in destination.rglob('*.md'):
+                for link in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+                    if '://' in link or link.startswith('#'):
+                        continue
+                    target = (path.parent / link.split('#')[0]).resolve()
+                    self.assertTrue(target.is_relative_to(destination.resolve()), link)
+                    self.assertTrue(target.is_file(), link)
+
 
     def test_final_blockers_cannot_reset_or_turn_into_targeted_reviews(self):
         for name, protocol in self.protocols.items():
@@ -119,7 +117,6 @@ class StoryExecutionTest(unittest.TestCase):
                 self.assertIn('consumed passes', text)
                 self.assertIn('materially', text)
                 self.assertIn('blocker', text)
-        self.assertIn('persisted recovery counters', compact(self.lives['ralph']))
         self.assertIn('does not resolve a blocker or reset the review budget',
                       compact(self.lives['team']))
 
@@ -132,36 +129,46 @@ class StoryExecutionTest(unittest.TestCase):
                     'Do not substitute a path, link, summary, parent tool-output reference',
                     'current candidate', 'fresh reviewer session for each story',
                     'recorded story/attempt/session mapping',
-                    'Never substitute `code-reviewer`',
+                    'Never substitute an unqualified role',
+                    'BEGIN REVIEWER ROLE', 'END REVIEWER ROLE',
+                    'Never reuse an implementation worker as its own reviewer',
+                    'prose is not a substitute for sandbox or permission enforcement',
                 ):
                     self.assertIn(safeguard, text)
-        self.assertIn('BEGIN RALPH REVIEW PROTOCOL', self.lives['ralph'])
-        self.assertIn('actual installed ralph-reviewer definition', self.lives['ralph'])
-        self.assertNotIn('run-agent-team', self.lives['ralph'])
-        self.assertNotIn('story-delivery', self.lives['ralph'])
 
-    def test_native_definition_fetch_preserves_full_packet_and_rejects_duplicates(self):
+
+    def test_generic_native_discovery_preserves_source_and_rejects_duplicates(self):
         helper = ROOT / 'ai/plugins/delegating/skills/use-subagents/scripts/subagents.py'
+        source = ROOT / 'ai/codex/agents/reviewer.toml'
         with tempfile.TemporaryDirectory(dir=ROOT / 'tests') as directory:
             scratch = Path(directory)
             home, project = scratch / 'home', scratch / 'project'
-            agents = home / '.config/opencode/agents'
+            agents = home / '.codex/agents'
             agents.mkdir(parents=True)
             project.mkdir()
-            (agents / 'ralph-reviewer.md').write_bytes(REVIEWER.read_bytes())
-            env = dict(os.environ, HOME=str(home), XDG_CONFIG_HOME=str(home / '.config'))
-            argv = [sys.executable, str(helper), '--harness', 'opencode',
-                    '--project', str(project), 'fetch', 'ralph-reviewer']
-            result = subprocess.run(argv, env=env, capture_output=True, text=True)
+            (agents / source.name).write_bytes(source.read_bytes())
+            env = dict(os.environ, HOME=str(home), CODEX_HOME=str(home / '.codex'))
+            argv = [sys.executable, str(helper), '--harness', 'codex',
+                    '--project', str(project), 'fetch', 'reviewer']
+            result = subprocess.run(argv, env=env, capture_output=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(marked(result.stdout, 'RALPH REVIEW PROTOCOL'),
-                             self.protocols['ralph'])
-            local = project / '.opencode/agents'
+            self.assertEqual(result.stdout, source.read_bytes())
+            local = project / '.codex/agents'
             local.mkdir(parents=True)
-            (local / 'ralph-reviewer.md').write_bytes(REVIEWER.read_bytes())
+            (local / source.name).write_bytes(source.read_bytes())
             duplicate = subprocess.run(argv, env=env, capture_output=True, text=True)
             self.assertNotEqual(duplicate.returncode, 0)
             self.assertIn('duplicate definitions', duplicate.stderr)
+
+    def test_retired_runtime_has_no_active_entry_points(self):
+        for path in ('bin/ralph', 'ai/opencode/agents/ralph.md',
+                     'ai/opencode/agents/ralph-reviewer.md',
+                     'ai/opencode/commands/recover-ralph.md',
+                     'ai/plugins/coding/skills/recover-ralph',
+                     'ai/codex/agents/story-reviewer.toml'):
+            self.assertFalse((ROOT / path).exists(), path)
+        self.assertNotIn('ralph', (ROOT / 'Makefile').read_text().lower())
+        self.assertNotIn('ralph', (ROOT / 'scripts/install-ai.py').read_text().lower())
 
     def test_memory_schema_and_bounds_remain_compatible(self):
         shapes = {}
@@ -174,7 +181,6 @@ class StoryExecutionTest(unittest.TestCase):
             self.assertIn('Count an event only once', memory)
             self.assertIn('do not read/create the missing file', memory)
             self.assertIn('only after passing review', memory)
-        self.assertEqual(shapes['team'], shapes['ralph'])
         self.assertEqual(set(shapes['team']), {'version', 'patterns', 'suppressions'})
         pattern = shapes['team']['patterns'][0]
         self.assertEqual(pattern['evidence_count'],
@@ -186,7 +192,6 @@ class StoryExecutionTest(unittest.TestCase):
             tables[name] = re.findall(r'\| Mode \|.*?(?=\n\n)', text, re.S)
             self.assertIn('Never invoke more than two implementation advisors', text)
         self.assertEqual(len(tables['team']), 2)
-        self.assertEqual(tables['team'], tables['ralph'])
 
     def test_finalization_and_sensitive_operation_guards_remain_in_each_workflow(self):
         for name, raw in self.lives.items():
@@ -205,21 +210,19 @@ class StoryExecutionTest(unittest.TestCase):
                 ):
                     self.assertIn(safeguard, text)
 
-    def test_ralph_control_outcomes_and_serial_authority_remain_local(self):
-        control = marked(self.lives['ralph'], 'RALPH RUNNER CONTROL')
-        outcomes = examples(control)
-        self.assertEqual([value['status'] for value in outcomes],
-                         ['completed', 'retryable', 'blocked'])
-        for value in outcomes:
-            self.assertEqual(value['version'], 1)
-            self.assertTrue(value['iteration_id'] and value['story_id'])
-        self.assertIn('one story at a time', self.lives['ralph'])
-        self.assertIn('never select another independently', compact(self.lives['ralph']))
-        self.assertIn('Ralph never creates, switches, or repairs a branch', self.lives['ralph'])
-        self.assertIn('validates Python 3.11+', control)
-        self.assertNotIn('resolves `python3.11`', control)
-        self.assertNotIn('RALPH RUNNER CONTROL', self.lives['team'])
-        self.assertNotIn('ralph-control.md', self.lives['team'])
+    def test_plan_launch_commit_authority_includes_initial_and_continuing_scope(self):
+        # Instruction-contract regression, not an executed agent behavior test.
+        text = compact(self.lives['team'])
+        for obligation in (
+            'authorizes the initial and subsequent scoped local commits',
+            'Do not ask for another commit approval at launch, between stories or on continuation',
+            'initial plan/checkpoint commit',
+            'does not mark a story delivered',
+            'Explicit planning-only, read-only, source-only or no-commit instructions take precedence',
+            'does not authorize push, publication, installation or destructive cleanup',
+        ):
+            self.assertIn(obligation, text)
+
 
     def test_archival_shares_only_executable_capability_and_enrolls_at_execution(self):
         self.assertFalse((ROOT / 'ai/plugins/coding/skills/story-delivery').exists())

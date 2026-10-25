@@ -7,11 +7,13 @@ commit, delegation or sensitive-operation authority.
 
 ## Loading and task-source adapter
 
-Read this installed run-agent-team bundle's story-execution.md and story-review.md
-in full relative to its advertised base. Missing references, required native role,
-reviewer/session or evidence blocks delivery. Never guess checkout/cache paths.
+Read this installed run-agent-team bundle's story-execution.md in full relative
+to its advertised base. Discover review-story separately and load its complete
+references/contract.md from its advertised bundle. Missing required contracts,
+independent review/session capability or evidence blocks delivery. Apply reviewer
+binding below; never guess checkout/cache paths.
 The Markdown checklist workflow uses the approved PLAN.md checklist, an explicit prepared branch,
-story [ ]/[x] markers and exact native story-reviewer/expanded-initial review.
+story [ ]/[x] markers and independent reviewer/expanded-initial review.
 The dispatcher owns admission; the main thread owns integration and canonical
 state. Apply this bundle's concurrency/runtime contracts, without invoking any
 alternative execution workflow. Worker results are evidence, not delivery.
@@ -61,7 +63,7 @@ source; no separate PRD or archive manifest is required. Full PRD/dependency pla
 use linked requirement sources. Both planning scales keep the same branch, checks, review,
 candidate and commit safeguards.
 
-Plan archival is required at full goal completion. For verified run archival,
+Plan archival is required at full plan completion. For verified run archival,
 the authorized execution owner verifies/binds associated saved PRDs before the
 first checkpoint with
 the work-run manifest accepted by the installed archive-run helper. Read its
@@ -71,24 +73,69 @@ blocks verified run archival, not otherwise valid execution; use the copy-only
 plan preservation fallback at completion instead. Existing runs retain their state
 and evidence; never invent records, relocate old journals or reset memory.
 
+## Autonomous execution scope
+
+The default endpoint is implemented requirements, automated verification, bounded
+agent review and scoped local delivery. Before implementation edits or dispatch,
+verify that required checks and closeout actions can run under the recorded scope
+without a person performing steps or approving future results. Preserve the
+plan's resolved readiness evidence and recheck actual runtime capabilities.
+Known missing authority for required archival or other closeout blocks launch;
+do not save that approval request for the final story.
+
+Use agent-executable, noninteractive commands or tool-driven flows with specified
+inputs/fixtures, expected results, ownership and budgets. Workers may author
+planned tests or automation before dependent checks; an unwritten test is not a
+manual prerequisite when a feasible runner and authorized environment exist.
+Do not add manual QA, human test-result confirmation, stakeholder sign-off, or
+routine deployment checks. Deployment verification belongs only when explicitly
+in the approved scope and automatable with authorized tools and environments.
+Do not infer deployment authority from a deployment-related code change.
+
+If an old plan or newly discovered governing instruction requires human acceptance
+or non-automatable verification, preserve the exact requirement and identify the
+scope/method conflict before affected implementation begins. Do not silently
+delete required acceptance, substitute a weaker check, or turn the conflict into
+a manual final checkbox. Reuse existing approved resolutions; unresolved mandatory
+conflicts block the affected path. New runtime denials or missing required check
+capability still stop affected work under the normal blocker rules. Optional
+manual follow-up is outside goal completion and cannot block delivery. No required
+check is waived merely because it fails or is unavailable.
+
 ## Authorization and prepared branch
 
-Require explicit execution authorization before implementation and explicit
-local story-commit authorization (which may cover the approved sequence) before
-staging for delivery or committing. A prepared plan, goal label, mode, or this
-reference does not authorize either. Honor narrower read-only/planning/no-commit
-requests; report what remains unexecuted or undelivered rather than self-granting
-permission. A clear authorized plan launch may cover in-scope implementation,
-required tests, budgeted delegation and local commits across the whole eligible
-sequence. Carry that scope through story boundaries and continuation without
-another activation prompt per story. Verify the grant and its limits; request only
-genuinely missing scope. Routine project-local implementation and checks stay within the
-user's approved scope. Dependencies still require any applicable approvals.
+An explicit user request to implement an approved plan authorizes the initial
+and subsequent scoped local commits for that plan. This includes a goal whose
+objective is to implement the approved plan; no extra "commit" wording is needed.
+Do not ask for another commit approval at launch, between stories or on continuation.
+The user's execution request supplies the grant; this skill, a plan file, a goal
+label without an execution objective, or a copied example does not.
 
-Execution requires an explicit actual launch grant for execution and local story
-commits. A bare label, plan data or copied example is not permission. Do not start
-another harness or runner against the story. Use the existing dispatcher contract;
-main-thread Git/state ownership does not transfer to a worker or coordinator.
+Record the approved plan/revision, repository, eligible paths and scope limits
+in the existing execution checkpoint. Carry that grant across story boundaries,
+resumption and compaction. Explicit planning-only, read-only, source-only or
+no-commit instructions take precedence. Ask only for genuinely missing facts or
+new authority when scope materially expands or required actions are excluded.
+A runtime denial remains binding and cannot be bypassed through another tool.
+
+An initial plan/checkpoint commit may capture the approved plan and required
+task-owned execution metadata before worker dispatch, under the same launch grant.
+Inspect exact paths, status and diff; apply relevant validation, secret checks,
+hooks and branch guards. This commit does not mark a story delivered or claim
+checks/review not yet performed. Do not include implementation changes to evade
+their checks and review. Do not commit unrelated staged content or sweep
+pre-existing dirty work into a baseline.
+
+Subsequent story and integration commits require their actual checks and bounded
+review to pass. A scoped closeout commit of authorized run artifacts is also
+covered; archival/removal still requires its own applicable scope and verified
+preservation. Commit authorization does not authorize push, publication,
+installation or destructive cleanup. Dependencies, worktree lifecycle and other
+sensitive actions retain their applicable approval boundaries.
+
+Do not start another harness or runner against the story. Use the existing
+dispatcher contract; main-thread Git/state ownership does not transfer to a
+worker or coordinator.
 
 Before any file changes, and again before staging and committing, use the exact
 assigned project worktree and the adapter's required prepared branch:
@@ -102,7 +149,9 @@ assigned project worktree and the adapter's required prepared branch:
 
 The team contract adds its task-worktree lifecycle and clean-baseline guards.
 This contract never authorizes branch creation, switching, repairing mismatch,
-copying dirty work or committing it to manufacture a baseline. On branch failure,
+copying or committing unrelated/pre-existing implementation work to manufacture
+a baseline. The scoped initial plan/checkpoint commit above is permitted before
+requiring clean committed task worktrees. On branch failure,
 stop without file changes, including logs. Do not reset or discard somebody else's
 work. Preserve unrelated changes and stage only intended story work. Unexpected
 candidate ownership changes require reconciliation, not reinterpretation as
@@ -187,11 +236,17 @@ At long-check yields and handoff/remediation/review/commit events, apply the
 concurrency contract's reassessment before waiting again. Continue eligible isolated
 work within the queue limit; do not duplicate checks or loosen delivery gates.
 
-For UI changes, load `verify-interface` and verify the affected browser flows.
+For UI changes, load `verify-interface` and verify the affected browser flows
+through authorized agent-executable browser automation; do not hand the flow to
+a person or add human sign-off as a completion gate.
 UI work is incomplete until browser verification passes. Record routes/flows,
 viewports, interactions, accessibility checks, console/network results, and
 artifact paths when available. Screenshots are useful when they add evidence.
-The executor owns browser work; reviewers only assess supplied evidence.
+The executor owns required browser evidence. Reviewers may assess supplied
+evidence and run packet-authorized focused browser flows in execute mode under
+the complete review-story contract, candidate-preservation rules and budgets.
+Inspection-only reviewers do not operate browsers. Do not rerun adequate checks
+solely to create a second verification gate.
 
 Before review, finish code/tests and any genuinely reusable nearby `AGENTS.md`
 guidance; append progress with the intended commit message. Stage implementation,
@@ -207,7 +262,7 @@ never reuse stale evidence or renew an exhausted budget because it changed.
 
 ## Review selection and invocation
 
-`story-review.md` is canonical for the full reviewer protocol, review lenses,
+The loaded review-story contract is canonical for the full reviewer protocol, review lenses,
 severity definitions, evidence/noise rules, and exact response JSON schema.
 Use that protocol for self-review as well as native review. Do not duplicate or
 weaken the schema here. Review the complete staged story, not a GitHub PR; no
@@ -229,32 +284,72 @@ Classify the staged diff using filenames, content, criteria, notes, and checks:
 | standard | Self | Native | Native | Native |
 | deep | Native | Native | Native | Native |
 
-Select Review profile: expanded-initial for both native and self-review. The exact
-native role is story-reviewer. Missing, unknown or conflicting profile blocks before
+Select Review profile: expanded-initial for both native and self-review. Independent
+review uses the reviewer contract, bound as described below, with the complete
+review-story contract. Missing,
+unknown or conflicting profile blocks before
 evidence under this workflow's review protocol. Do not infer the harness from
 available tools or paths. Profiles grant no capabilities or runtime overrides.
 
 For self-review, explicitly select the same adapter profile and pass type in the
 review context. Start with staged filenames, status, and statistics, then inspect
-path-scoped patches in manageable groups under `story-review.md`'s applicable
+path-scoped patches in manageable groups under the supplied contract's applicable
 profile budget; an aggregate patch is not required. Produce the same structured
-result. Self-review is a budget choice, never a fallback for a missing required
-native reviewer.
+result. Self-review is a budget choice, never a fallback for missing required
+independent review.
 
-When native review is selected, verify the exact adapter role is available to
-the active runtime before invocation. A role file on disk is not proof. Missing
-role, unavailable native delegation/resumption, failed invocation, or missing
-required session ID blocks the story. Never substitute `code-reviewer`, a general
-agent, or another arbitrary reviewer; never run multiple reviewers for a pass.
+When native review is selected, verify independent delegation and required
+continuation controls before invocation. Use reviewer binding below. Unavailable
+delegation/resumption, failed invocation, missing required contracts or session ID
+blocks the story. Never substitute an unqualified role: contract-supplied binding
+qualifies only with the complete instructions, independent session and preserved
+constraints below. Never bypass the supplied contract or run multiple reviewers
+for a pass.
 
-Load the full sibling protocol yourself, then pass its full text plus compact
-story context to that exact role. Include `Review profile: <profile>` and
+Discover review-story and load its full contract yourself, then pass its full text plus compact
+story context to the independent reviewer. Include `Review profile: <profile>` and
 `Pass type: initial` as literal packet lines, replacing `<profile>` with the
 mapped value. Also include story identity, description, criteria, notes, check
 results, UI evidence, repository instructions, relevant patterns/memory, and the
 compact staged filename list. Do not embed the
 patch or diff statistics. Request JSON only and one holistic staged review.
 The reviewer reads authoritative staged content itself.
+
+### Reviewer binding
+
+Use one of these bindings under the existing team execution grant:
+
+- **native-role**: when the runtime exposes custom-role selection, select
+  reviewer through its actual supported field. A path or display label is not
+  proof of native role selection.
+- **contract-supplied**: when the runtime has no custom-role selector (including
+  selectors limited to built-in agent types), discover
+  reviewer through use-subagents or an available definition reader. Read its
+  complete instructions and metadata. Supply the unabridged role instructions
+  in the invocation packet to a fresh independent generic execution agent.
+  A label alone is insufficient. This is a supported binding, not an exception
+  requiring renewed user approval.
+
+Both bindings require an actual independent agent/session, separate from the
+candidate's implementer and integration owner. Never reuse an implementation
+worker as its own reviewer. Preserve the complete review-story protocol,
+candidate preservation, no repair/Git/delegation, verification limits, and the
+one-initial/one-targeted same-session budget. Reading role instructions in the
+main session does not itself perform independent review.
+
+Inspect installed role metadata and runtime defaults before binding. Preserve
+model/effort pins and native restrictions through supported controls; prose is
+not a substitute for sandbox or permission enforcement. If a required setting
+cannot be preserved, or a user/project explicitly requires a named native role
+that cannot be selected, stop the affected gate. Missing role instructions,
+independent delegation or required continuation also blocks. Never use this
+binding to bypass a denied invocation or switch to a preferred model.
+
+Record binding mode, role-definition source, actual native agent type (or unknown
+when unreported), supported controls/pins and returned session ID. For
+contract-supplied binding, do not claim the runtime loaded the custom native role.
+Record these details in the existing checkpoint and review evidence; no new
+registry, extra review pass or replacement session is needed.
 
 ### Self-contained packet preflight
 
@@ -269,17 +364,24 @@ the protocol or ask the reviewer to fetch installed/global skill files.
 Assemble the message with clearly delimited sections in this order:
 
 1. Review identity: literal profile/pass lines, story ID/title, attempt number,
-   selected native role, and absolute project worktree root.
-2. Complete review protocol: verbatim contents of the installed `story-review.md`,
+   reviewer responsibility, binding mode and actual selected agent type,
+   absolute project worktree root, base commit and staged
+   tree ID. Include verification mode, exact commands/flows, count/time limits,
+   execution root, private outputs, resource ownership and required checks.
+2. For contract-supplied binding, include the complete loaded reviewer role
+   instructions between `BEGIN REVIEWER ROLE` and `END REVIEWER ROLE` delimiters
+   on both passes. Native-role binding records the actual selected role.
+3. Complete review protocol: verbatim contents of the loaded review-story contract,
    between `BEGIN REVIEW PROTOCOL` and `END REVIEW PROTOCOL` delimiters.
-3. Story context: description, acceptance criteria, notes, relevant repository
-   instructions, patterns/memory, exact check results and UI evidence (or explicitly
+4. Story context: description, acceptance criteria, notes, relevant repository
+   instructions, patterns/memory, candidate-attributed check results and UI evidence (or explicitly
    not applicable), and current staged filename list. Do not embed patches/statistics.
-4. For targeted review: prior findings/dispositions, remediation, and verification
+5. For targeted review: prior findings/dispositions, remediation, and verification
    evidence for this story and attempt only.
 
 Before sending, compare the assembled protocol section with the complete loaded
-reference and confirm the schema and trailing rules are present. Verify that
+reference and confirm the schema and trailing rules are present. For contract-supplied
+binding, also compare the role section with the complete loaded instructions. Verify that
 story identity, criteria, worktree, staged paths, profile, and pass agree with the
 current candidate. Stop at the executor on incomplete assembly or mismatched
 identity; do not consume a reviewer pass with a knowingly invalid packet.
@@ -287,13 +389,14 @@ identity; do not consume a reviewer pass with a knowingly invalid packet.
 ### Story-scoped native sessions
 
 Use actual exposed native invocation schemas, not invented tools or arguments.
-The main session invokes dedicated native `story-reviewer` and saves its actual returned
-agent ID for same-session continuation. Do not manufacture session IDs.
+The main session invokes the independent reviewer using the verified binding
+and saves its actual returned agent ID for same-session continuation. Do not
+manufacture session IDs.
 
-Select the exact native role through the runtime's actual role-selection field;
-putting `story-reviewer` in prose or a task label does not select that role. Record
-the actual selected role, story ID, attempt number, worktree, and returned session
-ID together. A display label or agent path is not proof of the returned identity.
+Record binding mode, actual selected agent type, reviewer contract source,
+story ID, attempt number, worktree, and returned session ID together. A display
+label or agent path is not proof of the returned identity. Contract-supplied
+instructions do not claim native custom-role selection.
 Use a descriptive label such as `Review US-002 attempt 1` where supported.
 
 Start a fresh reviewer session for each story's initial review. Never send a new
@@ -314,8 +417,16 @@ denials. A selected role, display label, or passing JSON response does not prove
 that staged evidence was read. Record actual review evidence and capability
 limitations; never widen permissions or replace the reviewer to bypass a denial.
 
-Review is limited to project-local reads/search and non-mutating staged Git
-inspection: no edits, tests, browser/web/MCP, external directories, or delegation.
+Review permits project-local inspection and explicitly scoped verification under
+the supplied review-story contract. No candidate edits or delegation. The packet
+selects inspection-only or execute mode, names exact commands/browser flows,
+execution root and candidate-equivalence evidence, private outputs, resource
+ownership and required checks. Default execute budget: at most three focused
+commands/flows, each with a 120-second timeout and at most three polls, within a
+360-second total verification budget per pass. Tighten for the task; larger
+checks remain executor-owned unless an explicit bounded budget is supplied.
+Do not require redundant checks: use attributed passing executor results when
+adequate and run focused verification to resolve concrete evidence gaps.
 With `expanded-initial` selected, for an initial review, permit up to 40 small,
 read-only evidence-gathering calls, counting individual calls in batches separately.
 Start with staged filenames, status, and statistics, then manageable patch groups; an aggregate
@@ -323,8 +434,8 @@ patch is not required. Track coverage of relevant changed files and directly
 affected contracts, assessing all collected evidence as one holistic review.
 Patch truncation alone is not blocking: retrieve only missing sections through
 permitted staged Git reads or permitted pagination of their output, never repeat
-the same oversized request. Follow `story-review.md` for exact permitted reads;
-do not expand the allowlist or substitute worktree content for staged evidence.
+the same oversized request. Follow the loaded review-story contract for permitted reads;
+do not expand the supplied tool scope or substitute worktree content for staged evidence.
 Stop when coverage is sufficient: 40 calls is a ceiling, not a target. If required
 evidence remains unavailable at the limit or through permitted tools, return
 `blocked`, naming exact missing sections in `residual_risks`.
@@ -337,7 +448,7 @@ is behavioral guidance, not immutable sandbox/MCP enforcement.
 ## Validation, dispositions, and stabilization
 
 Allow at most one initial review and one targeted re-review per story attempt. Parse and
-validate every full response against `story-review.md`, including required
+validate every full response against the loaded review-story contract, including required
 fields, types, enums, pass type, and finding IDs. Malformed JSON, schema mismatch,
 inconsistent verdict/evidence, or `blocked` is a failed review: append the
 blocker safely, keep the story pending, and stop without committing. Do not repair
@@ -573,14 +684,17 @@ archival metadata for delivery. Example shape (illustrative, never evidence):
   "review": {
     "verdict": "pass",
     "kind": "native",
-    "role": "story-reviewer",
+    "role": "reviewer",
     "session_id": "actual-native-session-id",
     "evidence": "Observed passing review under the required profile and pass budget."
   }
 }
 ```
 
-Native review uses story-reviewer and its actual session ID. Budget-permitted
+Native review means an actual independent delegated session. Its role field
+records the reviewer responsibility; evidence must identify native-role or
+contract-supplied binding, actual agent type and contract source without claiming
+unsupported native selection. Keep its actual session ID. Budget-permitted
 self-review uses kind self, verdict pass, evidence, and a reason identifying the
 mode/risk allowance; it never claims independent/native review. Checks must list
 actual commands/results, with not_applicable only for a supported exemption and
@@ -627,7 +741,7 @@ and limitations. Mark checklist completion only after authorized commits succeed
 never mark blocked, unverified or uncommitted work complete. Use supported native task
 continuation only within its existing scope; create no external iteration loop.
 
-Once the entire goal is verified and delivered, discover the installed archive-run
+Once the entire plan is verified and delivered, discover the installed archive-run
 capability and read its requirements/API contract. Resolve scripts/archive_run.py
 from that advertised base; never duplicate its file operations with generated shell.
 For an enrolled run, invoke it under actual exact-path archival/removal authority.
@@ -639,5 +753,7 @@ keep the old plan and any partial output. No fabricated manifest, run ID or hist
 Planning only verifies existing receipts and matching source hashes before an
 authorized replacement; missing/mismatched preservation blocks replacement.
 Do not reuse or retire prior progress/memory without scoped reconciliation.
-A closeout commit needs its own authority, which may be granted upfront. No
+A plan implementation launch covers a scoped local closeout commit of authorized
+artifacts; it does not by itself authorize archival/removal. Without that launch
+or another commit grant, request only the missing commit scope. No
 implicit push, installation, cleanup retry or additional bookkeeping commit.

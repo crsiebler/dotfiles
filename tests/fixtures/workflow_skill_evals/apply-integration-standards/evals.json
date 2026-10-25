@@ -1,0 +1,35 @@
+{
+  "skill_name": "apply-integration-standards",
+  "status": "not-run",
+  "evals": [
+    {
+      "id": 1,
+      "split": "representative",
+      "prompt": "Add local handling for Slack retries using the project SDK; do not message anyone.",
+      "expected_output": "Inspect existing transport, deduplication and retry behavior; test locally.",
+      "files": [],
+      "expectations": [
+        "Inspect existing transport, deduplication and retry behavior; test locally.",
+        "Do not send messages, change scopes or mandate Socket Mode."
+      ],
+      "reference": "references/slack.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    },
+    {
+      "id": 2,
+      "split": "held-out",
+      "prompt": "Design a compatible GraphQL schema evolution for supplied clients.",
+      "expected_output": "Review nullability, errors, authorization boundaries and client compatibility.",
+      "files": [],
+      "expectations": [
+        "Review nullability, errors, authorization boundaries and client compatibility.",
+        "Do not mandate federation or migrate transport."
+      ],
+      "role": "planner",
+      "reference": "references/graphql.md"
+    }
+  ]
+}

@@ -31,7 +31,8 @@ class DocumentSkillsContractTest(unittest.TestCase):
         for path in (ROOT/'ai/plugins').glob('*/skills/*/SKILL.md'):
             discovered.setdefault(path.parent.name,[]).append(path)
         self.assertEqual({p.parent.name for p in (ROOT/'ai/plugins/producing/skills').glob('*/SKILL.md')},
-                         {'create-audio','create-sprites','create-gif','create-docx','create-pptx','create-xlsx','create-pdf'})
+                         {'create-audio','create-sprites','create-gif','create-docx','create-pptx','create-xlsx','create-pdf',
+                          'write-content','design-interface'})
         for name, plugin in BUNDLES.items():
             with self.subTest(skill=name):
                 source = ROOT/f'ai/plugins/{plugin}/skills/{name}'

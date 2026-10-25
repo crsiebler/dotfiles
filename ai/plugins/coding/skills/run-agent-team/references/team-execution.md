@@ -11,11 +11,21 @@ canonical task state. No custom coordinator selection or nested manager is neede
 Select run-agent-team explicitly through the active harness's supported skill
 mechanism, naming the approved plan and existing execution scope. Inspect actual
 entry/tool schemas rather than inventing slash commands or inferring capabilities
-from a harness name. A goal label or selected skill alone grants no execution,
-worktree, commit, installation or publication authority. A custom primary is not
-required. The main AI session coordinates directly.
+from a harness name. An explicit user request to implement the approved plan
+includes initial and subsequent scoped local commits; record and carry that grant
+without repeated prompts. A bare goal label or selected skill alone grants no
+execution, worktree, commit, installation or publication authority. Use
+[commit authority](story-execution.md#authorization-and-prepared-branch) for the
+initial checkpoint and exclusions. A custom primary is not required. The main AI
+session coordinates directly.
 
 ## One preflight record
+
+Apply [autonomous execution scope](story-execution.md#autonomous-execution-scope)
+before dispatch. Required verification and closeout must have an authorized
+noninteractive path; do not introduce manual test or deployment gates. Confirm
+the readiness record, including missing authority for required closeout, before
+starting implementation. This is not permission to weaken required acceptance.
 
 The main thread records in the existing execution checkpoint:
 - Exact plan path/revision, approved outcome and integration root/branch/base.
@@ -26,27 +36,40 @@ The main thread records in the existing execution checkpoint:
   documented session semantics, required reviewer capacity and supported
   inspection/continuation/release controls; queue limit and its rationale under
   [capacity and queue control](task-concurrency.md#capacity-and-queue-control).
-- Actual native worker/model controls and installed pins; exact story-reviewer
-  invocation and same-session continuation where required by the risk budget.
+- Actual native worker/model controls and installed pins; reviewer binding and same-session continuation where required by the risk budget.
 - Existing execution, worktree, commit and closeout grants; missing scope/tools.
+- Approved endpoint and readiness evidence, agent-executable verification paths,
+  planned automation dependencies, and any newly discovered mandatory blocker.
 
 No coordinator role, primary-agent switch, nesting or role-guidance adoption is
-required. An optional coordinator may advise within the existing read-only advisor
-budget when useful; it never owns dispatch, Git or trackers. Its definition need
-not be loaded to run the team. Missing required reviewer controls blocks affected
+required. The main session follows this workflow directly. Bounded planning or
+research advice does not transfer dispatch, Git or tracker ownership.
+Missing required reviewer controls blocks affected
 execution; self-review follows only the existing risk budget. No automatic model
 switch, installation, capability-probe agents or proxy-spawning. Apply
 [runtime selection](runtime-selection.md): model preferences and unknown telemetry
-alone do not block; explicit user constraints and required native roles still apply.
+alone do not block; explicit user constraints and required review capabilities
+still apply. Use [reviewer binding](story-execution.md#reviewer-binding) when
+the runtime lacks a role selector.
 
 ## Direct packets and delivery
+
+Implementation uses available native execution agents without requiring a custom
+implementation role. Confirm the actual runtime interface in preflight;
+ordinary work may remain in the main session.
+No built-in override, role installation or primary-agent switch is required.
 
 Every worker packet includes story ID/criteria, source requirements, delivered
 prerequisite commits, absolute task worktree, exact branch/full base, bounded owned
 paths/interfaces, private output locations, resource constraints, model selection
-or inheritance/pin evidence and required specialist identity. Identify feasible
+or inheritance/pin evidence and required role identity and relevant loaded skills. Identify feasible
 compilation and focused verification commands with working directories, required
 build hooks/generated inputs, and any known unavailable checks or shared resources.
+Include test inputs/fixtures, expected results, check ownership and budgets; name
+any prerequisite test/automation authoring. Preserve the approved autonomous
+endpoint in each packet: no manual QA, human result-confirmation or added release
+gate. Deployment verification requires explicit scope and an automated path.
+An optional human follow-up is not a worker handoff or delivery condition.
 Workers do not orchestrate, subdelegate, stage, commit, merge or modify canonical
 task state. Normal coding skill discovery applies.
 

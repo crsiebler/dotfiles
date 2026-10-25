@@ -1,5 +1,4 @@
 ---
-name: find-agents
 description: List, search, and read OpenCode agent definitions with the bundled helper
 ---
 

@@ -15,38 +15,43 @@ Godot binary. Never install tools or change global settings implicitly.
 
 ## Provider boundary
 
-The documented image provider is OpenCode-only until another harness is verified.
-Calling a Codex backend internally does not expose a Codex image-generation tool.
-In Codex, offer asset planning or integration of supplied images; do not promise
-generation or invent tool names. Inspect the active schema even in OpenCode.
-If the provider is unavailable, offer planning or integration of supplied images;
-do not invent a provider or substitute code-drawn art.
+Inspect the active tools and use an available native image-generation tool or
+the optional OpenCode `gpt_imagegen` adapter. Follow the selected tool's schema
+and runtime instructions; a harness name or installed package is not proof of
+tool availability. Calling a Codex backend internally does not expose a Codex
+tool. If no suitable provider is available, offer planning or integration of
+supplied images; do not invent a provider or substitute code-drawn art.
 
-Create original pixel-art assets through the `gpt_imagegen` tool, visually
-validate the results, and deliver accepted assets or integrate them with the
-active project when requested.
+Create original pixel-art assets, visually validate the results, and deliver
+accepted assets or integrate them with the active project when requested.
 
-The image tool uses OpenCode's ChatGPT OAuth subscription. It produces one PNG
-per call, supports reference images, and automatically versions an existing
-output path instead of overwriting it.
+The optional OpenCode V2 provider is opencode-img, which calls a paid image API
+with the user's API credentials. It supports reference images and versions
+existing output paths. Request lossless PNG and inspect the active schema;
+plugin source compatibility is not a live generation test.
 
 ## Preconditions
 
 Before generation:
 
-1. Verify `gpt_imagegen` is available. If it is absent, explain that
-   `opencode-gpt-imagegen` must be loaded and OpenCode restarted. Do not replace
-   the requested artwork with code-drawn placeholders.
+1. Verify an appropriate image tool is available and inspect its schema. A native
+   image tool does not require the OpenCode plugin. If choosing the optional
+   OpenCode route, loading/restarting it needs setup authority. Do not replace
+   requested artwork with code-drawn placeholders.
 2. Inspect existing sprite directories, reference images, and relevant animation
    code or scenes before choosing paths, dimensions, names, or integration targets.
-3. Agree on frame dimensions, grid, anchors, actions, palette, and integration
-   target, following the active project's patterns when present.
-4. Keep all tool input and output paths relative to the current workspace.
-5. Present the complete generation batch, prompts, paths, and subscription use;
-   require explicit approval before invoking `gpt_imagegen`. `--plan-only`
-   means no generation and no file changes.
-6. Confirm additional spending before unapproved retries. Limit regeneration to
-   the smallest failed asset; do not silently spend on broad retries.
+3. Derive frame dimensions, grid, anchors, actions, palette, and integration
+   target from the request and project; ask only about unresolved material choices.
+4. Keep output artifacts in the requested project scope. Use the path format
+   required by the actual tool; the OpenCode adapter uses project-relative paths.
+5. Carry forward existing batch authorization for generation, provider/cost,
+   paths, and call limits. A requested native image generation needs no redundant
+   confirmation. When scope is missing, prepare the batch, prompts, paths, and
+   known API usage/cost before asking for that scope; do not invent prices.
+   `--plan-only` means no generation and no file changes.
+6. Obtain scope for additional spending or provider changes beyond the grant.
+   Limit regeneration to the smallest failed asset within the approved budget;
+   do not silently spend on broad retries.
 
 ## Asset Contract
 
@@ -137,7 +142,8 @@ row 4: up
 ```
 
 Use an accepted project image as a reference when identity or style continuity
-matters. Pass it in `images` and describe it in the prompt, for example:
+matters. Use the tool's reference-image parameter (`images` for the OpenCode
+adapter) and describe it in the prompt, for example:
 
 ```text
 Image 1 is the exact identity, palette, costume, proportions, outline weight,
@@ -150,7 +156,10 @@ animation poses.
 Use a high-resolution generation canvas because the hosted image tool does not
 produce native 16x16, 32x32, or 64x64 game textures directly.
 
-Typical invocation arguments:
+The following arguments are for the optional OpenCode adapter only. Other native
+tools use their actual schemas and supported options.
+
+Typical OpenCode invocation arguments:
 
 ```json
 {
@@ -201,9 +210,12 @@ deterministically before integration:
 6. Export a transparent sheet, individual frames when useful, and metadata that
    records grid, frame size, anchor, FPS, loop behavior, source path, and prompt.
 
-Use an existing project processor when available. If no processor exists, stop
-after accepted source generation unless the user approves adding deterministic
-processing code. Do not use lossy JPEG intermediates.
+Use an existing project processor when available. If requested processing is
+already in scope, a missing helper does not require another approval: use
+available tools or a minimal project-local helper within that scope, subject to
+the runtime's image-editing rules. Missing dependencies, unapproved overwrites,
+or processing outside the request need their own authority. Do not use lossy
+JPEG intermediates.
 
 ## Delivery
 
@@ -218,8 +230,8 @@ integration before claiming game-ready delivery; report unavailable checks.
 
 ## Plugin Limitations
 
-`opencode-gpt-imagegen` is an unofficial plugin that reads OpenCode's ChatGPT
-OAuth data and calls the Codex backend. It consumes subscription capacity, may
-be affected by backend changes, and can occasionally return an orientation
-different from the requested size. Always inspect actual dimensions and never
-assume the requested path or orientation was honored.
+`opencode-img` is an unofficial OpenCode V2 plugin. It requires a provider API
+key; a ChatGPT subscription does not cover those API calls. It is documented as
+an optional dependency, not enabled in the repository configuration. Always
+inspect actual dimensions, transparency, and returned paths. Do not assume
+plugin compatibility proves visual quality or a successful live generation.

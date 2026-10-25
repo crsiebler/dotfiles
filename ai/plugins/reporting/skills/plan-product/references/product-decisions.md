@@ -1,0 +1,78 @@
+# Product Decisions
+
+Clarify customer problem, desired outcomes, evidence and non-goals. Compare
+options and priorities using explicit assumptions and constraints. Separate
+commercial proposals from commitments. Define measurable acceptance and
+feedback mechanisms without invented market size, delivery dates or sales
+claims. No implied contacting, promises, account changes or publication.
+
+## Optional topic lookup
+
+The standards above are sufficient for routine work. Consult only a relevant
+section below when the task needs deeper domain coverage; do not load this
+whole inventory by default. Topics describe considerations, not required actions.
+
+- [Requirements elicitation](product-decisions-topics.md#requirements-elicitation)
+- [Business process modeling](product-decisions-topics.md#business-process-modeling)
+- [Data analysis](product-decisions-topics.md#data-analysis)
+- [Analysis techniques](product-decisions-topics.md#analysis-techniques)
+- [Solution design](product-decisions-topics.md#solution-design)
+- [Stakeholder management](product-decisions-topics.md#stakeholder-management)
+- [Documentation skills](product-decisions-topics.md#documentation-skills)
+- [Project support](product-decisions-topics.md#project-support)
+- [Business intelligence](product-decisions-topics.md#business-intelligence)
+- [Change management](product-decisions-topics.md#change-management)
+- [Discovery priorities](product-decisions-topics.md#discovery-priorities)
+- [Requirements gathering](product-decisions-topics.md#requirements-gathering)
+- [Analysis patterns](product-decisions-topics.md#analysis-patterns)
+- [Process improvement](product-decisions-topics.md#process-improvement)
+- [Data-driven decisions](product-decisions-topics.md#data-driven-decisions)
+- [Stakeholder engagement](product-decisions-topics.md#stakeholder-engagement)
+- [Solution validation](product-decisions-topics.md#solution-validation)
+- [Product strategy](product-decisions-topics.md#product-strategy)
+- [Roadmap planning](product-decisions-topics.md#roadmap-planning)
+- [User research](product-decisions-topics.md#user-research)
+- [Feature prioritization](product-decisions-topics.md#feature-prioritization)
+- [Product frameworks](product-decisions-topics.md#product-frameworks)
+- [Market analysis](product-decisions-topics.md#market-analysis)
+- [Product lifecycle](product-decisions-topics.md#product-lifecycle)
+- [Analytics implementation](product-decisions-topics.md#analytics-implementation)
+- [Launch planning](product-decisions-topics.md#launch-planning)
+- [Research approach](product-decisions-topics.md#research-approach)
+- [Product patterns](product-decisions-topics.md#product-patterns)
+- [Vision & strategy](product-decisions-topics.md#vision--strategy)
+- [User-centric approach](product-decisions-topics.md#user-centric-approach)
+- [Cross-functional leadership](product-decisions-topics.md#cross-functional-leadership)
+- [Growth strategies](product-decisions-topics.md#growth-strategies)
+- [Technical demonstrations](product-decisions-topics.md#technical-demonstrations)
+- [Proof of concept development](product-decisions-topics.md#proof-of-concept-development)
+- [Solution architecture](product-decisions-topics.md#solution-architecture)
+- [RFP/RFI responses](product-decisions-topics.md#rfprfi-responses)
+- [Technical objection handling](product-decisions-topics.md#technical-objection-handling)
+- [Integration planning](product-decisions-topics.md#integration-planning)
+- [Performance benchmarking](product-decisions-topics.md#performance-benchmarking)
+- [Security assessments](product-decisions-topics.md#security-assessments)
+- [Custom configurations](product-decisions-topics.md#custom-configurations)
+- [Partner enablement](product-decisions-topics.md#partner-enablement)
+- [Technical discovery](product-decisions-topics.md#technical-discovery)
+- [Sales patterns](product-decisions-topics.md#sales-patterns)
+- [Discovery techniques](product-decisions-topics.md#discovery-techniques)
+- [POC management](product-decisions-topics.md#poc-management)
+- [Competitive strategies](product-decisions-topics.md#competitive-strategies)
+- [Technical documentation](product-decisions-topics.md#technical-documentation)
+- [Customer onboarding](product-decisions-topics.md#customer-onboarding)
+- [Account health monitoring](product-decisions-topics.md#account-health-monitoring)
+- [Upsell and cross-sell](product-decisions-topics.md#upsell-and-cross-sell)
+- [Churn prevention](product-decisions-topics.md#churn-prevention)
+- [Customer advocacy](product-decisions-topics.md#customer-advocacy)
+- [Success metrics tracking](product-decisions-topics.md#success-metrics-tracking)
+- [Quarterly business reviews](product-decisions-topics.md#quarterly-business-reviews)
+- [Product adoption](product-decisions-topics.md#product-adoption)
+- [Renewal management](product-decisions-topics.md#renewal-management)
+- [Feedback collection](product-decisions-topics.md#feedback-collection)
+- [Health assessment](product-decisions-topics.md#health-assessment)
+- [Success patterns](product-decisions-topics.md#success-patterns)
+- [Customer lifecycle management](product-decisions-topics.md#customer-lifecycle-management)
+- [Relationship strategies](product-decisions-topics.md#relationship-strategies)
+- [Success playbooks](product-decisions-topics.md#success-playbooks)
+- [Technology utilization](product-decisions-topics.md#technology-utilization)

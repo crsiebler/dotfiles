@@ -28,6 +28,5 @@ spelling assertions; generators need generated-meaning and runtime-selection tes
 
 Report verification gaps with the exact unestablished behavior and proposed check.
 Separate tests present, reported tests run and independently supplied execution
-evidence, including command, revision and scope. Do not run tests, reproduce a
-failure, edit assertions, regenerate snapshots or load an implementation workflow
-from this lens. A passing suite proves only what its actual assertions exercise.
+evidence, including command, revision and scope. Focused test execution follows the root verification boundary. Do not edit
+assertions, regenerate snapshots or load an implementation workflow from this lens. A passing suite proves only what its actual assertions exercise.

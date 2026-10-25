@@ -2,15 +2,15 @@
 
 ## Runtime and model selection
 
-- Select one execution workflow per story attempt: this native team workflow
-  or the separate serial Ralph runner. Never run both against the same story.
+- Use one execution owner per story attempt; never run competing workflows
+  against the same candidate.
 - Reusable roles define expertise, tools, constraints and outputs. Keep model
-  and reasoning effort choices in explicit runtime profiles or launch parameters.
+  and reasoning effort choices in explicit session selection or launch parameters.
 - Ordinary work inherits the selected parent/session settings. Inheritance is
   not automatic task-aware routing. Do not silently replace it with global
   subagent defaults or role pins.
-- Use an efficient supported profile for narrow tasks only with relevant quality
-  evidence. Consider an explicit stronger profile for material ambiguity,
+- Use an efficient supported model for narrow tasks only with relevant quality
+  evidence. Consider an explicit stronger model for material ambiguity,
   architecture, difficult debugging, security analysis or substantive failure.
   Honor user choices, runtime support and authorized cost limits; escalation does
   not enlarge a spending grant or waive tools, sandbox or review restrictions.
@@ -34,9 +34,11 @@ single-dispatcher contract, with this precedence:
    selection is unavailable or cannot be verified to the requested standard,
    stop the affected path and report the exact constraint. Do not silently relax
    it. A skill preference or illustrative prompt is not a user requirement.
-2. Preserve installed role pins and runtime restrictions. Use the exact required
-   native role with its supported model, even when it differs from the preference.
-   Never override a fixed pin, change roles or install settings to obtain a model.
+2. Preserve installed role pins and runtime restrictions. Follow
+   [reviewer binding](story-execution.md#reviewer-binding) with a supported model,
+   even when it differs from the preference. Contract-supplied binding cannot
+   evade a fixed pin or permission restriction. Never install settings to obtain
+   a model.
 3. Where supported and authorized, request the preferred worker/advisor model.
    Otherwise omit overrides and use native inheritance or runtime defaults.
    Explicit model-selection controls are optional unless a user constraint needs
@@ -46,22 +48,24 @@ single-dispatcher contract, with this precedence:
    telemetry or unavailable preferred models alone does not block execution or
    require renewed approval. Do not repeatedly probe an unchanged model gap.
 
-An available Luna-pinned story-reviewer satisfies the model policy when the user
-has not explicitly required another model. It must still be the exact native
-story-reviewer and support the required protocol and same-session continuation.
+An available Luna-pinned reviewer satisfies the model policy when the user
+has not explicitly required another model. It must still carry the complete reviewer
+contract and support the required protocol and same-session continuation.
 No preference fallback changes review quality criteria, tool restrictions or
 consumed passes. This policy does not establish model quality or effective routing.
 
 ## Native execution ownership
 
-- Ralph executes stories serially. This team workflow may admit concurrent
+- This team workflow may admit concurrent
   dependency-ready implementation workers when the active harness exposes the
   required native controls. Preserve requirements, acceptance and bounded review/delivery gates.
 - Give each implementation worker an explicit absolute task worktree, exact branch,
   approved committed base and owned paths. Inspect actual native cwd/isolation
   controls; verify the assigned root and use assigned paths for files, Git and
   checks. Establish a clean committed baseline;
-  never copy or commit user dirty work to prepare it. Task branch/worktree setup
+  never copy or commit unrelated/pre-existing implementation work to prepare it.
+  The scoped initial plan/checkpoint commit follows
+  [commit authority](story-execution.md#authorization-and-prepared-branch). Task branch/worktree setup
   needs a scoped lifecycle grant and never switches the user's checkout.
 - One lead owns integration branch/index, canonical task markers, progress and
   memory. Coordinate shared build/output ownership and host resources using the
@@ -74,8 +78,9 @@ consumed passes. This policy does not establish model quality or effective routi
 The main thread is the dispatcher and retains conflict-resolution writes. Do not
 silently switch the main thread. No custom coordinator or nested delegation is
 needed.
-The exact native story-reviewer remains mandatory at the budget-selected native
-gate; selecting Astra never substitutes a generic reviewer or adds an extra pass.
+An independent agent bound to reviewer remains mandatory at the budget-selected
+native gate; selecting Astra never replaces the supplied review contract or adds
+an extra pass. Absence of a role selector alone needs no exception approval.
 Respect existing advisor/review/remediation limits. On resumption, reconcile the
 existing candidate, checks, reviewer session and consumed passes. A resolved
 model-policy blocker does not invalidate an otherwise valid passing review or

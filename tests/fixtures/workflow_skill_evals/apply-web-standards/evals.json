@@ -1,0 +1,38 @@
+{
+  "skill_name": "apply-web-standards",
+  "status": "not-run",
+  "evals": [
+    {
+      "id": 1,
+      "split": "representative",
+      "prompt": "Review a React state update bug without executing commands.",
+      "expected_output": "Use the React reference under inspection-only review; trace stale state and effects.",
+      "files": [],
+      "expectations": [
+        "Use the React reference under inspection-only review; trace stale state and effects.",
+        "Do not invoke a React-specific agent or run tests."
+      ],
+      "reference": "references/react.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    },
+    {
+      "id": 2,
+      "split": "held-out",
+      "prompt": "Diagnose a Django app using its pinned environment; the workstation also has a newer Django installation.",
+      "expected_output": "Honor the project target and use the Django reference without upgrading dependencies.",
+      "files": [],
+      "expectations": [
+        "Honor the project target and use the Django reference without upgrading dependencies.",
+        "Do not upgrade the app or infer target from binaries."
+      ],
+      "reference": "references/django.md",
+      "native_agents": {
+        "codex": "worker",
+        "opencode": "general"
+      }
+    }
+  ]
+}

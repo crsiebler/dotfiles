@@ -18,6 +18,5 @@ contrast value from markup.
 
 Findings require a specific user action/state, affected access need, observed or
 source-supported failure and practical remediation. Identify untested assistive
-technologies or dynamic states as gaps, not successful verification. Propose later
-authorized verification without opening a browser, running tools, editing code
-or automatically invoking an accessibility specialist during review.
+technologies or dynamic states as gaps, not successful verification. Use authorized browser flows under the root verification boundary, or report
+unavailable verification. Do not edit code or automatically invoke a specialist.

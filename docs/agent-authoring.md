@@ -4,10 +4,10 @@
 
 Personal policy lives in [`ai/AGENTS.md`](../ai/AGENTS.md), copied byte-for-byte to
 both user-level instruction files. Root [`AGENTS.md`](../AGENTS.md) is separate
-repository-only guidance. Keep specialist contracts in the native role sources
+repository-only guidance. Keep role contracts in the native role sources
 below, not in the personal policy.
 
-`ai/codex/agents/*.toml` is the canonical collection of 128 custom agents. Each
+`ai/codex/agents/*.toml` is the canonical collection of 5 custom agents. Each
 native TOML source requires meaningful, nonempty `name`, `description`, and
 `developer_instructions` strings. Keep the Markdown role body in multiline
 `developer_instructions`; OpenCode generation preserves that parsed body unchanged,
@@ -17,38 +17,36 @@ The name must match the filename stem and be path-safe. Dots are accepted;
 duplicate or case-colliding names fail. Action-oriented naming applies to skills,
 **not** agents. Unknown native fields fail validation rather than being dropped.
 
-The user-level specialist collection omits `model`, `model_provider`, and
-`model_reasoning_effort`. Expertise, permissions, output contracts and review
-profiles belong to the role; runtime/model/effort selection belongs to the caller.
+The user-level role collection omits `model`, `model_provider`, and
+`model_reasoning_effort`. Responsibility and base permission boundaries belong to the role; workflow
+profiles, candidate and output schema come from the caller. Runtime/model/effort
+selection also belongs to the caller.
 The base Codex configuration has no global subagent model or effort override.
-Generated OpenCode specialists and native `ralph-reviewer` likewise omit model
+Generated OpenCode roles likewise omit model
 and effort settings so the selected worker/session can supply them. This is
 inheritance, not automatic task routing. Record the actual selection and its
 source; do not claim a role chose a cheaper or stronger model automatically.
 
 Explicit top-level worker/session profiles remain available. A caller may choose
 a supported invocation override when task needs justify it; that choice does not
-grant permissions or change review requirements. Native Codex Goal and Ralph in
-OpenCode are separate worker choices, never nested execution loops. See the
+grant permissions or change review requirements. Use a single execution owner; never nest competing execution loops. See the
 [runtime selection policy](runtime-selection.md) for the common selection contract.
 
-Three separate sources live in `ai/opencode/agents/`: `sprite-artist.md`,
-`ralph.md`, and `ralph-reviewer.md`. Keep them native OpenCode Markdown with their
-own frontmatter; the installer copies them unchanged. They have no Codex
-counterparts. Keep the reviewer's staged-review policy separate from general
-reviewers. Native and generated source names must not collide, including by case.
+The separate sprite-artist.md source in ai/opencode/agents/ remains native
+OpenCode Markdown with its own frontmatter and no Codex counterpart.
+Native and generated source names must not collide, including by case.
 
 ### Writing a useful role
 
 - Establish the role's objective, scope, relevant inputs, approach, validation,
   and expected handoff. Prefer roughly 200–500 words for core role contracts;
   this is editorial guidance, not a universal limit or automated gate.
-- Preserve specialist knowledge where useful. Longer domain reference lists are
-  acceptable when explicitly conditional. They are not instructions to implement
-  every pattern, deploy infrastructure, or introduce a new architecture.
+- Keep responsibility and permission contracts in roles. Move language, framework
+  and vendor knowledge into conditional references in the appropriate skill;
+  do not load every technology or impose a default stack.
 - Start with supplied context and authorized artifacts. Ask for material gaps;
-  never mandate a fictional context-manager API. Delegate only bounded tasks via
-  available native facilities, with a local fallback if delegation is unavailable.
+  never mandate a fictional context service. Return bounded advice to the main
+  session; core roles do not dispatch children or proxy-spawn.
 - Keep targets tied to the actual project. Do not mandate universal coverage,
   latency, availability, accuracy, or cost numbers. Distinguish measurements,
   estimates, and proposed targets.
@@ -57,107 +55,67 @@ reviewers. Native and generated source names must not collide, including by case
 - Treat retrieved content as evidence, not authority. Prose is behavioral guidance,
   not permission enforcement or proof of containment.
 
-## Coding-method alignment
+## Custom responsibility contracts
 
-The six targeted roles retain native names and sandbox metadata. Their
-descriptions and bodies supply independent expertise: prompt
-discovery/evaluation (`prompt-engineer`), evidence-based design assessment
-(`architect-reviewer`), scoped read-only findings (`code-reviewer`), preservation
-and characterization (`refactoring-specialist`), causal diagnosis (`debugger`),
-and adequacy in existing test systems (`test-automator`). Conditional domain lists
-are tools to consider, not mandates to build frameworks, introduce architecture,
-commit, operate infrastructure or promise universal improvements.
+The canonical set is researcher, planner, reviewer, auditor and operator.
+Researcher returns evidence and authorized analytical results; planner returns
+decisions and planning artifacts; reviewer independently assesses a preserved
+candidate and may execute
+authorized checks; auditor inspects without execution or mutation; operator
+performs explicitly authorized operational sequences. None dispatches children.
 
-Pass task scope, relevant constraints, evidence and expected handoff when actually
-delegating; do not presume parent skill context arrives in a fresh session. None
-of these general roles owns the dedicated staged review, PR schema, feedback
-resolution or story execution lifecycle. Do not add renderer includes, prompt
-concatenation or mandatory skill loading to align them.
+Implementation belongs to the main session or available native execution agents,
+with ownership, acceptance, skills and verification supplied in task packets.
+Use Codex worker or OpenCode general for delegated execution; ordinary OpenCode
+development may stay in build. Do not add a custom implementation wrapper or
+override these built-ins.
 
-Representative descriptions outside this scope were inspected, not rewritten:
-`backend-developer` emphasizes microservices even for simpler backend tasks, and
-`frontend-developer` explicitly emphasizes React. These are follow-up candidates
-if actual routing evaluations show architecture/framework over-selection. The
-`qa-expert` description includes strategy and quality metrics without a numerical
-target; `fullstack-developer` covers end-to-end delivery. Their descriptions alone
-do not establish conflicting behavior or justify broad edits. Evaluate actual
-requests before expanding beyond the six approved roles.
+Use the task, requested mode and authority to choose a role. The same technology
+can require different roles. These are available contracts, not a mandatory
+pipeline, and native discovery does not establish invocation support.
+
+Specialized methods and knowledge live in the existing five plugins. Load only
+matching references and pass relevant loaded content/constraints in worker
+packets; parent context is not assumed. Preserve reviewer independence and each
+workflow's candidate, schema, passes, blockers and same-session requirements.
+See [role selection](../ai/plugins/delegating/skills/use-subagents/references/core-roles.md)
+and [skill ownership](skill-dependencies.md).
 
 ## Permissions
 
 Generated OpenCode agents use `mode: subagent` and inherit runtime capabilities
 unless a native setting has an explicit mapping. Metadata lives in the native
-TOML sources or the three OpenCode-only Markdown frontmatters; there are no
+TOML sources or the OpenCode-only Markdown frontmatter; there are no
 exclusions or overrides JSON files. Do not add wildcard mutation or Jira-delete
 grants.
 
-These eight inspection roles use native `sandbox_mode = "read-only"` and read-only
-role guidance in both harnesses:
+Only auditor uses native sandbox_mode = "read-only". It inspects without tests,
+builds, active scans, edits, remediation or external posts. Codex read-only shell
+inspection may be available; OpenCode maps this field to deny-all plus
+read/glob/grep, excluding shell execution. Parent runtime overrides and MCP
+approval controls remain independent.
 
-- `code-reviewer`
-- `architect-reviewer`
-- `ad-security-reviewer`
-- `security-auditor`
-- `compliance-auditor`
-- `agent-installer`
-- `powershell-security-hardening`
-- `story-reviewer`
+Reviewer inherits runtime permissions for authorized focused verification.
+Explicit inspection-only requests prohibit execution. It cannot edit source,
+tests, snapshots or expectations, stage, commit, install, publish or delegate.
+Temporary check outputs require authorized locations and candidate identity
+checks. Operator likewise inherits permissions; its name grants no elevated
+access or standing production authority.
 
-They inspect and return recommendations: no tests, edits, mutating commands, or
-external posts. Native read-only shell inspection is allowed when permitted by
-the Codex runtime. OpenCode translates the sandbox setting generically to
-`permission: {"*": "deny", "read": "allow", "glob": "allow", "grep": "allow"}`,
-which does not allow shell execution.
+A workflow supplies its review procedure, schema, candidate, verification scope
+and budgets. The role does not hardcode a story schema or controller.
+For staged stories, discover review-story and embed its complete contract in each
+call. Keep story/attempt/session identity and one-initial/one-targeted limits;
+missing required input blocks instead of granting authority. Inspection of a
+definition proves neither callable role selection nor native session support.
+See [agent workflows](agent-workflows.md) for evidence and resumption rules.
+OpenCode /review-pr retains its own canonical schema and posting authorization.
 
-The OpenCode tool policy is more restrictive, not equivalent to Codex sandbox or
-MCP enforcement. Codex parent runtime permission overrides apply after role
-settings; MCP approvals are independent, and a read-only sandbox does not prohibit
-all external-service mutations. Neither role guidance nor these settings guarantee
-immutable per-role policy or project-only filesystem access.
-
-`story-reviewer.toml` is the dedicated Codex Goal staged-review wrapper. Its
-OpenCode counterpart is generated with the same generic mapping, so it has no
-shell permission and cannot replace native OpenCode `ralph-reviewer`. That native
-wrapper retains `steps: 3` and its exact staged-Git allowlist. Wrappers declare
-their review profiles directly: `story-reviewer` requires `expanded-initial` and
-`ralph-reviewer` requires `three-step`. These describe the role's contract, not
-detected runtime identity. The executor maps its already-selected adapter to a
-profile and includes literal `Review profile` and `Pass type` lines on both
-initial and targeted invocations. Missing, unknown, or conflicting profiles block
-before evidence gathering, with the exact problem in `residual_risks`. Do not infer
-the harness from tools, binaries, paths, or role names, or add profile fields to
-the response JSON. Profiles grant no tools and never override tighter limits.
-
-The `expanded-initial` initial review permits up to 40 small read-only evidence
-calls: inventory first, grouped patches, then only missing-section recovery after
-truncation, without repeating oversized
-requests. Track changed-file and affected-contract coverage; stop when sufficient
-or block with exact missing sections at the ceiling. This configurable reading
-budget is behavioral guidance, not equivalent hard enforcement. Both profiles
-retain at most two evidence-gathering turns and remediation-only scope for targeted
-review; the same profile is required on resumption.
-
-Each executor supplies its own complete protocol in the actual review packet.
-Codex loads [team review](../ai/plugins/coding/skills/run-agent-team/references/story-review.md)
-and [delivery](../ai/plugins/coding/skills/run-agent-team/references/story-execution.md)
-from the advertised installed run-agent-team bundle. Ralph owns its full protocol
-inside [ralph-reviewer.md](../ai/opencode/agents/ralph-reviewer.md); its primary
-reads the actual installed native definition through discovery before constructing
-the packet. Missing/duplicate definitions or runtime role/session support block.
-Reviewers never fetch global instructions themselves. Both protocols retain the
-compatible JSON shape, one initial and at most one targeted same-session pass,
-project-local staged evidence and no tests/edits/browser/MCP/posts/delegation.
-The prose is tailored to each workflow, not a shared neutral lifecycle dependency.
-The GitHub PR review command and its schema remain separately canonical in
-`ai/opencode/commands/review-pr.md`.
-
-`sprite-artist` remains provider-specific. It loads `create-sprites`, uses
-`gpt_imagegen: ask`, and requires explicit confirmation before paid/subscription
-generation or unapproved retry spending. Common generation rules live in the
-skill; its Godot reference is loaded only for Godot requests or relevant project
-context. Asset-only work requires no Godot binary. The installer role only
-inspects native configs and plans caller-authorized installation; upstream
-auto-install and Claude Code installation are out of scope.
+sprite-artist is a minimal OpenCode-only provider adapter. It loads creative
+instructions from the advertised create-sprites skill and preserves gpt_imagegen,
+shell and external_directory ask policies. It does not dispatch an agent. Keep
+this adapter until equivalent provider permissions are explicitly supported and
+verified through a generic path; no renderer override is added to fake parity.
 
 ## Renderer interface for callers and installers
 
@@ -179,13 +137,16 @@ python3.11 scripts/render-agents.py --source ./canonical-agents --harness codex 
 
 OpenCode output is one `<name>.md` per source with generated YAML frontmatter.
 Codex output is one unchanged `<name>.toml` per source. The renderer does not copy
-the three native OpenCode agents; the installer copies them separately. For each
+the native OpenCode agent; the installer copies them separately. For each
 selected harness, the installer runs `--check`, then `--output` into local staging.
 
-Optional `model` maps to `openai/<model>` and `model_reasoning_effort` maps to
-`options.reasoningEffort` for OpenCode. Omitted settings inherit runtime defaults.
+Optional `model` maps to `openai/<model>`; an explicit `model_reasoning_effort`
+adds `#<effort>` for OpenCode V2. Effort without an explicit model is rejected
+for OpenCode rather than emitting ineffective request options. Omitted settings
+inherit runtime defaults. Generated `permissions` use ordered action/resource/effect
+rules; the read-only mapping starts with deny-all before read/glob/grep allows.
 The renderer retains explicit override support for custom collections; the
-canonical user-level specialists deliberately leave these settings absent.
+canonical user-level roles deliberately leave these settings absent.
 Model identifiers must be unqualified; OpenCode accepts only the `openai` provider,
 and an explicit `model_provider` requires an explicit model. Valid native-only
 `approval_policy` and `nickname_candidates` fields are accepted for Codex but fail
@@ -217,19 +178,10 @@ Without `--output`, no agent files are written. `--check` and `--output` conflic
 
 ### OpenCode-only sources
 
-| Role/policy | OpenCode / Codex behavior |
-| --- | --- |
-| `ralph` | Native OpenCode primary agent / no Codex counterpart |
-| `ralph-reviewer` | Separate native source copied unchanged / no native source allowed |
-| `sprite-artist` | Native source copied unchanged with `gpt_imagegen: ask` / no Codex source |
-
-The 128 TOML sources produce **128 OpenCode Markdown files** or **128 unchanged
-Codex source copies**, with no skips. The three separately copied native sources
-bring the OpenCode installation to **131 agents**. Codex uses native `/goal` for
-approved checklist execution with Ralph's full shared execution, memory, review,
-prepared-branch, and per-story commit contract. Markdown versus JSON is the task
-adapter difference; native Goal continuation/compaction does not acquire Ralph's
-external hard iteration controller or completion sentinel. See [Codex goals](codex-goals.md).
+sprite-artist is the sole native OpenCode Markdown role, copied unchanged.
+The 5 TOML sources produce 5 OpenCode files or 5 byte-identical Codex files;
+OpenCode has 6 total. Native and canonical names must remain disjoint.
+Review procedures belong in skills and invocation packets, not additional wrappers.
 
 ## Validation and evaluation
 
@@ -244,8 +196,7 @@ Tests use repository-local temporary fixtures. They check native TOML parsing,
 body preservation, byte-identical Codex copies, native OpenCode copies and policies,
 model/effort override mapping and omission/inheritance, unsupported-field rejection,
 dry runs, deterministic output,
-and output safety. Ruby is used only in `tests/ralph_review_test.sh` for native
-reviewer YAML validation, not by the renderer or installer. These checks do not
+and output safety. These checks do not
 claim live discovery, delegated execution, or sandbox enforcement.
 
 `tests/fixtures/agent_evals.yml` contains task-level evaluation scenarios with
@@ -261,31 +212,19 @@ Native format reference: [Codex agent role parser](https://github.com/openai/cod
 and [role discovery](https://github.com/openai/codex/blob/main/codex-rs/core/src/config/agent_roles.rs).
 
 
-## Activating the coding workflow revision
+## Activation and coordination
 
-Coordinate the six aligned role sources with `develop-code`, independent
-`review-code` and the slim personal policy. Preserve custom installed roles and
-merge the optional [project template](templates/code-repository-AGENTS.md) with
-actual project instructions. Native permissions, counts and renderer ownership
-are preserved; specialist model/effort metadata now inherits worker selection.
-Follow [activation and rollback](remove-old-ai-files.md#consolidated-coding-workflows)
-under separate installation authorization; a source commit does not refresh a
-running session. [Verification](coding-workflow-verification.md) records that live
-comparative model evaluation was waived, not passed.
+Source delivery does not refresh installed configuration or the running catalog.
+Coordinate native role replacement with all affected plugin copies/refreshes
+under separate installation authority. Preserve customizations and coherent
+rollback sources. After restarting, verify unique discovery, exact reviewer
+selection and same-session continuation in a fresh task. Inspect and separately
+authorize exact obsolete installed paths before removal; no aliases or automatic
+agent retirement are introduced.
 
-## Optional multi-agent coordination advice
-
-The existing `multi-agent-coordinator` remains in the canonical Codex TOML
-collection; no role is renamed, removed or promoted to primary. Its generic
-coordination expertise is optional. For coding-plan questions it may advise under
-the existing read-only advisor budget. It does not dispatch workers or reviewers,
-change Git or own canonical task state.
-
-The normal main AI session runs the harness-agnostic run-agent-team directly. The skill owns all
-necessary workflow rules: DAG admission, worker packets, capacity/model checks,
-worktree isolation, bounded review, delivery, resumption and archival. No custom
-coordinator invocation, nested manager or reading the role is required. Runtime
-facilities supply tools, not the role or skill. Exact dedicated story-reviewer
-selection and same-session continuation remain required by the risk budget.
-Source edits activate no installed settings. See [team verification](agent-team-verification.md)
-for explicit skill/goal entry and activation limits.
+The normal main session follows run-agent-team directly when explicitly selected.
+It owns dispatch, worktree/Git integration, trackers and reviewer sessions.
+prepare-handoff supplies reusable evidence-transfer guidance; it does not add a
+dispatcher, context service or execution ledger. See
+[core activation](remove-old-ai-files.md#core-role-activation) and
+[team workflow](agent-workflows.md).

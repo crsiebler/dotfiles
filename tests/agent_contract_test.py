@@ -11,11 +11,10 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/render-agents.py"
 CANONICAL = ROOT / "ai/codex/agents"
-RESTRICTED = {
-    "code-reviewer", "architect-reviewer", "ad-security-reviewer",
-    "security-auditor", "compliance-auditor", "agent-installer",
-    "powershell-security-hardening", "story-reviewer",
-}
+RESTRICTED = {"auditor"}
+READ_ONLY_RULES = [{"action": action, "resource": "*", "effect": effect}
+                   for action, effect in (("*", "deny"), ("read", "allow"),
+                                          ("glob", "allow"), ("grep", "allow"))]
 ROUTING_FIELDS = {"model", "model_provider", "model_reasoning_effort"}
 
 
@@ -84,8 +83,8 @@ class AgentContractTest(unittest.TestCase):
                          path.read_bytes().split(b"---\n", 2)[2])
         self.assertEqual(original["description"], meta["description"])
         self.assertEqual("subagent", meta["mode"])
-        self.assertEqual("openai/gpt-5.2", meta["model"])
-        self.assertEqual({"reasoningEffort": "high"}, meta["options"])
+        self.assertEqual("openai/gpt-5.2#high", meta["model"])
+        self.assertNotIn("options", meta)
         before = path.read_bytes()
         self.success(self.run_cli("--output", self.output))
         self.assertEqual(before, path.read_bytes())
@@ -94,10 +93,10 @@ class AgentContractTest(unittest.TestCase):
         source = self.agent(sandbox_mode="read-only")
         self.success(self.run_cli("--output", self.output))
         meta, body = markdown(self.output / "Future.role.md")
-        self.assertEqual({"description", "mode", "permission"}, meta.keys())
+        self.assertEqual({"description", "mode", "permissions"}, meta.keys())
         self.assertEqual(tomllib.loads(source.read_text())["developer_instructions"], body)
-        self.assertEqual({"*": "deny", "read": "allow", "glob": "allow", "grep": "allow"},
-                         meta["permission"])
+        self.assertEqual(READ_ONLY_RULES,
+                         meta["permissions"])
 
     def test_body_bytes_preserve_crlf_unicode_and_trailing_whitespace(self):
         body = '\r\nUse café evidence.  \r\n\tKeep this whitespace.\n\n'
@@ -117,6 +116,11 @@ class AgentContractTest(unittest.TestCase):
             self.assertNotIn(separator, path.read_text().split("---\n", 2)[1])
         meta, _ = markdown(path)
         self.assertEqual(description, meta["description"])
+
+    def test_effort_without_model_fails_before_writes(self):
+        self.agent(model_reasoning_effort="high")
+        self.failure(self.run_cli("--output", self.output), "explicit model")
+        self.assertFalse(self.output.exists())
 
     def test_provider_without_model_cannot_silently_inherit_another_provider(self):
         self.agent(model_provider="openai")
@@ -148,13 +152,13 @@ class AgentContractTest(unittest.TestCase):
         self.assertEqual(2, report["written"])
         self.assertNotIn("skipped", report)
         meta, body = markdown(self.output / "Future.role.md")
-        self.assertEqual({"*": "deny", "read": "allow", "glob": "allow", "grep": "allow"},
-                         meta["permission"])
-        self.assertEqual("openai/gpt-5.2", meta["model"])
-        self.assertEqual({"reasoningEffort": "high"}, meta["options"])
+        self.assertEqual(READ_ONLY_RULES,
+                         meta["permissions"])
+        self.assertEqual("openai/gpt-5.2#high", meta["model"])
+        self.assertNotIn("options", meta)
         self.assertEqual(tomllib.loads(source.read_text())["developer_instructions"], body)
         self.assertNotIn("sandbox_mode", meta)
-        self.assertNotIn("permission", markdown(self.output / "ordinary.md")[0])
+        self.assertNotIn("permissions", markdown(self.output / "ordinary.md")[0])
 
     def test_semantic_loss_rejected_before_writes(self):
         self.agent("aaa-valid")
@@ -240,11 +244,11 @@ class AgentContractTest(unittest.TestCase):
 
     def test_collection_counts_and_native_byte_copies(self):
         report = self.success(self.run_cli(canonical=True))
-        self.assertEqual(128, report["sources"])
-        self.assertEqual(128, report["rendered"])
+        self.assertEqual(5, report["sources"])
+        self.assertEqual(5, report["rendered"])
         report = self.success(self.run_cli("--harness", "codex", "--output", self.output,
                                            canonical=True))
-        self.assertEqual(128, report["written"])
+        self.assertEqual(5, report["written"])
         self.assertNotIn("skipped", report)
         self.assertEqual({p.name for p in CANONICAL.glob("*.toml")},
                          {p.name for p in self.output.glob("*.toml")})
@@ -255,29 +259,11 @@ class AgentContractTest(unittest.TestCase):
             self.assertTrue(path.is_file())
             self.assertEqual("read-only", tomllib.loads(path.read_text())["sandbox_mode"])
 
-    def test_powershell_collection_and_retired_routing(self):
-        self.assertEqual(
-            {"powershell-expert", "powershell-ui-architect",
-             "powershell-security-hardening"},
-            {path.stem for path in CANONICAL.glob("powershell-*.toml")},
-        )
-        for path in CANONICAL.glob("*.toml"):
-            with self.subTest(path=path.name):
-                self.assertNotRegex(
-                    path.read_text(),
-                    r"powershell-(?:5\.1-expert|7-expert|module-architect)",
-                )
-
-    def test_powershell_assessment_uses_inspection_contract(self):
-        data = tomllib.loads(
-            (CANONICAL / "powershell-security-hardening.toml").read_text()
-        )
-        self.assertEqual("read-only", data.get("sandbox_mode"))
-        reference = tomllib.loads((CANONICAL / "security-auditor.toml").read_text())
-        scope = reference["developer_instructions"].split(
-            "## Read-only scope\n", 1
-        )[1].split("## Working contract", 1)[0].strip()
-        self.assertIn(scope, data["developer_instructions"])
+    def test_security_assessment_preserves_inspection_contract(self):
+        data = tomllib.loads((CANONICAL / "auditor.toml").read_text())
+        self.assertEqual("read-only", data["sandbox_mode"])
+        self.assertIn("apply-infrastructure-standards", data["developer_instructions"])
+        self.assertIn("## Read-only scope", data["developer_instructions"])
 
     def test_collection_policy_and_body_preservation(self):
         rows = []
@@ -286,20 +272,18 @@ class AgentContractTest(unittest.TestCase):
             self.assertTrue({"name", "description", "developer_instructions"} <= data.keys())
             self.assertFalse(ROUTING_FIELDS & data.keys(), path.name)
             rows.append(data)
-        reviewer = ROOT / "ai/opencode/agents/ralph-reviewer.md"
+        reviewer = ROOT / "ai/opencode/agents/sprite-artist.md"
         native = {p.stem for p in reviewer.parent.glob("*.md")}
-        self.assertEqual({"ralph", "sprite-artist", "ralph-reviewer"}, native)
+        self.assertEqual({"sprite-artist"}, native)
         self.assertFalse(native & {p.stem for p in CANONICAL.glob("*.toml")})
         self.success(self.run_cli("--output", self.output, canonical=True))
         for name in RESTRICTED:
             meta, _ = markdown(self.output / f"{name}.md")
-            self.assertEqual({"*": "deny", "read": "allow", "glob": "allow", "grep": "allow"},
-                             meta["permission"])
-        meta, _ = markdown(reviewer.parent / "ralph.md")
-        self.assertEqual("primary", meta["mode"])
+            self.assertEqual(READ_ONLY_RULES,
+                             meta["permissions"])
         meta, _ = markdown(reviewer.parent / "sprite-artist.md")
-        self.assertEqual({"gpt_imagegen": "ask", "bash": "ask",
-                          "external_directory": {"*": "ask"}}, meta["permission"])
+        self.assertEqual([{"action": action, "resource": "*", "effect": "ask"}
+                          for action in ("gpt_imagegen", "shell", "external_directory")], meta["permissions"])
         for data in rows:
             name = data["name"]
             description = data["description"]
@@ -308,8 +292,7 @@ class AgentContractTest(unittest.TestCase):
             self.assertEqual(body, rendered_body)
             expected = {"description": description, "mode": "subagent"}
             if name in RESTRICTED:
-                expected["permission"] = {"*": "deny", "read": "allow",
-                                          "glob": "allow", "grep": "allow"}
+                expected["permissions"] = READ_ONLY_RULES
             self.assertEqual(expected, meta)
 
     def test_runtime_defaults_do_not_override_model_agnostic_subagents(self):
@@ -317,20 +300,9 @@ class AgentContractTest(unittest.TestCase):
         self.assertTrue(config["agents"]["enabled"])
         self.assertNotIn("default_subagent_model", config["agents"])
         self.assertNotIn("default_subagent_reasoning_effort", config["agents"])
-        # Worker/session profiles stay explicit; inheritance is not a router.
+        # Session model selection stays explicit; inheritance is not a router.
         self.assertEqual("gpt-6.1-sol", config["model"])
-        astra = tomllib.loads((ROOT / "ai/codex/astra.config.toml").read_text())
-        self.assertEqual("gpt-6-astra", astra["model"])
-        self.assertEqual("high", astra["model_reasoning_effort"])
 
-    def test_native_reviewer_leaves_model_selection_to_runtime(self):
-        content = (ROOT / "ai/opencode/agents/ralph-reviewer.md").read_text()
-        frontmatter = content.split("---\n", 2)[1]
-        # Inspect only top-level YAML fields; the shell suite parses permissions.
-        fields = {line.split(":", 1)[0] for line in frontmatter.splitlines()
-                  if line and not line[0].isspace() and ":" in line}
-        self.assertFalse({"model", "model_provider", "options",
-                          "reasoningEffort", "model_reasoning_effort"} & fields)
 
 
 if __name__ == "__main__":

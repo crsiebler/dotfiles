@@ -24,7 +24,11 @@ Produce the six plain-text fields in the reference. Use specific technical
 and delivery implications, not keyword quotas or padded minimum lengths. Include
 actionable dependencies and mitigations only where supported.
 
-Default to a draft. Before external posting, preview the full comment, verified
-site/issue, and actual exposed tool payload; require explicit approval. Verify
-the resulting comment and report its identity/link. Do not implement the item,
-transition its status, or change other external state during assessment.
+Default to a draft. Before external posting, show the full comment, verified
+site/issue, and actual exposed tool payload. Reuse existing authorization for the
+same target and content when the user explicitly approved posting them; otherwise
+ask for approval of the prepared result. Carry that grant through continuation.
+A changed destination, body, or effect needs a new preview and approval; mechanical
+encoding alone does not. Verify the resulting comment and report its identity/link.
+Do not implement the item, transition its status, or change other external state
+during assessment.

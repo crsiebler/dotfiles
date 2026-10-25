@@ -88,8 +88,11 @@ hour ranges based only on PR status.
 ## Posting
 
 Check exact labels, target, evidence, and sensitive-data removal. Preview the
-full body and populated tool payload, then ask for explicit approval. No setting
-or initial request bypasses this step. After the approved write, verify the
+full body and populated tool payload. Reuse explicit posting authority for that
+same destination and content, including an unchanged approved preview from an
+earlier turn. Otherwise ask for approval of the prepared result; a draft request
+is not posting authority. Changed target, body, or effect requires new approval,
+but mechanical encoding alone does not. After the approved write, verify the
 returned issue/comment ID (re-read when needed) and report actual results.
 On timeout, inspect existing comments before retrying to avoid duplicate posts.
 Never edit/delete an earlier update or transition status incidentally.

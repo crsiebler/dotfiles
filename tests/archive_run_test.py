@@ -28,7 +28,7 @@ class ArchiveRunTest(unittest.TestCase):
         self.git('init', '-q', '--initial-branch=feat/fixture')
         self.manifest = {
             'version': 1, 'run_id': 'fixture-20261003', 'feature': 'fixture',
-            'adapter': 'CodexGoalMarkdown', 'task_source': 'PLAN.md',
+            'adapter': 'MarkdownPlan', 'task_source': 'PLAN.md',
             'prds': ['tasks/prd-fixture.md'], 'journal': 'progress.md',
             'memory': 'memory.json', 'archive_on_completion': True,
         }
@@ -36,7 +36,7 @@ class ArchiveRunTest(unittest.TestCase):
             'version': 1, 'run_id': self.manifest['run_id'], 'story_id': 'US-001',
             'checks': [{'command': 'fixture-check', 'status': 'passed',
                         'evidence': 'Fixture check succeeded.'}],
-            'review': {'verdict': 'pass', 'kind': 'native', 'role': 'story-reviewer',
+            'review': {'verdict': 'pass', 'kind': 'native', 'role': 'code-reviewer',
                        'session_id': 'fixture-session', 'evidence': 'Passing fixture review.'},
         }
         self.write('PLAN.md', '# Fixture\n\n### US-001 - Fixture story\n- [x] Story complete\n')
@@ -137,12 +137,6 @@ class ArchiveRunTest(unittest.TestCase):
         self.assertEqual((directory / 'sentinel').read_text(), 'retain existing archive')
         self.assertTrue((self.project / 'PLAN.md').exists())
 
-    def test_plan_preservation_does_not_bypass_stopped_runner(self):
-        self.write('.ralph-stop', 'preserve runner controls')
-        result = self.preserve_plan(expected=2)
-        self.assertIn('stop file', result['reason'])
-        self.assertFalse((self.project / 'archive').exists())
-        self.assertEqual((self.project / '.ralph-stop').read_text(), 'preserve runner controls')
 
     def test_plan_preservation_rejects_changed_sources_without_removing_them(self):
         project = ARCHIVE.Project(self.project)
@@ -200,7 +194,7 @@ class ArchiveRunTest(unittest.TestCase):
         self.assertEqual(second['status'], 'already_archived')
         self.assertEqual(second['destination'], first['destination'])
 
-    def test_closeout_commit_leaves_a_clean_ralph_candidate(self):
+    def test_closeout_commit_leaves_a_clean_worktree(self):
         result = self.run_script()
         paths = [item['source'] for item in result['files']]
         paths += [result['destination'] + '/' + item['name']
@@ -210,11 +204,6 @@ class ArchiveRunTest(unittest.TestCase):
         self.git('-c', 'user.name=Archive Fixture', '-c', 'user.email=fixture@example.invalid',
                  'commit', '-q', '-m', 'chore(fixture): archive completed run')
         self.assertEqual(self.git('status', '--porcelain').stdout, b'')
-        candidate = subprocess.run(
-            [sys.executable, '-c',
-             "import runpy, sys; assert runpy.run_path(sys.argv[1])['clean_candidate']()",
-             str(ROOT / 'bin/ralph')], cwd=self.project, capture_output=True, text=True)
-        self.assertEqual(candidate.returncode, 0, candidate.stdout + candidate.stderr)
 
     def test_held_archive_lock_preserves_sources_and_releases_after_use(self):
         lock = self.git_path('archive-run.lock')
@@ -259,31 +248,67 @@ class ArchiveRunTest(unittest.TestCase):
         self.assertTrue((self.project / 'PLAN.md').exists())
         self.assertFalse((self.project / 'archive').exists())
 
-    def test_ralph_archive_requires_completed_unlocked_runner(self):
+
+    def test_retired_adapter_is_rejected_without_touching_old_artifacts(self):
         self.manifest.update(adapter='RalphJSON', task_source='plan.json')
-        self.record['review']['role'] = 'ralph-reviewer'
+        self.write_prd()
+        self.write('plan.json', '{"userStories":[]}')
+        self.commit('test(fixture): legacy adapter')
+        before = (self.project / 'plan.json').read_bytes()
+        result = self.run_script(expected=2)
+        self.assertEqual(result['reason'], 'unknown adapter')
+        self.assertEqual((self.project / 'plan.json').read_bytes(), before)
+        self.assertFalse((self.project / 'archive').exists())
+
+    def test_legacy_markdown_provenance_remains_readable_without_relabeling(self):
+        self.manifest['adapter'] = 'CodexGoalMarkdown'
+        self.record['review']['role'] = 'story-reviewer'
         self.write_prd()
         self.write_record()
-        self.write('plan.json', json.dumps({'project': 'fixture', 'branchName': 'feat/fixture',
-                   'description': 'fixture', 'userStories': [{'id': 'US-001', 'passes': True}]}))
-        self.commit('feat(fixture): complete Ralph story')
-        control = self.project / '.git/ralph'
-        control.mkdir()
-        state = {'version': 1, 'status': 'running',
-                 'expected_plan': json.loads((self.project / 'plan.json').read_text())}
-        (control / 'state.json').write_text(json.dumps(state))
-        self.run_script(expected=2)
-        state['status'] = 'completed'
-        expected_plan = state['expected_plan']
-        state['expected_plan'] = dict(expected_plan, description='Another run')
-        (control / 'state.json').write_text(json.dumps(state))
-        self.run_script(expected=2)
-        state['expected_plan'] = expected_plan
-        (control / 'state.json').write_text(json.dumps(state))
+        self.commit('test(fixture): legacy provenance')
+        result = self.run_script()
+        receipt = json.loads((self.project / result['destination'] / '_archive.json').read_text())
+        self.assertEqual(receipt['manifest']['adapter'], 'CodexGoalMarkdown')
+        self.assertEqual(receipt['stories'][0]['result']['review']['role'], 'story-reviewer')
+
+    def test_legacy_manifest_can_continue_with_generic_reviewer(self):
+        self.manifest['adapter'] = 'CodexGoalMarkdown'
+        self.write_prd()
+        self.commit('test(fixture): continue legacy enrollment')
         result = self.run_script()
         self.assertEqual(result['status'], 'archived')
-        self.assertTrue((control / 'state.json').exists())
+        self.assertEqual(result['stories'][0]['result']['review']['role'], 'code-reviewer')
+
+    def test_new_adapter_requires_generic_reviewer_provenance(self):
+        self.record['review']['role'] = 'story-reviewer'
+        self.write_record()
+        self.commit('test(fixture): mismatched review role')
+        result = self.run_script(expected=2)
+        self.assertEqual(result['reason'], 'missing required reviewer provenance')
         self.assertTrue((self.project / 'PLAN.md').exists())
+
+    def test_core_reviewer_provenance_is_archived_without_relabeling(self):
+        self.record['review']['role'] = 'reviewer'
+        self.write_record()
+        self.commit('test(fixture): core reviewer evidence')
+        result = self.run_script()
+        receipt = json.loads((self.project / result['destination'] / '_archive.json').read_text())
+        self.assertEqual('reviewer', receipt['stories'][0]['result']['review']['role'])
+
+    def test_auditor_cannot_substitute_for_delivery_reviewer(self):
+        self.record['review']['role'] = 'auditor'
+        self.write_record()
+        self.commit('test(fixture): wrong responsibility')
+        result = self.run_script(expected=2)
+        self.assertEqual('missing required reviewer provenance', result['reason'])
+        self.assertTrue((self.project / 'PLAN.md').exists())
+
+    def test_plan_preservation_keeps_unrelated_legacy_data(self):
+        self.write('.ralph-stop', 'historical data')
+        result = self.preserve_plan()
+        self.assertEqual(result['status'], 'preserved')
+        self.assertEqual((self.project / '.ralph-stop').read_text(), 'historical data')
+        self.assertNotIn('.ralph-stop', [item['source'] for item in result['files']])
 
     def test_incomplete_plan_or_failed_evidence_preserves_sources(self):
         self.write('PLAN.md', '### US-001 - Fixture story\n- [ ] Story complete\n')
@@ -371,15 +396,6 @@ class ArchiveRunTest(unittest.TestCase):
         self.run_script(expected=2)
         self.assertTrue((self.project / 'progress.md').exists())
 
-    def test_held_runner_lock_and_stop_file_block_archival(self):
-        control = self.project / '.git/ralph'
-        control.mkdir()
-        with (control / 'lock').open('w') as stream:
-            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            self.run_script(expected=2)
-        self.write('.ralph-stop', 'Stop.\n')
-        self.run_script(expected=2)
-        self.assertTrue((self.project / '.ralph-stop').exists())
 
     def test_copy_failure_preserves_every_source_and_pending_evidence(self):
         original = ARCHIVE.Project.write_new

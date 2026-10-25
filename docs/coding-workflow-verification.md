@@ -1,5 +1,11 @@
 # Coding workflow verification and evaluation proposal
 
+Historical record: the runner and dedicated story role described below were
+retired on 2026-10-24. Their previous measurements are retained as recorded, not
+claims about the replacement. Current behavior and validation are in
+[story review verification](story-review-verification.md).
+
+
 Status: source implementation through US-010 is committed at
 `305226d` on `refactor/coding-skills-for-ponytail`. US-011 live
 comparisons were waived by the user when requesting completion of US-011 and

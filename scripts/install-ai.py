@@ -79,6 +79,8 @@ def parse_json(text: str, context: str) -> dict:
 
 def operation(argv: list[str]) -> str:
     """Map installer-owned commands to safe operations, never entire argv."""
+    if argv[0] == 'opencode':
+        return 'checking OpenCode V2 version'
     if argv[0] == 'codex':
         if argv[-1] == '--help':
             return 'checking Codex plugin CLI capabilities'
@@ -100,8 +102,12 @@ def operation(argv: list[str]) -> str:
 
 def check_github_token(config, environment):
     for table in ('mcp', 'mcp_servers'):
-        github = config.get(table, {}).get('github', {})
-        if not isinstance(github, dict) or github.get('enabled') is False:
+        servers = config.get(table, {})
+        if table == 'mcp':
+            servers = servers.get('servers', servers)
+        github = servers.get('github', {})
+        if (not isinstance(github, dict) or github.get('enabled') is False
+                or github.get('disabled') is True):
             continue
         header = github.get('headers', {}).get('Authorization', '')
         required = (github.get('bearer_token_env_var') == 'GITHUB_MCP_TOKEN' or
@@ -281,6 +287,9 @@ def render_agents(staging, execute=run, output=None, *, harness='opencode'):
 
 def check_prompt_conflicts(old, source):
     permissions = source.get('permission', {})
+    if 'permissions' in source:
+        permissions = {rule['action']: rule['effect'] for rule in source['permissions']
+                       if rule['resource'] == '*'}
     guarded = {key[:-1]: value for key, value in permissions.items()
                if key.endswith('_*') and value in ('ask', 'deny')}
     reads = {key for key, value in permissions.items()
@@ -293,6 +302,30 @@ def check_prompt_conflicts(old, source):
             return any(permits(v, default) for v in value.values())
         return value == 'allow' or value is True or (default == 'deny' and value == 'ask')
     def check_permission(value):
+        if isinstance(value, list):
+            # Inspect each ordered rule without collapsing duplicate actions or
+            # resource exceptions. Any broader grant still needs reconciliation.
+            for rule in value:
+                if (not isinstance(rule, dict)
+                        or not all(isinstance(rule.get(key), str)
+                                   for key in ('action', 'resource', 'effect'))
+                        or rule['effect'] not in ('allow', 'ask', 'deny')):
+                    return True
+                action, effect = rule['action'], rule['effect']
+                if any(action not in reads and overlaps(action, prefix) and permits(effect, default)
+                       for prefix, default in guarded.items()):
+                    return True
+            # Retain detection of a custom deny that masks expected read exceptions.
+            for prefix, default in guarded.items():
+                if default != 'deny':
+                    continue
+                for index, rule in enumerate(value):
+                    if rule == {'action': prefix + '*', 'resource': '*', 'effect': 'deny'}:
+                        after = value[index + 1:]
+                        if any(not any(r == {'action': name, 'resource': '*', 'effect': 'allow'}
+                                       for r in after) for name in reads if name.startswith(prefix)):
+                            return True
+            return False
         if isinstance(value, dict):
             # A bare/trailing namespace deny may be a deliberate custom block,
             # not our default-before-exceptions policy. Never guess its origin.
@@ -307,9 +340,11 @@ def check_prompt_conflicts(old, source):
                        for key, action in value.items() for prefix, default in guarded.items())
         return any(permits(value, default) for default in guarded.values())
     conflict = check_permission(old.get('permission', {}))
-    for agent in old.get('agent', {}).values():
+    conflict |= check_permission(old.get('permissions', []))
+    for agent in [*old.get('agent', {}).values(), *old.get('agents', {}).values()]:
         if isinstance(agent, dict):
             conflict |= check_permission(agent.get('permission', {}))
+            conflict |= check_permission(agent.get('permissions', []))
             conflict |= check_permission(agent.get('tools', {}))
     for name, settings in source.get('mcp_servers', {}).items():
         if settings.get('default_tools_approval_mode') != 'prompt':
@@ -442,18 +477,33 @@ def check_agent_sources(root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('target', choices=['all', 'codex', 'opencode', 'validate'])
-    parser.add_argument('--preview', action='store_true', help='show retirement plan without writes')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--preview', action='store_true', help='show retirement plan without writes')
+    mode.add_argument('--check-prerequisites', action='store_true',
+                      help='check CLI prerequisites only; do not prepare sources or install')
     args = parser.parse_args()
+    if args.check_prerequisites and args.target == 'validate':
+        parser.error('--check-prerequisites requires an installation target')
     PROGRESS.phase = 'checking prerequisites'
     targets = ['codex', 'opencode'] if args.target in ('all', 'validate') else [args.target]
     if args.target != 'validate' and not args.preview:
         say('Checking installer prerequisites...')
         dependencies = (['codex'] if 'codex' in targets else []) + ['skills']
+        if 'opencode' in targets:
+            dependencies.append('opencode')
         for tool in dependencies:
             if not shutil.which(tool):
                 raise ValueError(f'{tool} is required on PATH; install it explicitly (no network bootstrap)')
         if 'codex' in targets:
             check_codex_cli()
+        if 'opencode' in targets:
+            version = run(['opencode', '--version']).strip()
+            match = re.fullmatch(r'(?:opencode\s+)?v?(\d+)\.\d+\.\d+(?:[-+][\w.-]+)?', version)
+            if not match or int(match[1]) < 2:
+                raise ValueError('OpenCode V2 (2.x or newer) is required; upgrade separately before installing native V2 configuration')
+    if args.check_prerequisites:
+        say('CLI prerequisites passed; no source/destination preparation or installation performed.')
+        return
     PROGRESS.phase = 'preparing sources'
     native_agents = check_agent_sources(ROOT)
     manifest = load_config(ROOT / '.agents/plugins/marketplace.json')
@@ -530,10 +580,6 @@ def main():
         filename = 'config.toml' if harness == 'codex' else 'opencode.json'
         required = [source / filename,
                     ROOT / 'scripts/render-agents.py']
-        if harness == 'codex':
-            required += [source / 'astra.config.toml']
-        else:
-            required += [source / 'agents/ralph-reviewer.md']
         for file in required:
             if not file.is_file():
                 raise ValueError(f'missing required source: {file.relative_to(ROOT)}')
@@ -543,9 +589,7 @@ def main():
         if harness == 'opencode' and (target / 'opencode.jsonc').exists() and args.target != 'validate':
             raise ValueError('opencode.jsonc already exists; reconcile it with opencode.json manually before installing')
         for file in [source / filename, *sorted(source.glob('*.config.toml')),
-                     *sorted(source.glob('tui.json')), *sorted(source.glob('astra.json')),
-                     *sorted(source.glob('sol.json')),
-                     *sorted(source.glob('opencode-notifier.json'))]:
+                     *sorted(source.glob('cli.json'))]:
             if args.target != 'validate':
                 check_prompt_conflicts(load_config(target / file.name), load_config(source / filename))
             content = file.read_bytes() if args.target == 'validate' else config_bytes(target / file.name, file)

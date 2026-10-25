@@ -10,8 +10,8 @@ the worktree, last commit or a stale tracking branch instead.
 Inspect all included changes, handling renames/deletions, relevant consumers and
 contracts, and supplied CI evidence. A CI success applies only to its actual
 revision and job scope. Read in bounded groups and retrieve missing sections
-through allowed inspection; do not checkout, fetch into the repository, execute
-tests or post. Respect tighter native role tool limits, including network limits.
+through allowed inspection; do not checkout, fetch into the repository or post. Focused tests require
+an already prepared matching revision and the root verification boundary. Respect tighter native role tool limits, including network limits.
 If the head changes, identify which snapshot was reviewed and remaining gaps.
 
 Attribute introduced and exposed defects against the verified baseline. Distinguish

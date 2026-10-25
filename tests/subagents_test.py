@@ -55,7 +55,7 @@ class SubagentsTest(unittest.TestCase):
             self.assertNotEqual(self.run_cli(*args).returncode, 0)
 
     def test_dotted_logical_names_fetch_complete_definitions(self):
-        for name in ('dotnet-framework-4.8-expert', 'future-noncoding.role'):
+        for name in ('versioned-tool-4.8-expert', 'future-noncoding.role'):
             with self.subTest(name=name):
                 markdown = f'---\nname: {name}\n---\nComplete definition\n'
                 native = f'name = "{name}"\ndeveloper_instructions = "Complete definition"\n'

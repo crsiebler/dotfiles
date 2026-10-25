@@ -1,9 +1,13 @@
 # Deterministic completed-run archival
 
-The serialized adapter identifier `CodexGoalMarkdown` denotes the existing
-Markdown checklist/evidence format; it does not require the Codex harness.
-Keep existing manifests and identifiers unchanged. Runtime capability checks
-belong to the invoking execution workflow, not this archival helper.
+New enrolled runs use the serialized adapter identifier MarkdownPlan with a
+Markdown checklist and generic reviewer provenance. The legacy
+CodexGoalMarkdown identifier remains readable with its original story-reviewer
+provenance. Existing code-reviewer evidence remains valid for both Markdown
+adapters; new stories use reviewer. Never relabel
+old evidence. No goal API is required. The retired JSON
+runner adapter is unsupported; existing historical archives remain untouched.
+Runtime capability checks belong to the invoking workflow.
 
 One active run belongs to one Git worktree. The installed skill's
 [archive helper](../scripts/archive_run.py) owns file selection, validation,
@@ -13,7 +17,7 @@ required; no packages, model calls, or network access are needed.
 
 ## Required plan archival; optional full-run enrollment
 
-Archive the plan after the entire goal is reached. Prefer the verified full-run
+Archive the plan after the entire plan is delivered. Prefer the verified full-run
 procedure below when enrolled; otherwise use copy-only plan preservation. If
 completion archival was missed, preserve the old completed plan before generating
 its replacement. Failed preservation blocks replacement; never silently overwrite.
@@ -31,7 +35,7 @@ retroactively fabricate structured observations or completed task evidence.
 
 Each associated PRD contains exactly one fenced `work-run` JSON block. All PRDs
 for a run contain the same manifest; bind the task source before the first execution checkpoint, without
-changing the Ralph task-source schema. Paths are relative to the Git worktree
+changing the task-source schema. Paths are relative to the Git worktree
 root, even when the PRD or plan is in another directory.
 
 ```work-run
@@ -39,7 +43,7 @@ root, even when the PRD or plan is in another directory.
   "version": 1,
   "run_id": "search-20261003",
   "feature": "search",
-  "adapter": "CodexGoalMarkdown",
+  "adapter": "MarkdownPlan",
   "task_source": "PLAN.md",
   "prds": ["tasks/prd-search.md"],
   "journal": "progress.md",
@@ -49,8 +53,7 @@ root, even when the PRD or plan is in another directory.
 ```
 
 Use a stable, unique lowercase run ID and feature slug: letters, digits, hyphens,
-at most 80 characters. For OpenCode use `RalphJSON` and `plan.json`; `prd.json` is
-not the current Ralph task source. Additional PRDs must be explicitly declared,
+at most 80 characters. Additional PRDs must be explicitly declared,
 run-owned, and have distinct basenames, including case-insensitive comparison.
 Never collect PRDs with a wildcard. The journal and memory paths are fixed at
 root `progress.md` and `memory.json`. Missing memory is normal; missing PRD,
@@ -67,7 +70,10 @@ expresses intended behavior, not user authorization.
 
 An execution request may authorize the whole approved sequence, including
 automatic archival/removal of its exact declared active artifacts and one
-closeout commit. Once granted, carry that authority through continuation; do not
+closeout commit. An explicit approved-plan implementation launch already covers
+scoped local commits, including closeout of authorized artifacts; it does not
+alone authorize removing active artifacts. Once granted, carry that authority
+through continuation; do not
 request it again. If archival/removal or commit authority is genuinely missing,
 preview the exact paths/result and request only the missing scope. Narrower
 instructions and runtime restrictions still apply. Planning only verifies existing preservation receipts and current hashes before
@@ -83,15 +89,12 @@ each passing record and its completed task marker occur together in reachable
 Git history and that all active artifacts match HEAD. It does not rerun tests,
 reperform reviews, or establish the truth of an executor's recorded observations.
 
-For Goal, invoke the helper after the final successful authorized story commit.
-For Ralph, the **invoking assistant**, outside the story agent, waits for the
-supervisor to validate completion and return exit zero, then invokes the helper.
-The story agent must not archive or remove plan.json inside the last iteration.
-The helper also refuses a held runner lock, live recorded runner/child process,
-stop file, or runner state other than completed. A fully checked old plan without
-structured records or a validated Ralph completion ledger is insufficient.
-CLI-only Ralph invocations without an invoking assistant do not automatically
-archive; do not claim that the supervisor implements a post-run hook.
+Invoke after the final successful authorized story commit, with all candidate
+writers quiescent. The helper serializes archive writers and rechecks source bytes;
+it does not control execution sessions or prove that other agents have stopped.
+The caller owns that precondition. Missing structured delivery evidence blocks
+verified archival; copy-only preservation remains available without a completion
+claim.
 
 ## Invoke the installed helper
 
@@ -120,7 +123,7 @@ The helper creates a unique UTC timestamped directory with microseconds:
 ```text
 archive/YYYY-MM-DDTHHMMSSffffffZ-feature/
   prd-search.md
-  PLAN.md                   # Or plan.json
+  PLAN.md
   progress.md
   memory.json               # If present
   _archive.json             # Source mapping, hashes, commits, evidence, provenance
@@ -141,7 +144,7 @@ independent locks. The helper copies into a fresh project-local
 `.pending-<run_id>` directory, verifies bytes, publishes to a reserved fresh final
 directory, rechecks all sources, and removes only the declared unchanged copies.
 It preserves unrelated files, empty source directories, existing archives, and
-all Ralph controls. It never stages, commits, pushes, resets runner state, or
+other undeclared artifacts. It never stages, commits, pushes, or
 creates a replacement plan/journal/memory. New execution starts with fresh memory.
 Bounds: 2 MiB per input, 32 PRDs, 1,000 stories/history commits/archive entries.
 Unsafe paths, symlinks, nonregular files, collisions, invalid metadata/memory,
@@ -160,9 +163,10 @@ actual records and completed plan. Missing retained Git evidence blocks rather
 than falling back to a merge claim. Do not create/switch branches for archival;
 execution still requires its exact prepared branch.
 
-After successful archival, make the separately authorized closeout commit only
+After successful archival, make the scoped closeout commit under the existing plan-launch or
+other explicit commit grant only
 on an allowed working branch. Stage the returned source removals and destination
-files explicitly, excluding runner controls. The metadata lock requires no staging
+files explicitly, excluding unrelated artifacts. The metadata lock requires no staging
 or ignore rule. Use the repository's commit convention, for example
 `chore(workflow): archive completed search`.
 If no commit authority exists, report the uncommitted archive. Failure to commit
@@ -175,8 +179,7 @@ Use the installed `archive_run.py --project "<absolute-worktree-root>"
 --preserve-plan "<exact-project-relative-plan-path>"` for bounded plans without a
 manifest or legacy plans whose verified archival inputs are unavailable. Add
 `--include-prd "<exact-associated-PRD-path>"` for each inspected run-owned PRD;
-never glob. `--dry-run` is read-only. Stop writers first; keep Ralph stopped until
-its supervisor has validated completion and exited. Honor pending runner controls.
+never glob. `--dry-run` is read-only. Stop writers first; reconcile any unfinished execution before replacement.
 
 The helper copies the plan, available root progress.md/memory.json and explicitly
 selected PRDs into a fresh `archive/<UTC-timestamp>-plan-preservation/`. It verifies
@@ -186,11 +189,11 @@ mapping, SHA-256 hashes, observed HEAD, `delivery_verified: false` and
 prevent loss; it never fabricates manifests, passing checks, review or commits.
 This receipt is distinct from `_archive.json` and cannot satisfy verified-run
 archival or prove an unfinished plan complete. Symlinks, unsafe paths, flat-name
-collisions, active runners and changed sources are refused. A partial directory
+collisions and changed sources are refused. A partial directory
 without its verified receipt is not a successful archive; preserve it and report
 the failure rather than retrying automatically.
 
-At goal completion use the applicable existing grant for this copy-only archival;
+At plan completion use the applicable existing grant for this copy-only archival;
 request only genuinely missing scope. Before replacing a completed plan, verify
 the receipt and every preserved file/hash, then compare all current source bytes
 with the receipt. If they differ, stop and reconcile instead of overwriting.
@@ -199,4 +202,5 @@ confirmation rules still apply. Do not reset or remove prior progress/memory/PRD
 through this mode. Their active copies remain preserved, and their retirement
 needs scoped reconciliation before starting a new run. If archival or replacement
 is blocked, leave the previous plan intact and report the exact paths and reason.
-A closeout commit remains separately authorized. No implicit push or installation.
+A closeout commit requires a plan-launch or other explicit commit grant; carry
+existing authority forward without requesting it again. No implicit push or installation.

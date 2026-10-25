@@ -23,6 +23,9 @@ class MakeCleanTest(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='clean home ', dir=ROOT / 'tests') as directory:
             home = Path(directory)
             backups = ['.zshrc.backup.20260906_120000',
+                       '.config/opencode/cli.json.backup.20260906_120000',
+                       '.config/opencode/tui.json.backup.20260906_120000',
+                       '.config/opencode/opencode-notifier.json.backup.20260906_120000',
                        '.config/opencode/opencode.json.backup.20260906_120000_123456',
                        '.config/opencode/agents/retired.md.backup.20260906_120000',
                        '.config/opencode/commands/group/old.md.backup.20260906_120000',
@@ -32,6 +35,8 @@ class MakeCleanTest(unittest.TestCase):
                        '.codex/.install-ai-backups/20260906_120000/retired/plugins/old/plugin.json',
                        '.codex/.install-ai-backups/plugin-sources/coding/' + 'a' * 64 + '/SKILL.md']
             retained = ['.zshrc', '.env', '.env.backup.20260906_120000',
+                        '.config/opencode/cli.json', '.config/opencode/tui.json',
+                        '.config/opencode/opencode-notifier.json',
                         '.aliases.backup.20260906_120000',
                         '.config/opencode/opencode.json', '.codex/config.toml',
                         '.config/opencode/.install-ai-skills.json',
@@ -73,7 +78,7 @@ class MakeCleanTest(unittest.TestCase):
             sentinel = external / 'role.md.backup.20260906_120000'
             sentinel.write_text('keep')
             (xdg / 'opencode/agents').symlink_to(external, target_is_directory=True)
-            linked = codex / 'astra.config.toml.backup.20260906_120000'
+            linked = codex / 'AGENTS.md.backup.20260906_120000'
             linked.symlink_to(sentinel)
             archive = codex / '.install-ai-backups/20260906_120000'
             archive.mkdir(parents=True)
@@ -113,6 +118,8 @@ class MakeCleanTest(unittest.TestCase):
             self.assertIn('scripts/sync-env.py', result.stdout)
             self.assertIn('.zshrc.backup.', result.stdout)
             self.assertNotIn('.env.backup.', result.stdout)
+            self.assertLess(result.stdout.index('opencode --check-prerequisites'),
+                            result.stdout.index('scripts/install-zsh-extensions.py'))
             self.assertLess(result.stdout.index('scripts/install-zsh-extensions.py'),
                             result.stdout.index('.zshrc.backup.'))
 

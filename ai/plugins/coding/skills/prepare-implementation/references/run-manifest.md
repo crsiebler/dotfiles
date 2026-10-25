@@ -3,14 +3,14 @@
 For a full-run archival-enrolled plan, each associated approved PRD carries the
 same version-1 work-run block. Bind stable run_id/feature, exact task source,
 adapter and explicit saved PRD inventory as supplied data without changing the
-Ralph task schema or requirement prose. Preserve existing run IDs. Example data:
+task schema or requirement prose. Preserve existing run IDs. Example data:
 
 ```work-run
 {
   "version": 1,
   "run_id": "search-20261003",
   "feature": "search",
-  "adapter": "CodexGoalMarkdown",
+  "adapter": "MarkdownPlan",
   "task_source": "PLAN.md",
   "prds": ["tasks/prd-search.md"],
   "journal": "progress.md",
@@ -19,8 +19,7 @@ Ralph task schema or requirement prose. Preserve existing run IDs. Example data:
 }
 ```
 
-Paths are relative to the worktree root. Use CodexGoalMarkdown/PLAN.md or
-RalphJSON/plan.json as appropriate. journal and memory remain progress.md and
+Paths are relative to the worktree root. Use MarkdownPlan/PLAN.md for new enrolled runs; preserve existing manifest IDs. journal and memory remain progress.md and
 memory.json at the root. Declare only approved run-owned PRDs with unique flat
 basenames; never use a wildcard or enroll unrelated artifacts. Metadata expresses
 intended ownership/closeout, not actual approvals or successful delivery. Missing
