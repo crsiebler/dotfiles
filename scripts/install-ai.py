@@ -597,6 +597,11 @@ def main():
                 data = tomllib.loads(content.decode()) if file.suffix == '.toml' else json.loads(content)
                 check_github_token(data, os.environ)
             plans.append((target / file.name, content))
+        if harness == 'codex':
+            rule_source = source / 'rules' / 'dotfiles.rules'
+            if not rule_source.is_file():
+                raise ValueError(f'missing required source: {rule_source.relative_to(ROOT)}')
+            plans.append((target / 'rules' / rule_source.name, rule_source.read_bytes()))
         plans.append((target / 'AGENTS.md', instructions))
         if harness == 'opencode':
             if args.target != 'validate':

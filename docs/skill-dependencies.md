@@ -13,6 +13,11 @@ the installed bundle. The standards and core-method additions are instruction-on
 project execution uses the target project's declared toolchain. Existing Python
 pins and historical tested-environment records are preserved.
 
+Autonomous recovery and review-report correction add no runtime dependencies.
+Planning records target-specific capability qualification, including unusual native
+input/display requirements, before unattended readiness. Qualification or setup
+requires its own execution scope. These instructions do not provision environments.
+
 The principal distinctions are:
 
 - Ten helper bundles have pinned Python package manifests. They can use separate

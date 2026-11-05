@@ -176,6 +176,22 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 
 ## Review and workflow boundaries
 
+- Bounded advance grants satisfy confirmatory rules only for the approved actions,
+  targets and limits. Readiness includes concrete approval artifacts and observed
+  qualification of unusual verification environments before launch. Planning does
+  no setup. Preserve full-goal readiness, acceptance and required closeout.
+- An authorized development run may gracefully interrupt its own disposable local
+  test/build subprocess after a recorded timeout or confirmed hang, with verified
+  identity, start time, ownership and isolation. Shared/pre-existing services,
+  containers and uncertain descendants still require confirmation.
+- review-story permits one reporting-only correction per attempt in the same
+  reviewer session, with zero tool calls or new evidence and unchanged substantive
+  verdict/findings. Preserve both reports and consumed budgets. Explicit blocked
+  verdicts, drift, unauthorized execution and missing evidence remain blockers.
+- Record grants separately from demonstrated capabilities and actual denials in
+  existing checkpoints. Reuse valid evidence, reconcile uncertain launches, and
+  continue safely isolated eligible work without bypassing denied actions.
+
 - Carry existing bounded user authorization through skill handoffs and continuation.
   Separately authorized scope does not require a repeated approval turn. Ask for
   missing authority or material changes in target, content, effect, or cost;

@@ -402,8 +402,9 @@ Use a descriptive label such as `Review US-002 attempt 1` where supported.
 Start a fresh reviewer session for each story's initial review. Never send a new
 story to another story's reviewer session, even after that reviewer has finished.
 Reuse the returned session only for the same story and attempt's permitted
-targeted remediation pass. Before every follow-up, check its destination against
-the recorded story/attempt/session mapping and current packet. Missing or
+targeted remediation pass or reporting-only correction. Before every follow-up,
+check its destination against the recorded story/attempt/session mapping and
+current packet. Missing or
 conflicting mapping blocks the follow-up; never guess from `Review us001` or
 another display label. If the runtime cannot establish the mapping, stop.
 
@@ -449,7 +450,18 @@ is behavioral guidance, not immutable sandbox/MCP enforcement.
 
 Allow at most one initial review and one targeted re-review per story attempt. Parse and
 validate every full response against the loaded review-story contract, including required
-fields, types, enums, pass type, and finding IDs. Malformed JSON, schema mismatch,
+fields, types, enums, pass type, and finding IDs. Before treating a mechanical
+reporting defect as a failed review, apply the loaded review-story contract's
+reporting-only correction rule. Verify the candidate is unchanged and the actual
+reviewer session is available. Allow at most one correction per story attempt,
+with zero tool calls or new evidence gathering and unchanged substantive verdict,
+findings and evidence. Preserve both responses and the reason in append-only
+progress. This correction is distinct from the targeted remediation pass. The
+executor cannot rewrite the report, invent missing fields/evidence or relabel
+executed tests as supplied. Explicit `blocked` verdicts, candidate drift, actual
+unauthorized execution and substantive evidence gaps are ineligible.
+
+After the permitted correction, any remaining malformed JSON, schema mismatch,
 inconsistent verdict/evidence, or `blocked` is a failed review: append the
 blocker safely, keep the story pending, and stop without committing. Do not repair
 reviewer output by inventing fields, infer success from empty/truncated output,

@@ -40,6 +40,13 @@ or special profile; this supplied contract owns them for this invocation.
   format, install, stage, commit, switch branches, post externally or delegate.
 - In inspection-only mode, inspect source and supplied evidence only. Do not
   execute tests, builds, reproductions or browser flows.
+  Non-mutating Git identity/status/diff reads and checksums of candidate files
+  are candidate inspection. They consume the reading budget and belong in the
+  inspection transcript, not as standalone entries in `verification`. That array
+  records tests, builds and other acceptance checks. For example, reviewer-run
+  `git diff --cached` is inspection; an executor-supplied test result has `supplied`
+  provenance; a packet-authorized test actually run by this reviewer has `executed`
+  provenance in execute mode. Never relabel an executed test as supplied.
 - In execute mode, run only packet-authorized focused checks within both runtime
   permissions and the packet's command/time/resource budget. Temporary test/build
   outputs belong in approved project-local private paths. No implicit network,
@@ -166,6 +173,25 @@ For a `targeted` pass, inspect only:
 
 Do not broaden a targeted pass into a fresh audit.
 
+### Reporting-only correction
+
+Allow at most one reporting-only correction per story attempt, in the same actual
+reviewer session as the defective response. It consumes no additional substantive
+review pass and permits zero tool calls or new evidence gathering. The executor
+supplies the original response, exact formatting/schema defect and unchanged
+story/attempt/pass/candidate identity with this complete contract. Correct only
+mechanical JSON/schema presentation or remove candidate-inspection observations
+mistakenly entered in `verification`. The original verdict, findings, resolutions,
+risks and substantive evidence must already be explicit and remain unchanged.
+Do not invent missing checks, infer a verdict, change test provenance or repair
+an actual unauthorized execution. If any of those is necessary, return blocked.
+
+The executor preserves both responses and the correction reason in append-only
+history and validates the corrected response before delivery. No new reviewer,
+model switch, budget reset or candidate change is allowed for this correction.
+A failed or unavailable correction goes through the persistent blocker gate.
+An explicit final blocked verdict is ineligible for reporting-only correction.
+
 ### Final blocked verdict versus evidence recovery
 
 Recoverable output truncation before the final verdict stays within the current
@@ -259,7 +285,8 @@ The pass type must match the requested pass. Never return `pass` with unresolved
 in-scope blocking findings or claim resolution without remediation evidence.
 
 Verification records use only the stated enums and nonempty strings. Include all
-required checks and every attempted check. In inspection-only mode no record may
+required checks and every attempted acceptance check. Candidate-inspection reads
+stay in the inspection transcript. In inspection-only mode no record may
 claim executed provenance. A pass requires no blocking findings, no unresolved
 required evidence gaps and passing required checks attributable to the candidate.
 An empty findings list alone is not a passing verdict.

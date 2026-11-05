@@ -25,3 +25,8 @@ per story attempt. The workflow owns dispatch, remediation, persistence, final
 blocker reconciliation, commits and delivery; this skill creates no execution state
 and never dispatches agents itself. Use the same contract for budget-authorized
 self-review, without claiming independent review.
+
+For mechanical report defects, follow the contract's one reporting-only correction
+in the same session with zero tool calls or new evidence. Preserve substantive
+verdict/findings and both reports. Candidate inspection is recorded in the reading
+transcript; verification entries represent acceptance checks with truthful provenance.

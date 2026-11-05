@@ -37,6 +37,50 @@ verifying an identical archive before replacing the active file.
 in `tests/fixtures/approval_scope_evals.json` include positive and negative scope
 boundaries and are authored specifications, not completed live-agent evaluations.
 
+## Recovery and advance authorization
+
+An explicit bounded advance grant satisfies the personal policy's confirmatory
+rules for the named actions, targets and limits. Planning records the actual grant
+and groups remaining approvals with concrete artifacts. This covers, when approved,
+pinned dependencies, named configuration edits, disposable test migrations, worktree
+roots and archival/removal paths. Absolute restrictions and runtime prompts still
+apply. Exact future-artifact acceptance requires its actual artifact or an approved
+scope/method resolution. Draft an authorized proposal before asking to approve it.
+
+Requirements surface consequential choices such as retention, replay after expiry
+and duplicate external effects early. Planning identifies the actual runner and
+qualification evidence for unusual checks such as native pointer control, Japanese
+IME input and exact 4K verification. Required environment preparation is separately
+authorized and completed before readiness. Full-goal readiness remains mandatory.
+
+Executors investigate failed checks and make scoped repairs while plausible paths
+and budgets remain. A run may gracefully interrupt its own disposable local test
+or build subprocess after a recorded timeout or confirmed hang only after verifying
+identity, start time, ownership and isolation. Shared services, containers and
+pre-existing processes require confirmation. Preserve failure evidence and check
+for uncertain side effects before retrying.
+
+Record grants separately from demonstrated capabilities and actual denials in the
+existing checkpoint, including host, identity, operation and validity. Reuse valid
+observations and continue safely isolated eligible work. A preferred review model's
+capacity failure before a demonstrably unstarted invocation permits an available
+allowed fallback. Existing or uncertain sessions must be reconciled first. Required
+independent review, pins and consumed budgets still govern.
+
+Candidate identity/status/diff reads and checksums are inspection transcript evidence,
+not standalone verification records. Acceptance checks retain supplied/executed
+provenance. For a mechanical reporting defect, the same reviewer may issue one
+reporting-only correction per attempt with zero tool calls or new evidence and
+unchanged substantive verdict/findings. Preserve both reports. Explicit blocked
+verdicts, drift, missing checks and actual unauthorized execution remain blockers.
+This correction does not consume or renew a substantive review pass.
+
+The regression scenarios in `tests/fixtures/approval_scope_evals.json` and
+`tests/fixtures/implementation_planning_evals.json` include the observed interruption
+patterns and negative boundaries. Static checks protect instruction contracts;
+these authored cases do not establish live-agent compliance. Activation requires
+separately authorized installation/refresh and fresh-session discovery checks.
+
 ## Plans and ownership
 
 prepare-implementation and OpenCode /plan-work default to PLAN.md in both

@@ -51,6 +51,16 @@ be authored in scope is an implementation dependency, not a manual prerequisite;
 establish the feasible runner/tool/environment now without pretending the check
 already exists or passed. Missing required runtime capability still blocks readiness.
 
+For unusual acceptance checks, identify the actual runner, environment, input
+method and observable evidence. Native pointer control, Japanese IME composition
+and exact 4K verification require capability evidence for those specific checks.
+A browser tool listing, generic keyboard support or a smaller display alone is
+insufficient. Record existing qualification evidence and its validity limits. If
+qualification needs execution or setup, propose a separately authorized preparation
+step and verify its results before declaring readiness. Planning itself does not
+run that step. If capability is unavailable, identify a supported alternative
+runner or request an explicit acceptance change without weakening the requirement.
+
 ## Resolve before handoff
 
 For each applicable gate, record its source, affected action/story, exact target
@@ -72,6 +82,16 @@ related questions early enough to resolve them before launch. State exactly what
 the user approves, including targets/effects, cost bounds and any deletion paths;
 "approve everything" is not a resolution. Continue independent planning while
 waiting, but silence or elapsed time is not approval.
+
+Prepare the concrete approval artifact within the requested planning scope before
+asking for its approval, including exact content/hash when the governing contract
+requires it. An authorization to draft that artifact should lead to its production
+and inspection. If drafting itself lacks a required capability, identify that
+specific prerequisite. Group remaining decisions into one bounded request where
+practical, including named dependency versions, configuration paths, test database
+targets, worktree roots and required preservation/removal paths. Record the actual
+user response against affected gates. An implementation launch covers scoped local
+commits but does not supply missing installation or archival/removal authority.
 
 For a manual prerequisite, state the exact action, owner, and observable completion
 evidence. A promise to do it later is not completion. Setup outside planning must

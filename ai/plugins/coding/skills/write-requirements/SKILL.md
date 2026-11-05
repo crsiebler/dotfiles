@@ -19,6 +19,12 @@ need it, or the user requests one. Both preserve all requirements and acceptance
 coverage. Establish
 the problem, users, boundaries, dependencies, and observable acceptance criteria.
 Ask only material unanswered questions; do not invent goals or fixed metrics.
+Resolve routine reversible choices from project conventions and record material
+assumptions. Surface decisions that change observable behavior or risk, including
+retention duration, replay after record expiry, duplicate external effects and
+recovery semantics. Group foreseeable related questions before planning, stating
+the tradeoff and affected criteria. Keep unresolved product decisions visible
+without guessing consent or adding unrelated acceptance obligations.
 Keep optional specialist hints as exact configured `@agent-name` values, not
 mandatory delegation. Include typecheck, meaningful tests, and browser criteria
 where applicable. Do not start implementation.

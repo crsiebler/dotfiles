@@ -61,6 +61,15 @@ gates before starting without regenerating the plan or invoking a planning skill
 Do not defer known human dependencies into a story. New mandatory gates stop
 affected work; conversational approval never bypasses runtime permission prompts.
 
+In the existing checkpoint, record authorization separately from demonstrated
+capability: target host/environment, acting identity, scoped operation and limits,
+user grant, successful capability evidence, actual denials and validity conditions.
+Reuse unchanged grants and observations across turns. Recheck when identity, target,
+environment, permissions or evidence validity changes. A denial blocks the denied
+operation; assess independently authorized operations against their own evidence.
+Never change identities or routes to evade a denial. Ask only when the next required
+action lacks authority or capability, rather than repeatedly reopening settled facts.
+
 Apply [autonomous execution scope](references/story-execution.md#autonomous-execution-scope)
 at launch and in every worker/reviewer packet. Carry the approved implementation
 endpoint forward without adding manual QA, human test confirmation or release
@@ -155,9 +164,11 @@ review. Use permitted self-review only where that budget allows; otherwise direc
 invoke an independent agent bound to `reviewer` with the full protocol/profile
 and preserve its session.
 Allow one initial and at most one targeted pass per attempt. Do not add a worker
-staged review, extra coordinator approval or reviewer-of-reviewer cycle. Follow
-pre-commit evidence and provisional marker finalization; report delivered completion
-only after a successful authorized integration commit. Keep evidence in progress,
+staged review, extra coordinator approval or reviewer-of-reviewer cycle. Apply
+the loaded review-story reporting-only correction rule for mechanical report
+defects, preserving the same reviewer/candidate, evidence and consumed passes.
+Follow pre-commit evidence and provisional marker finalization; report delivered
+completion only after a successful authorized integration commit. Keep evidence in progress,
 not plan narratives or a new registry.
 
 On failure, preserve candidate/history and block its dependent subgraph; continue

@@ -75,6 +75,16 @@ assist; resolve them through skill discovery, never sibling filesystem paths.
 They do not replace this method or require loading another lifecycle. Disclose
 unavailable helpers/checks and their effect on required verification.
 
+When a check or tool fails, inspect the evidence, identify a plausible cause and
+make an authorized scoped repair or try a materially different supported approach.
+Rerun the affected checks. Continue while meaningful progress or an untried
+plausible path remains within the applicable budgets. Preserve failure evidence,
+assertions and acceptance criteria. Reconcile uncertain side effects before retrying;
+do not repeat an unchanged failed action or bypass a denial. Use applicable process
+ownership rules for hung checks. If progress needs new authority, input or capability,
+record the exact prerequisite and continue safely isolated eligible work. Keep
+workflow review limits and delivery gates authoritative throughout recovery.
+
 Inspect the final diff for scope and compatibility. Report the actual change,
 causal or equivalence evidence, commands/results, actual test order and remaining
 limitations. A passing test establishes only the behavior it exercises.

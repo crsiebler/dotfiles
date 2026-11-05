@@ -554,6 +554,7 @@ class InstallTest(unittest.TestCase):
                        'name = "example"\ndescription = "Fixture"\n'
                        'developer_instructions = "Rendered fixture"\n')
             put('ai/codex/config.toml', 'model = "fixture"\n')
+            rule_source = put('ai/codex/rules/dotfiles.rules', 'prefix_rule(pattern=["git", "status"], decision="allow")\n')
             instruction_bytes = '# Personal café — 共通\r\nKeep exact bytes.  \r\n\r\n\r\n'.encode('utf-8')
             instructions = root / 'ai/AGENTS.md'
             reviewer = put('ai/opencode/agents/fixture-native-reviewer.md',
@@ -715,12 +716,19 @@ else:
             self.assertNotIn('Partial installation:', clash.stderr)
             self.assertFalse((root / 'home/codex/config.toml').exists())
             fake_codex.write_text(working_codex)
+            existing_rules = put('home/codex/rules/default.rules', '# Preserve user rules\n')
+            put('home/codex/rules/dotfiles.rules', '# Previous managed rules\n')
             installed_codex = subprocess.run(
                 [sys.executable, str(root / 'scripts/install-ai.py'), 'codex'],
                 env=env, cwd=root, capture_output=True, text=True)
             self.assertEqual(installed_codex.returncode, 0, installed_codex.stderr)
             codex_home = root / 'home/codex'
             self.assertEqual((codex_home / 'AGENTS.md').read_bytes(), instruction_bytes)
+            self.assertEqual((codex_home / 'rules/dotfiles.rules').read_bytes(), rule_source.read_bytes())
+            self.assertEqual(existing_rules.read_text(), '# Preserve user rules\n')
+            rule_backups = list((codex_home / 'rules').glob('dotfiles.rules.backup.*'))
+            self.assertEqual(len(rule_backups), 1)
+            self.assertEqual(rule_backups[0].read_text(), '# Previous managed rules\n')
             self.assertEqual(tomllib.loads((codex_home / 'config.toml').read_text())['model'], 'fixture')
             self.assertEqual([p.name for p in codex_home.glob('*.toml')], ['config.toml'])
             codex_agents = root / 'home/codex/agents'

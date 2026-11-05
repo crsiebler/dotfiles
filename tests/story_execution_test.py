@@ -27,6 +27,36 @@ def compact(text):
 
 
 class StoryExecutionTest(unittest.TestCase):
+    def test_reporting_correction_is_bounded_and_cannot_repair_substantive_gaps(self):
+        protocol = compact((REVIEW / 'references/contract.md').read_text())
+        for rule in ('at most one reporting-only correction per story attempt',
+                     'same actual reviewer session',
+                     'zero tool calls or new evidence gathering',
+                     'original verdict, findings, resolutions, risks and substantive evidence',
+                     'Never relabel an executed test as supplied',
+                     'explicit final blocked verdict is ineligible',
+                     'preserves both responses',
+                     'not as standalone entries in `verification`'):
+            self.assertIn(rule, protocol)
+        executor = compact((TEAM_REFS / 'story-execution.md').read_text())
+        for rule in ('at most one correction per story attempt',
+                     'Explicit `blocked` verdicts, candidate drift',
+                     'unauthorized execution and substantive evidence gaps are ineligible',
+                     'executor cannot rewrite the report',
+                     'Apply the persistent blocker gate below before any later attempt'):
+            self.assertIn(rule, executor)
+
+    def test_capacity_fallback_reconciles_sessions_and_preserves_independence(self):
+        policy = compact((TEAM_REFS / 'runtime-selection.md').read_text())
+        for rule in ('invocation demonstrably never started',
+                     'Uncertain launch state requires reconciliation before any retry',
+                     'preserve its session and consumed budgets',
+                     'Never reuse the candidate implementer as its required independent reviewer'):
+            self.assertIn(rule, policy)
+        entry = compact((TEAM / 'SKILL.md').read_text())
+        self.assertIn('record authorization separately from demonstrated capability', entry)
+        self.assertIn('Never change identities or routes to evade a denial', entry)
+
     @classmethod
     def setUpClass(cls):
         cls.lives = {'team': (TEAM_REFS / 'story-execution.md').read_text()}

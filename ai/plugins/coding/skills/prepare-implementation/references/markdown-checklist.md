@@ -41,6 +41,8 @@ ready for unattended launch. Keep its evidence in this plan, not a second tracke
 
 - Remaining blockers: <exact missing action/decision, owner and completion evidence; or none>
 - Recheck at launch: <validity limits or changed conditions that would invalidate readiness>
+- Capability qualification: <unusual check, actual runner/input method, observed evidence and validity; authorized preparation still needed, or not applicable>
+- Approval preparation: <concrete artifacts and grouped missing grants, or none>
 
 Remove the example row when no gates apply and explain the inspected evidence.
 Do not mark ready with pending human prerequisites or unsupported capabilities.
