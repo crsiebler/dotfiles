@@ -272,6 +272,14 @@ class StoryExecutionTest(unittest.TestCase):
             self.assertIn('installed archive-run', text)
             self.assertIn('--preserve-plan', text)
 
+    def test_verified_archival_waits_for_required_integrated_review(self):
+        archive = compact((ARCHIVE / 'references/completed-run-archive.md').read_text())
+        self.assertIn('Require a documented integrated review pass', archive)
+        self.assertIn('Leave active artifacts in place', archive)
+        self.assertIn('including reachable or squash delivery provenance', archive)
+        team = compact(self.lives['team'])
+        self.assertIn('Require a documented integrated review pass before archival', team)
+
     def concurrency_reference(self):
         text = (TEAM_REFS / 'task-concurrency.md').read_text()
         code = text.split('```python\n', 1)[1].split('\n```', 1)[0]

@@ -754,7 +754,10 @@ Once the entire plan is verified and delivered, discover the installed archive-r
 capability and read its requirements/API contract. Resolve scripts/archive_run.py
 from that advertised base; never duplicate its file operations with generated shell.
 For an enrolled run, invoke it under actual exact-path archival/removal authority.
-Do this after the final story commit and quiescent team writers.
+Require a documented integrated review pass before archival. Record the reviewed
+candidate, comparison base, verdict and actual reviewer session in the existing
+handoff or checkpoint. Invoke after the final story commit and when all writers
+are quiescent.
 For unenrolled bounded or legacy plans, use its copy-only --preserve-plan mode
 with exact associated PRDs if any, retaining sources. Report preserved rather
 than verified-run archival. Failure/missing authority leaves archival pending;
