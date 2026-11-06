@@ -113,6 +113,8 @@ For a staged-story gate, the generic reviewer receives the complete
 review-story contract plus workflow-supplied identity, candidate, verification and
 pass/session metadata. Follow that supplied schema and budget; do not add a review
 cycle. Ordinary reviews do not require story packets or execution state.
+For a final delivery gate, use the supplied
+[integrated delivery contract](references/integrated-delivery.md).
 OpenCode `/review-pr` remains canonical for its PR
 orchestration and GitHub schema. Preserve all caller budgets, permissions,
 sessions, blockers and delivery gates; do not duplicate their schemas here or

@@ -27,7 +27,9 @@ fixture story commits and archival:
 4. Integrate each result through the existing checks/review/authorized commit gates.
    Confirm the dependent task starts only from a clean base containing both
    verified integration delivery commits. Keep writer ownership disjoint.
-5. Verify task completion, quiescent writers and the required archive/receipt.
+5. Verify the applicable early review and the single independent review of the
+   integrated candidate before full delivery. Verify quiescent writers and the
+   required archive/receipt.
    Report exact check results, any failures, requested versus observed model data,
    review sessions and remaining activation gaps. Preserve artifacts if blocked.
 

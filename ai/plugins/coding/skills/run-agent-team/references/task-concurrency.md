@@ -140,8 +140,9 @@ automatic cwd isolation or a replacement for resource coordination.
 
 The lead integrates one bounded worker result into the integration worktree,
 excluding unrelated work. Only that owner stages or mutates its index. Run the
-required integration checks and existing staged review against the exact candidate
-there, supplying its absolute root to the dedicated reviewer. Freeze that candidate
+required integration checks and risk-appropriate staged review against the exact
+candidate there. Supply its absolute root when independent review is required.
+Freeze that candidate
 and conflicting resources through review and commit. Unrelated implementation in
 separate task worktrees may continue; do not impose a blanket worker pause.
 

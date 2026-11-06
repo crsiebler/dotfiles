@@ -216,12 +216,16 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertEqual(pattern['evidence_count'],
                          pattern['accepted_count'] + pattern['rejected_count'])
 
-    def test_mode_risk_budgets_do_not_drift_between_workflows(self):
-        tables = {}
-        for name, text in self.lives.items():
-            tables[name] = re.findall(r'\| Mode \|.*?(?=\n\n)', text, re.S)
-            self.assertIn('Never invoke more than two implementation advisors', text)
-        self.assertEqual(len(tables['team']), 2)
+    def test_routine_and_high_risk_stories_have_distinct_review_gates(self):
+        story = compact(self.lives['team'])
+        self.assertIn('Never invoke more than two implementation advisors', story)
+        self.assertIn('Routine stories use a lightweight staged self-review', story)
+        self.assertIn('High-risk stories require independent staged review before commit', story)
+        self.assertIn('Review profile: expanded-initial', story)
+        entry = compact((TEAM / 'SKILL.md').read_text())
+        self.assertIn('integrated review before declaring full delivery', entry)
+        self.assertLess(entry.index('integrated review before declaring full delivery'),
+                        entry.index('perform required archival'))
 
     def test_finalization_and_sensitive_operation_guards_remain_in_each_workflow(self):
         for name, raw in self.lives.items():

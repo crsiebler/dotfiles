@@ -204,9 +204,16 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   verification, with no candidate edits or fixes. Explicit inspection-only
   requests prohibit tests/builds/browser actions. Runtime permissions remain
   authoritative; inheriting permissions is not an immutable read-only guarantee.
-- review-story owns the staged-story protocol/schema. run-agent-team discovers
-  the installed skill and embeds its complete contract in every generic reviewer
-  packet; never guess cache paths or rely on inherited context. Supply story,
+- Routine stories use focused checks and lightweight staged self-review.
+  High-risk stories and any explicitly required early gates use independent
+  staged review. Before final local delivery or shipping, independently review
+  the integrated candidate. Reuse verified integrated review only for the same
+  candidate, comparison base and scope. Before pushing, manage-changes runs
+  documented repository checks against candidate-equivalent inputs.
+- review-story owns the independent staged-story protocol/schema. run-agent-team
+  discovers the installed skill and embeds its complete contract in every
+  independent story reviewer packet. Never guess cache paths or rely on
+  inherited context. Supply story,
   attempt/pass/session identity, base and staged tree, worktree, acceptance,
   verification mode/commands, private outputs, resources and count/time limits.
   Select the native reviewer when supported. Without a custom-role selector,
@@ -256,8 +263,8 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   or switch the user's checkout. Worktree lifecycle needs scoped authority. Reject detached HEAD,
   main/master and branch mismatch. Coordinate shared resources and freeze the
   candidate and conflicts during review, not unrelated isolated workers.
-- Keep fast/standard/deep risk budgets, at most two implementation advisors,
-  required checks and bounded native/self-review selection. Invalid memory,
+- Keep fast/standard/deep advisor budgets, at most two implementation advisors,
+  required checks and risk-based early review. Invalid memory,
   unavailable required protocol/session, failed checks/review or failed commit
   stops delivery. Only completion markers belong in task sources; execution
   history belongs in progress.md. Restore only provisional completion on failed

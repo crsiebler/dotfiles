@@ -30,6 +30,11 @@ Create branches or commits only within actual scope. Run required tests, lint, a
 typecheck before a commit; stage intended paths only. Do not amend, rebase shared
 history, force-push, bypass hooks, or merge implicitly.
 
+Before any push, including push-only requests, and before opening a PR,
+apply [pre-push verification and review](references/pre-push.md) to the exact
+candidate. Complete the repository checks and integrated independent review
+before previewing the external writes.
+
 For actions whose authority is missing, prepare the complete shipping sequence
 before asking for its write approval:
 validation, intended file/commit scope if needed, exact push remote/ref, and PR

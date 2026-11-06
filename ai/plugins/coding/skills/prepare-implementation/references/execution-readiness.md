@@ -6,8 +6,12 @@ authorized goal can complete unattended. This is planning, not permission to
 execute setup, change approval settings, or start the plan.
 
 Use the parent's [autonomous implementation scope](../SKILL.md#plan-for-autonomous-implementation).
-Default to implementing the PRD with automated checks and required independent
-agent review. Only agent-executable, noninteractive verification belongs in the
+Default to implementing the PRD with automated checks, independent integrated
+review before final delivery, and early independent review for high-risk
+stories. Identify the comparison base and the actual review capability, including
+continuation for targeted review. If pushing is in scope, resolve the exact
+pre-push checks from the repository instructions. Only agent-executable,
+noninteractive verification belongs in the
 execution plan. Do not add deployment, manual test verification or human sign-off
 to broaden an implementation goal. Deployment verification must be explicitly
 in scope and automatable; optional manual follow-up is outside goal completion.

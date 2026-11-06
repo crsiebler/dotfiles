@@ -101,8 +101,8 @@ does not run checks or require future tests to exist; planning owns concrete
 commands, fixtures, dependency order and readiness evidence.
 
 prepare-implementation plans autonomous PRD implementation. The default endpoint
-is implemented requirements, automated verification, independent agent review and
-scoped local delivery. Verification gates must be agent-executable and
+is implemented requirements, automated verification, independent review of the
+integrated change and scoped local delivery. Verification gates must be agent-executable and
 noninteractive, with a command/tool procedure, inputs, expected result and owner.
 Do not add manual QA, human confirmation of test results, stakeholder sign-off,
 or routine deployment verification. Deployment verification is included only
@@ -165,7 +165,10 @@ the browser. Adequate evidence does not require ceremonial duplicate checks.
 
 The canonical role is [reviewer](../ai/codex/agents/reviewer.toml).
 Ordinary reviews use [review-code](../ai/plugins/coding/skills/review-code/SKILL.md).
-For a staged-story gate, discover
+Routine stories receive lightweight staged self-review. Review high-risk stories
+independently before their commits release dependencies. Use blast radius,
+reversibility, downstream dependencies and verification strength to classify
+risk. For an independent staged-story gate, discover
 [review-story](../ai/plugins/coding/skills/review-story/SKILL.md) and embed its full
 contract in each invocation, together with story/attempt/pass identity, acceptance,
 base and staged tree, execution root, verification mode, exact commands/flows,
@@ -183,6 +186,21 @@ supply passing evidence for the index. Verify identity and tracked state before
 and after checks; drift or unexpected tracked writes invalidates results. Supplied
 and independently executed evidence have distinct provenance in the JSON response.
 Missing required checks block; optional gaps remain explicit.
+
+## Integrated review and pre-push checks
+
+After integrating the stories, run one independent review on the complete
+comparison before final local delivery. The same gate applies before publishing
+through manage-changes. Reuse a passing result only when its candidate tree,
+comparison base and review scope still match. Reviewers inspect the integrated
+diff and supplied verification evidence. The delivery owner coordinates fixes
+and reruns affected checks. [Integrated review contract](../ai/plugins/coding/skills/review-code/references/integrated-delivery.md)
+
+Before pushing, including when everything is already committed, manage-changes
+runs the applicable commands documented in the repository's AGENTS.md.
+Existing task runner and CI definitions fill in missing details. Required lint,
+typecheck, tests and applicable integration or E2E checks must pass against the
+candidate. [Pre-push checks](../ai/plugins/coding/skills/manage-changes/references/pre-push.md)
 
 ## Pull request review
 
@@ -222,7 +240,8 @@ The initial plan/checkpoint commit may include the approved plan and required
 task-owned execution metadata. Inspect and stage exact paths; preserve unrelated
 or pre-existing implementation work and establish the clean committed worker
 base. It is not evidence of a delivered story. Implementation/integration commits
-still require applicable checks, independent review and branch/hook safeguards.
+still require applicable checks, the story's risk-based review and branch/hook
+safeguards.
 
 Local closeout commits of authorized artifacts share the launch grant.
 Archival/removal, worktree lifecycle, dependencies, pushes, external publication
