@@ -3,6 +3,8 @@
 Research date: 2026-10-20. Source baseline:
 `c6c48a64e83697ddf079578a54ad5594bc525457` on `main`; the worktree was clean
 before these planning documents. Implementation checklist: [PLAN.md](../PLAN.md).
+Role and review references refreshed 2026-11-07 against
+`9e79cd13d6dd9edfd6e5c6ffd4835036714530f1`.
 
 Claude Code support is feasible without forking the 31 skills. The five Craft
 bundles already have the appropriate skill directory structure. Marketplace
@@ -22,7 +24,7 @@ Keep `ai/plugins/*/skills/` as the shared source. Add Claude-specific manifests
 beside Codex manifests, with a separate root marketplace index. Keep personal
 settings, MCP registrations, and generated user agents outside the skill plugins.
 This lets someone install the marketplace without adopting personal permissions,
-starting servers, or receiving all 128 specialist agents.
+starting servers, or receiving the five canonical roles.
 
 Proposed additions, not files created by this research:
 
@@ -86,7 +88,6 @@ assessment, not a successful Claude runtime test.
 | `write-requirements`, `prepare-implementation` | Add an explicit trusted Claude routing case, recommending Markdown `PLAN.md`. Current planning defaults cover Codex/OpenCode and otherwise ask. Keep planning independent of execution. |
 | `run-agent-team` | Conditional. Add a Claude capability reference only after native worker, reviewer, worktree and continuation behavior is demonstrated. Existing GPT model preferences already permit supported inheritance; do not translate them to invented Claude equivalents. |
 | `archive-run` | Reusable Python/Git/POSIX helper. Its reference explicitly defines `CodexGoalMarkdown` as a format identifier independent of harness. Preserve schema names and existing evidence checks. |
-| `recover-ralph` | Claude may inspect or prepare recovery of an OpenCode Ralph run. Actual approved resume still launches OpenCode; no Claude Ralph runner is implied. |
 | `create-skill`, `create-mcp-server` | Portable authoring is reusable. Optional upstream Claude evaluation adapters were deliberately omitted from `create-skill`; do not reinstall them merely to add Claude support. |
 | `verify-interface` | Reusable with one available browser backend. Browser/tool installation and connection remain separate. OpenCode browser registrations do not expose Claude tools automatically. |
 | `assess-work-item`, `report-progress`, `report-project-status` | Reusable evidence/communication workflows once their selected GitHub/Jira adapter is available. Drafting does not authorize posting. |
@@ -220,17 +221,22 @@ to native verification. Never label an untested hook fail-closed.
 
 ## Agents and execution workflows
 
-Static TOML parsing found 128 canonical roles, no model/provider/effort pins, and
-eight `sandbox_mode = "read-only"` roles: `ad-security-reviewer`, `code-reviewer`,
-`story-reviewer`, `architect-reviewer`, `security-auditor`, `agent-installer`,
-`compliance-auditor`, and `powershell-security-hardening`.
+The maintained canonical TOML collection has five roles: `researcher`, `planner`,
+`reviewer`, `auditor` and `operator`. All omit model/provider/effort pins.
+Only `auditor` has `sandbox_mode = "read-only"`. It prohibits tests, builds,
+active scans, edits, operational changes, delegation and external posts.
+The other four roles inherit runtime permissions. The generic `reviewer` preserves
+its candidate and may perform authorized focused verification. Explicit inspection-only
+requests prohibit tests, builds and browser actions.
+[Native role contract](agent-authoring.md)
 
 Extend [render-agents.py](../scripts/render-agents.py) deliberately: preserve role
 text, validate Claude names/frontmatter, inherit model selection, reject unknown
 or nonportable fields, and retain atomic per-file writes and collision checks.
-Do not silently discard future Codex model/sandbox fields. Start restricted
-Claude agents with only Read/Grep/Glob. This intentionally lacks shell inspection
-and must be documented as such.
+Reject unsupported future Codex model/sandbox fields. Start the Claude
+`auditor` with only Read/Grep/Glob and document the difference from Codex's
+read-only shell inspection. Preserve the other roles' supported runtime
+inheritance and each role's task boundaries.
 
 Claude supports tool allowlists on subagents; denying Write/Edit alone still
 leaves Bash and MCP routes. Plugin agents also ignore several control fields,
@@ -239,22 +245,30 @@ this collection. Custom agents can resume with retained history; current docs
 describe `SendMessage`, not an assumption about an old `Agent(resume=...)` API.
 [Subagent contracts](https://code.claude.com/docs/en/sub-agents)
 
-`story-reviewer` needs staged Git evidence. Read/Grep/Glob alone cannot establish
-its delivery gate. Keep Claude team delivery unavailable until a narrowly bounded
-staged-Git inspection mechanism, exact native role selection, and same-session
-targeted review are verified. Do not substitute generic reviewers or downgrade
-review requirements to claim compatibility. Assess any guard implementation
-against the authorization-policy boundary above.
+For independent staged review, supply the generic `reviewer` with the complete
+discovered `review-story` contract, candidate identity, verification scope and
+pass/session budgets. Use native role selection when supported. Otherwise supply
+the complete discovered reviewer instructions and review contract to a fresh
+independent generic agent and record that binding. Qualify permitted evidence
+access and same-session targeted continuation before advertising Claude team
+delivery. Assess any new guard against the authorization-policy boundary above.
+
+Routine stories use focused checks and lightweight staged self-review.
+High-risk stories and explicit early gates receive independent staged review.
+One independent review of the integrated candidate gates final local delivery
+or shipping. Preserve the workflow's candidate/base/scope evidence, review
+budgets and blockers.
+[Team delivery contract](../ai/plugins/coding/skills/run-agent-team/SKILL.md)
 
 Prefer ordinary native subagents for the existing main-session dispatcher model.
 Claude agent teams remain experimental and disabled by default, with resumption
 and coordination limitations; they are not required for marketplace support.
 [Agent teams](https://code.claude.com/docs/en/agent-teams)
 
-Keep `bin/ralph`, `ralph`, `ralph-reviewer`, and `sprite-artist` OpenCode-only.
-Claude support does not mean replacing Ralph's supervisor, ledger, review budgets,
-stop-file handling, or resume authorization. Native Claude auto memory is also
-not a replacement for the workflow's bounded `memory.json` or `progress.md`.
+Keep the single native OpenCode role, `sprite-artist`, OpenCode-only. The main
+session owns dispatch, integration and canonical state. Preserve the workflow's
+bounded `memory.json`, append-only `progress.md`, review budgets and resumption
+rules when qualifying native Claude execution.
 
 ## Scripts, commands and other tools
 
@@ -268,7 +282,7 @@ not a replacement for the workflow's bounded `memory.json` or `progress.md`.
 | Document/GIF/audio/skill/archive helpers | Retain implementations and dependency ownership. Test resource access from installed/cached layouts with outputs in project fixtures. No framework rewrite is indicated. |
 | `/define-requirements`, `/plan-work`, `/ship`, `/find-agents` | Provide thin Claude shortcuts if preserving this interface is desired. Claude plan-work should choose Markdown; find-agents uses the Claude discovery target. Translate positional arguments deliberately. |
 | `/review-pr` | Canonical contract remains `ai/opencode/commands/review-pr.md`. A Claude adapter must preserve exact-payload approval and finding schema. Generate from the canonical contract or package its content deliberately; never introduce an untracked second authority. Rewrite/verify shell expansion and argument handling for Claude. |
-| `/create-audio`, `/create-sprite`, `/recover-ralph` | Prefer namespaced shared skills where sufficient. Preserve sprite provider limits and OpenCode-only recovery execution; do not copy OpenCode `agent:` fields blindly. |
+| `/create-audio`, `/create-sprite` | Prefer namespaced shared skills where sufficient. Preserve sprite provider limits and the OpenCode-only sprite role boundary. Translate native role metadata deliberately. |
 | OpenCode notifier | JavaScript plugin/config is not a Claude plugin. Optional Claude Notification/Stop hooks can reproduce selected events later; preserve privacy and avoid permission auto-approval or restart loops. |
 | OpenCode `opencode-gpt-imagegen` | Not directly portable. A separately supported image backend and its billing/consent contract are needed for Claude sprite generation. |
 | `lsp: true`, `tui.json` | OpenCode UI/LSP configuration is not transferable. Configure Claude equivalents only for a demonstrated requirement; no blanket translation. |

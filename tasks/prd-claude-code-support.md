@@ -63,7 +63,7 @@ The initial supported environment is local Claude Code on the owner's macOS
 development machine. Portable sources should remain reusable elsewhere, but
 Windows, cloud sessions and other clients require separate verification.
 
-The existing 128-role collection is included as configuration. Full autonomous
+The five maintained canonical roles are included as configuration. Full autonomous
 delivery and team-workflow parity are a separate qualification scope, not a
 prerequisite for the base configuration/marketplace release. Publishing a role
 must not imply that every workflow using it is supported.
@@ -245,22 +245,28 @@ collection with its supported restrictions intact.
 
 Acceptance:
 
-- The 128 canonical TOML roles remain the authoring source. Claude definitions
-  preserve expertise, instructions, review contracts and names without a separate
-  manually maintained role collection.
+- The canonical TOML collection contains `researcher`, `planner`, `reviewer`,
+  `auditor` and `operator`. Claude definitions preserve their responsibility,
+  instructions, review contracts and names from this single authoring source.
 - Supported metadata is translated deliberately; unsupported fields, invalid
   identities and collisions produce errors rather than silent capability changes.
 - Roles inherit supported session/model choices unless the user explicitly chooses
   otherwise. Existing GPT preferences do not create Claude model pins.
-- The eight restricted inspection roles cannot edit, run tests, mutate state,
-  delegate or post externally. Available evidence-reading capabilities and their
-  differences from other harnesses are documented and verified.
+- Only `auditor` has native read-only sandbox metadata. Preserve its prohibition
+  on edits, tests, builds, active scans, mutation, delegation and external posts.
+  Document and verify evidence-reading capabilities and runtime/MCP controls.
+- The other four roles inherit supported runtime permissions. Preserve
+  `reviewer` candidate protection and authorized focused verification.
+  Explicit inspection-only requests prohibit tests, builds and browser actions.
 - Agent discovery supports explicit Claude selection, user/project scopes,
   supported root overrides, exact-definition reads and duplicate detection.
   Static definition discovery is never reported as proof of native invocation.
-- The OpenCode-only `ralph`, `ralph-reviewer` and `sprite-artist` remain native to
-  OpenCode. A Claude `story-reviewer` definition does not qualify staged delivery
-  until its required evidence access and review continuation are demonstrated.
+- The single OpenCode-only role, `sprite-artist`, stays native to OpenCode.
+  Qualify the generic `reviewer` for delivery through demonstrated independent
+  binding, required evidence access and same-session targeted continuation.
+  Use native role selection when supported. Otherwise supply the complete
+  discovered reviewer instructions and applicable review contract to a fresh
+  independent generic agent and record the actual binding.
 
 ### FR-09 — Provide correct Claude workflow entry points
 
@@ -278,9 +284,12 @@ Acceptance:
 - If a Claude PR-review shortcut is provided, it retains the canonical review
   schema and exact-payload posting approval from the existing command contract.
 - Sprite generation reports an unavailable backend until a Claude adapter is
-  separately verified. Ralph recovery remains recovery of an OpenCode workflow.
+  separately verified.
 - Advanced team/delivery entry points refuse unsupported operation rather than
-  substitute reviewers, waive evidence or reset consumed review budgets.
+  waive evidence or reset consumed review budgets. Routine stories use focused
+  checks and lightweight staged self-review. High-risk stories and explicit early
+  gates require independent staged review with the complete `review-story`
+  contract. Independent integrated review gates final local delivery and shipping.
 
 ### FR-10 — Install and update Claude through an explicit target
 
@@ -360,7 +369,7 @@ The following evidence is required:
 - Isolated fixtures cover paths with spaces, root overrides, symlinks, missing
   prerequisites, conflicting/customized state, repetition and partial failures.
 - Native Claude verification demonstrates plugin discovery, representative skill
-  invocation, instruction loading and callable restricted roles.
+  invocation, instruction loading, auditor restrictions and reviewer qualification.
 - Fake MCP servers exercise permission behavior and local launcher contracts.
   Live authentication/connectivity tests are separately authorized and reported;
   client configuration success is not proof of a working external server.
@@ -375,7 +384,7 @@ through its available backend and report its actual limits.
 
 ## Non-goals
 
-- Porting Ralph's runner, ledger, recovery lifecycle or native OpenCode agents.
+- Adding an alternate execution runner or porting OpenCode's native sprite role.
 - Qualifying full Claude team execution or autonomous story delivery in the base
   release. Their existing skills remain discoverable with explicit capability gates.
 - Adding a Claude sprite-generation provider, OpenCode notifier parity, new LSP/UI
