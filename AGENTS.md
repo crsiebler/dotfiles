@@ -459,10 +459,12 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 1. Verify installed configurations and retain needed rollback copies outside the
    cleanup locations before running `make clean`.
 2. Review generated `.zshrc.backup.<timestamp>` files, adjacent timestamped AI
-   configuration/agent/command backups, timestamped skill/retirement archives under
+   configuration/agent/command backups, and the exact Codex
+   `rules/dotfiles.rules.backup.<timestamp>` file, timestamped skill/retirement archives under
    `.install-ai-backups/`, and hashed `plugin-sources/` snapshots. Existing `.env`
    files are synchronized without generating backups.
-3. `make clean` removes these recognized backups for both AI harnesses, honoring
+3. `make clean` removes these recognized backups for both AI harnesses, including
+   only the managed Codex rule backup `rules/dotfiles.rules.backup.<timestamp>`, honoring
    `CODEX_HOME` and `XDG_CONFIG_HOME`, including backups from AI-only installation.
    Preserve active files, plugin caches, installation inventories, unrelated legacy controls,
    and legacy `.env` backups. Reject invalid or symlinked roots before deletion;

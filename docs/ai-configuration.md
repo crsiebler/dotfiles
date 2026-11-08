@@ -338,7 +338,10 @@ longer needed.
 
 Codex installation also manages `rules/dotfiles.rules` as a separate file,
 backing up that same named file when it changes and leaving `rules/default.rules`
-and other rule files alone. Restart Codex after installation. The five allowed
+and other rule files alone. `make clean` recognizes and removes only adjacent
+timestamped `rules/dotfiles.rules.backup.<timestamp>` files; it preserves active
+rules and backups for every other rule file. Restart Codex after installation.
+The five allowed
 prefixes (`git status`, `git diff`, `gh pr view`, `gh repo view`, and `gh pr list`)
 match additional arguments and permit execution outside the sandbox without a
 prompt. In particular, `git diff --output` writes a file and configured diff

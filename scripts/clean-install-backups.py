@@ -39,7 +39,7 @@ def candidates(home, roots):
     for path in home.glob('.zshrc.backup.*'):
         if BACKUP.fullmatch(path.name) and path.is_file() and not path.is_symlink():
             found.add(path)
-    for root, names, suffix in roots:
+    for root, names, suffix, managed_rule_file in roots:
         for name in names:
             for path in root.glob(name + '.backup.*'):
                 if BACKUP.fullmatch(path.name) and path.is_file() and not path.is_symlink():
@@ -49,6 +49,14 @@ def candidates(home, roots):
                 match = BACKUP.fullmatch(path.name)
                 if match and match[1].endswith(suffix if folder == 'agents' else '.md'):
                     found.add(path)
+        if managed_rule_file:
+            rule_dir = root / 'rules'
+            if not rule_dir.is_symlink() and rule_dir.is_dir():
+                for path in rule_dir.iterdir():
+                    match = BACKUP.fullmatch(path.name)
+                    if (match and match[1] == managed_rule_file
+                            and path.is_file() and not path.is_symlink()):
+                        found.add(path)
         archives = root / '.install-ai-backups'
         if archives.is_symlink():
             continue
@@ -73,9 +81,9 @@ def main():
     codex = checked_root(os.environ.get('CODEX_HOME', str(home / '.codex')), 'CODEX_HOME')
     xdg = checked_root(os.environ.get('XDG_CONFIG_HOME', str(home / '.config')), 'XDG_CONFIG_HOME')
     opencode = checked_root(str(xdg / 'opencode'), 'OpenCode configuration')
-    roots = ((codex, ('config.toml', 'AGENTS.md'), '.toml'),
+    roots = ((codex, ('config.toml', 'AGENTS.md'), '.toml', 'dotfiles.rules'),
              (opencode, ('opencode.json', 'cli.json', 'tui.json',
-                         'opencode-notifier.json', 'AGENTS.md'), '.md'))
+                         'opencode-notifier.json', 'AGENTS.md'), '.md', None))
     paths = candidates(home, roots)
     for path in paths:
         if path.is_dir():
