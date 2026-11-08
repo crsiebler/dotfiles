@@ -1,6 +1,7 @@
-# Prefixes permit additional arguments and run outside the sandbox.
+# Read-only prefixes permit additional arguments and run outside the sandbox.
+# Do not allow git diff prefixes: --output can write outside the project, and
+# configured diff helpers can execute programs.
 prefix_rule(pattern=["git", "status"], decision="allow")
-prefix_rule(pattern=["git", "diff"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "view"], decision="allow")
 prefix_rule(pattern=["gh", "repo", "view"], decision="allow")
 prefix_rule(pattern=["gh", "pr", "list"], decision="allow")

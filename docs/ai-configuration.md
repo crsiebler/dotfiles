@@ -341,11 +341,12 @@ backing up that same named file when it changes and leaving `rules/default.rules
 and other rule files alone. `make clean` recognizes and removes only adjacent
 timestamped `rules/dotfiles.rules.backup.<timestamp>` files; it preserves active
 rules and backups for every other rule file. Restart Codex after installation.
-The five allowed
-prefixes (`git status`, `git diff`, `gh pr view`, `gh repo view`, and `gh pr list`)
-match additional arguments and permit execution outside the sandbox without a
-prompt. In particular, `git diff --output` writes a file and configured diff
-helpers can execute programs. Existing rules can impose more restrictive decisions.
+The four allowed prefixes (`git status`, `gh pr view`, `gh repo view`, and
+`gh pr list`) match additional arguments and permit execution outside the sandbox
+without a prompt. This file does not grant `git diff` because `--output` can
+write outside the project and configured diff helpers can execute programs; its
+execution remains subject to the active sandbox and approval policy. Existing
+rules can impose more restrictive decisions.
 Source changes do not activate these rules; installation requires separate authority.
 
 Managed JSON/TOML files replace installed files byte-for-byte. This applies to

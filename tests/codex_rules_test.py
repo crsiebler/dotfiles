@@ -14,7 +14,7 @@ class CodexRulesTest(unittest.TestCase):
     def test_prefix_matching_with_native_policy_checker(self):
         cases = [
             (['git', 'status'], True),
-            (['git', 'diff', '--output=/tmp/example'], True),
+            (['git', 'diff', '--output=/tmp/example'], False),
             (['gh', 'pr', 'view', '123'], True),
             (['gh', 'repo', 'view'], True),
             (['gh', 'pr', 'list'], True),
