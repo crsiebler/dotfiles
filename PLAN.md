@@ -6,6 +6,9 @@
   `c6c48a64e83697ddf079578a54ad5594bc525457` and a clean initial worktree.
 - Role and review acceptance refreshed 2026-11-07 against
   `9e79cd13d6dd9edfd6e5c6ffd4835036714530f1`.
+- Skill inventory and compatibility acceptance refreshed 2026-11-08 against
+  `fd4874af9c7945e141276c10f115ebdceac45e06`, using the current
+  [47-skill dependency inventory](docs/skill-dependencies.md).
 - User brief: research Claude Code compatibility for the skills marketplace,
   configurations, MCP servers, scripts and tools; generate an implementation plan.
 - Evidence and design rationale:
@@ -17,7 +20,7 @@
   delivery authority remain for a later execution request. No branch was created.
 - Baseline target: local Claude Code on this macOS development machine. Keep
   portable source structure, but do not claim Windows/cloud-client verification.
-- Outcome: the five Craft plugins load all 31 shared skills in Claude; optional
+- Outcome: the five Craft plugins load all 47 shared skills in Claude; optional
   personal integration preserves existing ownership and approval contracts.
 - Non-goals: add an alternate execution runner, route Claude to GPT/Bonsai,
   replace helper runtimes, provision dependencies/models, add AWS/Elastic servers,
@@ -39,7 +42,7 @@ Full personal integration is a draft pending the policy/native gates above.
 | Story | Priority | Depends on | Integrated outcome owned |
 | --- | ---: | --- | --- |
 | CC-01 | 1 | none | Supported-version and ownership contract |
-| CC-02 | 1 | CC-01 | Five-plugin marketplace and 31-skill packaging |
+| CC-02 | 1 | CC-01 | Five-plugin marketplace and 47-skill packaging |
 | CC-03 | 1 | CC-01 | Policy/settings preservation |
 | CC-04 | 1 | CC-01 | MCP transport and permission parity |
 | CC-05 | 2 | CC-01 | Native role rendering and static discovery |
@@ -92,7 +95,7 @@ Acceptance criteria:
 - [ ] Story complete
 - Priority: 1
 - Depends on: CC-01
-- Phase / requirements: compatible skills marketplace; all 31 skills retain
+- Phase / requirements: compatible skills marketplace; all 47 skills retain
   scripts, references, dependencies and explicit capability limitations.
 - User story: As a Claude user, I want to install Craft from this checkout and
   invoke its skills without a separate fork of their content.
@@ -107,7 +110,7 @@ Acceptance criteria:
   paths; Claude entries have correct relative sources and owner metadata.
 - [ ] Manifests validate on the selected native release. Duplicate names,
   traversal, missing resources and mismatched plugin identities fail validation.
-- [ ] An isolated local install exposes all 31 skill identities exactly once;
+- [ ] An isolated local install exposes all 47 skill identities exactly once;
   representative namespaced invocations resolve expected content.
 - [ ] A copied/cached-layout fixture resolves bundled references and helpers
   without reaching into the original checkout or writing plugin directories.
@@ -232,7 +235,7 @@ Acceptance criteria:
 - [ ] Any review-pr adapter derives its complete review contract from the existing
   canonical command; tests guard schema and exact-payload posting approval.
   Its Claude context-gathering syntax is independently verified.
-- [ ] All 31 skills have a documented supported/conditional behavior; sprite
+- [ ] All 47 skills have a documented supported/conditional behavior; sprite
   generation reports the missing Claude backend, recovery remains OpenCode,
   and advanced team execution remains gated until CC-08.
 - [ ] Verify representative document read/create, audio dry-run and skill-helper
@@ -339,7 +342,7 @@ Acceptance criteria:
 
 Acceptance criteria:
 
-- [ ] From an isolated configuration root, verify five installed plugins, 31
+- [ ] From an isolated configuration root, verify five installed plugins, 47
   skill identities, policy loading, generated agents, commands and bundled
   resource paths with recorded Claude version and exact observed outcomes.
 - [ ] Verify safe MCP read/ask/deny cases against fake servers and optional

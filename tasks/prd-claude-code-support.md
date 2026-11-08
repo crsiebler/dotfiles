@@ -3,6 +3,9 @@
 Status: Draft requirements for review.
 Revision: `claude-support-requirements-v1`.
 Prepared: 2026-10-20.
+Skill inventory and compatibility scope refreshed: 2026-11-08 against
+`fd4874af9c7945e141276c10f115ebdceac45e06`, using the current
+[47-skill dependency inventory](../docs/skill-dependencies.md).
 
 ## Problem and intended outcome
 
@@ -50,7 +53,7 @@ external writes or cleanup, and it creates no execution state.
 ### Included
 
 - Claude-compatible discovery, packaging and installation of the five existing
-  Craft plugins and all 31 shared skills.
+  Craft plugins and all 47 shared skills.
 - Personal policy, Claude settings, MCP configuration, native agent definitions
   and agent discovery needed for supported configuration use.
 - Explicit Claude installation, preview, validation, update and rollback behavior.
@@ -77,15 +80,15 @@ separate hand-maintained copy of each skill.
 
 | Plugin | Baseline skill count |
 | --- | ---: |
-| `coding` | 15 |
-| `reporting` | 3 |
-| `researching` | 5 |
-| `delegating` | 1 |
-| `producing` | 7 |
+| `coding` | 25 |
+| `reporting` | 4 |
+| `researching` | 7 |
+| `delegating` | 2 |
+| `producing` | 9 |
 
 Acceptance:
 
-- All five plugins retain their names and ownership of the 31 existing skill
+- All five plugins retain their names and ownership of the 47 existing skill
   identifiers. Each skill has one canonical source under `ai/plugins/`.
 - Claude and Codex metadata refer to the same skill content; OpenCode continues
   consuming those sources through its existing supported installation path.

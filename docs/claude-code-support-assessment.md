@@ -5,8 +5,11 @@ Research date: 2026-10-20. Source baseline:
 before these planning documents. Implementation checklist: [PLAN.md](../PLAN.md).
 Role and review references refreshed 2026-11-07 against
 `9e79cd13d6dd9edfd6e5c6ffd4835036714530f1`.
+Skill inventory and compatibility scope refreshed 2026-11-08 against
+`fd4874af9c7945e141276c10f115ebdceac45e06`, using the current
+[47-skill dependency inventory](skill-dependencies.md).
 
-Claude Code support is feasible without forking the 31 skills. The five Craft
+Claude Code support is feasible without forking the 47 skills. The five Craft
 bundles already have the appropriate skill directory structure. Marketplace
 packaging is a small addition; preserving installation ownership, MCP approval
 behavior, restricted agents, and delivery/review contracts is the larger job.
@@ -78,7 +81,7 @@ minimal. Add Claude-only invocation/tool settings only where their semantics
 are needed and tested; an `allowed-tools` declaration can change permissions.
 [Skills documentation](https://code.claude.com/docs/en/skills)
 
-The inventory below accounts for all 31 skills. “Reusable” means a source-level
+The inventory below accounts for all 47 skills. “Reusable” means a source-level
 assessment, not a successful Claude runtime test.
 
 | Skills | Assessment and required work |
@@ -87,6 +90,7 @@ assessment, not a successful Claude runtime test.
 | `manage-changes`, `resolve-review-feedback` | Reusable with available Git/gh or MCP tools. Exercise exact write previews and retained authorization; tool names must come from discovery. |
 | `write-requirements`, `prepare-implementation` | Add an explicit trusted Claude routing case, recommending Markdown `PLAN.md`. Current planning defaults cover Codex/OpenCode and otherwise ask. Keep planning independent of execution. |
 | `run-agent-team` | Conditional. Add a Claude capability reference only after native worker, reviewer, worktree and continuation behavior is demonstrated. Existing GPT model preferences already permit supported inheritance; do not translate them to invented Claude equivalents. |
+| `review-story` | Conditional workflow-supplied staged review. Preserve its complete review contract, candidate identity, acceptance and verification limits, same-session pass budget, and prohibition on candidate edits; qualify actual Claude reviewer binding and continuation before claiming support. |
 | `archive-run` | Reusable Python/Git/POSIX helper. Its reference explicitly defines `CodexGoalMarkdown` as a format identifier independent of harness. Preserve schema names and existing evidence checks. |
 | `create-skill`, `create-mcp-server` | Portable authoring is reusable. Optional upstream Claude evaluation adapters were deliberately omitted from `create-skill`; do not reinstall them merely to add Claude support. |
 | `verify-interface` | Reusable with one available browser backend. Browser/tool installation and connection remain separate. OpenCode browser registrations do not expose Claude tools automatically. |
@@ -97,6 +101,8 @@ assessment, not a successful Claude runtime test.
 | `create-audio` | Reusable CLI/backend separation. Existing Apple Silicon MLX runtime, weights and request files remain prerequisites; Claude installation provisions none of them. |
 | `create-sprites` | Planning and supplied-asset integration are viable. The documented `gpt_imagegen` backend is explicitly OpenCode-only; generation needs a separately chosen, authorized and verified adapter. |
 | `use-subagents` | Extend helper `--harness` choices and root lookup for Claude. Current implementation supports only Codex/OpenCode. Keep static discovery distinct from callable native roles. |
+| `apply-ai-standards`, `apply-app-standards`, `apply-blockchain-standards`, `apply-database-standards`, `apply-infrastructure-standards`, `apply-integration-standards`, `apply-language-standards`, `apply-web-standards` | Reusable instruction bundles. Verify Claude can discover and load the relevant standard; project-specific tools and execution remain governed by the target project's own instructions and permissions. |
+| `operate-systems`, `assess-controls`, `analyze-data`, `research-users`, `plan-product`, `write-content`, `design-interface`, `prepare-handoff` | Reusable core-method instruction bundles in their owning plugins. Verify discovery and bundled references; tool availability, external access, and any consequential action remain separately governed by the loaded workflow and runtime. |
 
 Source evidence: [skill dependency inventory](skill-dependencies.md),
 [planning skill](../ai/plugins/coding/skills/prepare-implementation/SKILL.md),
@@ -293,7 +299,7 @@ rules when qualifying native Claude execution.
 
 Recommended milestones:
 
-1. Marketplace compatibility: five packages, 31 discoverable skills, portable
+1. Marketplace compatibility: five packages, 47 discoverable skills, portable
    resource loading, explicit unsupported-capability messages.
 2. Personal integration: separately authorized installer, policy/settings, MCP
    contracts, agent rendering/discovery, selected command adapters and rollback.
