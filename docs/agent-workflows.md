@@ -37,6 +37,50 @@ verifying an identical archive before replacing the active file.
 in `tests/fixtures/approval_scope_evals.json` include positive and negative scope
 boundaries and are authored specifications, not completed live-agent evaluations.
 
+## Recovery and advance authorization
+
+An explicit bounded advance grant satisfies the personal policy's confirmatory
+rules for the named actions, targets and limits. Planning records the actual grant
+and groups remaining approvals with concrete artifacts. This covers, when approved,
+pinned dependencies, named configuration edits, disposable test migrations, worktree
+roots and archival/removal paths. Absolute restrictions and runtime prompts still
+apply. Exact future-artifact acceptance requires its actual artifact or an approved
+scope/method resolution. Draft an authorized proposal before asking to approve it.
+
+Requirements surface consequential choices such as retention, replay after expiry
+and duplicate external effects early. Planning identifies the actual runner and
+qualification evidence for unusual checks such as native pointer control, Japanese
+IME input and exact 4K verification. Required environment preparation is separately
+authorized and completed before readiness. Full-goal readiness remains mandatory.
+
+Executors investigate failed checks and make scoped repairs while plausible paths
+and budgets remain. A run may gracefully interrupt its own disposable local test
+or build subprocess after a recorded timeout or confirmed hang only after verifying
+identity, start time, ownership and isolation. Shared services, containers and
+pre-existing processes require confirmation. Preserve failure evidence and check
+for uncertain side effects before retrying.
+
+Record grants separately from demonstrated capabilities and actual denials in the
+existing checkpoint, including host, identity, operation and validity. Reuse valid
+observations and continue safely isolated eligible work. A preferred review model's
+capacity failure before a demonstrably unstarted invocation permits an available
+allowed fallback. Existing or uncertain sessions must be reconciled first. Required
+independent review, pins and consumed budgets still govern.
+
+Candidate identity/status/diff reads and checksums are inspection transcript evidence,
+not standalone verification records. Acceptance checks retain supplied/executed
+provenance. For a mechanical reporting defect, the same reviewer may issue one
+reporting-only correction per attempt with zero tool calls or new evidence and
+unchanged substantive verdict/findings. Preserve both reports. Explicit blocked
+verdicts, drift, missing checks and actual unauthorized execution remain blockers.
+This correction does not consume or renew a substantive review pass.
+
+The regression scenarios in `tests/fixtures/approval_scope_evals.json` and
+`tests/fixtures/implementation_planning_evals.json` include the observed interruption
+patterns and negative boundaries. Static checks protect instruction contracts;
+these authored cases do not establish live-agent compliance. Activation requires
+separately authorized installation/refresh and fresh-session discovery checks.
+
 ## Plans and ownership
 
 prepare-implementation and OpenCode /plan-work default to PLAN.md in both
@@ -57,8 +101,8 @@ does not run checks or require future tests to exist; planning owns concrete
 commands, fixtures, dependency order and readiness evidence.
 
 prepare-implementation plans autonomous PRD implementation. The default endpoint
-is implemented requirements, automated verification, independent agent review and
-scoped local delivery. Verification gates must be agent-executable and
+is implemented requirements, automated verification, independent review of the
+integrated change and scoped local delivery. Verification gates must be agent-executable and
 noninteractive, with a command/tool procedure, inputs, expected result and owner.
 Do not add manual QA, human confirmation of test results, stakeholder sign-off,
 or routine deployment verification. Deployment verification is included only
@@ -121,7 +165,10 @@ the browser. Adequate evidence does not require ceremonial duplicate checks.
 
 The canonical role is [reviewer](../ai/codex/agents/reviewer.toml).
 Ordinary reviews use [review-code](../ai/plugins/coding/skills/review-code/SKILL.md).
-For a staged-story gate, discover
+Routine stories receive lightweight staged self-review. Review high-risk stories
+independently before their commits release dependencies. Use blast radius,
+reversibility, downstream dependencies and verification strength to classify
+risk. For an independent staged-story gate, discover
 [review-story](../ai/plugins/coding/skills/review-story/SKILL.md) and embed its full
 contract in each invocation, together with story/attempt/pass identity, acceptance,
 base and staged tree, execution root, verification mode, exact commands/flows,
@@ -139,6 +186,21 @@ supply passing evidence for the index. Verify identity and tracked state before
 and after checks; drift or unexpected tracked writes invalidates results. Supplied
 and independently executed evidence have distinct provenance in the JSON response.
 Missing required checks block; optional gaps remain explicit.
+
+## Integrated review and pre-push checks
+
+After integrating the stories, run one independent review on the complete
+comparison before final local delivery. The same gate applies before publishing
+through manage-changes. Reuse a passing result only when its candidate tree,
+comparison base and review scope still match. Reviewers inspect the integrated
+diff and supplied verification evidence. The delivery owner coordinates fixes
+and reruns affected checks. [Integrated review contract](../ai/plugins/coding/skills/review-code/references/integrated-delivery.md)
+
+Before pushing, including when everything is already committed, manage-changes
+runs the applicable commands documented in the repository's AGENTS.md.
+Existing task runner and CI definitions fill in missing details. Required lint,
+typecheck, tests and applicable integration or E2E checks must pass against the
+candidate. [Pre-push checks](../ai/plugins/coding/skills/manage-changes/references/pre-push.md)
 
 ## Pull request review
 
@@ -178,7 +240,8 @@ The initial plan/checkpoint commit may include the approved plan and required
 task-owned execution metadata. Inspect and stage exact paths; preserve unrelated
 or pre-existing implementation work and establish the clean committed worker
 base. It is not evidence of a delivered story. Implementation/integration commits
-still require applicable checks, independent review and branch/hook safeguards.
+still require applicable checks, the story's risk-based review and branch/hook
+safeguards.
 
 Local closeout commits of authorized artifacts share the launch grant.
 Archival/removal, worktree lifecycle, dependencies, pushes, external publication

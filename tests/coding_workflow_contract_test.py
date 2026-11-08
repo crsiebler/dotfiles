@@ -14,6 +14,18 @@ SKILLS = ROOT / 'ai/plugins/coding/skills'
 
 
 class CodingWorkflowContractTest(unittest.TestCase):
+    def test_push_requires_documented_checks_and_integrated_review(self):
+        shipping = ' '.join((SKILLS / 'manage-changes/SKILL.md').read_text().split())
+        self.assertIn('including push-only requests', shipping)
+        self.assertIn('references/pre-push.md', shipping)
+        checks = (SKILLS / 'manage-changes/references/pre-push.md').read_text()
+        self.assertIn('AGENTS.md', checks)
+        self.assertIn('Block the push', checks)
+        self.assertIn('references/integrated-delivery.md', checks)
+        review = (SKILLS / 'review-code/references/integrated-delivery.md').read_text()
+        self.assertIn('base commit and candidate tree', review)
+        self.assertIn('one targeted follow-up', review)
+
     def test_final_coding_catalog_has_only_current_entry_points(self):
         expected = {'develop-code', 'review-code', 'resolve-review-feedback',
                     'format-code', 'run-tests', 'verify-interface', 'manage-changes',

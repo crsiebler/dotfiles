@@ -54,6 +54,16 @@ contract and support the required protocol and same-session continuation.
 No preference fallback changes review quality criteria, tool restrictions or
 consumed passes. This policy does not establish model quality or effective routing.
 
+For capacity failures, first reconcile actual native session state. If invocation
+demonstrably never started, choose an available permitted fallback under the above
+precedence without asking solely about a preferred model. Record the failed launch
+and fallback in the existing checkpoint. If a reviewer started, preserve its session
+and consumed budgets; a capacity error does not grant a replacement or another pass.
+Uncertain launch state requires reconciliation before any retry. Continue safely
+isolated eligible work while required review capacity is unavailable. Never reuse
+the candidate implementer as its required independent reviewer or silently downgrade
+independent review to self-review.
+
 ## Native execution ownership
 
 - This team workflow may admit concurrent

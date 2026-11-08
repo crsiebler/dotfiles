@@ -89,10 +89,18 @@ each passing record and its completed task marker occur together in reachable
 Git history and that all active artifacts match HEAD. It does not rerun tests,
 reperform reviews, or establish the truth of an executor's recorded observations.
 
-Invoke after the final successful authorized story commit, with all candidate
-writers quiescent. The helper serializes archive writers and rechecks source bytes;
-it does not control execution sessions or prove that other agents have stopped.
-The caller owns that precondition. Missing structured delivery evidence blocks
+Require a documented integrated review pass before completed-run archival when
+the invoking workflow requires that gate. Verify the reviewed delivery candidate,
+comparison base and reviewer session in the existing handoff or checkpoint.
+For later archival on another branch, reconcile that evidence to the retained
+delivery, including reachable or squash delivery provenance. Leave active
+artifacts in place if the required integrated pass is missing, blocked or stale.
+Apply the original workflow's delivery requirements to historical runs.
+
+Invoke once the final authorized story commit and all applicable delivery gates
+have passed, with all candidate writers quiescent. The helper serializes archive
+writers and rechecks source bytes. The caller verifies that other agents have
+stopped. Missing structured delivery evidence blocks
 verified archival; copy-only preservation remains available without a completion
 claim.
 

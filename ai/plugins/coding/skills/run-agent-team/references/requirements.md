@@ -10,7 +10,7 @@ A custom coordinator role, custom primary selection, nested manager or reading
 that role's instructions is not required.
 
 Require an independent agent with the complete reviewer contract and
-same-session continuation where the risk budget requires it. Follow
+same-session continuation for integrated delivery and any required early review. Follow
 [reviewer binding](story-execution.md#reviewer-binding); a role selector is
 optional unless explicitly required by the user or project. Inspect actual
 schemas; invent no arguments,
@@ -20,8 +20,9 @@ required specialist identity must actually be supported. Inspect installed pins;
 source omission is not installed inheritance.
 
 Require Git, approved clean committed integration/task branches and worktrees,
-this bundle's team delivery contract, the separately discovered review-story
-contract and project-native verification tools.
+this bundle's team delivery contract, the integrated delivery contract from the
+discovered review-code bundle and project-native verification tools. Require the
+separately discovered review-story contract for early independent review.
 Apply [autonomous execution scope](story-execution.md#autonomous-execution-scope):
 checks must have an agent-executable, noninteractive path. Missing required
 runtime capability blocks affected execution; tests or automation to be authored

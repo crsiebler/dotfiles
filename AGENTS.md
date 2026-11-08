@@ -176,6 +176,22 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
 
 ## Review and workflow boundaries
 
+- Bounded advance grants satisfy confirmatory rules only for the approved actions,
+  targets and limits. Readiness includes concrete approval artifacts and observed
+  qualification of unusual verification environments before launch. Planning does
+  no setup. Preserve full-goal readiness, acceptance and required closeout.
+- An authorized development run may gracefully interrupt its own disposable local
+  test/build subprocess after a recorded timeout or confirmed hang, with verified
+  identity, start time, ownership and isolation. Shared/pre-existing services,
+  containers and uncertain descendants still require confirmation.
+- review-story permits one reporting-only correction per attempt in the same
+  reviewer session, with zero tool calls or new evidence and unchanged substantive
+  verdict/findings. Preserve both reports and consumed budgets. Explicit blocked
+  verdicts, drift, unauthorized execution and missing evidence remain blockers.
+- Record grants separately from demonstrated capabilities and actual denials in
+  existing checkpoints. Reuse valid evidence, reconcile uncertain launches, and
+  continue safely isolated eligible work without bypassing denied actions.
+
 - Carry existing bounded user authorization through skill handoffs and continuation.
   Separately authorized scope does not require a repeated approval turn. Ask for
   missing authority or material changes in target, content, effect, or cost;
@@ -188,9 +204,16 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   verification, with no candidate edits or fixes. Explicit inspection-only
   requests prohibit tests/builds/browser actions. Runtime permissions remain
   authoritative; inheriting permissions is not an immutable read-only guarantee.
-- review-story owns the staged-story protocol/schema. run-agent-team discovers
-  the installed skill and embeds its complete contract in every generic reviewer
-  packet; never guess cache paths or rely on inherited context. Supply story,
+- Routine stories use focused checks and lightweight staged self-review.
+  High-risk stories and any explicitly required early gates use independent
+  staged review. Before final local delivery or shipping, independently review
+  the integrated candidate. Reuse verified integrated review only for the same
+  candidate, comparison base and scope. Before pushing, manage-changes runs
+  documented repository checks against candidate-equivalent inputs.
+- review-story owns the independent staged-story protocol/schema. run-agent-team
+  discovers the installed skill and embeds its complete contract in every
+  independent story reviewer packet. Never guess cache paths or rely on
+  inherited context. Supply story,
   attempt/pass/session identity, base and staged tree, worktree, acceptance,
   verification mode/commands, private outputs, resources and count/time limits.
   Select the native reviewer when supported. Without a custom-role selector,
@@ -240,8 +263,8 @@ delete a shared cache/environment wholesale. Keep README and this guide aligned.
   or switch the user's checkout. Worktree lifecycle needs scoped authority. Reject detached HEAD,
   main/master and branch mismatch. Coordinate shared resources and freeze the
   candidate and conflicts during review, not unrelated isolated workers.
-- Keep fast/standard/deep risk budgets, at most two implementation advisors,
-  required checks and bounded native/self-review selection. Invalid memory,
+- Keep fast/standard/deep advisor budgets, at most two implementation advisors,
+  required checks and risk-based early review. Invalid memory,
   unavailable required protocol/session, failed checks/review or failed commit
   stops delivery. Only completion markers belong in task sources; execution
   history belongs in progress.md. Restore only provisional completion on failed
@@ -436,10 +459,12 @@ zsh -c "source zsh/.zshenv && echo \$JAVA_HOME"
 1. Verify installed configurations and retain needed rollback copies outside the
    cleanup locations before running `make clean`.
 2. Review generated `.zshrc.backup.<timestamp>` files, adjacent timestamped AI
-   configuration/agent/command backups, timestamped skill/retirement archives under
+   configuration/agent/command backups, and the exact Codex
+   `rules/dotfiles.rules.backup.<timestamp>` file, timestamped skill/retirement archives under
    `.install-ai-backups/`, and hashed `plugin-sources/` snapshots. Existing `.env`
    files are synchronized without generating backups.
-3. `make clean` removes these recognized backups for both AI harnesses, honoring
+3. `make clean` removes these recognized backups for both AI harnesses, including
+   only the managed Codex rule backup `rules/dotfiles.rules.backup.<timestamp>`, honoring
    `CODEX_HOME` and `XDG_CONFIG_HOME`, including backups from AI-only installation.
    Preserve active files, plugin caches, installation inventories, unrelated legacy controls,
    and legacy `.env` backups. Reject invalid or symlinked roots before deletion;

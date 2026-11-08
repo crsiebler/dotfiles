@@ -17,6 +17,10 @@ not authorized by loading this capability. Quiesce writers and honor runner
 controls; report actual JSON outcome and preserve sources/partial outputs on
 failure. Never retry partial cleanup automatically or fabricate delivery records.
 
+Verify the invoking workflow's final delivery evidence before completed-run
+archival. When that workflow requires integrated review, confirm its documented
+pass as described in the archival API contract.
+
 This package shares executable functionality only. Each invoking workflow owns
 its lifecycle, review, progress and completion rules. No executor, reviewer,
 model selection or team workflow is started here. Archival metadata enrollment

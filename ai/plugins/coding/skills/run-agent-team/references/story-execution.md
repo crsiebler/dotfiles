@@ -8,12 +8,12 @@ commit, delegation or sensitive-operation authority.
 ## Loading and task-source adapter
 
 Read this installed run-agent-team bundle's story-execution.md in full relative
-to its advertised base. Discover review-story separately and load its complete
-references/contract.md from its advertised bundle. Missing required contracts,
-independent review/session capability or evidence blocks delivery. Apply reviewer
-binding below; never guess checkout/cache paths.
-The Markdown checklist workflow uses the approved PLAN.md checklist, an explicit prepared branch,
-story [ ]/[x] markers and independent reviewer/expanded-initial review.
+to its advertised base. For required independent story review, discover
+review-story separately and load its complete references/contract.md from its
+advertised bundle. Missing required contracts, independent review/session
+capability or evidence blocks the applicable gate. Apply reviewer binding below.
+The Markdown checklist workflow uses the approved PLAN.md checklist, an explicit
+prepared branch and story [ ]/[x] markers.
 The dispatcher owns admission; the main thread owns integration and canonical
 state. Apply this bundle's concurrency/runtime contracts, without invoking any
 alternative execution workflow. Worker results are evidence, not delivery.
@@ -262,41 +262,38 @@ never reuse stale evidence or renew an exhausted budget because it changed.
 
 ## Review selection and invocation
 
-The loaded review-story contract is canonical for the full reviewer protocol, review lenses,
-severity definitions, evidence/noise rules, and exact response JSON schema.
-Use that protocol for self-review as well as native review. Do not duplicate or
-weaken the schema here. Review the complete staged story, not a GitHub PR; no
-external posts, GitHub APIs, or PR metadata are required.
+Classify the planned story, then confirm the classification against the actual
+staged diff, acceptance criteria and check evidence. Record the classification
+and concrete reason. Escalate when the consequences or validation of a material
+failure are unclear. Apply any earlier independent review required by the
+approved plan or repository instructions even for an otherwise routine story.
 
-Classify the staged diff using filenames, content, criteria, notes, and checks:
+- Routine changes are scoped, reversible, and supported by checks that exercise
+  the affected behavior. A change to behavior or tests can still qualify.
+- High-risk changes can affect security, data integrity, migrations, production
+  or external systems, or introduce a shared contract that would be expensive
+  to undo after dependent stories land. Also treat a consequential failure mode
+  that is difficult to verify as high-risk.
 
-- `trivial`: bookkeeping, docs/comments, or mechanical low-risk edits with
-  passing checks.
-- `standard`: ordinary scoped implementation with passing checks.
-- `test-sensitive`: changed behavior/tests, test-coverage criteria, or regression
-  risk that depends on validation quality.
-- `high-risk`: complex/cross-domain, external exposure, migrations, deployment
-  config, security/data integrity, or failed-check recovery.
+Routine stories use a lightweight staged self-review. Inspect the staged diff
+against acceptance and passing check evidence, fix blocking defects, rerun
+affected checks, and inspect any fixes. Record the inspected candidate, result,
+and routine-risk reason in progress. Use the existing self-review evidence
+format for enrolled archival. Skip independent invocation, the expanded profile,
+and the review-story response protocol for this path. Independent review of
+routine changes occurs once on the integrated delivery candidate.
 
-| Mode | Trivial | Standard | Test-sensitive | High-risk |
-| --- | --- | --- | --- | --- |
-| fast | Self | Self | Native | Native |
-| standard | Self | Native | Native | Native |
-| deep | Native | Native | Native | Native |
+High-risk stories require independent staged review before commit and before
+releasing dependents. The fast, standard and deep modes still govern
+implementation advisors. The early review requirement follows story risk
+and explicit scope in every mode.
 
-Select Review profile: expanded-initial for both native and self-review. Independent
-review uses the reviewer contract, bound as described below, with the complete
-review-story contract. Missing,
-unknown or conflicting profile blocks before
+Select Review profile: expanded-initial for required independent story review.
+Use the complete review-story contract for protocol, lenses, severity, findings
+and response schema. Missing, unknown or conflicting profile blocks before
 evidence under this workflow's review protocol. Do not infer the harness from
 available tools or paths. Profiles grant no capabilities or runtime overrides.
-
-For self-review, explicitly select the same adapter profile and pass type in the
-review context. Start with staged filenames, status, and statistics, then inspect
-path-scoped patches in manageable groups under the supplied contract's applicable
-profile budget; an aggregate patch is not required. Produce the same structured
-result. Self-review is a budget choice, never a fallback for missing required
-independent review.
+The remainder of this review procedure applies to the independent story gate.
 
 When native review is selected, verify independent delegation and required
 continuation controls before invocation. Use reviewer binding below. Unavailable
@@ -402,8 +399,9 @@ Use a descriptive label such as `Review US-002 attempt 1` where supported.
 Start a fresh reviewer session for each story's initial review. Never send a new
 story to another story's reviewer session, even after that reviewer has finished.
 Reuse the returned session only for the same story and attempt's permitted
-targeted remediation pass. Before every follow-up, check its destination against
-the recorded story/attempt/session mapping and current packet. Missing or
+targeted remediation pass or reporting-only correction. Before every follow-up,
+check its destination against the recorded story/attempt/session mapping and
+current packet. Missing or
 conflicting mapping blocks the follow-up; never guess from `Review us001` or
 another display label. If the runtime cannot establish the mapping, stop.
 
@@ -449,7 +447,18 @@ is behavioral guidance, not immutable sandbox/MCP enforcement.
 
 Allow at most one initial review and one targeted re-review per story attempt. Parse and
 validate every full response against the loaded review-story contract, including required
-fields, types, enums, pass type, and finding IDs. Malformed JSON, schema mismatch,
+fields, types, enums, pass type, and finding IDs. Before treating a mechanical
+reporting defect as a failed review, apply the loaded review-story contract's
+reporting-only correction rule. Verify the candidate is unchanged and the actual
+reviewer session is available. Allow at most one correction per story attempt,
+with zero tool calls or new evidence gathering and unchanged substantive verdict,
+findings and evidence. Preserve both responses and the reason in append-only
+progress. This correction is distinct from the targeted remediation pass. The
+executor cannot rewrite the report, invent missing fields/evidence or relabel
+executed tests as supplied. Explicit `blocked` verdicts, candidate drift, actual
+unauthorized execution and substantive evidence gaps are ineligible.
+
+After the permitted correction, any remaining malformed JSON, schema mismatch,
 inconsistent verdict/evidence, or `blocked` is a failed review: append the
 blocker safely, keep the story pending, and stop without committing. Do not repair
 reviewer output by inventing fields, infer success from empty/truncated output,
@@ -473,7 +482,7 @@ decisions, and restage intended files. With no blockers and no substantive fixes
 requiring verification, end review immediately. Do not run another audit.
 For substantive code/behavior/test/documentation remediation of blockers, run
 one targeted pass against the new complete staged candidate. Resume the same
-native session using its saved ID (or use the same self-review protocol).
+native session using its saved ID.
 Supply the full protocol, the same `Review profile: <profile>` and
 `Pass type: targeted` packet lines, compact updated context, prior
 findings/dispositions, remediation, and verification. Limit review to prior root
@@ -696,7 +705,7 @@ records the reviewer responsibility; evidence must identify native-role or
 contract-supplied binding, actual agent type and contract source without claiming
 unsupported native selection. Keep its actual session ID. Budget-permitted
 self-review uses kind self, verdict pass, evidence, and a reason identifying the
-mode/risk allowance; it never claims independent/native review. Checks must list
+routine-risk allowance; it never claims independent/native review. Checks must list
 actual commands/results, with not_applicable only for a supported exemption and
 reason. Failed or unavailable required checks still block delivery; never label
 them not_applicable to satisfy the helper. Do not put a speculative commit hash
@@ -745,7 +754,10 @@ Once the entire plan is verified and delivered, discover the installed archive-r
 capability and read its requirements/API contract. Resolve scripts/archive_run.py
 from that advertised base; never duplicate its file operations with generated shell.
 For an enrolled run, invoke it under actual exact-path archival/removal authority.
-Do this after the final story commit and quiescent team writers.
+Require a documented integrated review pass before archival. Record the reviewed
+candidate, comparison base, verdict and actual reviewer session in the existing
+handoff or checkpoint. Invoke after the final story commit and when all writers
+are quiescent.
 For unenrolled bounded or legacy plans, use its copy-only --preserve-plan mode
 with exact associated PRDs if any, retaining sources. Report preserved rather
 than verified-run archival. Failure/missing authority leaves archival pending;

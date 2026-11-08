@@ -45,7 +45,7 @@ No coordinator role, primary-agent switch, nesting or role-guidance adoption is
 required. The main session follows this workflow directly. Bounded planning or
 research advice does not transfer dispatch, Git or tracker ownership.
 Missing required reviewer controls blocks affected
-execution; self-review follows only the existing risk budget. No automatic model
+execution; story self-review follows the risk classification. No automatic model
 switch, installation, capability-probe agents or proxy-spawning. Apply
 [runtime selection](runtime-selection.md): model preferences and unknown telemetry
 alone do not block; explicit user constraints and required review capabilities
@@ -108,10 +108,11 @@ Keep small integration fixes with the main thread when delegation adds unnecessa
 overhead. If worker remediation is infeasible, record why and retain bounded local
 repair or block the affected story; no replacement worker or retry expands budgets.
 
-Integrate one candidate, run required checks, freeze that candidate/conflicting
-resources, then directly invoke the required reviewer. Supply the complete
-unchanged protocol/profile/schema in each packet, not an inherited reference;
-retain its actual native session for the permitted targeted pass. Other isolated
+Integrate one candidate, run required checks, and freeze that candidate and
+conflicting resources. Use lightweight staged self-review for routine work.
+When early independent review is required, directly invoke the reviewer with
+the complete unchanged protocol/profile/schema in each packet and retain its
+actual native session for the permitted targeted pass. Other isolated
 workers may continue. The main thread owns remediation coordination and final
 markers, progress/memory/authorized commit operations. Remediation changes
 invalidate affected check/review evidence; preserve the existing permitted passes
@@ -135,5 +136,6 @@ live workers/reviewers, assignments, candidates and consumed budgets before taki
 main-session ownership. Missing identity or unresolved ownership blocks takeover.
 Final blocked review preserves candidate/history and consumed budget; new agents
 or models do not resolve it. Continue only independently eligible isolated work.
-Global stops stop the batch. After verified delivery, quiesce writers and apply
-required archival under actual authority. Preserve old plans if closeout fails.
+Global stops stop the batch. Quiesce writers for final integrated review and
+apply required archival after the gate passes and under actual authority.
+Preserve old plans if closeout fails.

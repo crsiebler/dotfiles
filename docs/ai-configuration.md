@@ -28,6 +28,7 @@ and connection setup are separate, explicitly authorized operations.
 | `ai/plugins/<plugin>/skills/<action>/` | Portable skill bodies, scripts, and references |
 | `ai/AGENTS.md` | Single harness-agnostic personal policy; copied byte-for-byte to `AGENTS.md` in both user configuration roots |
 | `ai/codex/config.toml` | Managed Codex defaults and MCP connections |
+| `ai/codex/rules/dotfiles.rules` | Managed Codex command-prefix rules |
 | `ai/opencode/{opencode.json,cli.json}` | OpenCode V2 server configuration and CLI settings with built-in notifications |
 | `ai/codex/agents/*.toml` | 5 canonical custom-agent sources; all copied unchanged to Codex, Markdown generated for OpenCode |
 | `run-agent-team/references/story-execution.md` and `review-story/references/contract.md` in coding skills | Team delivery and reusable staged-review contract |
@@ -334,6 +335,19 @@ archival in place. Preserve inventories and backups, correct the reported blocke
 then rerun. Source updates alone do not execute cleanup. Restart the harness and
 verify discovery after installation; run backup cleanup only when rollback is no
 longer needed.
+
+Codex installation also manages `rules/dotfiles.rules` as a separate file,
+backing up that same named file when it changes and leaving `rules/default.rules`
+and other rule files alone. `make clean` recognizes and removes only adjacent
+timestamped `rules/dotfiles.rules.backup.<timestamp>` files; it preserves active
+rules and backups for every other rule file. Restart Codex after installation.
+The four allowed prefixes (`git status`, `gh pr view`, `gh repo view`, and
+`gh pr list`) match additional arguments and permit execution outside the sandbox
+without a prompt. This file does not grant `git diff` because `--output` can
+write outside the project and configured diff helpers can execute programs; its
+execution remains subject to the active sandbox and approval policy. Existing
+rules can impose more restrictive decisions.
+Source changes do not activate these rules; installation requires separate authority.
 
 Managed JSON/TOML files replace installed files byte-for-byte. This applies to
 Codex `config.toml` and OpenCode V2 `opencode.json` and `cli.json`.

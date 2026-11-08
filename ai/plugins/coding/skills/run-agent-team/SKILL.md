@@ -61,6 +61,15 @@ gates before starting without regenerating the plan or invoking a planning skill
 Do not defer known human dependencies into a story. New mandatory gates stop
 affected work; conversational approval never bypasses runtime permission prompts.
 
+In the existing checkpoint, record authorization separately from demonstrated
+capability: target host/environment, acting identity, scoped operation and limits,
+user grant, successful capability evidence, actual denials and validity conditions.
+Reuse unchanged grants and observations across turns. Recheck when identity, target,
+environment, permissions or evidence validity changes. A denial blocks the denied
+operation; assess independently authorized operations against their own evidence.
+Never change identities or routes to evade a denial. Ask only when the next required
+action lacks authority or capability, rather than repeatedly reopening settled facts.
+
 Apply [autonomous execution scope](references/story-execution.md#autonomous-execution-scope)
 at launch and in every worker/reviewer packet. Carry the approved implementation
 endpoint forward without adding manual QA, human test confirmation or release
@@ -69,8 +78,8 @@ a separate runner, daemon or controller.
 
 Use one compact capability/ownership preflight. Inspect actual callable native
 worker/model/follow-up/session controls, installed pins and capacity. Require
-direct worker/reviewer controls and same-session continuation when the risk
-budget specifies it. Apply [reviewer binding](references/story-execution.md#reviewer-binding):
+direct worker/reviewer controls and same-session continuation for the applicable
+early and integrated review gates. Apply [reviewer binding](references/story-execution.md#reviewer-binding):
 use native role selection when supported, otherwise supply the complete reviewer
 contract to an independent agent. No extra approval is needed solely because a
 role-selection parameter is absent. Record selection
@@ -116,10 +125,12 @@ separate verification result.
 Read this bundle's [story delivery](references/story-execution.md),
 [concurrency](references/task-concurrency.md) and
 [runtime selection](references/runtime-selection.md) contracts. Resolve resources
-relative to this advertised installed bundle. Separately discover review-story
-and load its complete contract; embed it with the workflow packet on every
-reviewer invocation. This workflow owns delivery; the skill owns review procedure
-and schema. No planning or alternative execution workflow is invoked.
+relative to this advertised installed bundle. For required independent story
+review, separately discover review-story and embed its complete contract with
+each story reviewer packet. For final integrated review, separately discover
+review-code and load its references/integrated-delivery.md from the advertised
+bundle. This workflow owns delivery. No planning or alternative execution
+workflow is invoked.
 At full completion discover archive-run for its executable archival capability;
 resolve its helper/API contract from that loaded bundle, never sibling paths.
 For enrolled runs, verify/bind metadata before the first checkpoint under actual
@@ -151,13 +162,16 @@ Use private outputs and existing project controls for shared builds/caches/host
 resources; serialize conflicts if exclusion cannot be established.
 
 Integrate one bounded candidate at a time through the shared checks and risk-based
-review. Use permitted self-review only where that budget allows; otherwise directly
-invoke an independent agent bound to `reviewer` with the full protocol/profile
-and preserve its session.
-Allow one initial and at most one targeted pass per attempt. Do not add a worker
-staged review, extra coordinator approval or reviewer-of-reviewer cycle. Follow
-pre-commit evidence and provisional marker finalization; report delivered completion
-only after a successful authorized integration commit. Keep evidence in progress,
+review. Use lightweight staged self-review for routine stories. For high-risk
+stories and explicitly required early review, directly invoke an independent
+agent bound to `reviewer` with the full story protocol/profile and preserve its
+session. Allow one initial and at most one targeted pass per independent story
+attempt. Do not add a worker
+staged review, extra coordinator approval or reviewer-of-reviewer cycle. Apply
+the loaded review-story reporting-only correction rule for mechanical report
+defects, preserving the same reviewer/candidate, evidence and consumed passes.
+Follow pre-commit evidence and provisional marker finalization; report delivered
+completion only after a successful authorized integration commit. Keep evidence in progress,
 not plan narratives or a new registry.
 
 On failure, preserve candidate/history and block its dependent subgraph; continue
@@ -170,8 +184,19 @@ integration and canonical state remain owned by the main thread. Apply the
 persistent blocker gate before further story work or review. Persistent
 final review blockers require material-resolution evidence, not a new agent/model.
 
-After the entire plan is delivered and writers are quiescent, perform required
-archival under the shared contract and actual authority. Report pending closeout
+After all story commits land and writers are quiescent, run the independent
+integrated review before declaring full delivery, even if the endpoint is local.
+Use the approved delivery base if specified, otherwise the verified committed
+baseline of the run. Supply the complete base-to-candidate change, plan criteria
+and integration check evidence. Use the same independent binding safeguards as
+for story review, with the integrated delivery contract in place of the story
+packet. The main thread owns scoped remediation and verification. Commit required
+fixes under the existing scope and use the bounded targeted follow-up on the
+result. Keep existing story commits and markers as history if the integrated
+gate blocks, and report the plan as pending final delivery.
+
+Once integrated review passes, perform required archival under the shared
+contract and actual authority. Report pending closeout
 rather than fabricating success. No implicit push, post, install, deployment,
 worktree removal or global configuration change.
 

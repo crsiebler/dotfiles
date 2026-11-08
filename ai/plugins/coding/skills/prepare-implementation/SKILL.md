@@ -38,7 +38,13 @@ self-dependencies and cycles. Explain ordering and integrated acceptance ownersh
 ### Plan for autonomous implementation
 
 The default endpoint is implemented requirements, automated verification, required
-independent agent review, and scoped local delivery. Include only agent-executable,
+independent review of the integrated candidate, and scoped local delivery.
+Plan lightweight staged self-review for routine stories and early independent
+review for high-risk stories. Classify risk from blast radius, reversibility,
+downstream dependencies and verification strength. Include security, data
+integrity, migrations, production/external effects, and costly shared contracts.
+If pushing is in scope, include the repository's documented pre-push checks
+and target base. Include only agent-executable,
 noninteractive verification in implementation stories and completion gates.
 Do not add manual QA, human test-result confirmation, deployment verification,
 production smoke tests, or stakeholder sign-off as routine implementation tasks.

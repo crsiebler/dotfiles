@@ -365,13 +365,15 @@ for ownership, shared-directory scope, and preserved conflicts.
 1. Verify the installed configuration and copy any backups needed for rollback
    outside the cleanup locations before running `make clean`.
 2. Review the generated backups: `$HOME/.zshrc.backup.<timestamp>`, adjacent
-   timestamped AI configuration/agent/command backups, timestamped skill and
+   timestamped AI configuration/agent/command backups, the managed Codex
+   `rules/dotfiles.rules.backup.<timestamp>`, timestamped skill and
    retirement archives under `.install-ai-backups/`, and hashed plugin source
    snapshots under `.install-ai-backups/plugin-sources/`.
 3. Run `make clean` to remove these installer backups for both OpenCode and Codex.
    It honors `CODEX_HOME` and `XDG_CONFIG_HOME`, defaulting to `~/.codex` and
    `~/.config/opencode`. This includes backups from the separate AI install targets.
-   Active configurations, agents, commands, skills, plugin caches, installation
+   Only that exact managed Codex rule backup is included; active rule files and
+   backups for other rules are preserved. Active configurations, agents, commands, skills, plugin caches, installation
    inventories, unrelated legacy state, and legacy `.env` backups remain untouched. Invalid
    root paths are rejected before deletion; symlink roots are rejected and symlink
    backup candidates are skipped. Cleanup does not follow symlinks inside archives.

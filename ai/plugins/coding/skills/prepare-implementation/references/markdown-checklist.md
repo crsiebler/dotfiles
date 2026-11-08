@@ -25,12 +25,13 @@ ready for unattended launch. Keep its evidence in this plan, not a second tracke
 - Plan revision: <stable scope revision and approved baseline when known>
 - Scope / non-goals: <included and excluded work>
 - Working branch: <known exact branch or pending preparation>
+- Integrated review base: <approved target or verified local delivery baseline>
 - Authorization gaps: <missing execution/lifecycle/delivery scope or none>
 - Verification: <noninteractive commands/tool procedures, inputs and expected results; planned automation owner>
 - Assumptions / open questions: <material gaps or none>
 
 ## Execution readiness
-- Requested endpoint: <implemented requirements, automated verification, independent agent review and scoped local delivery>
+- Requested endpoint: <implemented requirements, automated verification, independent integrated review and scoped local delivery>
 - Audited revision / runtime / environment: <scope and actual capability evidence>
 - Unattended readiness: blocked | ready
 - Launch: awaits explicit implementation request; planning does not start work
@@ -41,6 +42,8 @@ ready for unattended launch. Keep its evidence in this plan, not a second tracke
 
 - Remaining blockers: <exact missing action/decision, owner and completion evidence; or none>
 - Recheck at launch: <validity limits or changed conditions that would invalidate readiness>
+- Capability qualification: <unusual check, actual runner/input method, observed evidence and validity; authorized preparation still needed, or not applicable>
+- Approval preparation: <concrete artifacts and grouped missing grants, or none>
 
 Remove the example row when no gates apply and explain the inspected evidence.
 Do not mark ready with pending human prerequisites or unsupported capabilities.
@@ -57,6 +60,7 @@ Do not mark ready with pending human prerequisites or unsupported capabilities.
 - Phase / requirements: <source criteria; phase optional>
 - User story: As a <user>, I want <capability> so that <benefit>.
 - Relevant paths: <source/test paths>
+- Review risk: <routine or high-risk, with reason and any required early gate>
 - Recommended agents: <optional known specialist names and bounded questions>
 
 #### Acceptance criteria

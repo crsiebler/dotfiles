@@ -31,6 +31,7 @@ class MakeCleanTest(unittest.TestCase):
                        '.config/opencode/commands/group/old.md.backup.20260906_120000',
                        '.codex/config.toml.backup.20260906_120000',
                        '.codex/agents/old.toml.backup.20260906_120000',
+                       '.codex/rules/dotfiles.rules.backup.20260906_120000',
                        '.config/opencode/.install-ai-backups/20260906_120000_123456/skills/custom/SKILL.md',
                        '.codex/.install-ai-backups/20260906_120000/retired/plugins/old/plugin.json',
                        '.codex/.install-ai-backups/plugin-sources/coding/' + 'a' * 64 + '/SKILL.md']
@@ -43,6 +44,9 @@ class MakeCleanTest(unittest.TestCase):
                         '.codex/plugins/cache/craft/coding/SKILL.md',
                         '.config/opencode/custom.json.backup.20260906_120000',
                         '.codex/config.toml.backup.manual',
+                        '.codex/rules/dotfiles.rules',
+                        '.codex/rules/default.rules',
+                        '.codex/rules/custom.rules.backup.20260906_120000',
                         '.ralph-stop', 'memory.json',
                         '.config/opencode/.install-ai-backups/example/skills/custom/SKILL.md']
             for name in backups + retained:

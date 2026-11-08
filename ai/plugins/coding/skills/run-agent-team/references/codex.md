@@ -10,8 +10,9 @@ Example after selecting the skill:
 
 > Execute the approved PLAN.md using run-agent-team. This main session owns
 > orchestration. Target up to four concurrent implementation workers within actual
-> runtime/resource capacity, reserving review capacity for reviewer with the
-> complete review-story contract. Preserve pending work and report missing
+> runtime/resource capacity, reserving capacity for independent integrated review
+> and any early reviewer with the complete review-story contract.
+> Preserve pending work and report missing
 > worktree authority or capability.
 
 For unattended execution, use the approved readiness record and

@@ -14,6 +14,27 @@ def text(path):
 
 
 class PlanningReadinessTest(unittest.TestCase):
+    def test_native_capability_requires_qualification_before_readiness(self):
+        contract = text(PLANNING + 'references/execution-readiness.md')
+        for rule in ('actual runner, environment, input method and observable evidence',
+                     'Japanese IME composition', 'exact 4K verification',
+                     'separately authorized preparation step',
+                     'verify its results before declaring readiness',
+                     'Planning itself does not run that step'):
+            self.assertIn(rule, contract)
+        template = text(PLANNING + 'references/markdown-checklist.md')
+        self.assertIn('Capability qualification:', template)
+        self.assertIn('Approval preparation:', template)
+
+    def test_artifact_preparation_precedes_approval_and_material_decisions_surface(self):
+        contract = text(PLANNING + 'references/execution-readiness.md')
+        self.assertIn('Prepare the concrete approval artifact', contract)
+        self.assertIn('before asking for its approval', contract)
+        self.assertIn('Record the actual user response against affected gates', contract)
+        entry = text('ai/plugins/coding/skills/write-requirements/SKILL.md')
+        self.assertIn('replay after record expiry, duplicate external effects', entry)
+        self.assertIn('without guessing consent', entry)
+
     def test_readiness_is_required_and_has_blocking_dispositions(self):
         entry = text(PLANNING + 'SKILL.md')
         self.assertIn('[execution readiness](references/execution-readiness.md) for every plan', entry)

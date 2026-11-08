@@ -11,6 +11,23 @@ def guidance(path):
 
 
 class ApprovalGuidanceTest(unittest.TestCase):
+    def test_advance_grants_and_owned_process_cleanup_have_explicit_boundaries(self):
+        text = guidance('ai/AGENTS.md')
+        for rule in ('bounded advance grant satisfies the confirmatory rules',
+                     "Record the user's actual grant", 'Plan contents alone grant nothing',
+                     'process identity, start time, run ownership and isolation',
+                     'A PID alone is insufficient',
+                     'Shared services, containers, pre-existing processes and uncertain descendants require confirmation'):
+            self.assertIn(rule, text)
+
+    def test_recovery_preserves_failures_and_reconciles_uncertain_effects(self):
+        text = guidance('ai/plugins/coding/skills/develop-code/SKILL.md')
+        for rule in ('Reconcile uncertain side effects before retrying',
+                     'Preserve failure evidence, assertions and acceptance criteria',
+                     'within the applicable budgets',
+                     'continue safely isolated eligible work'):
+            self.assertIn(rule, text)
+
     def test_posting_accepts_clear_confirmation_without_magic_words(self):
         for path in (
             'ai/opencode/commands/review-pr.md',

@@ -9,6 +9,8 @@ the repository default base for comparison and omit `--base` when creating.
 Describe the final purpose and behavior across all included commits, with actual
 validation/limitations and the repository PR template. Link issue/ticket context
 only when verified. Inspect all included commits and the complete base diff.
+Complete the repository checks and integrated review required by
+`manage-changes` before previewing the push or PR.
 
 Stop on `main`/`master`, no relevant changes, or unexplained uncommitted work.
 An authorized archival closeout commit may be included in the prepared sequence;

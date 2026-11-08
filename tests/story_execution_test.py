@@ -27,6 +27,36 @@ def compact(text):
 
 
 class StoryExecutionTest(unittest.TestCase):
+    def test_reporting_correction_is_bounded_and_cannot_repair_substantive_gaps(self):
+        protocol = compact((REVIEW / 'references/contract.md').read_text())
+        for rule in ('at most one reporting-only correction per story attempt',
+                     'same actual reviewer session',
+                     'zero tool calls or new evidence gathering',
+                     'original verdict, findings, resolutions, risks and substantive evidence',
+                     'Never relabel an executed test as supplied',
+                     'explicit final blocked verdict is ineligible',
+                     'preserves both responses',
+                     'not as standalone entries in `verification`'):
+            self.assertIn(rule, protocol)
+        executor = compact((TEAM_REFS / 'story-execution.md').read_text())
+        for rule in ('at most one correction per story attempt',
+                     'Explicit `blocked` verdicts, candidate drift',
+                     'unauthorized execution and substantive evidence gaps are ineligible',
+                     'executor cannot rewrite the report',
+                     'Apply the persistent blocker gate below before any later attempt'):
+            self.assertIn(rule, executor)
+
+    def test_capacity_fallback_reconciles_sessions_and_preserves_independence(self):
+        policy = compact((TEAM_REFS / 'runtime-selection.md').read_text())
+        for rule in ('invocation demonstrably never started',
+                     'Uncertain launch state requires reconciliation before any retry',
+                     'preserve its session and consumed budgets',
+                     'Never reuse the candidate implementer as its required independent reviewer'):
+            self.assertIn(rule, policy)
+        entry = compact((TEAM / 'SKILL.md').read_text())
+        self.assertIn('record authorization separately from demonstrated capability', entry)
+        self.assertIn('Never change identities or routes to evade a denial', entry)
+
     @classmethod
     def setUpClass(cls):
         cls.lives = {'team': (TEAM_REFS / 'story-execution.md').read_text()}
@@ -186,12 +216,16 @@ class StoryExecutionTest(unittest.TestCase):
         self.assertEqual(pattern['evidence_count'],
                          pattern['accepted_count'] + pattern['rejected_count'])
 
-    def test_mode_risk_budgets_do_not_drift_between_workflows(self):
-        tables = {}
-        for name, text in self.lives.items():
-            tables[name] = re.findall(r'\| Mode \|.*?(?=\n\n)', text, re.S)
-            self.assertIn('Never invoke more than two implementation advisors', text)
-        self.assertEqual(len(tables['team']), 2)
+    def test_routine_and_high_risk_stories_have_distinct_review_gates(self):
+        story = compact(self.lives['team'])
+        self.assertIn('Never invoke more than two implementation advisors', story)
+        self.assertIn('Routine stories use a lightweight staged self-review', story)
+        self.assertIn('High-risk stories require independent staged review before commit', story)
+        self.assertIn('Review profile: expanded-initial', story)
+        entry = compact((TEAM / 'SKILL.md').read_text())
+        self.assertIn('integrated review before declaring full delivery', entry)
+        self.assertLess(entry.index('integrated review before declaring full delivery'),
+                        entry.index('perform required archival'))
 
     def test_finalization_and_sensitive_operation_guards_remain_in_each_workflow(self):
         for name, raw in self.lives.items():
@@ -237,6 +271,14 @@ class StoryExecutionTest(unittest.TestCase):
         for text in self.lives.values():
             self.assertIn('installed archive-run', text)
             self.assertIn('--preserve-plan', text)
+
+    def test_verified_archival_waits_for_required_integrated_review(self):
+        archive = compact((ARCHIVE / 'references/completed-run-archive.md').read_text())
+        self.assertIn('Require a documented integrated review pass', archive)
+        self.assertIn('Leave active artifacts in place', archive)
+        self.assertIn('including reachable or squash delivery provenance', archive)
+        team = compact(self.lives['team'])
+        self.assertIn('Require a documented integrated review pass before archival', team)
 
     def concurrency_reference(self):
         text = (TEAM_REFS / 'task-concurrency.md').read_text()
