@@ -162,7 +162,11 @@ defines the native role contract.
 
 ## Local coding model
 
-Bonsai 2 MLX is the only local coding provider in `ai/opencode/opencode.json`.
+Bonsai 2 MLX and the optional TensorFold Nemotron Lightning provider live in
+`ai/opencode/opencode.json`. TensorFold runs separately on loopback port 8082;
+see `docs/local-nemotron.md` for the pinned runtime/checkpoint, measured pilot
+limits and `scripts/serve-nemotron.sh`. Installation does not provision either
+runtime or download weights. Preserve Bonsai and audio assets.
 Runtime installation pins are documented in `docs/local-bonsai.md`; no separate
 local provider profile is needed. The `mlx-bonsai` function in
 `aliases/.aliases` invokes the

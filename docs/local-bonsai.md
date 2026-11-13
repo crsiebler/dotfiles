@@ -15,10 +15,13 @@ endpoint and existing timeouts. Model `capabilities` advertise text and tools;
 this does not change the MLX server generation defaults. V2 live integration
 is still unverified. See [V2 configuration](opencode-v2.md).
 
-- `ai/opencode/opencode.json`: the sole local coding provider, `bonsai`, using
+- `ai/opencode/opencode.json`: the preserved local coding provider, `bonsai`, using
   `http://127.0.0.1:8081/v1` and model ID
   `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit`.
 - `aliases/.aliases`: `mlx-bonsai` foreground server function, no installation logic.
+
+The separate optional [TensorFold Nemotron pilot](local-nemotron.md) uses port
+8082. Stop one model before loading the other on the 36 GiB Mac.
 
 The provider declares text input, tool calls, and separate `reasoning_content`.
 These declarations require a real streaming/tool-result round-trip test before

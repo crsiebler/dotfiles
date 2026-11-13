@@ -189,14 +189,17 @@ By default, `/review-pr` generates a local review report only. When `--post` is 
 
 ## Local Coding Model
 
-Bonsai 2 MLX is the sole configured local coding provider. See the
+Bonsai 2 MLX remains configured alongside an optional TensorFold Nemotron
+Lightning provider. See the
 [setup and verification guide](docs/local-bonsai.md) for the isolated runtime,
 64K starting context and `mlx-bonsai` Zsh shortcut. Select the base configuration's
 Bonsai provider through OpenCode's `/models` menu; no extra profile is required.
-Provisioning is separate from
-dotfiles installation. For cleanup, inspect exact old model paths, stop their
-users, remove only selected coding caches, and retain rollback configuration
-until verification. Preserve audio weights and shared environments.
+For the optional provider, see the [TensorFold pilot](docs/local-nemotron.md),
+including measured memory/performance, tool-call limitations, and startup.
+Provisioning is separate from dotfiles installation. For cleanup, inspect exact
+old model paths, stop their users, remove only selected coding caches, and retain
+rollback configuration until verification. Preserve audio weights and shared
+environments.
 
 ## Audio Generation
 
