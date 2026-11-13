@@ -1,6 +1,7 @@
 """Instruction-contract regressions, not live agent or approval-engine tests."""
 import json
 from pathlib import Path
+import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,6 +12,79 @@ def guidance(path):
 
 
 class ApprovalGuidanceTest(unittest.TestCase):
+    def test_automated_review_triage_authorizes_verified_thread_resolution(self):
+        for path in (
+            'ai/plugins/coding/skills/resolve-review-feedback/SKILL.md',
+            'ai/plugins/coding/skills/resolve-review-feedback/references/github.md',
+        ):
+            with self.subTest(path=path):
+                text = guidance(path)
+                self.assertIn('A request to triage automated review findings '
+                              'authorizes resolving verified addressed threads',
+                              text)
+                self.assertIn('without another approval prompt', text)
+                self.assertIn('current PR head', text)
+                self.assertIn('Do not post a reply as part of automatic '
+                              'resolution', text)
+                self.assertNotIn('the preview for **all** replies, resolutions',
+                                 text)
+
+    def test_automatic_resolution_preserves_evidence_and_write_boundaries(self):
+        for path in (
+            'ai/plugins/coding/skills/resolve-review-feedback/SKILL.md',
+            'ai/plugins/coding/skills/resolve-review-feedback/references/github.md',
+        ):
+            with self.subTest(path=path):
+                text = guidance(path)
+                for rule in (
+                    'Explicit read-only, analysis-only, or dry-run requests '
+                    'prohibit writes',
+                    'author metadata',
+                    'unresolved human follow-up',
+                    'local-only fixes',
+                    'Human-authored threads and declined findings require '
+                    'preview approval before resolution',
+                    'Replies, edits, deletions, and reposts require explicit '
+                    'approval after preview',
+                ):
+                    self.assertIn(rule, text)
+
+    def test_operator_skill_handoff_preserves_scoped_auth_authorization(self):
+        role = tomllib.loads(
+            (ROOT / 'ai/codex/agents/operator.toml').read_text()
+        )['developer_instructions']
+        self.assertIn('Load operate-systems', role)
+        skill = guidance('ai/plugins/coding/skills/operate-systems/SKILL.md')
+        for source, text in (('operator', ' '.join(role.split())),
+                             ('operate-systems', skill)):
+            with self.subTest(source=source):
+                self.assertIn(
+                    'Modify authentication/authorization logic when explicitly '
+                    'requested by the user or included in a plan the user '
+                    'explicitly asks to implement', text)
+                self.assertIn('do not ask for a separate exception or repeated '
+                              'confirmation', text)
+                self.assertIn('Planning alone does not authorize implementation',
+                              text)
+        self.assertNotIn(
+            'Do not bypass approvals, disable protections or alter '
+            'authentication/authorization logic', skill)
+
+    def test_operations_security_changes_retain_scope_and_runtime_boundaries(self):
+        text = guidance('ai/plugins/coding/skills/operate-systems/SKILL.md')
+        for rule in (
+            'Do not disable or weaken security controls as an incidental '
+            'workaround',
+            'explicit user authorization covering the affected control and '
+            'intended behavior',
+            'Do not bypass approvals or runtime denials',
+            'Preserve unrelated protections and all runtime permission controls',
+            'including denied-access cases',
+            'A skill supplies methods and knowledge, not authority',
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, text)
+
     def test_advance_grants_and_owned_process_cleanup_have_explicit_boundaries(self):
         text = guidance('ai/AGENTS.md')
         for rule in ('bounded advance grant satisfies the confirmatory rules',

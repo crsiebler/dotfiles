@@ -21,10 +21,20 @@ their applicable scope.
 
 For reporting, reuse explicit approval of the same posting action, destination,
 and content. Newly composed unapproved comments stay drafts until approved.
-PR review and feedback resolution retain their exact-payload preview requirement;
-accept unambiguous natural-language confirmation rather than a fixed word list.
+PR review submissions and feedback replies retain their exact-payload preview
+requirement; accept unambiguous natural-language confirmation rather than a fixed word list.
 An unchanged approved batch needs no repeat prompt. Changed targets, content,
 effects, or spending need new scope; mechanical encoding alone does not.
+
+A request to triage automated review findings includes resolving open automated
+threads verified as addressed at the current PR head, without another approval
+prompt or an incidental reply. Confirm author metadata, complete thread coverage,
+required fix evidence, and no unresolved human follow-up; recheck the head and
+thread before mutation and verify the resolved state afterward. Uncertain,
+actionable or local-only fixes stay open. Explicit read-only, analysis-only and
+dry-run requests prohibit writes. Human-authored threads, declined findings and
+all feedback comment writes retain preview approval requirements. See the
+[feedback protocol](../ai/plugins/coding/skills/resolve-review-feedback/references/github.md).
 
 Sprite generation carries the approved provider, batch, cost, and call limits;
 an available native image tool does not require an OpenCode plugin. Requested
