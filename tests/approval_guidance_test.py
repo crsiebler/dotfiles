@@ -1,6 +1,7 @@
 """Instruction-contract regressions, not live agent or approval-engine tests."""
 import json
 from pathlib import Path
+import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,6 +12,42 @@ def guidance(path):
 
 
 class ApprovalGuidanceTest(unittest.TestCase):
+    def test_operator_skill_handoff_preserves_scoped_auth_authorization(self):
+        role = tomllib.loads(
+            (ROOT / 'ai/codex/agents/operator.toml').read_text()
+        )['developer_instructions']
+        self.assertIn('Load operate-systems', role)
+        skill = guidance('ai/plugins/coding/skills/operate-systems/SKILL.md')
+        for source, text in (('operator', ' '.join(role.split())),
+                             ('operate-systems', skill)):
+            with self.subTest(source=source):
+                self.assertIn(
+                    'Modify authentication/authorization logic when explicitly '
+                    'requested by the user or included in a plan the user '
+                    'explicitly asks to implement', text)
+                self.assertIn('do not ask for a separate exception or repeated '
+                              'confirmation', text)
+                self.assertIn('Planning alone does not authorize implementation',
+                              text)
+        self.assertNotIn(
+            'Do not bypass approvals, disable protections or alter '
+            'authentication/authorization logic', skill)
+
+    def test_operations_security_changes_retain_scope_and_runtime_boundaries(self):
+        text = guidance('ai/plugins/coding/skills/operate-systems/SKILL.md')
+        for rule in (
+            'Do not disable or weaken security controls as an incidental '
+            'workaround',
+            'explicit user authorization covering the affected control and '
+            'intended behavior',
+            'Do not bypass approvals or runtime denials',
+            'Preserve unrelated protections and all runtime permission controls',
+            'including denied-access cases',
+            'A skill supplies methods and knowledge, not authority',
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, text)
+
     def test_advance_grants_and_owned_process_cleanup_have_explicit_boundaries(self):
         text = guidance('ai/AGENTS.md')
         for rule in ('bounded advance grant satisfies the confirmatory rules',
