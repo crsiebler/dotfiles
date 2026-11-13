@@ -34,7 +34,7 @@ class OpenCodeV2Test(unittest.TestCase):
                 self.assertEqual(server['timeout'], {'catalog': 60000, 'execution': 60000})
 
     def test_bonsai_preserves_endpoint_limits_timeouts_and_reasoning_field(self):
-        self.assertEqual(set(self.config['providers']), {'bonsai'})
+        self.assertEqual(set(self.config['providers']), {'bonsai', 'tensorfold'})
         provider = self.config['providers']['bonsai']
         self.assertEqual(set(provider), {'name', 'package', 'settings', 'models'})
         self.assertEqual(provider['package'], 'aisdk:@ai-sdk/openai-compatible')
@@ -46,6 +46,17 @@ class OpenCodeV2Test(unittest.TestCase):
         self.assertEqual(model['limit'], {'context': 65536, 'output': 8192})
         self.assertEqual(model['capabilities'], {'tools': True, 'input': ['text'], 'output': ['text']})
         self.assertEqual(model['compatibility'], {'reasoningField': 'reasoning_content'})
+
+    def test_optional_tensorfold_preserves_default_and_uses_separate_endpoint(self):
+        self.assertEqual(self.config['model'], 'openai/gpt-6-astra')
+        provider = self.config['providers']['tensorfold']
+        self.assertEqual(provider['package'], 'aisdk:@ai-sdk/openai-compatible')
+        self.assertEqual(provider['settings']['baseURL'],
+                         'http://127.0.0.1:8082/v1')
+        self.assertEqual(provider['body'], {'temperature': 0})
+        model = provider['models']['nemotron-lightning']
+        self.assertEqual(model['limit'], {'context': 65536, 'output': 8192})
+        self.assertTrue(model['capabilities']['tools'])
 
     def test_builtin_notifications_and_optional_image_provider(self):
         cli = json.loads((self.source / 'cli.json').read_text())

@@ -628,6 +628,41 @@
                 "headerTimeout": 600000,
                 "timeout": false
             }
+        },
+        "tensorfold": {
+            "name": "TensorFold Nemotron Local (optional)",
+            "package": "aisdk:@ai-sdk/openai-compatible",
+            "settings": {
+                "apiKey": "none",
+                "baseURL": "http://127.0.0.1:8082/v1",
+                "chunkTimeout": 120000,
+                "headerTimeout": 600000,
+                "timeout": false
+            },
+            "models": {
+                "nemotron-lightning": {
+                    "name": "Nemotron 3.5 Lightning 30B-A3B 4-bit",
+                    "capabilities": {
+                        "input": [
+                            "text"
+                        ],
+                        "output": [
+                            "text"
+                        ],
+                        "tools": true
+                    },
+                    "compatibility": {
+                        "reasoningField": "reasoning_content"
+                    },
+                    "limit": {
+                        "context": 65536,
+                        "output": 8192
+                    }
+                }
+            },
+            "body": {
+                "temperature": 0
+            }
         }
     }
 }
