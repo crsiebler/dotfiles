@@ -58,12 +58,42 @@ carries through planning and execution. Record the user's actual grant in the
 existing readiness record. Plan contents alone grant nothing. Absolute
 prohibitions and required approval of a future exact payload still apply.
 
+For rules requiring confirmation, an explicit user request to perform the
+covered action is confirmation for its stated scope. A user request to implement
+a plan also confirms actions explicitly included in that plan within its stated
+targets and limits. Do not require a second approval merely because a rule says
+"without confirmation." Planning or an agent-authored plan alone supplies no
+such confirmation, nor does a broad goal that does not cover the action.
+Preserve absolute prohibitions, required future exact-payload approvals and
+runtime controls. The scoped-authorization rules below use this meaning of
+confirmation. Verify facts through available evidence; ask only for missing
+authority or material changes in target, effect, content or cost. If a question
+is necessary, identify that missing scope instead of merely quoting the rule.
+
 ### Security (Absolute)
 
 - Never commit secrets or credentials.
 - Never expose sensitive information in logs or error messages.
-- Never disable security features.
-- Never modify authentication/authorization logic.
+
+### Security controls
+
+- Do not disable or weaken security controls as an incidental workaround.
+  Changes to controls require explicit user authorization covering the affected
+  control and intended behavior. An existing request covering that scope supplies
+  authorization; do not ask for repeated confirmation.
+- Preserve unrelated protections and all runtime permission controls.
+
+### Authentication and authorization changes
+
+- Modify authentication/authorization logic when explicitly requested by
+  the user or included in a plan the user explicitly asks to implement.
+  That request supplies authorization for the stated scope; do not ask
+  for a separate exception or repeated confirmation.
+- Planning alone does not authorize implementation.
+- Ask only when the proposed change materially exceeds the authorized
+  scope or a required security decision remains unspecified.
+- Verify the intended access behavior, including denied-access cases.
+  Preserve unrelated protections and all runtime permission controls.
 
 ### Git Operations
 
@@ -72,8 +102,9 @@ authorizes the initial and subsequent scoped local commits without additional
 commit prompts. Carry that grant through continuation. Planning/approval alone
 and narrower no-commit, read-only or source-only requests do not grant it.
 Inspect and stage only scoped task-owned changes, preserve unrelated work, and
-complete applicable checks/review before committing. This does not authorize
-push, publication, installation, archival/removal or other destructive actions.
+complete applicable checks/review before committing. This commit grant alone
+does not authorize push, publication, installation, archival/removal or other
+destructive actions; honor any separate explicit grant covering those actions.
 
 **Absolute:**
 - Never force push (`git push --force`).
@@ -81,52 +112,77 @@ push, publication, installation, archival/removal or other destructive actions.
 - Never push directly to `main`/`master`.
 - Preserve unrelated work; do not revert changes you did not make.
 
-**Confirmatory:**
-- Do not delete branches without confirmation.
+**Scoped authorization:**
+- Branch deletion requires explicit user authorization covering the branches.
+  Reuse an existing grant for those branches; do not ask again.
 
 ### File System
 
 **Absolute:**
-- Never modify files outside the project directory.
 - Never use `/tmp/`; use the working directory for temporary project files.
-- Never modify system files or global configurations.
 
-**Confirmatory:**
-- Do not delete files without confirmation.
+**Scoped authorization:**
+- Work within the project directory by default. Writes outside it, including
+  system files or global configurations, require explicit user authorization
+  covering the target paths and intended changes. A request to install or update
+  named managed configuration can supply that scope; resolve its actual paths
+  before writing. Preserve runtime filesystem restrictions.
+- File deletion requires explicit user authorization covering the target paths.
+  Reuse existing scoped authorization for writes or deletion without another
+  confirmation. Do not infer deletion authority from permission to edit a file.
 
 ### Database Operations
 
 **Absolute:**
-- Never execute DELETE/DROP SQL statements without confirmation.
 - Never modify production database connections.
 
-**Confirmatory:**
-- Do not run database migrations without confirmation, including local/test migrations.
+**Scoped authorization:**
+- Executing DELETE/DROP SQL requires explicit user authorization covering the
+  target database, affected data or objects, and destructive effect. Reuse that
+  grant without repeated confirmation; a general migration request alone does
+  not authorize unspecified data loss.
+- Run database migrations, including local/test migrations, when the user
+  explicitly requests them or asks to implement a plan that includes running
+  them against the identified target environment. That request is confirmation
+  for the stated migration scope; do not ask again for the same scope.
+- A request to author migration files alone does not authorize running them.
+  Verify the target environment before execution. Ask only for missing authority
+  or material changes in target or effect, including destructive operations not
+  covered by the existing grant. Preserve the DELETE/DROP and production
+  connection restrictions above.
 
 ### Package Management
 
-- Do not run `npm install`, `yarn install`, `pnpm install`, or `bun install`
-  without confirmation.
-- Do not modify `package.json` dependencies without confirmation.
-- Do not update package versions without confirmation.
+- Running `npm install`, `yarn install`, `pnpm install`, or `bun install`,
+  modifying `package.json` dependencies, or updating package versions requires
+  explicit user authorization covering the operation and dependency/version
+  scope. A request for that installation or update supplies confirmation;
+  preserve requested pins and limits without asking again.
+- A request to run checks alone does not authorize missing-dependency setup.
 
 ### Configuration Files
 
-- Do not modify `.env` files without confirmation.
-- Do not modify `.gitignore` without confirmation.
-- Do not modify CI/CD configuration (`.github/`, `.gitlab-ci.yml`, etc.) without confirmation.
-- Do not modify Docker configuration without confirmation.
-- Do not modify `tsconfig.json` or build configuration without confirmation.
+- Edits to `.env`, `.gitignore`, CI/CD configuration (`.github/`,
+  `.gitlab-ci.yml`, etc.), Docker configuration, `tsconfig.json`, or build
+  configuration require explicit user authorization covering the files or
+  configuration area and intended changes. A request for those edits or to
+  implement a plan explicitly including them supplies confirmation; do not
+  require a separate exception for each file within that scope.
+- Configuration-edit authorization does not itself authorize installation,
+  deployment or service lifecycle operations. Honor existing separate grants.
 
 ### External Services
 
-**Absolute:**
-- Never deploy to production without confirmation.
-- Never send emails or notifications without confirmation.
-
-**Confirmatory:**
-- Do not create cloud resources without confirmation.
-- Do not make external API calls that modify state without confirmation.
+- Production deployment requires explicit user authorization covering the
+  deployment and target environment.
+- Emails or notifications require explicit user authorization covering sending,
+  recipients and content. A request to draft does not authorize sending.
+- Cloud resource creation and external API calls that modify state require
+  explicit user authorization covering the action, target, effects and cost
+  where applicable.
+- Reuse existing grants within those limits without repeated confirmation.
+  Preserve required exact-payload previews and approvals; changed content,
+  targets, effects or spending require new scope when not already covered.
 
 ### Process Management
 
@@ -135,10 +191,13 @@ push, publication, installation, archival/removal or other destructive actions.
   process identity, start time, run ownership and isolation before signaling,
   preserve output, and prefer graceful interruption. A PID alone is insufficient.
   Shared services, containers, pre-existing processes and uncertain descendants
-  require confirmation. Do not kill other running processes without confirmation.
-- Do not restart services without confirmation.
-- Do not modify system services without confirmation.
-- Do not perform Docker lifecycle operations without confirmation.
+  require confirmation. Stopping other processes requires explicit user
+  authorization covering the identified processes and intended effect.
+- Service restarts, system-service changes and Docker lifecycle operations
+  require explicit user authorization covering the operation and target.
+  Reuse existing grants without repeated confirmation; verify current identity,
+  ownership and impact through available evidence before acting. Do not infer
+  these grants merely from a request to run tests or diagnose a service.
 
 ## Tool Usage
 
