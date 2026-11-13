@@ -12,6 +12,43 @@ def guidance(path):
 
 
 class ApprovalGuidanceTest(unittest.TestCase):
+    def test_automated_review_triage_authorizes_verified_thread_resolution(self):
+        for path in (
+            'ai/plugins/coding/skills/resolve-review-feedback/SKILL.md',
+            'ai/plugins/coding/skills/resolve-review-feedback/references/github.md',
+        ):
+            with self.subTest(path=path):
+                text = guidance(path)
+                self.assertIn('A request to triage automated review findings '
+                              'authorizes resolving verified addressed threads',
+                              text)
+                self.assertIn('without another approval prompt', text)
+                self.assertIn('current PR head', text)
+                self.assertIn('Do not post a reply as part of automatic '
+                              'resolution', text)
+                self.assertNotIn('the preview for **all** replies, resolutions',
+                                 text)
+
+    def test_automatic_resolution_preserves_evidence_and_write_boundaries(self):
+        for path in (
+            'ai/plugins/coding/skills/resolve-review-feedback/SKILL.md',
+            'ai/plugins/coding/skills/resolve-review-feedback/references/github.md',
+        ):
+            with self.subTest(path=path):
+                text = guidance(path)
+                for rule in (
+                    'Explicit read-only, analysis-only, or dry-run requests '
+                    'prohibit writes',
+                    'author metadata',
+                    'unresolved human follow-up',
+                    'local-only fixes',
+                    'Human-authored threads and declined findings require '
+                    'preview approval before resolution',
+                    'Replies, edits, deletions, and reposts require explicit '
+                    'approval after preview',
+                ):
+                    self.assertIn(rule, text)
+
     def test_operator_skill_handoff_preserves_scoped_auth_authorization(self):
         role = tomllib.loads(
             (ROOT / 'ai/codex/agents/operator.toml').read_text()

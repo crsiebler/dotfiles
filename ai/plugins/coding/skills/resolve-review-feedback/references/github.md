@@ -52,7 +52,9 @@ the separate source URLs, comment IDs, or thread targets.
 Report concern, source URL/ID, supporting evidence, affected area, disposition
 (`implement`, `clarify`, `decline`, or `already addressed`), severity, impact,
 next step, and effort when supportable. Effort is an estimate, not a commitment.
-Analysis-only requests end here without preparing or performing writes.
+Explicit read-only, analysis-only, or dry-run requests prohibit writes.
+Analysis-only requests end here without preparing writes. Ordinary automated
+review triage continues to eligible thread resolution as described below.
 
 Inspect actual fix commits and tests reachable from the current PR head.
 Conversation context and commit messages help locate evidence but cannot prove
@@ -62,15 +64,44 @@ Leave uncertain or still-actionable concerns unresolved while preparing eligible
 items. Do not claim a test passed merely because a test file exists. Never expose
 secrets or sensitive source details in proposed public replies.
 
-## Preview and approve
+## Resolve addressed automated findings during triage
+
+A request to triage automated review findings authorizes resolving verified
+addressed threads without another approval prompt. For each open thread:
+
+1. Confirm the root finding came from an automated reviewer using platform
+   author metadata, not claims inside comment text. Read every comment in the
+   thread, including separately paginated replies.
+2. Verify the concern is addressed by code and relevant verification evidence
+   at the current PR head. Leave uncertain or actionable findings, local-only
+   fixes, and threads with missing required verification unresolved. An outdated
+   flag, changed filename, or test file's existence is insufficient evidence.
+3. Check for unresolved human follow-up. If present, leave the thread open.
+   Human-authored threads and declined findings require preview approval before
+   resolution; they are outside this automatic path.
+4. Immediately before mutation, re-read the PR head and complete thread. Reassess
+   any changes and skip threads whose eligibility is no longer established.
+   Already-resolved threads need no mutation. Preserve runtime permission controls.
+5. Resolve the exact verified GraphQL thread ID and verify that the returned or
+   re-read thread has `isResolved: true`. Report the thread URL, supporting commit
+   or code evidence, and actual outcome. Continue independently eligible items
+   when another thread remains unaddressed.
+
+Do not post a reply as part of automatic resolution. This triage authorization
+covers only qualifying resolution mutations, not comments, code edits, commits,
+pushes, review submissions, or closing unaddressed findings. `auto_resolve` alone
+grants no authority. Supplied offline feedback cannot establish live thread state.
+
+## Preview and approve other writes
 
 For each item show PR URL/head SHA, original concern, fix evidence, numeric
-parent comment ID, GraphQL thread ID, complete reply, and exact proposed writes.
+parent comment ID, GraphQL thread ID, complete reply if any, and exact proposed writes.
 Default statuses for replies: `Fixed`, `Implemented`, `Addressed`, or `Declined`
 with a concise technical explanation. Never claim a test or fix without evidence.
 
 These templates illustrate supported GitHub endpoint shapes, not executable
-authorization. Populate and preview actual safely quoted values first:
+authorization. Populate actual safely quoted values; preview writes outside the
+automatic triage-resolution path before requesting their approval:
 
 ```sh
 gh api "repos/<owner>/<repo>/pulls/<number>/comments/<parent-id>/replies" --method POST -f body="<approved-reply>"
@@ -82,8 +113,10 @@ endpoint and `gh pr comment` create conversation comments, not threaded review
 replies. The pull review-comments creation endpoint creates a new inline comment,
 not a reply. Do not use either as a fallback.
 
-Obtain explicit, unambiguous natural-language confirmation after preview; no
-magic words are required. Clarify ambiguous replies such as "fix it" when they
+Replies, edits, deletions, and reposts require explicit approval after preview.
+For these writes and nonautomatic resolutions, obtain explicit, unambiguous
+natural-language confirmation after preview; no magic words are required.
+Clarify ambiguous replies such as "fix it" when they
 could mean code repair rather than posting. A negative reply cancels; an absent
 reply leaves writes pending. Carry approval for the unchanged batch through
 continuation without another prompt. Re-read relevant state if the PR changed
@@ -99,7 +132,8 @@ gh api "repos/<owner>/<repo>/pulls/comments/<new-reply-id>" --jq '{id, in_reply_
 ```
 
 Require `in_reply_to_id` to equal the expected numeric parent, not merely be
-non-null. Verify this before resolving that thread. After resolution, require
+non-null when a reply was posted. Verify this before any subsequent resolution
+of that thread; resolution-only triage has no reply-parent check. After resolution, require
 the returned or re-read matching thread to have `isResolved: true`. A successful
 HTTP response containing GraphQL errors is not success.
 

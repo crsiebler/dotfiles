@@ -156,10 +156,13 @@ established by source validation; source delivery does not install these changes
 
 ### Review feedback consolidation
 
-`resolve-review-feedback` now owns assessment and resolution preparation.
-Analysis-only requests return findings; resolution requests verify evidence at
-the PR head before preparing exact write previews. Code implementation and
-pushes remain separately authorized work. GitHub details live in the bundled
+`resolve-review-feedback` owns assessment and addressed-thread resolution.
+Automated-review triage resolves eligible bot-authored threads verified as
+addressed at the current PR head, without another approval prompt or a reply.
+Read-only, analysis-only and dry-run requests prohibit writes. Replies,
+human-authored threads and declined findings retain exact-preview approval;
+uncertain, actionable or local-only fixes remain unresolved. Code implementation
+and pushes remain separately authorized work. GitHub details live in the bundled
 `references/github.md`; `analyze-review-feedback` is retired without an alias.
 Follow the [migration steps](remove-old-ai-files.md#combined-review-feedback-skill)
 for separately authorized activation and installed-copy cleanup.
