@@ -20,7 +20,7 @@ class RuntimeSelectionTest(unittest.TestCase):
 
     def test_session_model_defaults_remain_separate_from_roles(self):
         codex = tomllib.loads((ROOT / 'ai/codex/config.toml').read_text())
-        self.assertEqual(codex['model'], 'gpt-6.1-sol')
+        self.assertEqual(codex['model'], 'gpt-6.2-astra')
         opencode = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
         self.assertEqual(opencode['model'], 'openai/gpt-6-astra')
 

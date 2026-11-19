@@ -1,8 +1,12 @@
 # Personal defaults. Select a different model directly when needed.
 # Credentials are read at runtime, never interpolated into this file by install.
 approval_policy = "on-request"
-model = "gpt-6.1-sol"
+model = "gpt-6.2-astra"
 sandbox_mode = "workspace-write"
+
+[desktop.appearanceLightChromeTheme.fonts]
+code = '"MesloLGS NF"'
+ui = '"MesloLGS NF"'
 
 [agents]
 enabled = true

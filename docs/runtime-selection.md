@@ -12,7 +12,7 @@ This is a source foundation, not a scheduler or automatic task classifier.
 
 | Surface | Source behavior |
 | --- | --- |
-| Codex session | Base config explicitly selects `gpt-6.1-sol`; select a different model and effort directly when needed |
+| Codex session | Base config explicitly selects `gpt-6.2-astra`; select a different model and effort directly when needed |
 | Codex delegated roles | All 5 sources omit model/provider/effort; global subagent model/effort defaults are absent |
 | OpenCode session | Base config selects `openai/gpt-6-astra`; select a different session model directly when needed |
 | OpenCode delegated roles | Generated roles omit model/effort; general/build/subagents config pins are absent |
