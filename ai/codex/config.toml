@@ -57,6 +57,11 @@ default_tools_approval_mode = "prompt"
 resolve-library-id = { approval_mode = "approve" }
 query-docs = { approval_mode = "approve" }
 
+[mcp_servers.jam]
+url = "https://mcp.jam.dev/mcp"
+enabled = true
+default_tools_approval_mode = "prompt"
+
 [mcp_servers.vercel]
 url = "https://mcp.vercel.com"
 enabled = false

@@ -35,6 +35,7 @@ CODEX = ROOT / 'ai/codex/config.toml'
 OPENCODE = ROOT / 'ai/opencode/opencode.json'
 EXAMPLE = ROOT / 'env/.env.example'
 GLOBAL = {'github', 'exa', 'context7'}
+CODEX_GLOBAL = GLOBAL | {'jam'}
 OPT_IN = {'jira', 'postgresql', 'docker', 'jev', 'vercel'}
 POSTGRESQL_PATH = (
     '/Repositories/mcp-suite/servers/postgresql/dist/servers/postgresql/src/index.js'
@@ -90,13 +91,14 @@ class MCPConfigurationTest(unittest.TestCase):
     def test_only_global_connections_are_enabled(self):
         for harness, servers in self.servers.items():
             with self.subTest(harness=harness):
-                self.assertTrue((GLOBAL | OPT_IN) <= servers.keys())
+                global_servers = CODEX_GLOBAL if harness == 'codex' else GLOBAL
+                self.assertTrue((global_servers | OPT_IN) <= servers.keys())
                 self.assertFalse({'aws', 'elastic'} & servers.keys())
                 self.assertEqual({n for n, s in servers.items()
-                                  if (s.get('enabled') is True if harness == 'codex' else s.get('disabled') is False)}, GLOBAL)
+                                  if (s.get('enabled') is True if harness == 'codex' else s.get('disabled') is False)}, global_servers)
                 for name, server in servers.items():
                     self.assertIs(type(server.get('enabled' if harness == 'codex' else 'disabled')), bool, name)
-                    if name not in GLOBAL:
+                    if name not in global_servers:
                         self.assertIs(server['enabled' if harness == 'codex' else 'disabled'], harness != 'codex', name)
 
     def test_codex_mcp_fields_match_versioned_schema(self):
@@ -118,6 +120,7 @@ class MCPConfigurationTest(unittest.TestCase):
             'context7': 'https://mcp.context7.com/mcp',
             'vercel': 'https://mcp.vercel.com',
             'jira': 'https://mcp.atlassian.com/v2/mcp',
+            'jam': 'https://mcp.jam.dev/mcp',
         }
         for harness, servers in self.servers.items():
             with self.subTest(harness=harness):
@@ -440,8 +443,8 @@ class MCPConfigurationTest(unittest.TestCase):
         except json.JSONDecodeError:
             self.fail(f'{metadata}: mcp list did not return JSON (output withheld)')
         self.assertIsInstance(rows, list)
-        self.assertEqual({row['name'] for row in rows}, GLOBAL | OPT_IN)
-        self.assertEqual({row['name'] for row in rows if row['enabled']}, GLOBAL)
+        self.assertEqual({row['name'] for row in rows}, CODEX_GLOBAL | OPT_IN)
+        self.assertEqual({row['name'] for row in rows if row['enabled']}, CODEX_GLOBAL)
         # Even when strict mode is unavailable, native typed deserialization
         # must reject a malformed MCP field rather than silently ignore it.
         config.write_text(text + '\n[mcp_servers.contract_invalid]\n'
