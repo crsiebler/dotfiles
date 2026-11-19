@@ -69,7 +69,8 @@ MCP development. It is instruction-only; see [verification](docs/create-mcp-serv
 The single harness-agnostic personal policy, [`ai/AGENTS.md`](ai/AGENTS.md), is
 copied byte-for-byte to both user-level `AGENTS.md` destinations. Root
 [`AGENTS.md`](AGENTS.md) remains separate, repository-only guidance.
-GitHub, Exa, and Context7 are globally enabled; Vercel, Jira/Rovo, PostgreSQL, and Jev remain off.
+GitHub, Exa, and Context7 are globally enabled in both harnesses. Jam is globally
+enabled in Codex. Vercel, Jira/Rovo, PostgreSQL, and Jev remain off by default.
 AWS and Elastic MCP definitions are intentionally absent from both source configs.
 See the guide for credentials, project opt-in, profiles, and replacement behavior.
 AI installation replaces managed JSON/TOML files exactly from the repository,

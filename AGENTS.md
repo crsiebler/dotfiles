@@ -144,8 +144,10 @@ defines the native role contract.
   No CLI applications or Railway setup are included. AI-only targets stay separate.
   Before manual extension updates/removal, inspect existing copies, retain needed
   backups, and obtain scoped approval. `make clean` must not remove plugins/themes.
-- GitHub, Exa, and Context7 are globally enabled. Vercel, Jira/Rovo, PostgreSQL, and Jev require
-  trusted project opt-in. AWS/Elastic MCP definitions are intentionally absent.
+- GitHub, Exa, and Context7 are globally enabled in both harnesses. Jam is
+  globally enabled in Codex and prompts for every tool. Vercel, Jira/Rovo,
+  PostgreSQL, and Jev require trusted project opt-in. AWS/Elastic MCP definitions
+  are intentionally absent.
   PostgreSQL uses the built local Node `mcp-suite` server documented in the
   installation guide, not Docker; installation does not clone/build/install it.
   Jev likewise uses its built local Node server, forwards `AI_GATEWAY_API_KEY`,
@@ -156,8 +158,8 @@ defines the native role contract.
   unknown tools still ask. PostgreSQL `execute_query` always asks because it
   accepts arbitrary SQL. Exa/Context7 expose only approved research tools.
   OpenCode Chrome/Playwright/Jam allow all tools when enabled; ElevenLabs asks
-  for every tool. These four remain absent from Codex. Preserve this policy and
-  narrower reviewer restrictions; never log tokens,
+  for every tool. Chrome, Playwright, and ElevenLabs remain absent from Codex.
+  Preserve this policy and narrower reviewer restrictions; never log tokens,
   connection strings, full authorization headers, or credential stores.
 
 ## Local coding model

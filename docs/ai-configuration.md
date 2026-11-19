@@ -415,6 +415,7 @@ to write external state.
 | `github` | Enabled globally | `GITHUB_MCP_TOKEN`; hosted GitHub MCP |
 | `exa` | Enabled globally | `EXA_API_KEY`; hosted Exa MCP |
 | `context7` | Enabled globally | `CONTEXT7_API_KEY`; hosted Context7 MCP |
+| `jam` | Enabled globally in Codex | [Jam OAuth](https://jam.dev/docs/jam-mcp); hosted Jam MCP |
 | `vercel` | Disabled | Vercel MCP OAuth; hosted Vercel MCP |
 | `jira` | Disabled | Atlassian Rovo v2 OAuth; `ATLASSIAN_CLOUD_ID` is site context |
 | `postgresql` | Disabled | Project least-privilege database URI and built local Node `mcp-suite` server |
@@ -440,7 +441,8 @@ starting them or downloading their runtime packages.
 | Vercel | None | Every tool, including reads |
 | Jira/Rovo | Exact documented reads, searches, discovery, and `executeRead` | Writes, destructive operations, and unknown tools |
 | PostgreSQL | `check_dangerous_operations_allowed` | `execute_query` and unknown tools |
-| Chrome, Playwright, Jam | All tools when the connection is enabled | No MCP tool-level prompts |
+| Chrome DevTools, Playwright, Jam (OpenCode) | All tools when the connection is enabled | No MCP tool-level prompts |
+| Jam (Codex) | None | Every tool, including reads |
 | ElevenLabs | None | Every tool, including reads |
 
 GitHub/Jira/PostgreSQL use default `ask` in OpenCode and `prompt` in Codex, with
@@ -449,8 +451,9 @@ default deny plus exact allows in OpenCode; Codex filters them with `enabled_too
 and approves those exact tools. Neither relies on broad `get_*`/`search_*` patterns
 or server annotations to automatically approve newly introduced tools.
 
-This policy does not enable disabled servers. Browser/audio connections remain
-OpenCode-only; the disabled `docker` connection is available in both harnesses.
+This policy does not enable disabled servers. Chrome DevTools, Playwright, and
+ElevenLabs are available only in OpenCode. The disabled `docker` connection is
+available in both harnesses.
 The auditor retains its narrower
 permissions. Project/runtime overrides can still change effective behavior and
 need separate inspection. MCP rules do not control `git push` or `gh` through

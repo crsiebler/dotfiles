@@ -98,11 +98,15 @@ class MCPPermissionsTest(unittest.TestCase):
             self.assertEqual(self.permission(server, 'future_unknown_tool'), 'deny')
             self.assertEqual(set(self.codex['mcp_servers'][server]['enabled_tools']),
                              READ_TOOLS[server])
-        for server in ('chrome', 'playwright', 'jam', 'elevenlabs'):
+        for server in ('chrome', 'playwright', 'elevenlabs'):
             self.assertNotIn(server, self.codex['mcp_servers'])
+        for server in ('chrome', 'playwright', 'jam', 'elevenlabs'):
             self.assertIs(self.opencode['mcp']['servers'][server]['disabled'], True)
             self.assertEqual(self.permission(server, 'any_tool'),
                              'ask' if server == 'elevenlabs' else 'allow')
+        jam = self.codex['mcp_servers']['jam']
+        self.assertEqual(jam['default_tools_approval_mode'], 'prompt')
+        self.assertFalse(jam.get('tools'))
         self.assertEqual(self.permission('docker', 'any_tool'), 'ask')
 
 
