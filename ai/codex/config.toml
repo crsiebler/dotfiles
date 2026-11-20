@@ -8,6 +8,9 @@ sandbox_mode = "workspace-write"
 code = '"MesloLGS NF"'
 ui = '"MesloLGS NF"'
 
+[desktop.appearanceDarkChromeTheme.fonts]
+code = '"MesloLGS NF"'
+
 [agents]
 enabled = true
 # Four implementation workers plus one reviewer; excludes the main session.
