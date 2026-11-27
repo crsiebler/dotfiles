@@ -1,15 +1,43 @@
 # Personal defaults. Select a different model directly when needed.
 # Credentials are read at runtime, never interpolated into this file by install.
 approval_policy = "on-request"
-model = "gpt-6.2-astra"
+model = "gpt-6.2-sol"
 sandbox_mode = "workspace-write"
+
+# Codex Desktop validates each font override as part of a full theme.
+[desktop.appearanceLightChromeTheme]
+accent = "#3a83f7"
+accentSource = "chatgpt"
+contrast = 45
+ink = "#1a1c1f"
+opaqueWindows = false
+surface = "#ffffff"
 
 [desktop.appearanceLightChromeTheme.fonts]
 code = '"MesloLGS NF"'
 ui = '"MesloLGS NF"'
 
+[desktop.appearanceLightChromeTheme.semanticColors]
+diffAdded = "#00a240"
+diffRemoved = "#ba2623"
+skill = "#924ff7"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#339cff"
+accentSource = "chatgpt"
+contrast = 60
+ink = "#ffffff"
+opaqueWindows = false
+surface = "#181818"
+
 [desktop.appearanceDarkChromeTheme.fonts]
 code = '"MesloLGS NF"'
+ui = '"MesloLGS NF"'
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#40c977"
+diffRemoved = "#fa423e"
+skill = "#ad7bf9"
 
 [agents]
 enabled = true

@@ -242,7 +242,7 @@ requests return proposed content instead of saving. Directory-based discovery
 requires no new command, agent, or installer special case.
 
 The [runtime selection guide](runtime-selection.md) describes the coding plugin
-policy loaded by run-agent-team. Base Codex selects GPT-6.2 Astra; select another model
+policy loaded by run-agent-team. Base Codex selects GPT-6.2 Sol. Select another model
 directly when needed. Select OpenCode's session model directly as well; no hidden
 build/subagent pins apply. Reusable roles omit model and effort settings. Verify account
 availability and effective settings after separately authorized activation;

@@ -20,9 +20,23 @@ class RuntimeSelectionTest(unittest.TestCase):
 
     def test_session_model_defaults_remain_separate_from_roles(self):
         codex = tomllib.loads((ROOT / 'ai/codex/config.toml').read_text())
-        self.assertEqual(codex['model'], 'gpt-6.2-astra')
+        self.assertEqual(codex['model'], 'gpt-6.2-sol')
         opencode = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
         self.assertEqual(opencode['model'], 'openai/gpt-6-astra')
+
+    def test_codex_desktop_fonts_have_complete_theme_definitions(self):
+        desktop = tomllib.loads((ROOT / 'ai/codex/config.toml').read_text())['desktop']
+        for variant in ('Light', 'Dark'):
+            with self.subTest(variant=variant):
+                theme = desktop[f'appearance{variant}ChromeTheme']
+                self.assertTrue({
+                    'accent', 'contrast', 'fonts', 'ink', 'opaqueWindows',
+                    'semanticColors', 'surface',
+                }.issubset(theme))
+                self.assertTrue({'diffAdded', 'diffRemoved', 'skill'}.issubset(
+                    theme['semanticColors']))
+                for role in ('ui', 'code'):
+                    self.assertEqual(theme['fonts'][role], '"MesloLGS NF"')
 
     def test_title_model_is_only_an_explicit_utility_default(self):
         config = json.loads((ROOT / 'ai/opencode/opencode.json').read_text())
