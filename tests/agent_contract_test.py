@@ -301,7 +301,7 @@ class AgentContractTest(unittest.TestCase):
         self.assertNotIn("default_subagent_model", config["agents"])
         self.assertNotIn("default_subagent_reasoning_effort", config["agents"])
         # Session model selection stays explicit; inheritance is not a router.
-        self.assertEqual("gpt-6.2-astra", config["model"])
+        self.assertEqual("gpt-6.2-sol", config["model"])
 
 
 
